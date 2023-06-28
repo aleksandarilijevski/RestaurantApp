@@ -1,5 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Prism.DryIoc;
+using Prism.Ioc;
+using RestaurantApp.Services;
 using RestaurantApp.Services.Interface;
+using RestaurantApp.ViewModels;
 using System.Windows;
 
 namespace RestaurantApp
@@ -7,7 +10,17 @@ namespace RestaurantApp
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App : PrismApplication
     {
+        protected override Window CreateShell()
+        {
+            MainWindow window = Container.Resolve<MainWindow>();
+            return window;
+        }
+
+        protected override void RegisterTypes(IContainerRegistry containerRegistry)
+        {
+            containerRegistry.Register<IDatabaseService, DatabaseService>();
+        }
     }
 }

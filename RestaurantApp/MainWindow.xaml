@@ -5,9 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RestaurantApp"
         mc:Ignorable="d"
-        Title="Restaurant Application" Height="450" Width="800">
+        xmlns:prism="http://prismlibrary.com/"
+        Title="Restaurant Application" Height="450" Width="800"
+        prism:ViewModelLocator.AutoWireViewModel="True">
+
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50"/>
+        </Grid.ColumnDefinitions>
 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+        </Grid.RowDefinitions>
 
+        <Button Content="Execute" Command="{Binding GetAllArticalsCommand}" />
     </Grid>
+
 </Window>

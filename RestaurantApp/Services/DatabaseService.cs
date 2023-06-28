@@ -3,8 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using RestaurantApp.Services.Interface;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Documents;
 
 namespace RestaurantApp.Services
 {
@@ -17,35 +15,35 @@ namespace RestaurantApp.Services
             _efContext = efContext;
         }
 
-        public async Task<List<Artical>> GetAllArticals()
+        public List<Artical> GetAllArticals()
         {
-            List<Artical> articals = await _efContext.Articals.Select(x => x).ToListAsync();
+            List<Artical> articals = _efContext.Articals.Select(x => x).ToList();
             return articals;
         }
 
-        public async Task<Artical> GetArticalByID(int id)
+        public Artical GetArticalByID(int id)
         {
-            Artical artical = await _efContext.Articals.FirstOrDefaultAsync(x => x.ID == id);
+            Artical artical = _efContext.Articals.FirstOrDefault(x => x.ID == id);
             return artical;
         }
 
-        public async Task<int> AddArtical(Artical artical)
+        public int AddArtical(Artical artical)
         {
             _efContext.Articals.Add(artical);
-            await _efContext.SaveChangesAsync();
+            _efContext.SaveChanges();
             return artical.ID;
         }
 
-        public async Task UpdateArtical(Artical artical)
+        public void UpdateArtical(Artical artical)
         {
-            _efContext.Entry(artical).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-            await _efContext.SaveChangesAsync();
+            _efContext.Entry(artical).State = EntityState.Modified;
+            _efContext.SaveChanges();
         }
 
-        public async Task DeleteArtical(Artical artical)
+        public void DeleteArtical(Artical artical)
         {
             _efContext.Articals.Remove(artical);
-            await _efContext.SaveChangesAsync();
+            _efContext.SaveChanges();
         }
     }
 }
