@@ -6,8 +6,8 @@
         xmlns:local="clr-namespace:RestaurantApp"
         mc:Ignorable="d"
         xmlns:prism="http://prismlibrary.com/"
-        Title="Restaurant Application" Height="450" Width="800"
-        prism:ViewModelLocator.AutoWireViewModel="True">
+        prism:ViewModelLocator.AutoWireViewModel="True"
+        Title="Restaurant Application" Height="450" Width="800">
 
     <Grid>
         <Grid.ColumnDefinitions>

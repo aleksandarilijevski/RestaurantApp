@@ -1,5 +1,6 @@
 ﻿using Prism.DryIoc;
 using Prism.Ioc;
+using Prism.Mvvm;
 using RestaurantApp.Services;
 using RestaurantApp.Services.Interface;
 using RestaurantApp.ViewModels;
@@ -21,6 +22,7 @@ namespace RestaurantApp
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.Register<IDatabaseService, DatabaseService>();
+            ViewModelLocationProvider.Register<MainWindow, MainWindowViewModel>();
         }
     }
 }
