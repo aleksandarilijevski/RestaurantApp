@@ -1,9 +1,12 @@
 ﻿using Prism.DryIoc;
 using Prism.Ioc;
+using Prism.Modularity;
 using Prism.Mvvm;
+using RestaurantApp.Module;
 using RestaurantApp.Services;
 using RestaurantApp.Services.Interface;
 using RestaurantApp.ViewModels;
+using RestaurantApp.Views;
 using System.Windows;
 
 namespace RestaurantApp
@@ -22,7 +25,17 @@ namespace RestaurantApp
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.Register<IDatabaseService, DatabaseService>();
+            containerRegistry.RegisterForNavigation<TableOrder, MainModule>();
             ViewModelLocationProvider.Register<MainWindow, MainWindowViewModel>();
+            ViewModelLocationProvider.Register<TableOrder, TableOrderViewModel>();
+            ViewModelLocationProvider.Register<Options, OptionsViewModel>();
+            ViewModelLocationProvider.Register<ArticalManagement, ArticalManagementViewModel>();
+        }
+
+        protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
+        {
+            base.ConfigureModuleCatalog(moduleCatalog);
+            moduleCatalog.AddModule<MainModule>();
         }
     }
 }

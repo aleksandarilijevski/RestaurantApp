@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Prism.Regions;
+using RestaurantApp.Views;
+using System;
 using System.Windows;
 
 namespace RestaurantApp

@@ -7,18 +7,7 @@
         mc:Ignorable="d"
         xmlns:prism="http://prismlibrary.com/"
         prism:ViewModelLocator.AutoWireViewModel="True"
-        Title="Restaurant Application" Height="450" Width="800">
+        Title="Restaurant Application" Height="400" Width="900">
 
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="50"/>
-        </Grid.ColumnDefinitions>
-
-        <Grid.RowDefinitions>
-            <RowDefinition Height="50" />
-        </Grid.RowDefinitions>
-
-        <Button Content="Execute" Command="{Binding GetAllArticalsCommand}" />
-    </Grid>
-
+    <ContentControl prism:RegionManager.RegionName="MainRegion"/>
 </Window>
