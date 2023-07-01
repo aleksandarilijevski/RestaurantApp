@@ -1,6 +1,7 @@
 ﻿using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
+using System.Threading.Tasks;
 
 namespace RestaurantApp.ViewModels
 {
@@ -8,7 +9,7 @@ namespace RestaurantApp.ViewModels
     {
         private IRegionManager _regionManager;
         private DelegateCommand _showTableOverviewCommand;
-        private DelegateCommand _showArticalManagementCommand;
+        private DelegateCommand _showArticleManagementCommand;
 
         public OptionsViewModel(IRegionManager regionManager)
         {
@@ -24,16 +25,16 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public DelegateCommand ShowArticalManagementCommand
+        public DelegateCommand ShowArticleManagementCommand
         {
             get
             {
-                _showArticalManagementCommand = new DelegateCommand(() => Navigate("MainRegion", "ArticalManagement"));
-                return _showArticalManagementCommand;
+                _showArticleManagementCommand = new DelegateCommand(() => Navigate("MainRegion", "ArticleManagement"));
+                return _showArticleManagementCommand;
             }
         }
 
-        private void Navigate(string regionName, string viewName)
+        private async Task Navigate(string regionName, string viewName)
         {
             _regionManager.RequestNavigate(regionName, viewName);
         }

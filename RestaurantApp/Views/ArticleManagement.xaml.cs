@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace RestaurantApp.Views
 {
     /// <summary>
-    /// Interaction logic for ArticalManagement.xaml
+    /// Interaction logic for ArticleManagement.xaml
     /// </summary>
-    public partial class ArticalManagement : UserControl
+    public partial class ArticleManagement : UserControl
     {
-        public ArticalManagement()
+        public ArticleManagement()
         {
             InitializeComponent();
         }

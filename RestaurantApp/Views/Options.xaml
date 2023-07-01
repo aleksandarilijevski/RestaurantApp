@@ -29,7 +29,7 @@
 
         <ContentControl prism:RegionManager.RegionName="OptionsRegion"/>
         <Button Content="   Table&#xa;overview" Grid.Row="1" Grid.Column="1" FontSize="15" Command="{Binding ShowTableOverviewCommand}" />
-        <Button Content="     Artical&#xa;Managment" Grid.Row="1" Grid.Column="3" FontSize="15" Command="{Binding ShowArticalManagementCommand}"/>
+        <Button Content="     Artical&#xa;Managment" Grid.Row="1" Grid.Column="3" FontSize="15" Command="{Binding ShowArticleManagementCommand}"/>
         <Button Content="3" Grid.Row="1" Grid.Column="5"/>
         <Button Content="4" Grid.Row="1" Grid.Column="7"/>
 

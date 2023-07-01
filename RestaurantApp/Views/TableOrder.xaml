@@ -12,7 +12,10 @@
             
         </Grid.ColumnDefinitions>
 
+        <Grid.Background>
+            <ImageBrush ImageSource="/Resources/cafePlan.jpg"/>
+        </Grid.Background>
+        
         <ContentControl prism:RegionManager.RegionName="TableOrderRegion"/>
-        <Button Content="Table Order" FontSize="100"/>
     </Grid>
 </UserControl>

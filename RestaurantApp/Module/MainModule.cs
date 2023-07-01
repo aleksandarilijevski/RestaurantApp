@@ -18,7 +18,7 @@ namespace RestaurantApp.Module
             containerRegistry.RegisterForNavigation<TableOrder>();
             containerRegistry.RegisterForNavigation<Options>();
             containerRegistry.RegisterForNavigation<MainWindow>();
-            containerRegistry.RegisterForNavigation<ArticalManagement>();
+            containerRegistry.RegisterForNavigation<ArticleManagement>();
         }
     }
 }

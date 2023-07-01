@@ -1,17 +1,16 @@
 ﻿using EntityFramework.Models;
-using Prism.Commands;
 using Prism.Mvvm;
 using RestaurantApp.Services.Interface;
 using System.Collections.Generic;
-using System.Windows.Documents;
+using System.Threading.Tasks;
 
 namespace RestaurantApp.ViewModels
 {
-    public class ArticalManagementViewModel : BindableBase
+    public class ArticleManagementViewModel : BindableBase
     {
         private IDatabaseService _databaseService;
 
-        public List<Artical> Articals
+        public Task<List<Artical>> Articals
         {
             get
             {
@@ -19,7 +18,7 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public ArticalManagementViewModel(IDatabaseService databaseService)
+        public ArticleManagementViewModel(IDatabaseService databaseService)
         {
              _databaseService = databaseService;
         }
