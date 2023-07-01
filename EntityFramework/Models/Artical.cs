@@ -4,7 +4,7 @@
     {
         public int ID { get; set; }
 
-        public long BarCode { get;set; }
+        public long Barcode { get;set; }
 
         public string Name { get; set; }
 

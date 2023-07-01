@@ -24,9 +24,11 @@
         <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding Articals}" IsReadOnly="True" Grid.Row="0" Grid.ColumnSpan="2">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding ID}"/>
+                <DataGridTextColumn Header="Barcode" Binding="{Binding BarCode}"/>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
                 <DataGridTextColumn Header="Description" Binding="{Binding Description}"/>
                 <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}"/>
+                <DataGridTextColumn Header="Entry price" Binding="{Binding EntryPrice}"/>
                 <DataGridTextColumn Header="Price" Binding="{Binding Price}"/>
                 
                 <DataGridTemplateColumn Header="Edit">
