@@ -1,6 +1,6 @@
 ﻿namespace EntityFramework.Models
 {
-    public class Artical
+    public class Article
     {
         public int ID { get; set; }
 

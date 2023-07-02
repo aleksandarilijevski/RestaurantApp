@@ -40,7 +40,7 @@ namespace EntityFramework.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Articals",
+                name: "Articles",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
@@ -53,9 +53,9 @@ namespace EntityFramework.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Articals", x => x.ID);
+                    table.PrimaryKey("PK_Articles", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Articals_Bills_BillID",
+                        name: "FK_Articles_Bills_BillID",
                         column: x => x.BillID,
                         principalTable: "Bills",
                         principalColumn: "ID");
@@ -83,8 +83,8 @@ namespace EntityFramework.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Articals_BillID",
-                table: "Articals",
+                name: "IX_Articles_BillID",
+                table: "Articles",
                 column: "BillID");
 
             migrationBuilder.CreateIndex(
@@ -97,7 +97,7 @@ namespace EntityFramework.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Articals");
+                name: "Articles");
 
             migrationBuilder.DropTable(
                 name: "Tables");

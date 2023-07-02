@@ -1,0 +1,51 @@
+﻿<UserControl x:Class="RestaurantApp.Views.EditArticle"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:RestaurantApp.Views"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d" 
+             d:DesignHeight="460" d:DesignWidth="700">
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="ID : " FontSize="30" Grid.Row="0" Margin="10"/>
+        <TextBlock Text="Barcode : " FontSize="30" Grid.Row="1" Margin="10"/>
+        <TextBlock Text="Name : " FontSize="30" Grid.Row="2" Margin="10" />
+        <TextBlock Text="Description : " FontSize="30" Grid.Row="3" Margin="10"/>
+        <TextBlock Text="Quantity : " FontSize="30" Grid.Row="4" Margin="10"/>
+        <TextBlock Text="Entry price : " FontSize="30" Grid.Row="5" Margin="10"/>
+        <TextBlock Text="Price : " FontSize="30" Grid.Row="6" Margin="10"/>
+
+        <TextBox Grid.Column="1" Grid.Row="0" IsReadOnly="True" FontSize="25" TextAlignment="Center" Text="{Binding Article.ID}" Margin="10"/>
+        <TextBox Grid.Column="2" Grid.Row="1" FontSize="25" TextAlignment="Center" Text="{Binding Article.Barcode}" Margin="10"/>
+        <TextBox Grid.Column="3" Grid.Row="2" FontSize="25" TextAlignment="Center" Text="{Binding Article.Name}" Margin="10"/>
+        <TextBox Grid.Column="4" Grid.Row="3" FontSize="25" TextAlignment="Center" Text="{Binding Article.Description}" Margin="10"/>
+        <TextBox Grid.Column="5" Grid.Row="4" FontSize="25" TextAlignment="Center" Text="{Binding Article.Quantity}" Margin="10"/>
+        <TextBox Grid.Column="6" Grid.Row="5" FontSize="25" TextAlignment="Center" Text="{Binding Article.EntryPrice}" Margin="10"/>
+        <TextBox Grid.Column="7" Grid.Row="6" FontSize="25" TextAlignment="Center" Text="{Binding Article.Price}" Margin="10"/>
+
+        <Button Content="Apply"  Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="2" Command="{Binding EditArticleCommand}" CommandParameter="{Binding Article}"/>
+
+    </Grid>
+</UserControl>

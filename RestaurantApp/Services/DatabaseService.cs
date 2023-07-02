@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using RestaurantApp.Services.Interface;
 using System.Collections.Generic;
-using System.Linq;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
 namespace RestaurantApp.Services
@@ -16,34 +16,34 @@ namespace RestaurantApp.Services
             _efContext = efContext;
         }
 
-        public async Task<List<Artical>> GetAllArticals()
+        public async Task<ObservableCollection<Article>> GetAllArticles()
         {
-            List<Artical> articals = await _efContext.Articals.Select(x => x).ToListAsync();
-            return articals;
+            List<Article> articles = await _efContext.Articles.ToListAsync();
+            return new ObservableCollection<Article>(articles);
         }
 
-        public async Task<Artical> GetArticalByID(int id)
+        public async Task<Article> GetArticleByID(int id)
         {
-            Artical artical = await _efContext.Articals.FirstOrDefaultAsync(x => x.ID == id);
-            return artical;
+            Article Article = await _efContext.Articles.FirstOrDefaultAsync(x => x.ID == id);
+            return Article;
         }
 
-        public async Task<int> AddArtical(Artical artical)
+        public async Task<int> AddArticle(Article Article)
         {
-            _efContext.Articals.Add(artical);
+            _efContext.Articles.Add(Article);
             await _efContext.SaveChangesAsync();
-            return artical.ID;
+            return Article.ID;
         }
 
-        public async Task UpdateArtical(Artical artical)
+        public async Task EditArticle(Article Article)
         {
-            _efContext.Entry(artical).State = EntityState.Modified;
+            _efContext.Entry(Article).State = EntityState.Modified;
             await _efContext.SaveChangesAsync();
         }
 
-        public async Task DeleteArtical(Artical artical)
+        public async Task DeleteArticle(Article Article)
         {
-            _efContext.Articals.Remove(artical);
+            _efContext.Articles.Remove(Article);
             await _efContext.SaveChangesAsync();
         }
     }

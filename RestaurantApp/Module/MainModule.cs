@@ -1,6 +1,7 @@
 ﻿using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Regions;
+using RestaurantApp.ViewModels;
 using RestaurantApp.Views;
 
 namespace RestaurantApp.Module
@@ -19,6 +20,9 @@ namespace RestaurantApp.Module
             containerRegistry.RegisterForNavigation<Options>();
             containerRegistry.RegisterForNavigation<MainWindow>();
             containerRegistry.RegisterForNavigation<ArticleManagement>();
+            containerRegistry.RegisterForNavigation<WaiterManagement>();
+            containerRegistry.RegisterDialog<EditArticle, EditArticleViewModel>("editArticleDialog");
+            containerRegistry.RegisterDialog<AddArticle, AddArticleViewModel>("addArticleDialog");
         }
     }
 }

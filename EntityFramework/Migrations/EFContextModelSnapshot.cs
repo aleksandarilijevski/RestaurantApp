@@ -22,7 +22,7 @@ namespace EntityFramework.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("EntityFramework.Models.Artical", b =>
+            modelBuilder.Entity("EntityFramework.Models.Article", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -55,7 +55,7 @@ namespace EntityFramework.Migrations
 
                     b.HasIndex("BillID");
 
-                    b.ToTable("Articals");
+                    b.ToTable("Articles");
                 });
 
             modelBuilder.Entity("EntityFramework.Models.Bill", b =>
@@ -120,10 +120,10 @@ namespace EntityFramework.Migrations
                     b.ToTable("Waiters");
                 });
 
-            modelBuilder.Entity("EntityFramework.Models.Artical", b =>
+            modelBuilder.Entity("EntityFramework.Models.Article", b =>
                 {
                     b.HasOne("EntityFramework.Models.Bill", null)
-                        .WithMany("BoughtArticals")
+                        .WithMany("BoughtArticles")
                         .HasForeignKey("BillID");
                 });
 
@@ -140,7 +140,7 @@ namespace EntityFramework.Migrations
 
             modelBuilder.Entity("EntityFramework.Models.Bill", b =>
                 {
-                    b.Navigation("BoughtArticals");
+                    b.Navigation("BoughtArticles");
                 });
 #pragma warning restore 612, 618
         }

@@ -3,12 +3,20 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:local="clr-namespace:RestaurantApp.Views"
              mc:Ignorable="d" 
              xmlns:prism="http://prismlibrary.com/"
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
 
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding GetAllArticlesCommand}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    
+    <Grid>
+    
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
@@ -21,20 +29,20 @@
 
         <ContentControl prism:RegionManager.RegionName="ArticleManagementRegion"/>
 
-        <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding Articals}" IsReadOnly="True" Grid.Row="0" Grid.ColumnSpan="2">
+        <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding Articles, IsAsync=True}" IsReadOnly="True" Grid.Row="0" Grid.ColumnSpan="2" EnableColumnVirtualization="True" EnableRowVirtualization="True">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding ID}"/>
-                <DataGridTextColumn Header="Barcode" Binding="{Binding BarCode}"/>
+                <DataGridTextColumn Header="Barcode" Binding="{Binding Barcode}"/>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
                 <DataGridTextColumn Header="Description" Binding="{Binding Description}"/>
                 <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}"/>
                 <DataGridTextColumn Header="Entry price" Binding="{Binding EntryPrice}"/>
                 <DataGridTextColumn Header="Price" Binding="{Binding Price}"/>
-                
+
                 <DataGridTemplateColumn Header="Edit">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="Edit"/>
+                            <Button Content="Edit" Command="{Binding DataContext.ShowEditArticleDialogCommand,RelativeSource={RelativeSource AncestorType={x:Type local:ArticleManagement}}}" CommandParameter="{Binding}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -42,15 +50,16 @@
                 <DataGridTemplateColumn Header="Delete">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="Delete" />
+                            <Button Content="Delete" Command="{Binding DataContext.DeleteArticleCommand,RelativeSource={RelativeSource AncestorType={x:Type local:ArticleManagement}}}" CommandParameter="{Binding}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                
+
             </DataGrid.Columns>
+            
         </DataGrid>
 
-        <Button Content="Add artical" Grid.Row="1" Grid.Column="0" FontSize="25" />
+        <Button Content="Add Article" Grid.Row="1" Grid.Column="0" FontSize="25" Command="{Binding ShowAddArticleDialogCommand}"/>
         <Button Content="Dispatch note" Grid.Row="1" Grid.Column="1" FontSize="25" />
         
 

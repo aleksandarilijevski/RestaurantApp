@@ -9,7 +9,7 @@ namespace EntityFramework.Models
             optionsBuilder.UseSqlServer("Data Source=(LocalDb)\\MSSQLLocalDB;Initial Catalog=Restaurant;Integrated Security=true");
         }
 
-        public DbSet<Artical> Articals { get; set; }
+        public DbSet<Article> Articles { get; set; }
 
         public DbSet<Bill> Bills { get; set; }
 

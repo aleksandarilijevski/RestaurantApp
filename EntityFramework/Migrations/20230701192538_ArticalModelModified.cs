@@ -5,21 +5,21 @@
 namespace EntityFramework.Migrations
 {
     /// <inheritdoc />
-    public partial class ArticalModelModified : Migration
+    public partial class ArticleModelModified : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<long>(
                 name: "BarCode",
-                table: "Articals",
+                table: "Articles",
                 type: "bigint",
                 nullable: false,
                 defaultValue: 0L);
 
             migrationBuilder.AddColumn<decimal>(
                 name: "EntryPrice",
-                table: "Articals",
+                table: "Articles",
                 type: "decimal(18,2)",
                 nullable: false,
                 defaultValue: 0m);
@@ -30,11 +30,11 @@ namespace EntityFramework.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "BarCode",
-                table: "Articals");
+                table: "Articles");
 
             migrationBuilder.DropColumn(
                 name: "EntryPrice",
-                table: "Articals");
+                table: "Articles");
         }
     }
 }
