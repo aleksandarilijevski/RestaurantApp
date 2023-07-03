@@ -1,7 +1,10 @@
-﻿namespace EntityFramework.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace EntityFramework.Models
 {
     public class Bill
     {
+        [Key]
         public int ID { get; set; }
 
         public List<Article> BoughtArticles {  get; set; }

@@ -10,10 +10,20 @@ namespace RestaurantApp.ViewModels
         private IRegionManager _regionManager;
         private DelegateCommand _showTableOverviewCommand;
         private DelegateCommand _showArticleManagementCommand;
+        private DelegateCommand _showWaiterManagementCommand;
 
         public OptionsViewModel(IRegionManager regionManager)
         {
             _regionManager = regionManager;
+        }
+
+        public DelegateCommand ShowWaiterManagementCommand
+        {
+            get
+            {
+                _showWaiterManagementCommand = new DelegateCommand(() => Navigate("MainRegion", "WaiterManagement"));
+                return _showWaiterManagementCommand;
+            }
         }
 
         public DelegateCommand ShowTableOverviewCommand

@@ -106,6 +106,9 @@ namespace EntityFramework.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
+                    b.Property<long>("Barcode")
+                        .HasColumnType("bigint");
+
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime2");
 

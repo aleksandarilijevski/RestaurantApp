@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EntityFramework.Migrations
 {
     [DbContext(typeof(EFContext))]
-    [Migration("20230701192538_ArticleModelModified")]
-    partial class ArticleModelModified
+    [Migration("20230703232005_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,7 +33,7 @@ namespace EntityFramework.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
-                    b.Property<long>("BarCode")
+                    b.Property<long>("Barcode")
                         .HasColumnType("bigint");
 
                     b.Property<int?>("BillID")
@@ -108,6 +108,9 @@ namespace EntityFramework.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<long>("Barcode")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime2");

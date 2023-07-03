@@ -11,10 +11,10 @@ namespace EntityFramework.Models
 
         public DbSet<Article> Articles { get; set; }
 
-        public DbSet<Bill> Bills { get; set; }
-
         public DbSet<Table> Tables { get; set; }
 
         public DbSet<Waiter> Waiters { get; set; }
+
+        public DbSet<Bill> Bills { get; set; }
     }
 }

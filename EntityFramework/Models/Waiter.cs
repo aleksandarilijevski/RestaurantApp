@@ -1,8 +1,13 @@
-﻿namespace EntityFramework.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace EntityFramework.Models
 {
     public class Waiter
     {
+        [Key]
         public int ID { get; set; }
+
+        public long Barcode { get; set; }
 
         public string FirstAndLastName { get; set; }
 

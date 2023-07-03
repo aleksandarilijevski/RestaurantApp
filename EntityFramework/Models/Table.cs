@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace EntityFramework.Models
 {
     public class Table
     {
+        [Key]
         public int ID { get; set; }
 
         public int Places { get; set; }
@@ -16,6 +13,6 @@ namespace EntityFramework.Models
 
         public int BillID { get; set; }
 
-        public Bill Bill { get;set; }
+        public Bill Bill { get; set; }
     }
 }
