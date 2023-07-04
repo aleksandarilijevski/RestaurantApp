@@ -46,5 +46,17 @@ namespace RestaurantApp.Services
             _efContext.Articles.Remove(Article);
             await _efContext.SaveChangesAsync();
         }
+
+        public async Task<ObservableCollection<Waiter>> GetAllWaiters()
+        {
+            List<Waiter> waiters = await _efContext.Waiters.ToListAsync();
+            return new ObservableCollection<Waiter>(waiters);
+        }
+
+        public async Task DeleteWaiter(Waiter waiter)
+        {
+            _efContext.Waiters.Remove(waiter);
+            await _efContext.SaveChangesAsync();
+        }
     }
 }

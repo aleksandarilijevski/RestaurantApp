@@ -97,6 +97,5 @@ namespace RestaurantApp.ViewModels
             await _databaseService.DeleteArticle(article);
             Articles.Remove(article);
         }
-
     }
 }

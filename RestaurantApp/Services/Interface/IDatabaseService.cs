@@ -1,5 +1,4 @@
 ﻿using EntityFramework.Models;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
@@ -16,5 +15,9 @@ namespace RestaurantApp.Services.Interface
         public Task EditArticle(Article Article);
 
         public Task DeleteArticle(Article Article);
+
+        public Task<ObservableCollection<Waiter>> GetAllWaiters();
+
+        public Task DeleteWaiter(Waiter waiter);
     }
 }
