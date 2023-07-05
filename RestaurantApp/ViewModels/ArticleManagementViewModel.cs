@@ -68,23 +68,22 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        private void ShowEditArticleDialog(Article Article)
+        private void ShowEditArticleDialog(Article article)
         {
             DialogParameters dialogParametars = new DialogParameters
                 {
-                    { "article", Article }
+                    { "article", article }
                 };
 
             _dialogService.ShowDialog("editArticleDialog", dialogParametars, r =>
             {
-                Article resultData = r.Parameters.GetValue<Article>("ResultData");
+                Article resultData = r.Parameters.GetValue<Article>("article");
             });
         }
 
         private void ShowAddArticleDialog()
         {
             _dialogService.ShowDialog("addArticleDialog");
-            
         }
 
         private async void GetAllArticles()

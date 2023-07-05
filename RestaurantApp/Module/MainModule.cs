@@ -23,6 +23,7 @@ namespace RestaurantApp.Module
             containerRegistry.RegisterForNavigation<WaiterManagement>();
             containerRegistry.RegisterDialog<EditArticle, EditArticleViewModel>("editArticleDialog");
             containerRegistry.RegisterDialog<AddArticle, AddArticleViewModel>("addArticleDialog");
+            containerRegistry.RegisterDialog<EditWaiter, EditWaiterViewModel>("editWaiterDialog");
         }
     }
 }

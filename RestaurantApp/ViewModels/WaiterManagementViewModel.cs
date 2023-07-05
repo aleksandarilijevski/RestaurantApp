@@ -1,18 +1,20 @@
 ﻿using EntityFramework.Models;
 using Prism.Commands;
 using Prism.Mvvm;
+using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
 using System.Collections.ObjectModel;
-using System.Windows.Documents;
 
 namespace RestaurantApp.ViewModels
 {
     public class WaiterManagementViewModel : BindableBase
     {
         private IDatabaseService _databaseService;
+        private IDialogService _dialogService;
         private DelegateCommand<Waiter> _deleteWaiterCommand;
         private DelegateCommand _getAllWaitersCommand;
         private ObservableCollection<Waiter> _waiters;
+        private DelegateCommand<Waiter> _showEditWaiterDialogCommand;
 
         public ObservableCollection<Waiter> Waiters
         {
@@ -25,9 +27,19 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public WaiterManagementViewModel(IDatabaseService databaseService)
+        public WaiterManagementViewModel(IDatabaseService databaseService,IDialogService dialogService)
         {
+            _dialogService = dialogService;
             _databaseService = databaseService;
+        }
+
+        public DelegateCommand<Waiter> ShowEditWaiterDialogCommand
+        {
+            get
+            {
+                _showEditWaiterDialogCommand = new DelegateCommand<Waiter>(ShowEditWaiterDialog);
+                return _showEditWaiterDialogCommand;
+            }
         }
 
         public DelegateCommand GetAllWaitersCommand
@@ -57,6 +69,19 @@ namespace RestaurantApp.ViewModels
         {
             await _databaseService.DeleteWaiter(waiter);
             Waiters.Remove(waiter);
+        }
+
+        private void ShowEditWaiterDialog(Waiter waiter)
+        {
+            DialogParameters dialogParameters = new DialogParameters()
+            {
+                {"waiter",waiter}
+            };
+
+            _dialogService.ShowDialog("editWaiterDialog",dialogParameters, r => 
+            {
+                Waiter resultData = r.Parameters.GetValue<Waiter>("waiter");
+            });
         }
     }
 }

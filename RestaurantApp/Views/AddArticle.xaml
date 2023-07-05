@@ -38,7 +38,7 @@
         <TextBox Grid.Column="1" Grid.Row="4" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding Article.EntryPrice}"/>
         <TextBox Grid.Column="1" Grid.Row="5" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding Article.Price}"/>
 
-        <Button Content="Add new artical" Grid.ColumnSpan="2" Grid.Row="6" FontSize="25" Command="{Binding AddArticleCommand}" CommandParameter="{Binding Article}"/>
+        <Button Content="Add new article" Grid.ColumnSpan="2" Grid.Row="6" FontSize="25" Command="{Binding AddArticleCommand}" CommandParameter="{Binding Article}"/>
 
     </Grid>
     

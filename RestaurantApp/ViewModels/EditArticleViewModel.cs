@@ -9,7 +9,7 @@ namespace RestaurantApp.ViewModels
 {
     public class EditArticleViewModel : BindableBase, IDialogAware
     {
-        private IDatabaseService _databaseService { get; set; }
+        private IDatabaseService _databaseService;
         private DelegateCommand<string> _closeDialogCommand;
         private DelegateCommand<Article> _editArticleCommand;
         private Article _article;

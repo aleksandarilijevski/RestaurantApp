@@ -40,7 +40,7 @@
                 <DataGridTemplateColumn Header="Edit">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="Edit"/>
+                            <Button Content="Edit" Command="{Binding DataContext.ShowEditWaiterDialogCommand,RelativeSource={RelativeSource AncestorType={x:Type local:WaiterManagement}}}" CommandParameter="{Binding}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
