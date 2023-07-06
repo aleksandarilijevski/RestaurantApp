@@ -53,6 +53,12 @@ namespace RestaurantApp.Services
             return new ObservableCollection<Waiter>(waiters);
         }
 
+        public async Task EditWaiter(Waiter waiter)
+        {
+            _efContext.Entry(waiter).State = EntityState.Modified;
+            await _efContext.SaveChangesAsync();
+        }
+
         public async Task DeleteWaiter(Waiter waiter)
         {
             _efContext.Waiters.Remove(waiter);

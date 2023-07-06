@@ -18,6 +18,8 @@ namespace RestaurantApp.Services.Interface
 
         public Task<ObservableCollection<Waiter>> GetAllWaiters();
 
+        public Task EditWaiter(Waiter waiter);
+
         public Task DeleteWaiter(Waiter waiter);
     }
 }

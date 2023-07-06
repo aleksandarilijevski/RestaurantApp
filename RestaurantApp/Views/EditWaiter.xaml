@@ -37,7 +37,7 @@
         <TextBox Grid.Column="4" Grid.Row="3" FontSize="25" TextAlignment="Center" Text="{Binding Waiter.DateOfBirth}" Margin="10"/>
         <TextBox Grid.Column="5" Grid.Row="4" FontSize="25" TextAlignment="Center" Text="{Binding Waiter.JMBG}" Margin="10"/>
         
-        <Button Content="Apply"  Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="2" FontSize="20"/>
+        <Button Content="Edit waiter"  Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="2" FontSize="20" Command="{Binding EditWaiterCommand}" CommandParameter="{Binding Waiter}"/>
 
     </Grid>
 </UserControl>
