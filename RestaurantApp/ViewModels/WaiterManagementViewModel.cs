@@ -15,6 +15,7 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand _getAllWaitersCommand;
         private ObservableCollection<Waiter> _waiters;
         private DelegateCommand<Waiter> _showEditWaiterDialogCommand;
+        private DelegateCommand _showAddWaiterDialogCommand;
 
         public ObservableCollection<Waiter> Waiters
         {
@@ -31,6 +32,15 @@ namespace RestaurantApp.ViewModels
         {
             _dialogService = dialogService;
             _databaseService = databaseService;
+        }
+
+        public DelegateCommand ShowAddWaiterDialogCommand
+        {
+            get
+            {
+                _showAddWaiterDialogCommand = new DelegateCommand(ShowAddWaiterDialog);
+                return _showAddWaiterDialogCommand;
+            }
         }
 
         public DelegateCommand<Waiter> ShowEditWaiterDialogCommand
@@ -82,6 +92,11 @@ namespace RestaurantApp.ViewModels
             {
                 Waiter resultData = r.Parameters.GetValue<Waiter>("waiter");
             });
+        }
+
+        private void ShowAddWaiterDialog()
+        {
+            _dialogService.ShowDialog("addWaiterDialog");
         }
     }
 }
