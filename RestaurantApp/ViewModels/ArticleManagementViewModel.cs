@@ -84,6 +84,7 @@ namespace RestaurantApp.ViewModels
         private void ShowAddArticleDialog()
         {
             _dialogService.ShowDialog("addArticleDialog");
+            GetAllArticles();
         }
 
         private async void GetAllArticles()

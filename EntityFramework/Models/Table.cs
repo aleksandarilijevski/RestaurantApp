@@ -11,8 +11,8 @@ namespace EntityFramework.Models
 
         public bool Available { get; set; }
 
-        public int BillID { get; set; }
+        public int? BillID { get; set; }
 
-        public Bill Bill { get; set; }
+        public Bill? Bill { get; set; }
     }
 }

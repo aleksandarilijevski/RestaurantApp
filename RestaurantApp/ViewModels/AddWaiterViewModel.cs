@@ -84,6 +84,7 @@ namespace RestaurantApp.ViewModels
         private async void AddWaiter(Waiter waiter)
         {
             await _databaseService.AddWaiter(waiter);
+            CloseDialog("true");
         }
     }
 }

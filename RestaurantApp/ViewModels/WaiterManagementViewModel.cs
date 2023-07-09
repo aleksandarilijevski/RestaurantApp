@@ -97,6 +97,7 @@ namespace RestaurantApp.ViewModels
         private void ShowAddWaiterDialog()
         {
             _dialogService.ShowDialog("addWaiterDialog");
+            GetAllWaiters();
         }
     }
 }
