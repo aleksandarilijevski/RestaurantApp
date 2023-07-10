@@ -58,6 +58,7 @@ namespace RestaurantApp.ViewModels
                 return _getAllArticlesCommand;
             }
         }
+
         public ObservableCollection<Article> Articles
         {
             get => _articles;
@@ -71,9 +72,9 @@ namespace RestaurantApp.ViewModels
         private void ShowEditArticleDialog(Article article)
         {
             DialogParameters dialogParametars = new DialogParameters
-                {
-                    { "article", article }
-                };
+            {
+                { "article", article }
+            };
 
             _dialogService.ShowDialog("editArticleDialog", dialogParametars, r =>
             {

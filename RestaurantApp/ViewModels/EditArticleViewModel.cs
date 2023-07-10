@@ -10,12 +10,10 @@ namespace RestaurantApp.ViewModels
     public class EditArticleViewModel : BindableBase, IDialogAware
     {
         private IDatabaseService _databaseService;
-        private DelegateCommand<string> _closeDialogCommand;
         private DelegateCommand<Article> _editArticleCommand;
         private Article _article;
         private string _title = "Edit article";
 
-        public DelegateCommand<string> CloseDialogCommand => _closeDialogCommand ?? (_closeDialogCommand = new DelegateCommand<string>(CloseDialog));
         public event Action<IDialogResult> RequestClose;
 
         public EditArticleViewModel(IDatabaseService databaseService)
@@ -68,7 +66,7 @@ namespace RestaurantApp.ViewModels
 
         public virtual void OnDialogClosed()
         {
-
+           
         }
 
         public virtual void OnDialogOpened(IDialogParameters parameters)
@@ -79,7 +77,7 @@ namespace RestaurantApp.ViewModels
         private async void EditArticle(Article article)
         {
             await _databaseService.EditArticle(article);
-            CloseDialogCommand.Execute("true");
+            CloseDialog("true");
         }
     }
 }

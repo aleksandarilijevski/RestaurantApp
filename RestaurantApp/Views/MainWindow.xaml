@@ -7,7 +7,24 @@
         mc:Ignorable="d"
         xmlns:prism="http://prismlibrary.com/"
         prism:ViewModelLocator.AutoWireViewModel="True"
-        Title="Restaurant Application" Height="400" Width="900">
+        Title="Restaurant Application" Height="420" Width="900">
 
-    <ContentControl prism:RegionManager.RegionName="MainRegion"/>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="300"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="350"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <ContentControl prism:RegionManager.RegionName="MainRegion" Grid.ColumnSpan="4" Grid.Row="0"/>
+        <Button Content="Main menu" Grid.Column="0" Grid.Row="1" FontSize="20" Command="{Binding NavigateToMenuCommand}"/>
+        <Button Content="Article management" Grid.Column="1" Grid.Row="1" FontSize="20" Command="{Binding NavigateToArticleManagementCommand}" />
+        <Button Content="Waiter management" Grid.Column="2" Grid.Row="1" FontSize="20" Command="{Binding NavigateToWaiterManagementCommand}"/>
+    </Grid>
+
 </Window>

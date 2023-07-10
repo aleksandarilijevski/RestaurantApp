@@ -12,11 +12,9 @@ namespace RestaurantApp.ViewModels
     {
         private IDatabaseService _databaseService;
         private string _title = "Edit waiter";
-        private DelegateCommand<string> _closeDialogCommand;
         private Waiter _waiter;
         private DelegateCommand<Waiter> _editWaiterCommand;
 
-        public DelegateCommand<string> CloseDialogCommand => _closeDialogCommand ?? (_closeDialogCommand = new DelegateCommand<string>(CloseDialog));
         public event Action<IDialogResult> RequestClose;
 
         public EditWaiterViewModel(IDatabaseService databaseService)
