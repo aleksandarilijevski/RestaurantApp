@@ -21,6 +21,7 @@ namespace RestaurantApp.Module
             containerRegistry.RegisterForNavigation<MainWindow>();
             containerRegistry.RegisterForNavigation<ArticleManagement>();
             containerRegistry.RegisterForNavigation<WaiterManagement>();
+            containerRegistry.RegisterForNavigation<Ordering>();
             containerRegistry.RegisterDialog<EditArticle, EditArticleViewModel>("editArticleDialog");
             containerRegistry.RegisterDialog<AddArticle, AddArticleViewModel>("addArticleDialog");
             containerRegistry.RegisterDialog<EditWaiter, EditWaiterViewModel>("editWaiterDialog");

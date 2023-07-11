@@ -49,6 +49,7 @@ namespace RestaurantApp.ViewModels
 
             if (parameter?.ToLower() == "true")
                 result = ButtonResult.OK;
+
             else if (parameter?.ToLower() == "false")
                 result = ButtonResult.Cancel;
 
