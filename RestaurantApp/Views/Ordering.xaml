@@ -16,7 +16,6 @@
             <RowDefinition Height="30" />
         </Grid.RowDefinitions>
 
-        <ContentControl prism:RegionManager.RegionName="OrderingRegion"/>
         <TextBox FontSize="17" Grid.Row="0" TextAlignment="Center"/>
         <TextBlock Text="{Binding ID, StringFormat='Order for table ID : {0}'}" Grid.Row="1" TextAlignment="Center" FontSize="17" Background="White"/>
 

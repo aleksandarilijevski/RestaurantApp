@@ -25,7 +25,6 @@ namespace RestaurantApp
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.Register<IDatabaseService, DatabaseService>();
-            containerRegistry.RegisterForNavigation<TableOrder, MainModule>();
             ViewModelLocationProvider.Register<MainWindow, MainWindowViewModel>();
             ViewModelLocationProvider.Register<TableOrder, TableOrderViewModel>();
             ViewModelLocationProvider.Register<Options, OptionsViewModel>();
