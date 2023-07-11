@@ -13,6 +13,8 @@ namespace EntityFramework.Models
 
         public string Description { get; set; }
 
+        public int AvailableQuantity { get; set; }
+
         public int Quantity { get; set; }
 
         public decimal EntryPrice { get; set; }

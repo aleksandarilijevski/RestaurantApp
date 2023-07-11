@@ -35,7 +35,7 @@
                 <DataGridTextColumn Header="Barcode" Binding="{Binding Barcode}"/>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
                 <DataGridTextColumn Header="Description" Binding="{Binding Description}"/>
-                <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}"/>
+                <DataGridTextColumn Header="Available quantity" Binding="{Binding AvailableQuantity}"/>
                 <DataGridTextColumn Header="Entry price" Binding="{Binding EntryPrice}"/>
                 <DataGridTextColumn Header="Price" Binding="{Binding Price}"/>
 
