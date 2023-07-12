@@ -13,7 +13,7 @@ namespace EntityFramework.Models
 
         public string Description { get; set; }
 
-        public int AvailableQuantity { get; set; }
+        public ArticleQuantity ArticleQuantity { get; set; }
 
         public int Quantity { get; set; }
 

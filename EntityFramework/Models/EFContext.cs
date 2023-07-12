@@ -16,5 +16,7 @@ namespace EntityFramework.Models
         public DbSet<Waiter> Waiters { get; set; }
 
         public DbSet<Bill> Bills { get; set; }
+
+        public DbSet<ArticleQuantity> ArticleQuantity { get; set; }
     }
 }

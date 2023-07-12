@@ -27,5 +27,7 @@ namespace RestaurantApp.Services.Interface
         public Task DeleteWaiter(Waiter waiter);
 
         public Task<Table> GetTableByID(int id);
+
+        public Task<ArticleQuantity> GetArticleQuantityByArticleID(int id);
     }
 }

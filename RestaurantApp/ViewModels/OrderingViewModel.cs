@@ -14,7 +14,7 @@ namespace RestaurantApp.ViewModels
         private IDatabaseService _databaseService;
         private DelegateCommand<string> _addArticleToTableCommand;
         private int _id;
-        private Table _table;
+        private Table _table = new Table();
         private DelegateCommand<Table> _getTableCommand;
 
         public int ID
@@ -37,6 +37,21 @@ namespace RestaurantApp.ViewModels
             set
             {
                 _table = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public ObservableCollection<Article> Articles
+        {
+
+            get
+            {
+                return _table.Articles;
+            }
+
+            set
+            {
+                _table.Articles = value;
                 RaisePropertyChanged();
             }
         }
@@ -95,6 +110,8 @@ namespace RestaurantApp.ViewModels
 
         private async void CheckIfArticleExists(Article article)
         {
+            article.ArticleQuantity = await _databaseService.GetArticleQuantityByArticleID(article.ID);
+
             if (_table.Articles.Contains(article))
             {
                 article.Quantity++;
@@ -104,11 +121,15 @@ namespace RestaurantApp.ViewModels
                 article.Quantity = 1;
                 _table.Articles.Add(article);
             }
+
+            article.ArticleQuantity.Quantity--;
+            Articles = _table.Articles;
         }
 
         private async Task GetTable(int id)
         {
             _table = await _databaseService.GetTableByID(id);
+            _table.Articles = new ObservableCollection<Article>();  
         }
     }
 }

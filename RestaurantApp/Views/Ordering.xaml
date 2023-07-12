@@ -31,7 +31,7 @@
 
         <TextBlock Text="{Binding ID, StringFormat='Order for table ID : {0}'}" Grid.Row="1" TextAlignment="Center" FontSize="17" Background="White" />
 
-        <DataGrid Grid.Row="2" CanUserAddRows="False" Grid.ColumnSpan="2" ItemsSource="{Binding Table.Articles, IsAsync=True}" AutoGenerateColumns="False" EnableColumnVirtualization="true" EnableRowVirtualization="true">
+        <DataGrid Grid.Row="2" CanUserAddRows="False" Grid.ColumnSpan="2" ItemsSource="{Binding Articles, IsAsync=True}" AutoGenerateColumns="False" EnableColumnVirtualization="true" EnableRowVirtualization="true">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding ID}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Barcode" Binding="{Binding Barcode}" IsReadOnly="True" />
