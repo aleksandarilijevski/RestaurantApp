@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using RestaurantApp.Services.Interface;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace RestaurantApp.Services
@@ -64,7 +63,7 @@ namespace RestaurantApp.Services
         {
             _efContext.Waiters.Add(waiter);
             await _efContext.SaveChangesAsync();
-            return waiter.ID; 
+            return waiter.ID;
         }
 
         public async Task EditWaiter(Waiter waiter)
@@ -81,8 +80,14 @@ namespace RestaurantApp.Services
 
         public async Task<Table> GetTableByID(int id)
         {
-            Table table = await _efContext.Tables.FirstOrDefaultAsync(x => x.ID == id);
+            Table table = await _efContext.Tables.Include(x => x.Articles).FirstOrDefaultAsync(x => x.ID == id);
             return table;
+        }
+
+        public async Task EditTable(Table table)
+        {
+            _efContext.Entry(table).State = EntityState.Modified;
+            await _efContext.SaveChangesAsync();
         }
 
         public async Task<ArticleQuantity> GetArticleQuantityByArticleID(int id)

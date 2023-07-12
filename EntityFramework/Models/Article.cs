@@ -15,6 +15,8 @@ namespace EntityFramework.Models
 
         public ArticleQuantity ArticleQuantity { get; set; }
 
+        public List<Table> Tables { get; set; }
+
         public int Quantity { get; set; }
 
         public decimal EntryPrice { get; set; }

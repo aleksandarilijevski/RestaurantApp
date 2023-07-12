@@ -41,7 +41,7 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public ObservableCollection<Article> Articles
+        public List<Article> Articles
         {
 
             get
@@ -103,6 +103,7 @@ namespace RestaurantApp.ViewModels
             if (article is not null)
             {
                 CheckIfArticleExists(article);
+                
             }
 
             Barcode = string.Empty;
@@ -123,13 +124,28 @@ namespace RestaurantApp.ViewModels
             }
 
             article.ArticleQuantity.Quantity--;
+            await EditTable(_table);
             Articles = _table.Articles;
         }
 
         private async Task GetTable(int id)
         {
             _table = await _databaseService.GetTableByID(id);
-            _table.Articles = new ObservableCollection<Article>();  
+
+            if (_table.Articles is null)
+            {
+                _table.Articles = new List<Article>();
+            }
+
+            if (_table.Articles is not null)
+            {
+                Articles = _table.Articles;
+            }
+        }
+
+        private async Task EditTable(Table table)
+        {
+            await _databaseService.EditTable(table);
         }
     }
 }

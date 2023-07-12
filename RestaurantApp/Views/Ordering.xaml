@@ -12,8 +12,10 @@
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding GetTableCommand}" CommandParameter="{Binding _id}"/>
         </i:EventTrigger>
+
     </i:Interaction.Triggers>
 
+    
     <Grid>
 
         <Grid.RowDefinitions>

@@ -4,6 +4,7 @@ using EntityFramework.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EntityFramework.Migrations
 {
     [DbContext(typeof(EFContext))]
-    partial class EFContextModelSnapshot : ModelSnapshot
+    [Migration("20230712225319_TableModelArticlesRestored")]
+    partial class TableModelArticlesRestored
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,21 +24,6 @@ namespace EntityFramework.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("ArticleTable", b =>
-                {
-                    b.Property<int>("ArticlesID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TablesID")
-                        .HasColumnType("int");
-
-                    b.HasKey("ArticlesID", "TablesID");
-
-                    b.HasIndex("TablesID");
-
-                    b.ToTable("ArticleTable");
-                });
 
             modelBuilder.Entity("EntityFramework.Models.Article", b =>
                 {
@@ -66,9 +54,14 @@ namespace EntityFramework.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
+                    b.Property<int?>("TableID")
+                        .HasColumnType("int");
+
                     b.HasKey("ID");
 
                     b.HasIndex("BillID");
+
+                    b.HasIndex("TableID");
 
                     b.ToTable("Articles");
                 });
@@ -160,26 +153,15 @@ namespace EntityFramework.Migrations
                     b.ToTable("Waiters");
                 });
 
-            modelBuilder.Entity("ArticleTable", b =>
-                {
-                    b.HasOne("EntityFramework.Models.Article", null)
-                        .WithMany()
-                        .HasForeignKey("ArticlesID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EntityFramework.Models.Table", null)
-                        .WithMany()
-                        .HasForeignKey("TablesID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("EntityFramework.Models.Article", b =>
                 {
                     b.HasOne("EntityFramework.Models.Bill", null)
                         .WithMany("BoughtArticles")
                         .HasForeignKey("BillID");
+
+                    b.HasOne("EntityFramework.Models.Table", null)
+                        .WithMany("Articles")
+                        .HasForeignKey("TableID");
                 });
 
             modelBuilder.Entity("EntityFramework.Models.ArticleQuantity", b =>
@@ -208,6 +190,11 @@ namespace EntityFramework.Migrations
             modelBuilder.Entity("EntityFramework.Models.Bill", b =>
                 {
                     b.Navigation("BoughtArticles");
+                });
+
+            modelBuilder.Entity("EntityFramework.Models.Table", b =>
+                {
+                    b.Navigation("Articles");
                 });
 #pragma warning restore 612, 618
         }
