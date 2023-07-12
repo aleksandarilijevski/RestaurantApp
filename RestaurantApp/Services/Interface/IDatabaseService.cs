@@ -10,6 +10,8 @@ namespace RestaurantApp.Services.Interface
 
         public Task<Article> GetArticleByID(int id);
 
+        public Task<Article> GetArticleByBarcode(long barcode);
+
         public Task<int> AddArticle(Article Article);
 
         public Task EditArticle(Article Article);

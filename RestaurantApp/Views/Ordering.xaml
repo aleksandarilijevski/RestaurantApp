@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:RestaurantApp.Views"
-             xmlns:prism="http://prismlibrary.com/"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -16,17 +15,22 @@
             <RowDefinition Height="30" />
         </Grid.RowDefinitions>
 
-        <TextBox FontSize="17" Grid.Row="0" TextAlignment="Center"/>
-        <TextBlock Text="{Binding ID, StringFormat='Order for table ID : {0}'}" Grid.Row="1" TextAlignment="Center" FontSize="17" Background="White"/>
+        <TextBox FontSize="17" Grid.Row="0" TextAlignment="Center" x:Name="searchBox" Text="{Binding Barcode}">
+            <TextBox.InputBindings>
+                <KeyBinding Command="{Binding AddArticleToTableCommand}" CommandParameter="{Binding Text,ElementName=searchBox}" Key="Enter" />
+            </TextBox.InputBindings>
+        </TextBox>
 
-        <DataGrid Grid.Row="2" Grid.ColumnSpan="2">
+        <TextBlock Text="{Binding ID, StringFormat='Order for table ID : {0}'}" Grid.Row="1" TextAlignment="Center" FontSize="17" Background="White" />
+
+        <DataGrid Grid.Row="2" CanUserAddRows="False" Grid.ColumnSpan="2" ItemsSource="{Binding Articles, IsAsync=True}" AutoGenerateColumns="False" EnableColumnVirtualization="true" EnableRowVirtualization="true">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" />
-                <DataGridTextColumn Header="Barcode" />
-                <DataGridTextColumn Header="Name" />
-                <DataGridTextColumn Header="Description" />
-                <DataGridTextColumn Header="Quantity" />
-                <DataGridTextColumn Header="Price" />
+                <DataGridTextColumn Header="ID" Binding="{Binding ID}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Barcode" Binding="{Binding Barcode}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Description" Binding="{Binding Description}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}" />
+                <DataGridTextColumn Header="Price" Binding="{Binding Price}" IsReadOnly="True" />
 
                 <DataGridTemplateColumn Header="Delete">
                     <DataGridTemplateColumn.CellTemplate>

@@ -24,8 +24,14 @@ namespace RestaurantApp.Services
 
         public async Task<Article> GetArticleByID(int id)
         {
-            Article Article = await _efContext.Articles.FirstOrDefaultAsync(x => x.ID == id);
-            return Article;
+            Article article = await _efContext.Articles.FirstOrDefaultAsync(x => x.ID == id);
+            return article;
+        }
+
+        public async Task<Article> GetArticleByBarcode(long barcode)
+        {
+            Article article = await _efContext.Articles.FirstOrDefaultAsync(x => x.Barcode == barcode);
+            return article;
         }
 
         public async Task<int> AddArticle(Article Article)
