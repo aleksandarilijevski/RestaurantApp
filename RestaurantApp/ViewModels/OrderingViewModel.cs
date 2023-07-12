@@ -3,7 +3,9 @@ using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
 using RestaurantApp.Services.Interface;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace RestaurantApp.ViewModels
 {
@@ -12,24 +14,12 @@ namespace RestaurantApp.ViewModels
         private IDatabaseService _databaseService;
         private DelegateCommand<string> _addArticleToTableCommand;
         private int _id;
-        private ObservableCollection<Article> _articles = new ObservableCollection<Article>();
+        private Table _table;
+        private DelegateCommand<Table> _getTableCommand;
 
         public int ID
         {
             get { return _id; }
-        }
-
-        public ObservableCollection<Article> Articles
-        {
-            get
-            {
-                return _articles;
-            }
-            set
-            {
-                _articles = value;
-                RaisePropertyChanged(nameof(Articles));
-            }
         }
 
         public OrderingViewModel(IDatabaseService databaseService)
@@ -37,11 +27,34 @@ namespace RestaurantApp.ViewModels
             _databaseService = databaseService;
         }
 
+        public Table Table
+        {
+            get
+            {
+                return _table;
+            }
+
+            set
+            {
+                _table = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public string Barcode
         {
             set
             {
                 RaisePropertyChanged();
+            }
+        }
+
+        public DelegateCommand<Table> GetTableCommand
+        {
+            get
+            {
+                _getTableCommand = new DelegateCommand<Table>(async async => await GetTable(_id));
+                return _getTableCommand;
             }
         }
 
@@ -82,16 +95,20 @@ namespace RestaurantApp.ViewModels
 
         private async void CheckIfArticleExists(Article article)
         {
-            if (Articles.Contains(article))
+            if (_table.Articles.Contains(article))
             {
                 article.Quantity++;
             }
             else
             {
                 article.Quantity = 1;
-                _articles.Add(article);
+                _table.Articles.Add(article);
             }
-            RaisePropertyChanged(nameof(Articles));
+        }
+
+        private async Task GetTable(int id)
+        {
+            _table = await _databaseService.GetTableByID(id);
         }
     }
 }

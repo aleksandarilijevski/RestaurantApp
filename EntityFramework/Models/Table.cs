@@ -11,7 +11,7 @@ namespace EntityFramework.Models
 
         public bool Available { get; set; }
 
-        public List<Article> Articles { get; set; }
+        public List<Article> Articles { get; set; } = new List<Article>();
 
         public int? BillID { get; set; }
 

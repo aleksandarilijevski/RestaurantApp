@@ -3,9 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:local="clr-namespace:RestaurantApp.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding GetTableCommand}" CommandParameter="{Binding _id}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
     <Grid>
 
         <Grid.RowDefinitions>
@@ -23,7 +31,7 @@
 
         <TextBlock Text="{Binding ID, StringFormat='Order for table ID : {0}'}" Grid.Row="1" TextAlignment="Center" FontSize="17" Background="White" />
 
-        <DataGrid Grid.Row="2" CanUserAddRows="False" Grid.ColumnSpan="2" ItemsSource="{Binding Articles, IsAsync=True}" AutoGenerateColumns="False" EnableColumnVirtualization="true" EnableRowVirtualization="true">
+        <DataGrid Grid.Row="2" CanUserAddRows="False" Grid.ColumnSpan="2" ItemsSource="{Binding Table.Articles, IsAsync=True}" AutoGenerateColumns="False" EnableColumnVirtualization="true" EnableRowVirtualization="true">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding ID}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Barcode" Binding="{Binding Barcode}" IsReadOnly="True" />
