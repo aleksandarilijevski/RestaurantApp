@@ -4,7 +4,6 @@ using Prism.Mvvm;
 using Prism.Regions;
 using RestaurantApp.Services.Interface;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
 namespace RestaurantApp.ViewModels
@@ -15,7 +14,9 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand<string> _addArticleToTableCommand;
         private int _id;
         private Table _table = new Table();
+        private Article _article;
         private DelegateCommand<Table> _getTableCommand;
+        private DelegateCommand<Article> _deleteArticleFromTableCommand;
 
         public int ID
         {
@@ -68,7 +69,7 @@ namespace RestaurantApp.ViewModels
         {
             get
             {
-                _getTableCommand = new DelegateCommand<Table>(async async => await GetTable(_id));
+                _getTableCommand = new DelegateCommand<Table>(async x => await GetTable(_id));
                 return _getTableCommand;
             }
         }
@@ -79,6 +80,15 @@ namespace RestaurantApp.ViewModels
             {
                 _addArticleToTableCommand = new DelegateCommand<string>(AddArticleToTable);
                 return _addArticleToTableCommand;
+            }
+        }
+
+        public DelegateCommand<Article> DeleteArticleFromTableCommand
+        {
+            get
+            {
+                _deleteArticleFromTableCommand = new DelegateCommand<Article>(async x => await DeleteArticleFromTable(_article));
+                return _deleteArticleFromTableCommand;
             }
         }
 
@@ -102,14 +112,14 @@ namespace RestaurantApp.ViewModels
 
             if (article is not null)
             {
-                CheckIfArticleExists(article);
-                
+                await CheckIfArticleExists(article);
+                await EditTable(_table);
             }
 
             Barcode = string.Empty;
         }
 
-        private async void CheckIfArticleExists(Article article)
+        private async Task CheckIfArticleExists(Article article)
         {
             article.ArticleQuantity = await _databaseService.GetArticleQuantityByArticleID(article.ID);
 
@@ -119,12 +129,12 @@ namespace RestaurantApp.ViewModels
             }
             else
             {
+                _table.Available = false;
                 article.Quantity = 1;
                 _table.Articles.Add(article);
             }
 
             article.ArticleQuantity.Quantity--;
-            await EditTable(_table);
             Articles = _table.Articles;
         }
 
@@ -143,10 +153,15 @@ namespace RestaurantApp.ViewModels
             }
         }
 
+        private async Task DeleteArticleFromTable(Article article)
+        {
+            _table.Articles.Remove(article);
+            await EditTable(_table);
+        }
+
         private async Task EditTable(Table table)
         {
             await _databaseService.EditTable(table);
         }
     }
 }
-    
