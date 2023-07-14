@@ -95,5 +95,18 @@ namespace RestaurantApp.Services
             ArticleQuantity articleQuantity = await _efContext.ArticleQuantity.FirstOrDefaultAsync(x => x.ArticleID == id);
             return articleQuantity;
         }
+
+        public async Task<int> AddArticleQuantity(ArticleQuantity articleQuantity)
+        {
+            _efContext.ArticleQuantity.Add(articleQuantity);
+            await _efContext.SaveChangesAsync();
+            return articleQuantity.ID;
+        }
+
+        public async Task EditArticleQuantity(ArticleQuantity articleQuantity)
+        {
+            _efContext.Entry(articleQuantity).State = EntityState.Modified;
+            await _efContext.SaveChangesAsync();
+        }
     }
 }

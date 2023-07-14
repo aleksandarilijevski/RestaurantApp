@@ -4,6 +4,7 @@ using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
 using System;
+using System.Threading.Tasks;
 
 namespace RestaurantApp.ViewModels
 {
@@ -13,6 +14,7 @@ namespace RestaurantApp.ViewModels
         private string _title = "Add new article";
         private DelegateCommand<Article> _addArticleCommand;
         private Article _article;
+        private ArticleQuantity _articleQuantity = new ArticleQuantity();
 
         public event Action<IDialogResult> RequestClose;
 
@@ -20,6 +22,19 @@ namespace RestaurantApp.ViewModels
         {
             get { return _article; }
             set { SetProperty(ref _article, value); }
+        }
+
+        public ArticleQuantity ArticleQuantity
+        {
+            get
+            {
+                return _articleQuantity;
+            }
+
+            set
+            {
+                SetProperty(ref _articleQuantity, value);
+            }
         }
 
         public AddArticleViewModel(IDatabaseService databaseService)
@@ -76,9 +91,22 @@ namespace RestaurantApp.ViewModels
 
         }
 
+        private async Task ApplyArticleQuantity(int articleId)
+        {
+            ArticleQuantity.ArticleID = _article.ID;
+        }
+
+        private async Task AddArticleQuantity(ArticleQuantity articleQuantity)
+        {
+            await _databaseService.AddArticleQuantity(articleQuantity);
+        }
+
         private async void AddArticle(Article article)
         {
-            await _databaseService.AddArticle(article);
+            int articleId = await _databaseService.AddArticle(article);
+            await ApplyArticleQuantity(articleId);
+            await AddArticleQuantity(_articleQuantity);
+
             CloseDialog("true");
         }
     }

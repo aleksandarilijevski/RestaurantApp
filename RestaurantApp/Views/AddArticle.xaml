@@ -28,14 +28,14 @@
         <TextBlock Text="Barcode : " FontSize="30" Grid.Row="0" Margin="5"/>
         <TextBlock Text="Name : " FontSize="30" Grid.Row="1" Margin="5"/>
         <TextBlock Text="Description : " FontSize="30" Grid.Row="2" Margin="5"/>
-        <TextBlock Text="Quantity : " FontSize="30" Grid.Row="3" Margin="5"/>
+        <TextBlock Text="Available quantity : " FontSize="30" Grid.Row="3" Margin="5"/>
         <TextBlock Text="Entry price : " FontSize="30" Grid.Row="4" Margin="5"/>
         <TextBlock Text="Price : " FontSize="30" Grid.Row="5" Margin="5"/>
 
         <TextBox Grid.Column="1" Grid.Row="0" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding Article.Barcode}"/>
         <TextBox Grid.Column="1" Grid.Row="1" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding Article.Name}"/>
         <TextBox Grid.Column="1" Grid.Row="2" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding Article.Description}"/>
-        <TextBox Grid.Column="1" Grid.Row="3" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding Article.Quantity}"/>
+        <TextBox Grid.Column="1" Grid.Row="3" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding ArticleQuantity.Quantity}"/>
         <TextBox Grid.Column="1" Grid.Row="4" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding Article.EntryPrice}"/>
         <TextBox Grid.Column="1" Grid.Row="5" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding Article.Price}"/>
 
