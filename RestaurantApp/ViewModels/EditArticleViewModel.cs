@@ -4,6 +4,7 @@ using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
 using System;
+using System.Threading.Tasks;
 
 namespace RestaurantApp.ViewModels
 {
@@ -74,8 +75,14 @@ namespace RestaurantApp.ViewModels
             Article = parameters.GetValue<Article>("article");
         }
 
+        private async Task EditArticleQuantity(ArticleQuantity articleQuantity)
+        {
+            await _databaseService.EditArticleQuantity(articleQuantity);
+        }
+
         private async void EditArticle(Article article)
         {
+            await EditArticleQuantity(article.ArticleQuantity);
             await _databaseService.EditArticle(article);
             CloseDialog("true");
         }
