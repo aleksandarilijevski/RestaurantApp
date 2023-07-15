@@ -4,8 +4,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:RestaurantApp.Views"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d" 
              Height="200" Width="350">
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding GetTotalPriceCommand}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -32,7 +40,9 @@
                 </Style>
             </ComboBox.Resources>
         </ComboBox>
-        
+
+        <TextBlock Text="{Binding TotalPrice,StringFormat='Total price : {0} rsd'}" Grid.Row="2" TextAlignment="Center" Grid.ColumnSpan="2" FontSize="23"/>
+
         <Button Grid.Row="3" Grid.Column="0" Content="Issue fake bill" FontSize="15" Margin="2"/>
         <Button Grid.Row="3" Grid.Column="1" Content="Issue bill" FontSize="15" Margin="2"/>
 

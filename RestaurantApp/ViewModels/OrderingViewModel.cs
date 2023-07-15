@@ -196,7 +196,12 @@ namespace RestaurantApp.ViewModels
 
         private async void ShowPaymentUserControl()
         {
-            _regionManager.RequestNavigate("MainRegion", "Payment");
+            NavigationParameters navigationParameters = new NavigationParameters
+            {
+                { "table",  _table}
+            };
+
+            _regionManager.RequestNavigate("MainRegion", "Payment",navigationParameters);
         }
 
     }
