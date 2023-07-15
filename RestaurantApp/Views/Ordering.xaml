@@ -28,11 +28,22 @@
             <TextBox.InputBindings>
                 <KeyBinding Command="{Binding AddArticleToTableCommand}" CommandParameter="{Binding Text,ElementName=searchBox}" Key="Enter" />
             </TextBox.InputBindings>
+            
+            <TextBox.Style>
+        <Style TargetType="TextBox">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Barcode, UpdateSourceTrigger=PropertyChanged}"
+                             Value="{x:Null}">
+                    <Setter Property="FocusManager.FocusedElement" Value="{Binding RelativeSource={RelativeSource Self}}"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </TextBox.Style>
         </TextBox>
 
-        <TextBlock Text="{Binding ID, StringFormat='Order for table ID : {0}'}" Grid.Row="1" TextAlignment="Center" FontSize="17" Background="White" />
+        <TextBlock Text="{Binding TableID, StringFormat='Order for table ID : {0}'}" Grid.Row="1" TextAlignment="Center" FontSize="17" Background="White" />
 
-        <DataGrid Grid.Row="2" CanUserAddRows="False" Grid.ColumnSpan="2" ItemsSource="{Binding Articles}" AutoGenerateColumns="False" EnableColumnVirtualization="true" EnableRowVirtualization="true">
+        <DataGrid Grid.Row="2" CanUserAddRows="False" AutoGenerateColumns="False" Grid.ColumnSpan="2" ItemsSource="{Binding Articles, IsAsync=True}" EnableColumnVirtualization="true" EnableRowVirtualization="true">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding ID}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Barcode" Binding="{Binding Barcode}" IsReadOnly="True" />
@@ -51,7 +62,7 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <Button Content="Issue a bill" FontSize="16" Grid.Row="3" Grid.ColumnSpan="2"/>
+        <Button Content="Go to payment" FontSize="16" Grid.Row="3" Grid.ColumnSpan="2" Command="{Binding ShowPaymentUserControlCommand}"/>
 
     </Grid>
 </UserControl>

@@ -5,27 +5,45 @@ using Prism.Regions;
 using RestaurantApp.Services.Interface;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace RestaurantApp.ViewModels
 {
     public class OrderingViewModel : BindableBase, INavigationAware
     {
         private IDatabaseService _databaseService;
+        private IRegionManager _regionManager;
         private DelegateCommand<string> _addArticleToTableCommand;
-        private int _id;
+        private int _tableId;
         private Table _table = new Table();
         private Article _article;
+        private string _barcode;
         private DelegateCommand<Table> _getTableCommand;
+        private DelegateCommand _showPaymentUserControlCommand;
         private DelegateCommand<Article> _deleteArticleFromTableCommand;
 
-        public int ID
+        public int TableID
         {
-            get { return _id; }
+            get { return _tableId; }
         }
 
-        public OrderingViewModel(IDatabaseService databaseService)
+        public OrderingViewModel(IDatabaseService databaseService, IRegionManager regionManager)
         {
             _databaseService = databaseService;
+            _regionManager = regionManager;
+        }
+
+        public Article Article
+        {
+            get
+            {
+                return _article;
+            }
+
+            set
+            {
+                SetProperty(ref _article, value);
+            }
         }
 
         public Table Table
@@ -44,7 +62,6 @@ namespace RestaurantApp.ViewModels
 
         public List<Article> Articles
         {
-
             get
             {
                 return _table.Articles;
@@ -59,6 +76,11 @@ namespace RestaurantApp.ViewModels
 
         public string Barcode
         {
+            get
+            {
+                return _barcode;
+            }
+
             set
             {
                 RaisePropertyChanged();
@@ -69,7 +91,7 @@ namespace RestaurantApp.ViewModels
         {
             get
             {
-                _getTableCommand = new DelegateCommand<Table>(async x => await GetTable(_id));
+                _getTableCommand = new DelegateCommand<Table>(async x => await GetTable(_tableId));
                 return _getTableCommand;
             }
         }
@@ -92,9 +114,18 @@ namespace RestaurantApp.ViewModels
             }
         }
 
+        public DelegateCommand ShowPaymentUserControlCommand
+        {
+            get
+            {
+                _showPaymentUserControlCommand = new DelegateCommand(ShowPaymentUserControl);
+                return _showPaymentUserControlCommand;
+            }
+        }
+
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
-            _id = int.Parse(navigationContext.Parameters["id"].ToString());
+            _tableId = int.Parse(navigationContext.Parameters["id"].ToString());
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)
@@ -134,7 +165,6 @@ namespace RestaurantApp.ViewModels
                 _table.Articles.Add(article);
             }
 
-            article.ArticleQuantity.Quantity--;
             Articles = _table.Articles;
         }
 
@@ -163,5 +193,11 @@ namespace RestaurantApp.ViewModels
         {
             await _databaseService.EditTable(table);
         }
+
+        private async void ShowPaymentUserControl()
+        {
+            _regionManager.RequestNavigate("MainRegion", "Payment");
+        }
+
     }
 }
