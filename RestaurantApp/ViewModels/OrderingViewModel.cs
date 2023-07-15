@@ -33,19 +33,6 @@ namespace RestaurantApp.ViewModels
             _regionManager = regionManager;
         }
 
-        public Article Article
-        {
-            get
-            {
-                return _article;
-            }
-
-            set
-            {
-                SetProperty(ref _article, value);
-            }
-        }
-
         public Table Table
         {
             get
@@ -109,7 +96,7 @@ namespace RestaurantApp.ViewModels
         {
             get
             {
-                _deleteArticleFromTableCommand = new DelegateCommand<Article>(async x => await DeleteArticleFromTable(_article));
+                _deleteArticleFromTableCommand = new DelegateCommand<Article>(DeleteArticleFromTable);
                 return _deleteArticleFromTableCommand;
             }
         }
@@ -183,10 +170,11 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        private async Task DeleteArticleFromTable(Article article)
+        private async void DeleteArticleFromTable(Article article)
         {
             _table.Articles.Remove(article);
             await EditTable(_table);
+            RaisePropertyChanged(nameof(Articles));
         }
 
         private async Task EditTable(Table table)
