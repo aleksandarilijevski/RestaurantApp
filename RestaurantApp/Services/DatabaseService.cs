@@ -30,7 +30,7 @@ namespace RestaurantApp.Services
 
         public async Task<Article> GetArticleByBarcode(long barcode)
         {
-            Article article = await _efContext.Articles.FirstOrDefaultAsync(x => x.Barcode == barcode);
+            Article article = await _efContext.Articles.Include(x => x.ArticleQuantity).FirstOrDefaultAsync(x => x.Barcode == barcode);
             return article;
         }
 

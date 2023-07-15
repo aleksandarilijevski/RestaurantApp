@@ -4,8 +4,9 @@ using Prism.Mvvm;
 using Prism.Regions;
 using RestaurantApp.Services.Interface;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading.Tasks;
-using System.Windows.Input;
+using System.Windows;
 
 namespace RestaurantApp.ViewModels
 {
@@ -16,7 +17,6 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand<string> _addArticleToTableCommand;
         private int _tableId;
         private Table _table = new Table();
-        private Article _article;
         private string _barcode;
         private DelegateCommand<Table> _getTableCommand;
         private DelegateCommand _showPaymentUserControlCommand;
@@ -130,14 +130,19 @@ namespace RestaurantApp.ViewModels
 
             if (article is not null)
             {
-                await CheckIfArticleExists(article);
-                await EditTable(_table);
+                bool isAvailable = await CheckIfQuantityIsAvailable(article);
+
+                if (isAvailable)
+                {
+                    await CheckIfArticleExistsOnTable(article);
+                    await EditTable(_table);
+                }
             }
 
             Barcode = string.Empty;
         }
 
-        private async Task CheckIfArticleExists(Article article)
+        private async Task CheckIfArticleExistsOnTable(Article article)
         {
             article.ArticleQuantity = await _databaseService.GetArticleQuantityByArticleID(article.ID);
 
@@ -153,6 +158,20 @@ namespace RestaurantApp.ViewModels
             }
 
             Articles = _table.Articles;
+        }
+
+        private async Task<bool> CheckIfQuantityIsAvailable(Article article)
+        {
+            if (article.Quantity < article.ArticleQuantity.Quantity)
+            {
+                return true;
+            }
+            else
+            {
+                MessageBox.Show("Article is not in stock!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+            return false;
         }
 
         private async Task GetTable(int id)
@@ -172,6 +191,7 @@ namespace RestaurantApp.ViewModels
 
         private async void DeleteArticleFromTable(Article article)
         {
+            article.Quantity = 0;
             _table.Articles.Remove(article);
             await EditTable(_table);
             RaisePropertyChanged(nameof(Articles));
@@ -189,7 +209,7 @@ namespace RestaurantApp.ViewModels
                 { "table",  _table}
             };
 
-            _regionManager.RequestNavigate("MainRegion", "Payment",navigationParameters);
+            _regionManager.RequestNavigate("MainRegion", "Payment", navigationParameters);
         }
 
     }
