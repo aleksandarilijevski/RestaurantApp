@@ -179,8 +179,7 @@ namespace RestaurantApp.ViewModels
 
             if (_table is null)
             {
-                
-                Table table = new Table { Available = true, Places = 2 };
+                Table table = new Table { Available = true };
                 _table = table;
                 await _databaseService.AddTable(table);
             }
