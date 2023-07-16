@@ -55,13 +55,13 @@ namespace RestaurantApp.ViewModels
         {
         }
 
-        private async void GetTotalPrice()
+        private void GetTotalPrice()
         {
-            _totalPrice = await CalculateTotalPrice();
+            _totalPrice = CalculateTotalPrice();
             RaisePropertyChanged(nameof(TotalPrice));
         }
 
-        private async Task<decimal> CalculateTotalPrice()
+        private decimal CalculateTotalPrice()
         {
             decimal totalPrice = 0;
 

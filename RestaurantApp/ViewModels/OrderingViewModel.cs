@@ -4,7 +4,6 @@ using Prism.Mvvm;
 using Prism.Regions;
 using RestaurantApp.Services.Interface;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -177,6 +176,14 @@ namespace RestaurantApp.ViewModels
         private async Task GetTable(int id)
         {
             _table = await _databaseService.GetTableByID(id);
+
+            if (_table is null)
+            {
+                
+                Table table = new Table { Available = true, Places = 2 };
+                _table = table;
+                await _databaseService.AddTable(table);
+            }
 
             if (_table.Articles is null)
             {

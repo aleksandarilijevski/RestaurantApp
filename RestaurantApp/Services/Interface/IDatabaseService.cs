@@ -28,6 +28,8 @@ namespace RestaurantApp.Services.Interface
 
         public Task<Table> GetTableByID(int id);
 
+        public Task<int> AddTable(Table table);
+
         public Task EditTable(Table table);
 
         public Task<ArticleQuantity> GetArticleQuantityByArticleID(int id);

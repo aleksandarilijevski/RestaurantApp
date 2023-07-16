@@ -84,6 +84,13 @@ namespace RestaurantApp.Services
             return table;
         }
 
+        public async Task<int> AddTable(Table table)
+        {
+            _efContext.Tables.Add(table);
+            await _efContext.SaveChangesAsync();
+            return table.ID;
+        }
+
         public async Task EditTable(Table table)
         {
             _efContext.Entry(table).State = EntityState.Modified;
