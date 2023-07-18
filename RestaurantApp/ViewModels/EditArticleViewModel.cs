@@ -13,6 +13,7 @@ namespace RestaurantApp.ViewModels
         private IDatabaseService _databaseService;
         private DelegateCommand<Article> _editArticleCommand;
         private Article _article;
+        private ArticleDetails _articleDetails = new ArticleDetails();
         private string _title = "Edit article";
 
         public event Action<IDialogResult> RequestClose;
@@ -35,6 +36,19 @@ namespace RestaurantApp.ViewModels
         {
             get { return _article; }
             set { SetProperty(ref _article, value); }
+        }
+
+        public ArticleDetails ArticleDetails
+        {
+            get
+            {
+                return _articleDetails;
+            }
+
+            set
+            {
+                SetProperty(ref _articleDetails, value);
+            }
         }
 
         public string Title
@@ -82,7 +96,12 @@ namespace RestaurantApp.ViewModels
 
         private async void EditArticle(Article article)
         {
-            //await EditArticleDetails(article.ArticleDetails);
+            ArticleDetails articleDetails = await _databaseService.GetArticleDetailsByArticleID(article.ID);
+
+            articleDetails.Quantity = _articleDetails.Quantity;
+            articleDetails.EntryPrice = _articleDetails.EntryPrice;
+
+            await EditArticleDetails(articleDetails);
             await _databaseService.EditArticle(article);
             CloseDialog("true");
         }

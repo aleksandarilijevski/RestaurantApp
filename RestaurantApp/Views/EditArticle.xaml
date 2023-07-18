@@ -41,8 +41,8 @@
         <TextBox Grid.Column="2" Grid.Row="1" FontSize="25" TextAlignment="Center" Text="{Binding Article.Barcode}" Margin="10"/>
         <TextBox Grid.Column="3" Grid.Row="2" FontSize="25" TextAlignment="Center" Text="{Binding Article.Name}" Margin="10"/>
         <TextBox Grid.Column="4" Grid.Row="3" FontSize="25" TextAlignment="Center" Text="{Binding Article.Description}" Margin="10"/>
-        <TextBox Grid.Column="5" Grid.Row="4" FontSize="25" TextAlignment="Center" Text="{Binding Article.ArticleQuantity.Quantity}" Margin="10"/>
-        <TextBox Grid.Column="6" Grid.Row="5" FontSize="25" TextAlignment="Center" Text="{Binding Article.EntryPrice}" Margin="10"/>
+        <TextBox Grid.Column="5" Grid.Row="4" FontSize="25" TextAlignment="Center" Text="{Binding ArticleDetails.Quantity}" Margin="10"/>
+        <TextBox Grid.Column="6" Grid.Row="5" FontSize="25" TextAlignment="Center" Text="{Binding ArticleDetails.EntryPrice}" Margin="10"/>
         <TextBox Grid.Column="7" Grid.Row="6" FontSize="25" TextAlignment="Center" Text="{Binding Article.Price}" Margin="10"/>
 
         <Button Content="Apply"  Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="2" Command="{Binding EditArticleCommand}" CommandParameter="{Binding Article}"/>

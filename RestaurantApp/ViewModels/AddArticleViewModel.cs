@@ -91,21 +91,22 @@ namespace RestaurantApp.ViewModels
 
         }
 
-        private async Task ApplyArticleQuantity(int articleId)
+        private async Task ApplyArticleDetails(int articleId)
         {
-            _articleDetails.Article.ID = _article.ID;
+            Article article = await _databaseService.GetArticleByID(articleId);
+            _articleDetails.Article = article;
         }
 
-        private async Task AddArticleQuantity(ArticleDetails articleQuantity)
+        private async Task AddArticleDetails(ArticleDetails articleDetails)
         {
-            await _databaseService.AddArticleDetails(articleQuantity);
+            await _databaseService.AddArticleDetails(articleDetails);
         }
 
         private async void AddArticle(Article article)
         {
             int articleId = await _databaseService.AddArticle(article);
-            await ApplyArticleQuantity(articleId);
-            await AddArticleQuantity(_articleDetails);
+            await ApplyArticleDetails(articleId);
+            await AddArticleDetails(_articleDetails);
 
             CloseDialog("true");
         }
