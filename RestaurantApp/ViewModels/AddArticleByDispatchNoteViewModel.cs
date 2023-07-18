@@ -17,7 +17,6 @@ namespace RestaurantApp.ViewModels
     {
         private IDatabaseService _databaseService;
         private DelegateCommand _loadAllArticlesCommand;
-        private DelegateCommand _createArticleNameListCommand;
         private DelegateCommand<string> _addArticleByBarcodeCommand;
         private DelegateCommand<string> _addArticleByNameCommand;
         private ObservableCollection<Article> _articles;
@@ -80,15 +79,6 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public DelegateCommand CreateArticleNameListCommand
-        {
-            get
-            {
-                _createArticleNameListCommand = new DelegateCommand(CreateArticleNameList);
-                return _createArticleNameListCommand;
-            }
-        }
-
         public string Barcode
         {
             get
@@ -120,6 +110,11 @@ namespace RestaurantApp.ViewModels
         private async void LoadAllArticles()
         {
             _articles = await _databaseService.GetAllArticles();
+
+            foreach (Article article in _articles)
+            {
+                _articleNames.Add(article.Name);
+            }
         }
 
         private void GetArticleByBarcode(string barcode)
@@ -170,14 +165,5 @@ namespace RestaurantApp.ViewModels
 
             return true;
         }
-
-        private void CreateArticleNameList()
-        {
-            foreach (Article article in _articles)
-            {
-                _articleNames.Add(article.Name);
-            }
-        }
-
     }
 }
