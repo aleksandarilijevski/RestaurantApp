@@ -115,5 +115,11 @@ namespace RestaurantApp.Services
             _efContext.Entry(articleQuantity).State = EntityState.Modified;
             await _efContext.SaveChangesAsync();
         }
+
+        public async Task AddDispatchNote(DispatchNote dispatchNote)
+        {
+            _efContext.DispatchNotes.Add(dispatchNote);
+            await _efContext.SaveChangesAsync();
+        }
     }
 }

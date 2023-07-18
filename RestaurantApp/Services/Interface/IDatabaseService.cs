@@ -37,5 +37,7 @@ namespace RestaurantApp.Services.Interface
         public Task<int> AddArticleQuantity(ArticleQuantity articleQuantity);
 
         public Task EditArticleQuantity(ArticleQuantity articleQuantity);
+
+        public Task AddDispatchNote(DispatchNote dispatchNote);
     }
 }

@@ -1,27 +1,27 @@
 ﻿using EntityFramework.Models;
 using Prism.Commands;
 using Prism.Mvvm;
-using Prism.Regions;
-using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Threading;
 
 namespace RestaurantApp.ViewModels
 {
-    public class AddArticleByDispatchNoteViewModel:BindableBase
+    public class AddArticleByDispatchNoteViewModel : BindableBase
     {
         private IDatabaseService _databaseService;
         private DelegateCommand _loadAllArticlesCommand;
         private DelegateCommand<string> _addArticleByBarcodeCommand;
         private DelegateCommand<string> _addArticleByNameCommand;
+        private DelegateCommand _saveCommand;
         private ObservableCollection<Article> _articles;
         private List<string> _articleNames = new List<string>();
         private string _articleName;
+        private string _dispatchNoteNumber;
         private string _barcode;
 
         public AddArticleByDispatchNoteViewModel(IDatabaseService databaseService)
@@ -39,7 +39,7 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public List<string> ArticleNames 
+        public List<string> ArticleNames
         {
             get
             {
@@ -49,6 +49,20 @@ namespace RestaurantApp.ViewModels
             set
             {
                 _articleNames = value;
+            }
+        }
+
+        public string DispatchNoteNumber
+        {
+            get
+            {
+                return _dispatchNoteNumber;
+            }
+
+            set
+            {
+                _dispatchNoteNumber = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -76,6 +90,15 @@ namespace RestaurantApp.ViewModels
             {
                 _addArticleByNameCommand = new DelegateCommand<string>(GetArticleByName);
                 return _addArticleByNameCommand;
+            }
+        }
+
+        public DelegateCommand SaveCommand
+        {
+            get
+            {
+                _saveCommand = new DelegateCommand(Save);
+                return _saveCommand;
             }
         }
 
@@ -132,18 +155,17 @@ namespace RestaurantApp.ViewModels
                     DispatchNoteArticles.Add(article);
                 }
             }
-            
+
             Barcode = string.Empty;
             RaisePropertyChanged(nameof(DispatchNoteArticles));
         }
-        
+
         private void GetArticleByName(string articleName)
         {
             Article article = Articles.FirstOrDefault(x => x.Name.ToLower() == articleName.ToLower());
 
             if (article != null)
             {
-                article.Quantity = 1;
                 bool ifExist = CheckIfExistInList(article);
 
                 if (!ifExist)
@@ -164,6 +186,39 @@ namespace RestaurantApp.ViewModels
             }
 
             return true;
+        }
+
+        private async void Save()
+        {
+
+        }
+
+
+        private decimal CalculateTotalAmount()
+        {
+            decimal totalAmount = 0;
+
+            foreach (Article article in Articles)
+            {
+                totalAmount += article.EntryPrice;
+            }
+
+            return totalAmount;
+        }
+
+        private async Task EditArticle(Article article)
+        {
+            await _databaseService.EditArticle(article);
+        }
+
+        private async Task EditArticleQuantity(ArticleQuantity articleQuantity)
+        {
+            await _databaseService.EditArticleQuantity(articleQuantity);
+        }
+
+        private async Task AddDispatchNote(DispatchNote dispatchNote)
+        {
+            await _databaseService.AddDispatchNote(dispatchNote);
         }
     }
 }
