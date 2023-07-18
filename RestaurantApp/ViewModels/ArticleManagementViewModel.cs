@@ -1,6 +1,7 @@
 ﻿using EntityFramework.Models;
 using Prism.Commands;
 using Prism.Mvvm;
+using Prism.Regions;
 using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
 using System.Collections.ObjectModel;
@@ -11,16 +12,19 @@ namespace RestaurantApp.ViewModels
     {
         private IDatabaseService _databaseService;
         private IDialogService _dialogService;
+        private IRegionManager _regionManager;
         private DelegateCommand<Article> _showEditArticleDialogCommand;
         private DelegateCommand _showAddArticleDialogCommand;
         private DelegateCommand _getAllArticlesCommand;
+        private DelegateCommand _showAddArticleByDispathNoteCommand;
         private DelegateCommand<Article> _deleteArticleCommand;
         private ObservableCollection<Article> _articles;
 
-        public ArticleManagementViewModel(IDatabaseService databaseService, IDialogService dialogService)
+        public ArticleManagementViewModel(IDatabaseService databaseService, IDialogService dialogService, IRegionManager regionManager)
         {
             _dialogService = dialogService;
             _databaseService = databaseService;
+            _regionManager = regionManager;
         }
 
         public DelegateCommand ShowAddArticleDialogCommand
@@ -59,6 +63,15 @@ namespace RestaurantApp.ViewModels
             }
         }
 
+        public DelegateCommand ShowAddArticleByDispathNoteCommand
+        {
+            get
+            {
+                _showAddArticleByDispathNoteCommand = new DelegateCommand(ShowAddArticleByDispathNote);
+                return _showAddArticleByDispathNoteCommand;
+            }
+        }
+
         public ObservableCollection<Article> Articles
         {
             get => _articles;
@@ -86,6 +99,11 @@ namespace RestaurantApp.ViewModels
         {
             _dialogService.ShowDialog("addArticleDialog");
             GetAllArticles();
+        }
+
+        private async void ShowAddArticleByDispathNote()
+        {
+            _regionManager.RequestNavigate("MainRegion","AddArticleByDispatchNote");
         }
 
         private async void GetAllArticles()

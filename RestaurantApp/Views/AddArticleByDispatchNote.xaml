@@ -1,0 +1,69 @@
+﻿<UserControl x:Class="RestaurantApp.Views.AddArticleByDispatchNote"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:RestaurantApp.Views"
+             xmlns:editors="http://wpfcontrols.com/"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             mc:Ignorable="d" 
+             Height="550" Width="800">
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadAllArticlesCommand}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        
+        <TextBlock Text="Get article by barcode : " FontSize="25" Margin="5"/>
+
+        <TextBox TextAlignment="Center" FontSize="25" Grid.Row="0" Grid.Column="2" Margin="5" Text="{Binding Barcode}" x:Name="barcodeBox">
+            <TextBox.InputBindings>
+                <KeyBinding Command="{Binding AddArticleByBarcodeCommand}" CommandParameter="{Binding Text,ElementName=barcodeBox}" Key="Enter" />
+            </TextBox.InputBindings>
+        </TextBox>
+
+        <TextBlock Text="Get article by name : " FontSize="25" Margin="5" Grid.Row="1" />
+
+        <TextBox FontSize="25" Grid.Row="1" Grid.Column="2" Margin="5"  x:Name="articleNameBox" Text="{Binding ArticleName}">
+            <TextBox.InputBindings>
+                <KeyBinding Command="{Binding AddArticleByNameCommand}" CommandParameter="{Binding Text,ElementName=articleNameBox}" Key="Enter" />
+            </TextBox.InputBindings>
+        </TextBox>
+
+        <TextBlock Text="Dispatch note number : " FontSize="25" Margin="5" Grid.Row ="2"/>
+        <TextBox TextAlignment="Center" FontSize="25" Grid.Row="2" Grid.Column="2" Margin="5"/>
+
+        <DataGrid Grid.Row="3" Grid.RowSpan="2"  Grid.ColumnSpan="4" AutoGenerateColumns="False" ItemsSource="{Binding DispatchNoteArticles, IsAsync=True}" CanUserAddRows="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding ID}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Barcode" Binding="{Binding Barcode}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}"/>
+                <DataGridTextColumn Header="Entry price" Binding="{Binding EntryPrice}"/>
+                <DataGridTextColumn Header="Price" Binding="{Binding Price}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Button Content="Save" FontSize="25" Grid.Row="2" Grid.Column="3" Margin="100,5,5,5" Command="{Binding CreateArticleNameListCommand}"/>
+
+    </Grid>
+
+
+</UserControl>
