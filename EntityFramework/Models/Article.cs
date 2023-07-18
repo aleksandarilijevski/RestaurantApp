@@ -2,7 +2,7 @@
 
 namespace EntityFramework.Models
 {
-    public class Article: CreatedOn
+    public class Article: BaseEntity
     {
         [Key]
         public int ID { get; set; }

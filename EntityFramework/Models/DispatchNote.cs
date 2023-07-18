@@ -2,7 +2,7 @@
 
 namespace EntityFramework.Models
 {
-    public class DispatchNote : CreatedOn
+    public class DispatchNote : BaseEntity
     {
         [Key]
         public int ID { get; set; }

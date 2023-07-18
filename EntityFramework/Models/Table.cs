@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EntityFramework.Models
 {
-    public class Table
+    public class Table: BaseEntity
     {
         [Key]
         public int ID { get; set; }

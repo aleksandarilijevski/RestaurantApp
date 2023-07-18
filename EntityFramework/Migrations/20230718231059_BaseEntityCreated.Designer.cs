@@ -4,6 +4,7 @@ using EntityFramework.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EntityFramework.Migrations
 {
     [DbContext(typeof(EFContext))]
-    partial class EFContextModelSnapshot : ModelSnapshot
+    [Migration("20230718231059_BaseEntityCreated")]
+    partial class BaseEntityCreated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,7 +40,7 @@ namespace EntityFramework.Migrations
                     b.ToTable("ArticleTable");
                 });
 
-            modelBuilder.Entity("EntityFramework.Models.Article", b =>
+            modelBuilder.Entity("EntityFramework.Models.BaseEntity", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -45,23 +48,40 @@ namespace EntityFramework.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ModifiedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("BaseEntities");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("BaseEntity");
+
+                    b.UseTphMappingStrategy();
+                });
+
+            modelBuilder.Entity("EntityFramework.Models.Article", b =>
+                {
+                    b.HasBaseType("EntityFramework.Models.BaseEntity");
+
                     b.Property<long>("Barcode")
                         .HasColumnType("bigint");
 
                     b.Property<int?>("BillID")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedDateTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("DispatchNoteID")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("ModifiedDateTime")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -72,99 +92,63 @@ namespace EntityFramework.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.HasKey("ID");
-
                     b.HasIndex("BillID");
 
                     b.HasIndex("DispatchNoteID");
 
-                    b.ToTable("Articles");
+                    b.ToTable("BaseEntities", t =>
+                        {
+                            t.Property("Quantity")
+                                .HasColumnName("Article_Quantity");
+                        });
+
+                    b.HasDiscriminator().HasValue("Article");
                 });
 
             modelBuilder.Entity("EntityFramework.Models.ArticleDetails", b =>
                 {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+                    b.HasBaseType("EntityFramework.Models.BaseEntity");
 
                     b.Property<int?>("ArticleID")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedDateTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<decimal>("EntryPrice")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("ModifiedDateTime")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.HasKey("ID");
-
                     b.HasIndex("ArticleID");
 
-                    b.ToTable("ArticleDetails");
+                    b.HasDiscriminator().HasValue("ArticleDetails");
                 });
 
             modelBuilder.Entity("EntityFramework.Models.Bill", b =>
                 {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
-
-                    b.Property<DateTime>("CreatedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("ModifiedDateTime")
-                        .HasColumnType("datetime2");
+                    b.HasBaseType("EntityFramework.Models.BaseEntity");
 
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.HasKey("ID");
-
-                    b.ToTable("Bills");
+                    b.HasDiscriminator().HasValue("Bill");
                 });
 
             modelBuilder.Entity("EntityFramework.Models.DispatchNote", b =>
                 {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
-
-                    b.Property<DateTime>("CreatedDateTime")
-                        .HasColumnType("datetime2");
+                    b.HasBaseType("EntityFramework.Models.BaseEntity");
 
                     b.Property<int>("DispatchNoteNumber")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("ModifiedDateTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.HasKey("ID");
-
-                    b.ToTable("DispatchNotes");
+                    b.HasDiscriminator().HasValue("DispatchNote");
                 });
 
             modelBuilder.Entity("EntityFramework.Models.Table", b =>
                 {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+                    b.HasBaseType("EntityFramework.Models.BaseEntity");
 
                     b.Property<bool>("Available")
                         .HasColumnType("bit");
@@ -172,32 +156,23 @@ namespace EntityFramework.Migrations
                     b.Property<int?>("BillID")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("ModifiedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("ID");
-
                     b.HasIndex("BillID");
 
-                    b.ToTable("Tables");
+                    b.ToTable("BaseEntities", t =>
+                        {
+                            t.Property("BillID")
+                                .HasColumnName("Table_BillID");
+                        });
+
+                    b.HasDiscriminator().HasValue("Table");
                 });
 
             modelBuilder.Entity("EntityFramework.Models.Waiter", b =>
                 {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+                    b.HasBaseType("EntityFramework.Models.BaseEntity");
 
                     b.Property<long>("Barcode")
                         .HasColumnType("bigint");
-
-                    b.Property<DateTime>("CreatedDateTime")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime2");
@@ -208,12 +183,13 @@ namespace EntityFramework.Migrations
                     b.Property<long>("JMBG")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime>("ModifiedDateTime")
-                        .HasColumnType("datetime2");
+                    b.ToTable("BaseEntities", t =>
+                        {
+                            t.Property("Barcode")
+                                .HasColumnName("Waiter_Barcode");
+                        });
 
-                    b.HasKey("ID");
-
-                    b.ToTable("Waiters");
+                    b.HasDiscriminator().HasValue("Waiter");
                 });
 
             modelBuilder.Entity("ArticleTable", b =>
@@ -221,7 +197,7 @@ namespace EntityFramework.Migrations
                     b.HasOne("EntityFramework.Models.Article", null)
                         .WithMany()
                         .HasForeignKey("ArticlesID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.HasOne("EntityFramework.Models.Table", null)

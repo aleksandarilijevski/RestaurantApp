@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EntityFramework.Models
 {
-    public class ArticleDetails : CreatedOn
+    public class ArticleDetails : BaseEntity
     {
         public int ID { get; set; }
 

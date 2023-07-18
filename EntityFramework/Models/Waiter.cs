@@ -2,7 +2,7 @@
 
 namespace EntityFramework.Models
 {
-    public class Waiter : CreatedOn
+    public class Waiter : BaseEntity
     {
         [Key]
         public int ID { get; set; }
