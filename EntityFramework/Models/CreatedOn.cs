@@ -2,13 +2,13 @@
 
 namespace EntityFramework.Models
 {
-    public class Bill : CreatedOn
+    public class CreatedOn
     {
         [Key]
         public int ID { get; set; }
 
-        public List<Article> BoughtArticles {  get; set; }
+        public DateTime CreatedDateTime { get; set; }
 
-        public decimal TotalPrice { get; set; }
+        public DateTime ModifiedDateTime { get; set; }
     }
 }
