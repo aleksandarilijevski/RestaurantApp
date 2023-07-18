@@ -18,7 +18,7 @@ namespace RestaurantApp.Services
 
         public async Task<ObservableCollection<Article>> GetAllArticles()
         {
-            List<Article> articles = await _efContext.Articles.Include(x => x.ArticleQuantity).ToListAsync();
+            List<Article> articles = await _efContext.Articles.Include(x => x.ArticleDetails).ToListAsync();
             return new ObservableCollection<Article>(articles);
         }
 
@@ -30,7 +30,7 @@ namespace RestaurantApp.Services
 
         public async Task<Article> GetArticleByBarcode(long barcode)
         {
-            Article article = await _efContext.Articles.Include(x => x.ArticleQuantity).FirstOrDefaultAsync(x => x.Barcode == barcode);
+            Article article = await _efContext.Articles.Include(x => x.ArticleDetails).FirstOrDefaultAsync(x => x.Barcode == barcode);
             return article;
         }
 
@@ -97,22 +97,22 @@ namespace RestaurantApp.Services
             await _efContext.SaveChangesAsync();
         }
 
-        public async Task<ArticleQuantity> GetArticleQuantityByArticleID(int id)
+        public async Task<ArticleDetails> GetArticleDetailsByArticleID(int id)
         {
-            ArticleQuantity articleQuantity = await _efContext.ArticleQuantity.FirstOrDefaultAsync(x => x.ArticleID == id);
-            return articleQuantity;
+            ArticleDetails articleDetails = await _efContext.ArticleDetails.FirstOrDefaultAsync(x => x.Article.ID == id);
+            return articleDetails;
         }
 
-        public async Task<int> AddArticleQuantity(ArticleQuantity articleQuantity)
+        public async Task<int> AddArticleDetails(ArticleDetails articleDetails)
         {
-            _efContext.ArticleQuantity.Add(articleQuantity);
+            _efContext.ArticleDetails.Add(articleDetails);
             await _efContext.SaveChangesAsync();
-            return articleQuantity.ID;
+            return articleDetails.ID;
         }
 
-        public async Task EditArticleQuantity(ArticleQuantity articleQuantity)
+        public async Task EditArticleDetails(ArticleDetails articleDetails)
         {
-            _efContext.Entry(articleQuantity).State = EntityState.Modified;
+            _efContext.Entry(articleDetails).State = EntityState.Modified;
             await _efContext.SaveChangesAsync();
         }
 

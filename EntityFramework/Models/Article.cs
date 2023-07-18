@@ -13,13 +13,11 @@ namespace EntityFramework.Models
 
         public string Description { get; set; }
 
-        public ArticleQuantity ArticleQuantity { get; set; }
+        public List<ArticleDetails> ArticleDetails { get; set; }
 
         public List<Table> Tables { get; set; }
 
         public int Quantity { get; set; }
-
-        public decimal EntryPrice { get; set; }
 
         public decimal Price { get; set; }
     }

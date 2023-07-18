@@ -17,7 +17,7 @@ namespace EntityFramework.Models
 
         public DbSet<Bill> Bills { get; set; }
 
-        public DbSet<ArticleQuantity> ArticleQuantity { get; set; }
+        public DbSet<ArticleDetails> ArticleDetails { get; set; }
 
         public DbSet<DispatchNote> DispatchNotes { get; set; }
     }

@@ -14,7 +14,7 @@ namespace RestaurantApp.ViewModels
         private string _title = "Add new article";
         private DelegateCommand<Article> _addArticleCommand;
         private Article _article;
-        private ArticleQuantity _articleQuantity = new ArticleQuantity();
+        private ArticleDetails _articleDetails = new ArticleDetails();
 
         public event Action<IDialogResult> RequestClose;
 
@@ -24,16 +24,16 @@ namespace RestaurantApp.ViewModels
             set { SetProperty(ref _article, value); }
         }
 
-        public ArticleQuantity ArticleQuantity
+        public ArticleDetails ArticleDetails
         {
             get
             {
-                return _articleQuantity;
+                return _articleDetails;
             }
 
             set
             {
-                SetProperty(ref _articleQuantity, value);
+                SetProperty(ref _articleDetails, value);
             }
         }
 
@@ -93,19 +93,19 @@ namespace RestaurantApp.ViewModels
 
         private async Task ApplyArticleQuantity(int articleId)
         {
-            ArticleQuantity.ArticleID = _article.ID;
+            _articleDetails.Article.ID = _article.ID;
         }
 
-        private async Task AddArticleQuantity(ArticleQuantity articleQuantity)
+        private async Task AddArticleQuantity(ArticleDetails articleQuantity)
         {
-            await _databaseService.AddArticleQuantity(articleQuantity);
+            await _databaseService.AddArticleDetails(articleQuantity);
         }
 
         private async void AddArticle(Article article)
         {
             int articleId = await _databaseService.AddArticle(article);
             await ApplyArticleQuantity(articleId);
-            await AddArticleQuantity(_articleQuantity);
+            await AddArticleQuantity(_articleDetails);
 
             CloseDialog("true");
         }

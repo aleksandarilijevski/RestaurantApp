@@ -75,14 +75,14 @@ namespace RestaurantApp.ViewModels
             Article = parameters.GetValue<Article>("article");
         }
 
-        private async Task EditArticleQuantity(ArticleQuantity articleQuantity)
+        private async Task EditArticleDetails(ArticleDetails articleDetails)
         {
-            await _databaseService.EditArticleQuantity(articleQuantity);
+            await _databaseService.EditArticleDetails(articleDetails);
         }
 
         private async void EditArticle(Article article)
         {
-            await EditArticleQuantity(article.ArticleQuantity);
+            //await EditArticleDetails(article.ArticleDetails);
             await _databaseService.EditArticle(article);
             CloseDialog("true");
         }

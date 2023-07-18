@@ -125,25 +125,25 @@ namespace RestaurantApp.ViewModels
 
         private async void AddArticleToTable(string barcode)
         {
-            Article article = await _databaseService.GetArticleByBarcode(long.Parse(barcode));
+            //Article article = await _databaseService.GetArticleByBarcode(long.Parse(barcode));
 
-            if (article is not null)
-            {
-                bool isAvailable = await CheckIfQuantityIsAvailable(article);
+            //if (article is not null)
+            //{
+            //    bool isAvailable = await CheckIfQuantityIsAvailable(article);
 
-                if (isAvailable)
-                {
-                    await CheckIfArticleExistsOnTable(article);
-                    await EditTable(_table);
-                }
-            }
+            //    if (isAvailable)
+            //    {
+            //        await CheckIfArticleExistsOnTable(article);
+            //        await EditTable(_table);
+            //    }
+            //}
 
-            Barcode = string.Empty;
+            //Barcode = string.Empty;
         }
 
         private async Task CheckIfArticleExistsOnTable(Article article)
         {
-            article.ArticleQuantity = await _databaseService.GetArticleQuantityByArticleID(article.ID);
+            //article.ArticleQuantity = await _databaseService.GetArticleDetailsByArticleID(article.ID);
 
             if (_table.Articles.Contains(article))
             {
@@ -159,19 +159,19 @@ namespace RestaurantApp.ViewModels
             Articles = _table.Articles;
         }
 
-        private async Task<bool> CheckIfQuantityIsAvailable(Article article)
-        {
-            if (article.Quantity < article.ArticleQuantity.Quantity)
-            {
-                return true;
-            }
-            else
-            {
-                MessageBox.Show("Article is not in stock!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+        //private async Task<bool> CheckIfQuantityIsAvailable(Article article)
+        //{
+        //    if (article.Quantity < article.ArticleQuantity.Quantity)
+        //    {
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        MessageBox.Show("Article is not in stock!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        //    }
 
-            return false;
-        }
+        //    return false;
+        //}
 
         private async Task GetTable(int id)
         {

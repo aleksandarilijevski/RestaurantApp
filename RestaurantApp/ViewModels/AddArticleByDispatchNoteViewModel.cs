@@ -194,26 +194,14 @@ namespace RestaurantApp.ViewModels
         }
 
 
-        private decimal CalculateTotalAmount()
-        {
-            decimal totalAmount = 0;
-
-            foreach (Article article in Articles)
-            {
-                totalAmount += article.EntryPrice;
-            }
-
-            return totalAmount;
-        }
-
         private async Task EditArticle(Article article)
         {
             await _databaseService.EditArticle(article);
         }
 
-        private async Task EditArticleQuantity(ArticleQuantity articleQuantity)
+        private async Task EditArticleDetails(ArticleDetails articleQuantity)
         {
-            await _databaseService.EditArticleQuantity(articleQuantity);
+            await _databaseService.EditArticleDetails(articleQuantity);
         }
 
         private async Task AddDispatchNote(DispatchNote dispatchNote)

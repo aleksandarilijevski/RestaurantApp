@@ -32,11 +32,11 @@ namespace RestaurantApp.Services.Interface
 
         public Task EditTable(Table table);
 
-        public Task<ArticleQuantity> GetArticleQuantityByArticleID(int id);
+        public Task<ArticleDetails> GetArticleDetailsByArticleID(int id);
 
-        public Task<int> AddArticleQuantity(ArticleQuantity articleQuantity);
+        public Task<int> AddArticleDetails(ArticleDetails articleDetails);
 
-        public Task EditArticleQuantity(ArticleQuantity articleQuantity);
+        public Task EditArticleDetails(ArticleDetails articleDetails);
 
         public Task AddDispatchNote(DispatchNote dispatchNote);
     }
