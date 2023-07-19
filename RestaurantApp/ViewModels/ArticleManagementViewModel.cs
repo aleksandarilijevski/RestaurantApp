@@ -4,6 +4,7 @@ using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace RestaurantApp.ViewModels
@@ -19,6 +20,7 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand _showAddArticleByDispathNoteCommand;
         private DelegateCommand<Article> _deleteArticleCommand;
         private ObservableCollection<Article> _articles;
+        private List<ArticleDetails> _articleDetailsList;
 
         public ArticleManagementViewModel(IDatabaseService databaseService, IDialogService dialogService, IRegionManager regionManager)
         {
@@ -82,6 +84,19 @@ namespace RestaurantApp.ViewModels
             }
         }
 
+        public List<ArticleDetails> ArticleDetailsList
+        {
+            get
+            {
+                return _articleDetailsList;
+            }
+
+            set
+            {
+                _articleDetailsList = value;
+            }
+        }
+
         private void ShowEditArticleDialog(Article article)
         {
             DialogParameters dialogParametars = new DialogParameters
@@ -109,6 +124,12 @@ namespace RestaurantApp.ViewModels
         private async void GetAllArticles()
         {
             Articles = await _databaseService.GetAllArticles();
+
+            //foreach (Article article in Articles)
+            //{
+            //    ArticleDetails articleDetails = await _databaseService.GetArticleDetailsByArticleID(article.ID);
+            //    _articleDetailsList.Add(articleDetails);
+            //}
         }
 
         private async void DeleteArticle(Article article)

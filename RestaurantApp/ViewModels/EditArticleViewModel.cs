@@ -13,7 +13,8 @@ namespace RestaurantApp.ViewModels
         private IDatabaseService _databaseService;
         private DelegateCommand<Article> _editArticleCommand;
         private Article _article;
-        private ArticleDetails _articleDetails = new ArticleDetails();
+        private ArticleDetails _articleDetails;
+        private ArticleDetails _articleDetailsInput = new ArticleDetails();
         private string _title = "Edit article";
 
         public event Action<IDialogResult> RequestClose;
@@ -38,16 +39,16 @@ namespace RestaurantApp.ViewModels
             set { SetProperty(ref _article, value); }
         }
 
-        public ArticleDetails ArticleDetails
+        public ArticleDetails ArticleDetailsInput
         {
             get
             {
-                return _articleDetails;
+                return _articleDetailsInput;
             }
 
             set
             {
-                SetProperty(ref _articleDetails, value);
+                SetProperty(ref _articleDetailsInput, value);
             }
         }
 
@@ -84,9 +85,16 @@ namespace RestaurantApp.ViewModels
            
         }
 
-        public virtual void OnDialogOpened(IDialogParameters parameters)
+        public virtual async void OnDialogOpened(IDialogParameters parameters)
         {
             Article = parameters.GetValue<Article>("article");
+            ArticleDetailsInput = await GetArticleDetails(_article.ID);
+        }
+
+        private async Task<ArticleDetails> GetArticleDetails(int articleId)
+        {
+            ArticleDetails articleDetails = await _databaseService.GetArticleDetailsByArticleID(articleId);
+            return articleDetails;
         }
 
         private async Task EditArticleDetails(ArticleDetails articleDetails)
@@ -98,8 +106,8 @@ namespace RestaurantApp.ViewModels
         {
             ArticleDetails articleDetails = await _databaseService.GetArticleDetailsByArticleID(article.ID);
 
-            articleDetails.Quantity = _articleDetails.Quantity;
-            articleDetails.EntryPrice = _articleDetails.EntryPrice;
+            articleDetails.Quantity = _articleDetailsInput.Quantity;
+            articleDetails.EntryPrice = _articleDetailsInput.EntryPrice;
 
             await EditArticleDetails(articleDetails);
             await _databaseService.EditArticle(article);
