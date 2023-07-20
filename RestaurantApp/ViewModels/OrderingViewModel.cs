@@ -190,7 +190,7 @@ namespace RestaurantApp.ViewModels
                 _table.Articles = new List<Article>();
             }
 
-            if (_table.Articles is not null)
+            if (_table.Articles.Count > 0)
             {
                 Articles = _table.Articles;
             }

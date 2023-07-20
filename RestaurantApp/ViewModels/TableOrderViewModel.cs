@@ -1,7 +1,9 @@
-﻿using Prism.Commands;
+﻿using EntityFramework.Models;
+using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
 using RestaurantApp.Services.Interface;
+using System.Threading.Tasks;
 
 namespace RestaurantApp.ViewModels
 {

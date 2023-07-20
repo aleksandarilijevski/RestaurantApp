@@ -124,12 +124,6 @@ namespace RestaurantApp.ViewModels
         private async void GetAllArticles()
         {
             Articles = await _databaseService.GetAllArticles();
-
-            //foreach (Article article in Articles)
-            //{
-            //    ArticleDetails articleDetails = await _databaseService.GetArticleDetailsByArticleID(article.ID);
-            //    _articleDetailsList.Add(articleDetails);
-            //}
         }
 
         private async void DeleteArticle(Article article)

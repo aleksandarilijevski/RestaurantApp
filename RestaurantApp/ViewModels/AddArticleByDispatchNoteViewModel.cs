@@ -6,8 +6,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Threading;
 
 namespace RestaurantApp.ViewModels
 {
@@ -20,6 +18,7 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand _saveCommand;
         private ObservableCollection<Article> _articles;
         private List<string> _articleNames = new List<string>();
+        private ArticleDetails _articleDetailsInput = new ArticleDetails();
         private string _articleName;
         private string _dispatchNoteNumber;
         private string _barcode;
@@ -49,6 +48,19 @@ namespace RestaurantApp.ViewModels
             set
             {
                 _articleNames = value;
+            }
+        }
+
+        public ArticleDetails ArticleDetailsInput
+        {
+            get
+            {
+                return _articleDetailsInput;
+            }
+
+            set
+            {
+                _articleDetailsInput = value;
             }
         }
 
@@ -190,7 +202,18 @@ namespace RestaurantApp.ViewModels
 
         private async void Save()
         {
+            foreach (Article article in DispatchNoteArticles)
+            {
+                _articleDetailsInput.Article = article;
 
+                await AddArticleDetails(_articleDetailsInput);
+            }
+        }
+
+        private async Task<ArticleDetails> GetArticleDetailsByArticleID(int articleId)
+        {
+            ArticleDetails articleDetails = await _databaseService.GetArticleDetailsByArticleID(articleId);
+            return articleDetails;
         }
 
 
@@ -199,9 +222,9 @@ namespace RestaurantApp.ViewModels
             await _databaseService.EditArticle(article);
         }
 
-        private async Task EditArticleDetails(ArticleDetails articleQuantity)
+        private async Task AddArticleDetails(ArticleDetails articleDetails)
         {
-            await _databaseService.EditArticleDetails(articleQuantity);
+            await _databaseService.AddArticleDetails(articleDetails);
         }
 
         private async Task AddDispatchNote(DispatchNote dispatchNote)
