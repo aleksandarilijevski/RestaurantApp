@@ -4,6 +4,7 @@ using Prism.Mvvm;
 using Prism.Regions;
 using RestaurantApp.Services.Interface;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -158,6 +159,16 @@ namespace RestaurantApp.ViewModels
             Articles = _table.Articles;
         }
 
+        private void Test(Article article)
+        {
+            List<ArticleDetails> articleDetails = article.ArticleDetails.OrderByDescending(x => x.CreatedDateTime).ToList();
+
+            foreach (ArticleDetails articleDetail in articleDetails)
+            {
+                
+            }
+        }
+
         private async Task<bool> CheckIfQuantityIsAvailable(Article article)
         {
             int quantity = GetAvailableQuantity(article.ArticleDetails);
@@ -213,6 +224,13 @@ namespace RestaurantApp.ViewModels
             article.Quantity = 0;
             _table.Articles.Remove(article);
             await EditTable(_table);
+
+            if (_table.Articles.Count == 0)
+            {
+                _table.Available = true;
+                await EditTable(_table);
+            }
+
             RaisePropertyChanged(nameof(Articles));
         }
 
