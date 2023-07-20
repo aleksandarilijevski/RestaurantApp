@@ -160,9 +160,9 @@ namespace RestaurantApp.ViewModels
 
         private async Task<bool> CheckIfQuantityIsAvailable(Article article)
         {
-            ArticleDetails articleDetails = await _databaseService.GetArticleDetailsByArticleID(article.ID);
+            int quantity = GetAvailableQuantity(article.ArticleDetails);
 
-            if (article.Quantity < articleDetails.Quantity)
+            if (article.Quantity < quantity)
             {
                 return true;
             }
@@ -172,6 +172,18 @@ namespace RestaurantApp.ViewModels
             }
 
             return false;
+        }
+
+        private int GetAvailableQuantity(List<ArticleDetails> articleDetails)
+        {
+            int quantity = 0;
+
+            foreach (ArticleDetails articleDetail in articleDetails)
+            {
+                quantity += articleDetail.Quantity;
+            }
+
+            return quantity;
         }
 
         private async Task GetTable(int id)
