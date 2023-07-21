@@ -4,9 +4,6 @@ namespace EntityFramework.Models
 {
     public class Article: BaseEntity
     {
-        [Key]
-        public int ID { get; set; }
-
         public long Barcode { get;set; }
 
         public string Name { get; set; }

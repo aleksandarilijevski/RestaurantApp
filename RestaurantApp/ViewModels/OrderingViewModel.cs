@@ -3,6 +3,7 @@ using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
 using RestaurantApp.Services.Interface;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -159,13 +160,22 @@ namespace RestaurantApp.ViewModels
             Articles = _table.Articles;
         }
 
+
         private void Test(Article article)
         {
             List<ArticleDetails> articleDetails = article.ArticleDetails.OrderByDescending(x => x.CreatedDateTime).ToList();
 
+            DateTime oldest = article.ArticleDetails.Min(x => x.CreatedDateTime);
+
             foreach (ArticleDetails articleDetail in articleDetails)
             {
-                
+                if (oldest == articleDetail.CreatedDateTime)
+                {
+                    if (article.Quantity == articleDetail.Quantity)
+                    {
+                        MessageBox.Show("", $"Quantity {articleDetail.Quantity} Entry Price {articleDetail.EntryPrice} Created Date {articleDetail.CreatedDateTime.ToString()}");
+                    }
+                }
             }
         }
 

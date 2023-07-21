@@ -5,9 +5,6 @@ namespace EntityFramework.Models
 {
     public class Table: BaseEntity
     {
-        [Key]
-        public int ID { get; set; }
-
         public bool Available { get; set; }
 
         public List<Article> Articles { get; set; }
