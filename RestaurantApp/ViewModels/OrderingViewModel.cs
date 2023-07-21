@@ -174,29 +174,21 @@ namespace RestaurantApp.ViewModels
 
         public void SellArticles(Article article)
         {
-            decimal totalProfit = 0;
-
-            foreach (var details in article.ArticleDetails)
+            foreach (ArticleDetails articleDetails in article.ArticleDetails)
             {
-                if (article.Quantity <= details.Quantity)
+                if (article.Quantity <= articleDetails.Quantity)
                 {
-                    decimal profit = (100 - details.EntryPrice) * article.Quantity ;
-                    totalProfit += profit;
-
-                    details.Quantity -= article.Quantity;
+                    articleDetails.Quantity -= article.Quantity;
                     article.Quantity = 0;
-                    _databaseService.EditArticleDetails(details);
+                    _databaseService.EditArticleDetails(articleDetails);
                     break;
                 }
                 else
                 {
-                    decimal profit = (100 - details.EntryPrice) * details.Quantity;
-                    totalProfit += profit;
+                    article.Quantity -= articleDetails.Quantity;
+                    articleDetails.Quantity = 0;
 
-                    article.Quantity -= details.Quantity;
-                    details.Quantity = 0;
-
-                    _databaseService.EditArticleDetails(details);
+                    _databaseService.EditArticleDetails(articleDetails);
                 }
             }
         }
