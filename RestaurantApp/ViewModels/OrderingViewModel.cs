@@ -20,6 +20,7 @@ namespace RestaurantApp.ViewModels
         private Table _table = new Table();
         private string _barcode;
         private DelegateCommand<Table> _getTableCommand;
+        //private DelegateCommand _showPaymentUserControlCommand;
         private DelegateCommand _showPaymentUserControlCommand;
         private DelegateCommand<Article> _deleteArticleFromTableCommand;
 
@@ -102,6 +103,15 @@ namespace RestaurantApp.ViewModels
             }
         }
 
+        //public DelegateCommand ShowPaymentUserControlCommand
+        //{
+        //    get
+        //    {
+        //        _showPaymentUserControlCommand = new DelegateCommand(ShowPaymentUserControl);
+        //        return _showPaymentUserControlCommand;
+        //    }
+        //} 
+        
         public DelegateCommand ShowPaymentUserControlCommand
         {
             get
@@ -136,6 +146,7 @@ namespace RestaurantApp.ViewModels
                 if (isAvailable)
                 {
                     await CheckIfArticleExistsOnTable(article);
+                    //SellArticles(article);
                     await EditTable(_table);
                 }
             }
@@ -161,20 +172,31 @@ namespace RestaurantApp.ViewModels
         }
 
 
-        private void Test(Article article)
+        public void SellArticles(Article article)
         {
-            List<ArticleDetails> articleDetails = article.ArticleDetails.OrderByDescending(x => x.CreatedDateTime).ToList();
+            decimal totalProfit = 0;
 
-            DateTime oldest = article.ArticleDetails.Min(x => x.CreatedDateTime);
-
-            foreach (ArticleDetails articleDetail in articleDetails)
+            foreach (var details in article.ArticleDetails)
             {
-                if (oldest == articleDetail.CreatedDateTime)
+                if (article.Quantity <= details.Quantity)
                 {
-                    if (article.Quantity == articleDetail.Quantity)
-                    {
-                        MessageBox.Show("", $"Quantity {articleDetail.Quantity} Entry Price {articleDetail.EntryPrice} Created Date {articleDetail.CreatedDateTime.ToString()}");
-                    }
+                    decimal profit = (100 - details.EntryPrice) * article.Quantity ;
+                    totalProfit += profit;
+
+                    details.Quantity -= article.Quantity;
+                    article.Quantity = 0;
+                    _databaseService.EditArticleDetails(details);
+                    break;
+                }
+                else
+                {
+                    decimal profit = (100 - details.EntryPrice) * details.Quantity;
+                    totalProfit += profit;
+
+                    article.Quantity -= details.Quantity;
+                    details.Quantity = 0;
+
+                    _databaseService.EditArticleDetails(details);
                 }
             }
         }
@@ -251,12 +273,17 @@ namespace RestaurantApp.ViewModels
 
         private async void ShowPaymentUserControl()
         {
-            NavigationParameters navigationParameters = new NavigationParameters
+            foreach (Article article in Articles)
             {
-                { "table",  _table}
-            };
+                SellArticles(article);
+            }
 
-            _regionManager.RequestNavigate("MainRegion", "Payment", navigationParameters);
+            //NavigationParameters navigationParameters = new NavigationParameters
+            //{
+            //    { "table",  _table}
+            //};
+
+            //_regionManager.RequestNavigate("MainRegion", "Payment", navigationParameters);
         }
 
     }
