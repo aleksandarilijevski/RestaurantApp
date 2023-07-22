@@ -101,15 +101,6 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        //public DelegateCommand ShowPaymentUserControlCommand
-        //{
-        //    get
-        //    {
-        //        _showPaymentUserControlCommand = new DelegateCommand(ShowPaymentUserControl);
-        //        return _showPaymentUserControlCommand;
-        //    }
-        //} 
-
         public DelegateCommand ShowPaymentUserControlCommand
         {
             get
@@ -135,17 +126,21 @@ namespace RestaurantApp.ViewModels
 
         private async void AddArticleToTable(string barcode)
         {
-            Article article = await _databaseService.GetArticleByBarcode(long.Parse(barcode));
+            long.TryParse(barcode, out long barcodeLong);
+            Article article = await _databaseService.GetArticleByBarcode(barcodeLong);
 
-            if (article is not null)
+            if (article is null)
             {
-                bool isAvailable = await CheckIfQuantityIsAvailable(article);
+                MessageBox.Show("Article with entered barcode doesn't exist in the system!","Ordering",MessageBoxButton.OK,MessageBoxImage.Error);
+                return;
+            }
 
-                if (isAvailable)
-                {
-                    await CheckIfArticleExistsOnTable(article);
-                    await EditTable(_table);
-                }
+            bool isAvailable = await CheckIfQuantityIsAvailable(article);
+
+            if (isAvailable)
+            {
+                await CheckIfArticleExistsOnTable(article);
+                await EditTable(_table);
             }
 
             Barcode = string.Empty;
