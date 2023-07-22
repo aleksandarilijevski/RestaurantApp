@@ -6,8 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Threading;
+using System.Windows;
 
 namespace RestaurantApp.ViewModels
 {
@@ -187,11 +186,31 @@ namespace RestaurantApp.ViewModels
 
         private async void Save()
         {
+
+            if (DispatchNoteNumber is null || DispatchNoteNumber == string.Empty)
+            {
+                MessageBox.Show("Data entry number can't be empty!", "Data entry", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (DispatchNoteArticles.Count == 0)
+            {
+                MessageBox.Show("Please add articles!", "Data entry", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+
             DispatchNote dispatchNote = new DispatchNote();
             decimal totalAmount = 0;
 
             foreach (ArticleDetails articleDetails in DispatchNoteArticles)
             {
+                if (articleDetails.EntryPrice == 0 || articleDetails.Quantity == 0)
+                {
+                    MessageBox.Show("One or more article properties are not valid!", "Data entry", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
                 await _databaseService.AddArticleDetails(articleDetails);
             }
 
@@ -202,6 +221,7 @@ namespace RestaurantApp.ViewModels
             dispatchNote.TotalAmount = totalAmount;
             dispatchNote.Articles = articles;
             await _databaseService.AddDispatchNote(dispatchNote);
+
         }
 
         private List<Article> CreateArticleListFromArticleDetails(List<ArticleDetails> articleDetails)
