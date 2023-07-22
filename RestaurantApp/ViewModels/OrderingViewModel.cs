@@ -146,7 +146,6 @@ namespace RestaurantApp.ViewModels
                 if (isAvailable)
                 {
                     await CheckIfArticleExistsOnTable(article);
-                    //SellArticles(article);
                     await EditTable(_table);
                 }
             }
@@ -172,23 +171,26 @@ namespace RestaurantApp.ViewModels
         }
 
 
-        public void SellArticles(Article article)
+        public void SellArticles(List<Article> articles)
         {
-            foreach (ArticleDetails articleDetails in article.ArticleDetails)
+            foreach (Article article in articles)
             {
-                if (article.Quantity <= articleDetails.Quantity)
+                foreach (ArticleDetails articleDetails in article.ArticleDetails)
                 {
-                    articleDetails.Quantity -= article.Quantity;
-                    article.Quantity = 0;
-                    _databaseService.EditArticleDetails(articleDetails);
-                    break;
-                }
-                else
-                {
-                    article.Quantity -= articleDetails.Quantity;
-                    articleDetails.Quantity = 0;
+                    if (article.Quantity <= articleDetails.Quantity)
+                    {
+                        articleDetails.Quantity -= article.Quantity;
+                        article.Quantity = 0;
+                        _databaseService.EditArticleDetails(articleDetails);
+                        break;
+                    }
+                    else
+                    {
+                        article.Quantity -= articleDetails.Quantity;
+                        articleDetails.Quantity = 0;
 
-                    _databaseService.EditArticleDetails(articleDetails);
+                        _databaseService.EditArticleDetails(articleDetails);
+                    }
                 }
             }
         }
@@ -265,17 +267,12 @@ namespace RestaurantApp.ViewModels
 
         private async void ShowPaymentUserControl()
         {
-            foreach (Article article in Articles)
+            NavigationParameters navigationParameters = new NavigationParameters
             {
-                SellArticles(article);
-            }
+                { "table",  _table}
+            };
 
-            //NavigationParameters navigationParameters = new NavigationParameters
-            //{
-            //    { "table",  _table}
-            //};
-
-            //_regionManager.RequestNavigate("MainRegion", "Payment", navigationParameters);
+            _regionManager.RequestNavigate("MainRegion", "Payment", navigationParameters);
         }
 
     }
