@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:local="clr-namespace:RestaurantApp.Views"
+             xmlns:converters="clr-namespace:RestaurantApp.Converters"
              mc:Ignorable="d" 
              xmlns:prism="http://prismlibrary.com/"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -14,7 +15,11 @@
             <i:InvokeCommandAction Command="{Binding GetAllArticlesCommand}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
-    
+
+    <UserControl.Resources>
+        <converters:TotalQuantityConverter x:Key="TotalQuantityConverter"/>
+    </UserControl.Resources>
+
     <Grid>
     
         <Grid.ColumnDefinitions>
@@ -35,7 +40,13 @@
                 <DataGridTextColumn Header="Barcode" Binding="{Binding Barcode}"/>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
                 <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}"/>
-                <DataGridTextColumn Header="Available quantity" Binding="{Binding ArticleDetails[0].Quantity}"/>
+                <DataGridTextColumn Header="Total quantity" >
+                    <DataGridTextColumn.Binding>
+                        <MultiBinding Converter="{StaticResource TotalQuantityConverter}">
+                        <Binding Path="ArticleDetails" />
+                    </MultiBinding>
+                    </DataGridTextColumn.Binding>
+                </DataGridTextColumn>
                 <DataGridTextColumn Header="Entry price" Binding="{Binding ArticleDetails[0].EntryPrice}"/>
                 <DataGridTextColumn Header="Price" Binding="{Binding Price}"/>
 
@@ -60,7 +71,7 @@
         </DataGrid>
 
         <Button Content="Add Article" Grid.Row="1" Grid.Column="0" FontSize="25" Command="{Binding ShowAddArticleDialogCommand}"/>
-        <Button Content="Dispatch note" Grid.Row="1" Grid.Column="1" FontSize="25" Command="{Binding ShowAddArticleByDataEntryCommand}" />
+        <Button Content="Data entry" Grid.Row="1" Grid.Column="1" FontSize="25" Command="{Binding ShowAddArticleByDataEntryCommand}" />
         
 
     </Grid>
