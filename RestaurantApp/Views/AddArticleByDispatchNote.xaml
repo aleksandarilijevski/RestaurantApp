@@ -53,12 +53,12 @@
 
         <DataGrid Grid.Row="3" Grid.RowSpan="2"  Grid.ColumnSpan="4" AutoGenerateColumns="False" ItemsSource="{Binding DispatchNoteArticles, IsAsync=True}" CanUserAddRows="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding ID}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Barcode" Binding="{Binding Barcode}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True" />
-                <DataGridTextColumn Header="New quantity" Binding="{Binding DataContext.ArticleDetailsInput.Quantity,RelativeSource={RelativeSource AncestorType={x:Type local:AddArticleByDispatchNote}}}"/>
-                <DataGridTextColumn Header="Entry price" Binding="{Binding DataContext.ArticleDetailsInput.EntryPrice,RelativeSource={RelativeSource AncestorType={x:Type local:AddArticleByDispatchNote}}}"/>
-                <DataGridTextColumn Header="Price" Binding="{Binding Price}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="ID" Binding="{Binding Article.ID}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Barcode" Binding="{Binding Article.Barcode}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding Article.Name}" IsReadOnly="True" />
+                <DataGridTextColumn Header="New quantity" Binding="{Binding Quantity}"/>
+                <DataGridTextColumn Header="Entry price" Binding="{Binding EntryPrice}"/>
+                <DataGridTextColumn Header="Price" Binding="{Binding Article.Price}" IsReadOnly="True"/>
             </DataGrid.Columns>
         </DataGrid>
 

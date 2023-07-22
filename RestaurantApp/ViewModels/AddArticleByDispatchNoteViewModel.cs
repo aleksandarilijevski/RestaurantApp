@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace RestaurantApp.ViewModels
 {
@@ -19,7 +20,6 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand _saveCommand;
         private ObservableCollection<Article> _articles;
         private List<string> _articleNames = new List<string>();
-        private List<ArticleDetails> _articleDetailsInput = new List<ArticleDetails>();
         private string _articleName;
         private string _dispatchNoteNumber;
         private string _barcode;
@@ -29,7 +29,7 @@ namespace RestaurantApp.ViewModels
             _databaseService = databaseService;
         }
 
-        public List<Article> DispatchNoteArticles { get; set; } = new List<Article>();
+        public List<ArticleDetails> DispatchNoteArticles { get; set; } = new List<ArticleDetails>();
 
         public ObservableCollection<Article> Articles
         {
@@ -49,19 +49,6 @@ namespace RestaurantApp.ViewModels
             set
             {
                 _articleNames = value;
-            }
-        }
-
-        public List<ArticleDetails> ArticleDetailsInput
-        {
-            get
-            {
-                return _articleDetailsInput;
-            }
-
-            set
-            {
-                _articleDetailsInput = value;
             }
         }
 
@@ -157,12 +144,14 @@ namespace RestaurantApp.ViewModels
         {
             long barcodeLong = long.Parse(barcode);
             Article article = Articles.FirstOrDefault(x => x.Barcode == barcodeLong);
+            ArticleDetails articleDetails = new ArticleDetails();
 
             if (article != null)
             {
                 article.Quantity = 1;
 
-                DispatchNoteArticles.Add(article);
+                articleDetails.Article = article;
+                DispatchNoteArticles.Add(articleDetails);
             }
 
             Barcode = string.Empty;
@@ -171,11 +160,13 @@ namespace RestaurantApp.ViewModels
 
         private void GetArticleByName(string articleName)
         {
+            ArticleDetails articleDetails = new ArticleDetails();
             Article article = Articles.FirstOrDefault(x => x.Name.ToLower() == articleName.ToLower());
 
             if (article != null)
             {
-                DispatchNoteArticles.Add(article);
+                articleDetails.Article = article;
+                DispatchNoteArticles.Add(articleDetails);
             }
 
             ArticleName = string.Empty;
@@ -196,19 +187,45 @@ namespace RestaurantApp.ViewModels
 
         private async void Save()
         {
+            DispatchNote dispatchNote = new DispatchNote();
             decimal totalAmount = 0;
-            DispatchNote dispatchNote = null;
 
-            foreach (Article article in DispatchNoteArticles)
+            foreach (ArticleDetails articleDetails in DispatchNoteArticles)
             {
-                
-                //_articleDetailsInput.Article = article;
-                //await AddArticleDetails(_articleDetailsInput);
+                await _databaseService.AddArticleDetails(articleDetails);
             }
 
-            //dispatchNote.Articles = DispatchNoteArticles;
+            List<Article> articles = CreateArticleListFromArticleDetails(DispatchNoteArticles);
+            totalAmount = CalculateTotalAmount(DispatchNoteArticles);
+
+            dispatchNote.DispatchNoteNumber = int.Parse(DispatchNoteNumber);
             dispatchNote.TotalAmount = totalAmount;
+            dispatchNote.Articles = articles;
             await _databaseService.AddDispatchNote(dispatchNote);
+        }
+
+        private List<Article> CreateArticleListFromArticleDetails(List<ArticleDetails> articleDetails)
+        {
+            List<Article> articles = new List<Article>();
+
+            foreach (ArticleDetails articleDetail in articleDetails)
+            {
+                articles.Add(articleDetail.Article);
+            }
+
+            return articles;
+        }
+
+        private decimal CalculateTotalAmount(List<ArticleDetails> articleDetails)
+        {
+            decimal totalAmount = 0;
+
+            foreach (ArticleDetails articleDetail in articleDetails)
+            {
+                totalAmount += articleDetail.EntryPrice * articleDetail.Quantity;
+            }
+
+            return totalAmount;
         }
 
         private async Task<ArticleDetails> GetArticleDetailsByArticleID(int articleId)
