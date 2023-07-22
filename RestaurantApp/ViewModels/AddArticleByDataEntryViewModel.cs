@@ -222,6 +222,10 @@ namespace RestaurantApp.ViewModels
             dataEntry.Articles = articles;
             await _databaseService.AddDataEntry(dataEntry);
 
+            MessageBox.Show("Data entry is saved!","Data entry",MessageBoxButton.OK,MessageBoxImage.Information);
+            DataEntryNumber = string.Empty; 
+            DataEntryArticles.Clear();
+            RaisePropertyChanged(nameof(DataEntryArticles));
         }
 
         private List<Article> CreateArticleListFromArticleDetails(List<ArticleDetails> articleDetails)
