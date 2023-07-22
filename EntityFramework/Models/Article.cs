@@ -8,8 +8,6 @@ namespace EntityFramework.Models
 
         public string Name { get; set; }
 
-        public string Description { get; set; }
-
         public List<ArticleDetails> ArticleDetails { get; set; }
 
         public List<Table> Tables { get; set; }

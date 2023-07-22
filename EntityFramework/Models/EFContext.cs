@@ -37,6 +37,6 @@ namespace EntityFramework.Models
 
         public DbSet<ArticleDetails> ArticleDetails { get; set; }
 
-        public DbSet<DispatchNote> DispatchNotes { get; set; }
+        public DbSet<DataEntry> DataEntries { get; set; }
     }
 }

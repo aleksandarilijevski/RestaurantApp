@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EntityFramework.Migrations
 {
     [DbContext(typeof(EFContext))]
-    [Migration("20230712215527_ArticleQuantityModelCreated")]
-    partial class ArticleQuantityModelCreated
+    [Migration("20230722154525_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,21 @@ namespace EntityFramework.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("ArticleTable", b =>
+                {
+                    b.Property<int>("ArticlesID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TablesID")
+                        .HasColumnType("int");
+
+                    b.HasKey("ArticlesID", "TablesID");
+
+                    b.HasIndex("TablesID");
+
+                    b.ToTable("ArticleTable");
+                });
 
             modelBuilder.Entity("EntityFramework.Models.Article", b =>
                 {
@@ -39,11 +54,14 @@ namespace EntityFramework.Migrations
                     b.Property<int?>("BillID")
                         .HasColumnType("int");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("datetime2");
 
-                    b.Property<decimal>("EntryPrice")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int?>("DataEntryID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ModifiedDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -54,19 +72,16 @@ namespace EntityFramework.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<int?>("TableID")
-                        .HasColumnType("int");
-
                     b.HasKey("ID");
 
                     b.HasIndex("BillID");
 
-                    b.HasIndex("TableID");
+                    b.HasIndex("DataEntryID");
 
                     b.ToTable("Articles");
                 });
 
-            modelBuilder.Entity("EntityFramework.Models.ArticleQuantity", b =>
+            modelBuilder.Entity("EntityFramework.Models.ArticleDetails", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -74,18 +89,26 @@ namespace EntityFramework.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
-                    b.Property<int>("ArticleID")
+                    b.Property<int?>("ArticleID")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("EntryPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("ModifiedDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
                     b.HasKey("ID");
 
-                    b.HasIndex("ArticleID")
-                        .IsUnique();
+                    b.HasIndex("ArticleID");
 
-                    b.ToTable("ArticleQuantity");
+                    b.ToTable("ArticleDetails");
                 });
 
             modelBuilder.Entity("EntityFramework.Models.Bill", b =>
@@ -96,12 +119,43 @@ namespace EntityFramework.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ModifiedDateTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("ID");
 
                     b.ToTable("Bills");
+                });
+
+            modelBuilder.Entity("EntityFramework.Models.DataEntry", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DataEntryNumber")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ModifiedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("DataEntries");
                 });
 
             modelBuilder.Entity("EntityFramework.Models.Table", b =>
@@ -118,8 +172,11 @@ namespace EntityFramework.Migrations
                     b.Property<int?>("BillID")
                         .HasColumnType("int");
 
-                    b.Property<int>("Places")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ModifiedDateTime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("ID");
 
@@ -139,6 +196,9 @@ namespace EntityFramework.Migrations
                     b.Property<long>("Barcode")
                         .HasColumnType("bigint");
 
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime2");
 
@@ -148,9 +208,27 @@ namespace EntityFramework.Migrations
                     b.Property<long>("JMBG")
                         .HasColumnType("bigint");
 
+                    b.Property<DateTime>("ModifiedDateTime")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("ID");
 
                     b.ToTable("Waiters");
+                });
+
+            modelBuilder.Entity("ArticleTable", b =>
+                {
+                    b.HasOne("EntityFramework.Models.Article", null)
+                        .WithMany()
+                        .HasForeignKey("ArticlesID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EntityFramework.Models.Table", null)
+                        .WithMany()
+                        .HasForeignKey("TablesID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("EntityFramework.Models.Article", b =>
@@ -159,18 +237,18 @@ namespace EntityFramework.Migrations
                         .WithMany("BoughtArticles")
                         .HasForeignKey("BillID");
 
-                    b.HasOne("EntityFramework.Models.Table", null)
+                    b.HasOne("EntityFramework.Models.DataEntry", null)
                         .WithMany("Articles")
-                        .HasForeignKey("TableID");
+                        .HasForeignKey("DataEntryID");
                 });
 
-            modelBuilder.Entity("EntityFramework.Models.ArticleQuantity", b =>
+            modelBuilder.Entity("EntityFramework.Models.ArticleDetails", b =>
                 {
-                    b.HasOne("EntityFramework.Models.Article", null)
-                        .WithOne("ArticleQuantity")
-                        .HasForeignKey("EntityFramework.Models.ArticleQuantity", "ArticleID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("EntityFramework.Models.Article", "Article")
+                        .WithMany("ArticleDetails")
+                        .HasForeignKey("ArticleID");
+
+                    b.Navigation("Article");
                 });
 
             modelBuilder.Entity("EntityFramework.Models.Table", b =>
@@ -184,7 +262,7 @@ namespace EntityFramework.Migrations
 
             modelBuilder.Entity("EntityFramework.Models.Article", b =>
                 {
-                    b.Navigation("ArticleQuantity");
+                    b.Navigation("ArticleDetails");
                 });
 
             modelBuilder.Entity("EntityFramework.Models.Bill", b =>
@@ -192,7 +270,7 @@ namespace EntityFramework.Migrations
                     b.Navigation("BoughtArticles");
                 });
 
-            modelBuilder.Entity("EntityFramework.Models.Table", b =>
+            modelBuilder.Entity("EntityFramework.Models.DataEntry", b =>
                 {
                     b.Navigation("Articles");
                 });

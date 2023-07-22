@@ -2,9 +2,9 @@
 
 namespace EntityFramework.Models
 {
-    public class DispatchNote : BaseEntity
+    public class DataEntry : BaseEntity
     {
-        public int DispatchNoteNumber { get; set; }
+        public int DataEntryNumber { get; set; }
 
         public List<Article> Articles { get; set; }
 

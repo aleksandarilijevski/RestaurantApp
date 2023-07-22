@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="RestaurantApp.Views.AddArticleByDispatchNote"
+﻿<UserControl x:Class="RestaurantApp.Views.AddArticleBydataEntry"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -49,9 +49,9 @@
         </TextBox>
 
         <TextBlock Text="Dispatch note number : " FontSize="25" Margin="5" Grid.Row ="2"/>
-        <TextBox TextAlignment="Center" FontSize="25" Grid.Row="2" Grid.Column="2" Margin="5" Text="{Binding DispatchNoteNumber}"/>
+        <TextBox TextAlignment="Center" FontSize="25" Grid.Row="2" Grid.Column="2" Margin="5" Text="{Binding DataEntryNumber}"/>
 
-        <DataGrid Grid.Row="3" Grid.RowSpan="2"  Grid.ColumnSpan="4" AutoGenerateColumns="False" ItemsSource="{Binding DispatchNoteArticles, IsAsync=True}" CanUserAddRows="False">
+        <DataGrid Grid.Row="3" Grid.RowSpan="2"  Grid.ColumnSpan="4" AutoGenerateColumns="False" ItemsSource="{Binding dataEntryArticles, IsAsync=True}" CanUserAddRows="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding Article.ID}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Barcode" Binding="{Binding Article.Barcode}" IsReadOnly="True"/>

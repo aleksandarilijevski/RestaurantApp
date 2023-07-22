@@ -61,7 +61,7 @@
         </DataGrid>
 
         <Button Content="Add Article" Grid.Row="1" Grid.Column="0" FontSize="25" Command="{Binding ShowAddArticleDialogCommand}"/>
-        <Button Content="Dispatch note" Grid.Row="1" Grid.Column="1" FontSize="25" Command="{Binding ShowAddArticleByDispathNoteCommand}" />
+        <Button Content="Dispatch note" Grid.Row="1" Grid.Column="1" FontSize="25" Command="{Binding ShowAddArticleByDataEntryCommand}" />
         
 
     </Grid>

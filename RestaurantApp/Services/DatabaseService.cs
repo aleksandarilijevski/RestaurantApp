@@ -117,9 +117,9 @@ namespace RestaurantApp.Services
             await _efContext.SaveChangesAsync();
         }
 
-        public async Task AddDispatchNote(DispatchNote dispatchNote)
+        public async Task AddDataEntry(DataEntry dataEntry)
         {
-            _efContext.DispatchNotes.Add(dispatchNote);
+            _efContext.DataEntries.Add(dataEntry);
             await _efContext.SaveChangesAsync();
         }
 

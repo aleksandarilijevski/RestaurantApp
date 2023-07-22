@@ -54,10 +54,7 @@ namespace EntityFramework.Migrations
                     b.Property<DateTime>("CreatedDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("DispatchNoteID")
+                    b.Property<int?>("DataEntryID")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("ModifiedDateTime")
@@ -76,7 +73,7 @@ namespace EntityFramework.Migrations
 
                     b.HasIndex("BillID");
 
-                    b.HasIndex("DispatchNoteID");
+                    b.HasIndex("DataEntryID");
 
                     b.ToTable("Articles");
                 });
@@ -133,7 +130,7 @@ namespace EntityFramework.Migrations
                     b.ToTable("Bills");
                 });
 
-            modelBuilder.Entity("EntityFramework.Models.DispatchNote", b =>
+            modelBuilder.Entity("EntityFramework.Models.DataEntry", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -144,7 +141,7 @@ namespace EntityFramework.Migrations
                     b.Property<DateTime>("CreatedDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DispatchNoteNumber")
+                    b.Property<int>("DataEntryNumber")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("ModifiedDateTime")
@@ -155,7 +152,7 @@ namespace EntityFramework.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("DispatchNotes");
+                    b.ToTable("DataEntries");
                 });
 
             modelBuilder.Entity("EntityFramework.Models.Table", b =>
@@ -237,9 +234,9 @@ namespace EntityFramework.Migrations
                         .WithMany("BoughtArticles")
                         .HasForeignKey("BillID");
 
-                    b.HasOne("EntityFramework.Models.DispatchNote", null)
+                    b.HasOne("EntityFramework.Models.DataEntry", null)
                         .WithMany("Articles")
-                        .HasForeignKey("DispatchNoteID");
+                        .HasForeignKey("DataEntryID");
                 });
 
             modelBuilder.Entity("EntityFramework.Models.ArticleDetails", b =>
@@ -270,7 +267,7 @@ namespace EntityFramework.Migrations
                     b.Navigation("BoughtArticles");
                 });
 
-            modelBuilder.Entity("EntityFramework.Models.DispatchNote", b =>
+            modelBuilder.Entity("EntityFramework.Models.DataEntry", b =>
                 {
                     b.Navigation("Articles");
                 });

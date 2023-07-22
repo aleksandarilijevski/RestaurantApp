@@ -10,7 +10,7 @@ using System.Windows;
 
 namespace RestaurantApp.ViewModels
 {
-    public class AddArticleByDispatchNoteViewModel : BindableBase
+    public class AddArticleByDataEntryViewModel : BindableBase
     {
         private IDatabaseService _databaseService;
         private DelegateCommand _loadAllArticlesCommand;
@@ -20,15 +20,15 @@ namespace RestaurantApp.ViewModels
         private ObservableCollection<Article> _articles;
         private List<string> _articleNames = new List<string>();
         private string _articleName;
-        private string _dispatchNoteNumber;
+        private string _dataEntryNumber;
         private string _barcode;
 
-        public AddArticleByDispatchNoteViewModel(IDatabaseService databaseService)
+        public AddArticleByDataEntryViewModel(IDatabaseService databaseService)
         {
             _databaseService = databaseService;
         }
 
-        public List<ArticleDetails> DispatchNoteArticles { get; set; } = new List<ArticleDetails>();
+        public List<ArticleDetails> DataEntryArticles { get; set; } = new List<ArticleDetails>();
 
         public ObservableCollection<Article> Articles
         {
@@ -51,16 +51,16 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public string DispatchNoteNumber
+        public string DataEntryNumber
         {
             get
             {
-                return _dispatchNoteNumber;
+                return _dataEntryNumber;
             }
 
             set
             {
-                _dispatchNoteNumber = value;
+                _dataEntryNumber = value;
                 RaisePropertyChanged();
             }
         }
@@ -150,11 +150,11 @@ namespace RestaurantApp.ViewModels
                 article.Quantity = 1;
 
                 articleDetails.Article = article;
-                DispatchNoteArticles.Add(articleDetails);
+                DataEntryArticles.Add(articleDetails);
             }
 
             Barcode = string.Empty;
-            RaisePropertyChanged(nameof(DispatchNoteArticles));
+            RaisePropertyChanged(nameof(DataEntryArticles));
         }
 
         private void GetArticleByName(string articleName)
@@ -165,11 +165,11 @@ namespace RestaurantApp.ViewModels
             if (article != null)
             {
                 articleDetails.Article = article;
-                DispatchNoteArticles.Add(articleDetails);
+                DataEntryArticles.Add(articleDetails);
             }
 
             ArticleName = string.Empty;
-            RaisePropertyChanged(nameof(DispatchNoteArticles));
+            RaisePropertyChanged(nameof(DataEntryArticles));
         }
 
         private decimal GetTotalAmount(List<ArticleDetails> articleDetails)
@@ -187,23 +187,23 @@ namespace RestaurantApp.ViewModels
         private async void Save()
         {
 
-            if (DispatchNoteNumber is null || DispatchNoteNumber == string.Empty)
+            if (DataEntryNumber is null || DataEntryNumber == string.Empty)
             {
                 MessageBox.Show("Data entry number can't be empty!", "Data entry", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            if (DispatchNoteArticles.Count == 0)
+            if (DataEntryArticles.Count == 0)
             {
                 MessageBox.Show("Please add articles!", "Data entry", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
 
-            DispatchNote dispatchNote = new DispatchNote();
+            DataEntry dataEntry = new DataEntry();
             decimal totalAmount = 0;
 
-            foreach (ArticleDetails articleDetails in DispatchNoteArticles)
+            foreach (ArticleDetails articleDetails in DataEntryArticles)
             {
                 if (articleDetails.EntryPrice == 0 || articleDetails.Quantity == 0)
                 {
@@ -214,13 +214,13 @@ namespace RestaurantApp.ViewModels
                 await _databaseService.AddArticleDetails(articleDetails);
             }
 
-            List<Article> articles = CreateArticleListFromArticleDetails(DispatchNoteArticles);
-            totalAmount = CalculateTotalAmount(DispatchNoteArticles);
+            List<Article> articles = CreateArticleListFromArticleDetails(DataEntryArticles);
+            totalAmount = CalculateTotalAmount(DataEntryArticles);
 
-            dispatchNote.DispatchNoteNumber = int.Parse(DispatchNoteNumber);
-            dispatchNote.TotalAmount = totalAmount;
-            dispatchNote.Articles = articles;
-            await _databaseService.AddDispatchNote(dispatchNote);
+            dataEntry.DataEntryNumber = int.Parse(DataEntryNumber);
+            dataEntry.TotalAmount = totalAmount;
+            dataEntry.Articles = articles;
+            await _databaseService.AddDataEntry(dataEntry);
 
         }
 
@@ -265,9 +265,9 @@ namespace RestaurantApp.ViewModels
             await _databaseService.AddArticleDetails(articleDetails);
         }
 
-        private async Task AddDispatchNote(DispatchNote dispatchNote)
+        private async Task AddDataEntry(DataEntry dataEntry)
         {
-            await _databaseService.AddDispatchNote(dispatchNote);
+            await _databaseService.AddDataEntry(dataEntry);
         }
     }
 }

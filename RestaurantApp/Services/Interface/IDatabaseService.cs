@@ -38,6 +38,6 @@ namespace RestaurantApp.Services.Interface
 
         public Task EditArticleDetails(ArticleDetails articleDetails);
 
-        public Task AddDispatchNote(DispatchNote dispatchNote);
+        public Task AddDataEntry(DataEntry dataEntry);
     }
 }

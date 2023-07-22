@@ -18,7 +18,7 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand<Article> _showEditArticleDialogCommand;
         private DelegateCommand _showAddArticleDialogCommand;
         private DelegateCommand _getAllArticlesCommand;
-        private DelegateCommand _showAddArticleByDispathNoteCommand;
+        private DelegateCommand _showAddArticleByDataEntryCommand;
         private DelegateCommand<Article> _deleteArticleCommand;
         private ObservableCollection<Article> _articles;
         private List<ArticleDetails> _articleDetailsList;
@@ -66,12 +66,12 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public DelegateCommand ShowAddArticleByDispathNoteCommand
+        public DelegateCommand ShowAddArticleByDataEntryCommand
         {
             get
             {
-                _showAddArticleByDispathNoteCommand = new DelegateCommand(ShowAddArticleByDispathNote);
-                return _showAddArticleByDispathNoteCommand;
+                _showAddArticleByDataEntryCommand = new DelegateCommand(ShowAddArticleByDataEntry);
+                return _showAddArticleByDataEntryCommand;
             }
         }
 
@@ -122,9 +122,9 @@ namespace RestaurantApp.ViewModels
             GetAllArticles();
         }
 
-        private async void ShowAddArticleByDispathNote()
+        private async void ShowAddArticleByDataEntry()
         {
-            _regionManager.RequestNavigate("MainRegion","AddArticleByDispatchNote");
+            _regionManager.RequestNavigate("MainRegion","AddArticleBydataEntry");
         }
 
         private async void DeleteArticle(Article article)

@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace RestaurantApp.Views
 {
     /// <summary>
-    /// Interaction logic for AddArticleByDispatchNote.xaml
+    /// Interaction logic for AddArticleBydataEntry.xaml
     /// </summary>
-    public partial class AddArticleByDispatchNote : UserControl
+    public partial class AddArticleBydataEntry : UserControl
     {
-        public AddArticleByDispatchNote()
+        public AddArticleBydataEntry()
         {
             InitializeComponent();
         }
