@@ -3,9 +3,7 @@ using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
 using RestaurantApp.Services.Interface;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -111,7 +109,7 @@ namespace RestaurantApp.ViewModels
         //        return _showPaymentUserControlCommand;
         //    }
         //} 
-        
+
         public DelegateCommand ShowPaymentUserControlCommand
         {
             get
@@ -267,6 +265,12 @@ namespace RestaurantApp.ViewModels
 
         private async void ShowPaymentUserControl()
         {
+            if (Articles.Count == 0)
+            {
+                MessageBox.Show("There are no articles to be paid!", "Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             NavigationParameters navigationParameters = new NavigationParameters
             {
                 { "table",  _table}
