@@ -6,6 +6,7 @@ using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace RestaurantApp.ViewModels
 {
@@ -110,6 +111,11 @@ namespace RestaurantApp.ViewModels
             });
         }
 
+        private async void GetAllArticles()
+        {
+            Articles = await _databaseService.GetAllArticles();
+        }
+
         private async void ShowAddArticleDialog()
         {
             _dialogService.ShowDialog("addArticleDialog");
@@ -119,11 +125,6 @@ namespace RestaurantApp.ViewModels
         private async void ShowAddArticleByDispathNote()
         {
             _regionManager.RequestNavigate("MainRegion","AddArticleByDispatchNote");
-        }
-
-        private async void GetAllArticles()
-        {
-            Articles = await _databaseService.GetAllArticles();
         }
 
         private async void DeleteArticle(Article article)

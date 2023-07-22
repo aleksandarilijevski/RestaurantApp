@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace RestaurantApp.ViewModels
 {
@@ -18,7 +19,7 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand _saveCommand;
         private ObservableCollection<Article> _articles;
         private List<string> _articleNames = new List<string>();
-        private ArticleDetails _articleDetailsInput = new ArticleDetails();
+        private List<ArticleDetails> _articleDetailsInput = new List<ArticleDetails>();
         private string _articleName;
         private string _dispatchNoteNumber;
         private string _barcode;
@@ -51,7 +52,7 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public ArticleDetails ArticleDetailsInput
+        public List<ArticleDetails> ArticleDetailsInput
         {
             get
             {
@@ -181,14 +182,33 @@ namespace RestaurantApp.ViewModels
             RaisePropertyChanged(nameof(DispatchNoteArticles));
         }
 
+        private decimal GetTotalAmount(List<ArticleDetails> articleDetails)
+        {
+            decimal totalAmount = 0;
+
+            foreach (ArticleDetails articleDetail in articleDetails)
+            {
+                totalAmount += articleDetail.EntryPrice;
+            }
+
+            return totalAmount;
+        }
+
         private async void Save()
         {
+            decimal totalAmount = 0;
+            DispatchNote dispatchNote = null;
+
             foreach (Article article in DispatchNoteArticles)
             {
-                _articleDetailsInput.Article = article;
-
-                await AddArticleDetails(_articleDetailsInput);
+                
+                //_articleDetailsInput.Article = article;
+                //await AddArticleDetails(_articleDetailsInput);
             }
+
+            //dispatchNote.Articles = DispatchNoteArticles;
+            dispatchNote.TotalAmount = totalAmount;
+            await _databaseService.AddDispatchNote(dispatchNote);
         }
 
         private async Task<ArticleDetails> GetArticleDetailsByArticleID(int articleId)
