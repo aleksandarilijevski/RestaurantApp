@@ -8,7 +8,7 @@
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
-             d:DesignHeight="460" d:DesignWidth="700">
+             d:DesignHeight="290" d:DesignWidth="700">
     <Grid>
 
         <Grid.ColumnDefinitions>
@@ -32,13 +32,11 @@
         <TextBlock Text="ID : " FontSize="30" Grid.Row="0" Margin="10"/>
         <TextBlock Text="Barcode : " FontSize="30" Grid.Row="1" Margin="10"/>
         <TextBlock Text="Name : " FontSize="30" Grid.Row="2" Margin="10" />
-        <TextBlock Text="Description : " FontSize="30" Grid.Row="3" Margin="10"/>
         <TextBlock Text="Price : " FontSize="30" Grid.Row="6" Margin="10"/>
 
         <TextBox Grid.Column="1" Grid.Row="0" IsReadOnly="True" FontSize="25" TextAlignment="Center" Text="{Binding Article.ID}" Margin="10"/>
         <TextBox Grid.Column="2" Grid.Row="1" FontSize="25" TextAlignment="Center" Text="{Binding Article.Barcode}" Margin="10"/>
         <TextBox Grid.Column="3" Grid.Row="2" FontSize="25" TextAlignment="Center" Text="{Binding Article.Name}" Margin="10"/>
-        <TextBox Grid.Column="4" Grid.Row="3" FontSize="25" TextAlignment="Center" Text="{Binding Article.Description}" Margin="10"/>
         <TextBox Grid.Column="7" Grid.Row="6" FontSize="25" TextAlignment="Center" Text="{Binding Article.Price}" Margin="10"/>
 
         <Button Content="Apply"  Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="2" Command="{Binding EditArticleCommand}" CommandParameter="{Binding Article}"/>
