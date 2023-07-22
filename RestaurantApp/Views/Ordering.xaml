@@ -17,27 +17,30 @@
     <Grid>
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="25" />
+            <RowDefinition Height="35" />
             <RowDefinition Height="25" />
             <RowDefinition Height="*" />
             <RowDefinition Height="30" />
         </Grid.RowDefinitions>
 
-        <TextBox FontSize="17" Grid.Row="0" TextAlignment="Center" x:Name="searchBox" Text="{Binding Barcode}">
+        <TextBox FontSize="20" Grid.Row="0" TextAlignment="Center" x:Name="searchBox" Text="{Binding Barcode}" Margin="3" >
             <TextBox.InputBindings>
                 <KeyBinding Command="{Binding AddArticleToTableCommand}" CommandParameter="{Binding Text,ElementName=searchBox}" Key="Enter" />
             </TextBox.InputBindings>
-            
+                        
             <TextBox.Style>
-        <Style TargetType="TextBox">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding Barcode, UpdateSourceTrigger=PropertyChanged}"
+                <Style TargetType="TextBox">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Barcode, UpdateSourceTrigger=PropertyChanged}"
                              Value="{x:Null}">
-                    <Setter Property="FocusManager.FocusedElement" Value="{Binding RelativeSource={RelativeSource Self}}"/>
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-    </TextBox.Style>
+                            <Setter Property="FocusManager.FocusedElement" Value="{Binding RelativeSource={RelativeSource Self}}"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                
+                    
+                    
+                </Style>
+            </TextBox.Style>
         </TextBox>
 
         <TextBlock Text="{Binding TableID, StringFormat='Order for table ID : {0}'}" Grid.Row="1" TextAlignment="Center" FontSize="17" Background="White" />

@@ -160,12 +160,8 @@ namespace RestaurantApp.ViewModels
             if (article != null)
             {
                 article.Quantity = 1;
-                bool ifExist = CheckIfExistInList(article);
 
-                if (!ifExist)
-                {
-                    DispatchNoteArticles.Add(article);
-                }
+                DispatchNoteArticles.Add(article);
             }
 
             Barcode = string.Empty;
@@ -178,26 +174,11 @@ namespace RestaurantApp.ViewModels
 
             if (article != null)
             {
-                bool ifExist = CheckIfExistInList(article);
-
-                if (!ifExist)
-                {
-                    DispatchNoteArticles.Add(article);
-                }
+                DispatchNoteArticles.Add(article);
             }
 
             ArticleName = string.Empty;
             RaisePropertyChanged(nameof(DispatchNoteArticles));
-        }
-
-        private bool CheckIfExistInList(Article article)
-        {
-            if (!DispatchNoteArticles.Contains(article))
-            {
-                return false;
-            }
-
-            return true;
         }
 
         private async void Save()
