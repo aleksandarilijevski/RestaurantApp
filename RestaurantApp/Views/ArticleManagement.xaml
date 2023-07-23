@@ -40,14 +40,13 @@
                 <DataGridTextColumn Header="Barcode" Binding="{Binding Barcode}"/>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
                 <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}"/>
+                
                 <DataGridTextColumn Header="Total quantity" >
                     <DataGridTextColumn.Binding>
-                        <MultiBinding Converter="{StaticResource TotalQuantityConverter}">
-                        <Binding Path="ArticleDetails" />
-                    </MultiBinding>
+                          <Binding Path="ArticleDetails" Converter="{StaticResource TotalQuantityConverter}"/>
                     </DataGridTextColumn.Binding>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Entry price" Binding="{Binding ArticleDetails[0].EntryPrice}"/>
+                
                 <DataGridTextColumn Header="Price" Binding="{Binding Price}"/>
 
                 <DataGridTemplateColumn Header="Edit">
