@@ -19,6 +19,7 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand _showAddArticleDialogCommand;
         private DelegateCommand _getAllArticlesCommand;
         private DelegateCommand _showAddArticleByDataEntryCommand;
+        private DelegateCommand<Article> _showArticleDetailsCommand;
         private DelegateCommand<Article> _deleteArticleCommand;
         private ObservableCollection<Article> _articles;
         private List<ArticleDetails> _articleDetailsList;
@@ -75,6 +76,15 @@ namespace RestaurantApp.ViewModels
             }
         }
 
+        public DelegateCommand<Article> ShowArticleDetailsCommand
+        {
+            get
+            {
+                _showArticleDetailsCommand = new DelegateCommand<Article>(ShowArticleDetails);
+                return _showArticleDetailsCommand;
+            }
+        }
+
         public ObservableCollection<Article> Articles
         {
             get => _articles;
@@ -100,12 +110,12 @@ namespace RestaurantApp.ViewModels
 
         private void ShowEditArticleDialog(Article article)
         {
-            DialogParameters dialogParametars = new DialogParameters
+            DialogParameters dialogParameters = new DialogParameters
             {
                 { "article", article }
             };
 
-            _dialogService.ShowDialog("editArticleDialog", dialogParametars, r =>
+            _dialogService.ShowDialog("editArticleDialog", dialogParameters, r =>
             {
                 Article resultData = r.Parameters.GetValue<Article>("article");
             });
@@ -124,13 +134,23 @@ namespace RestaurantApp.ViewModels
 
         private async void ShowAddArticleByDataEntry()
         {
-            _regionManager.RequestNavigate("MainRegion","AddArticleBydataEntry");
+            _regionManager.RequestNavigate("MainRegion","AddArticleByDataEntry");
         }
 
         private async void DeleteArticle(Article article)
         {
             await _databaseService.DeleteArticle(article);
             Articles.Remove(article);
+        }
+
+        private async void ShowArticleDetails(Article article)
+        {
+            NavigationParameters navigationParameters = new NavigationParameters
+            {
+                { "article", article }
+            };
+
+            _regionManager.RequestNavigate("MainRegion","ArticleDetails", navigationParameters);
         }
     }
 }

@@ -18,7 +18,6 @@ namespace RestaurantApp.ViewModels
         private Table _table = new Table();
         private string _barcode;
         private DelegateCommand<Table> _getTableCommand;
-        //private DelegateCommand _showPaymentUserControlCommand;
         private DelegateCommand _showPaymentUserControlCommand;
         private DelegateCommand<Article> _deleteArticleFromTableCommand;
 
@@ -163,7 +162,6 @@ namespace RestaurantApp.ViewModels
             Articles = _table.Articles;
         }
 
-
         public void SellArticles(List<Article> articles)
         {
             foreach (Article article in articles)
@@ -273,6 +271,5 @@ namespace RestaurantApp.ViewModels
 
             _regionManager.RequestNavigate("MainRegion", "Payment", navigationParameters);
         }
-
     }
 }
