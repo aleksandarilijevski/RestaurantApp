@@ -128,5 +128,11 @@ namespace RestaurantApp.Services
             ArticleDetails articleDetails = await _efContext.ArticleDetails.FirstOrDefaultAsync(x => x.ID == id);
             return articleDetails;
         }
+
+        public async Task DeleteArticleDetails(ArticleDetails articleDetails)
+        {
+            _efContext.ArticleDetails.Remove(articleDetails);
+            await _efContext.SaveChangesAsync();
+        }
     }
 }

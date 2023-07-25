@@ -26,7 +26,7 @@
                 <DataGridTemplateColumn Header="Delete">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="Delete" Command="" CommandParameter=""/>
+                            <Button Content="Delete" Command="{Binding DataContext.DeleteArticleDetailsCommand,RelativeSource={RelativeSource AncestorType={x:Type local:ArticleDetails}}}" CommandParameter="{Binding}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

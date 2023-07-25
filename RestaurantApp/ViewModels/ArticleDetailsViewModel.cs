@@ -13,6 +13,7 @@ namespace RestaurantApp.ViewModels
         private IDatabaseService _databaseService;
         private IDialogService _dialogService;
         private DelegateCommand<ArticleDetails> _showEditArticleDetailCommand;
+        private DelegateCommand<ArticleDetails> _deleteArticleDetailsCommand;
         private Article _article;
 
         public ArticleDetailsViewModel(IDatabaseService databaseService, IDialogService dialogService)
@@ -31,6 +32,7 @@ namespace RestaurantApp.ViewModels
             set
             {
                 _article = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -40,6 +42,15 @@ namespace RestaurantApp.ViewModels
             {
                 _showEditArticleDetailCommand = new DelegateCommand<ArticleDetails>(ShowEditArticleDetail);
                 return _showEditArticleDetailCommand;
+            }
+        }
+
+        public DelegateCommand<ArticleDetails> DeleteArticleDetailsCommand
+        {
+            get
+            {
+                _deleteArticleDetailsCommand = new DelegateCommand<ArticleDetails>(DeleteArticleDetail);
+                return _deleteArticleDetailsCommand;
             }
         }
 
@@ -62,6 +73,12 @@ namespace RestaurantApp.ViewModels
         {
             ArticleDetails articleDetails = await _databaseService.GetArticleDetailsByID(id);
             return articleDetails;
+        }
+
+        private async void DeleteArticleDetail(ArticleDetails articleDetails)
+        {
+            await _databaseService.DeleteArticleDetails(articleDetails);
+            RaisePropertyChanged(nameof(Article));
         }
 
         public void ShowEditArticleDetail(ArticleDetails articleDetails)
