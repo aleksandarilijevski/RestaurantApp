@@ -38,6 +38,7 @@ namespace RestaurantApp
             ViewModelLocationProvider.Register<Payment, PaymentViewModel>();
             ViewModelLocationProvider.Register<AddArticleByDataEntry, AddArticleByDataEntryViewModel>();
             ViewModelLocationProvider.Register<ArticleDetails, ArticleDetailsViewModel>();
+            ViewModelLocationProvider.Register<EditArticleDetail, EditArticleDetailViewModel>();
         }
 
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)

@@ -39,5 +39,7 @@ namespace RestaurantApp.Services.Interface
         public Task EditArticleDetails(ArticleDetails articleDetails);
 
         public Task AddDataEntry(DataEntry dataEntry);
+
+        public Task<ArticleDetails> GetArticleDetailsByID(int id);
     }
 }

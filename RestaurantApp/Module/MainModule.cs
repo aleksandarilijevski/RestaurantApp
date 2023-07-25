@@ -30,6 +30,7 @@ namespace RestaurantApp.Module
             containerRegistry.RegisterDialog<AddArticle, AddArticleViewModel>("addArticleDialog");
             containerRegistry.RegisterDialog<EditWaiter, EditWaiterViewModel>("editWaiterDialog");
             containerRegistry.RegisterDialog<AddWaiter, AddWaiterViewModel>("addWaiterDialog");
+            containerRegistry.RegisterDialog<EditArticleDetail, EditArticleDetailViewModel>("editArticleDetailDialog");
         }
     }
 }

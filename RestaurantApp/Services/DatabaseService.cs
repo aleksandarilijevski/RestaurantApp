@@ -123,6 +123,10 @@ namespace RestaurantApp.Services
             await _efContext.SaveChangesAsync();
         }
 
-
+        public async Task<ArticleDetails> GetArticleDetailsByID(int id)
+        {
+            ArticleDetails articleDetails = await _efContext.ArticleDetails.FirstOrDefaultAsync(x => x.ID == id);
+            return articleDetails;
+        }
     }
 }
