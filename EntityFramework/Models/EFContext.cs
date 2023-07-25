@@ -11,11 +11,14 @@ namespace EntityFramework.Models
 
             foreach (EntityEntry entityEntry in entries)
             {
-                ((BaseEntity)entityEntry.Entity).ModifiedDateTime = DateTime.Now;
-
                 if (entityEntry.State == EntityState.Added)
                 {
                     ((BaseEntity)entityEntry.Entity).CreatedDateTime = DateTime.Now;
+                }
+
+                if (entityEntry.State == EntityState.Modified)
+                {
+                    ((BaseEntity)entityEntry.Entity).ModifiedDateTime = DateTime.Now;
                 }
             }
 
