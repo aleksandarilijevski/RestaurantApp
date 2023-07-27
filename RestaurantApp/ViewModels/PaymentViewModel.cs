@@ -4,7 +4,10 @@ using PdfSharp.Pdf;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
+using System.IO;
+using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace RestaurantApp.ViewModels
 {
@@ -38,7 +41,7 @@ namespace RestaurantApp.ViewModels
         {
             get
             {
-               // _getTotalPriceCommand = new DelegateCommand(GetTotalPrice);
+               _getTotalPriceCommand = new DelegateCommand(GetTotalPrice);
                 return _getTotalPriceCommand;
             }
         }
@@ -66,14 +69,14 @@ namespace RestaurantApp.ViewModels
         {
         }
 
-        private void IssueBill()
+        private async void IssueBill()
         {
-            //decimal totalPrice = CalculateTotalPrice();
+            decimal totalPrice = CalculateTotalPrice();
 
             PdfDocument document = new PdfDocument();
             PdfPage page = document.AddPage();
             page.Width = 500;
-            page.Height = 750;
+            //page.Height = 760;
             XGraphics gfx = XGraphics.FromPdfPage(page);
 
             XPen pen = new XPen(XColors.Black, 1);
@@ -117,58 +120,106 @@ namespace RestaurantApp.ViewModels
                     gfx.DrawString(article.Name, font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
                 }
 
-                //gfx.DrawString($"{article.Price}".PadLeft(28) + $"{article.Quantity}".PadLeft(18), font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+                gfx.DrawString($"{article.Price}".PadLeft(28) + $"{article.Quantity}".PadLeft(18) + $"{article.Price * article.Quantity}".PadLeft(28), font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
                 offset += 20;
             }
 
-            //gfx.DrawString($"{totalPrice}".PadLeft(82), font, XBrushes.Black, new XRect(0, offset, page.Width, 0));
+            offset += 5;
+            gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+
+            offset += 15;
+            gfx.DrawString($"Ukupan iznos :", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+            gfx.DrawString($"{totalPrice}".PadLeft(78), font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+
+            offset += 20;
+            gfx.DrawString("Gotovina :", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+
+            offset += 20;
+            gfx.DrawString("Povracaj :", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
 
             offset += 20;
             gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
 
-            //gfx.DrawString("Ukupan iznos :", font, XBrushes.Black, new XRect(15, 240, page.Width, 0));
-            //gfx.DrawString("Gotovina :", font, XBrushes.Black, new XRect(15, 260, page.Width, 0));
-            //gfx.DrawString("Povracaj :", font, XBrushes.Black, new XRect(15, 280, page.Width, 0));
-            //gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, 300, page.Width, 0));
-            //gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, 305, page.Width, 0));
-            //gfx.DrawString("Oznaka              Ime         Stopa                            Porez", font, XBrushes.Black, new XRect(15, 320, page.Width, 0));
-            //gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, 335, page.Width, 0));
-            //gfx.DrawString("Ukupan iznos poreza:", font, XBrushes.Black, new XRect(15, 350, page.Width, 0));
-            //gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, 365, page.Width, 0));
-            //gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, 370, page.Width, 0));
-            //gfx.DrawString("PFR Vreme:", font, XBrushes.Black, new XRect(15, 385, page.Width, 0));
-            //gfx.DrawString("PFR br.rac:", font, XBrushes.Black, new XRect(15, 405, page.Width, 0));
-            //gfx.DrawString("Brojac racuna:", font, XBrushes.Black, new XRect(15, 425, page.Width, 0));
-            //gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, 445, page.Width, 0));
-            //gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, 450, page.Width, 0));
+            offset += 5;
+            gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
 
-            //XImage image = await GetCustomQRCode("http://google.com/");
-            //gfx.DrawImage(image, 150, 460, 200, 200);
+            offset += 15;
+            gfx.DrawString("Oznaka              Ime         Stopa                            Porez", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+            
+            offset += 15;
+            gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+            
+            offset += 15;
+            gfx.DrawString("Ukupan iznos poreza:", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
 
-            //gfx.DrawString("============KRAJ FISKALNOG RACUNA============", font, XBrushes.Black, new XRect(10, 690, page.Width, 0));
-            //gfx.DrawString("HVALA NA POSETI".PadLeft(48), font, XBrushes.Black, new XRect(10, 710, page.Width, 0)); ;
-            //gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, 730, page.Width, 0));
+            offset += 15;
+            gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+
+            offset += 5;
+            gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+            
+            offset += 15;
+            gfx.DrawString("PFR Vreme:", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+
+            offset += 20;
+            gfx.DrawString("PFR br.rac:", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+
+            offset += 20;
+            gfx.DrawString("Brojac racuna:", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+
+            offset += 15;
+            gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+
+            offset += 5;
+            gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+
+            XImage image = await GetCustomQRCode("http://google.com/");
+
+            offset += 10;
+            gfx.DrawImage(image, 150, offset, 200, 200);
+
+            offset += 230;
+            gfx.DrawString("============KRAJ FISKALNOG RACUNA============", font, XBrushes.Black, new XRect(10, offset, page.Width, 0));
+
+            offset += 20;
+            gfx.DrawString("HVALA NA POSETI".PadLeft(48), font, XBrushes.Black, new XRect(10, offset, page.Width, 0)); ;
+
+            offset += 15;
+            gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+
+            page.Height += 15;
 
             document.Save("C:\\Users\\ilije\\OneDrive\\Desktop\\invoice.pdf");
             document.Close();
         }
 
-        //private void GetTotalPrice()
-        //{
-        //    _totalPrice = CalculateTotalPrice();
-        //    RaisePropertyChanged(nameof(TotalPrice));
-        //}
+        private void GetTotalPrice()
+        {
+            _totalPrice = CalculateTotalPrice();
+            RaisePropertyChanged(nameof(TotalPrice));
+        }
 
-        //private decimal CalculateTotalPrice()
-        //{
-        //    decimal totalPrice = 0;
+        private decimal CalculateTotalPrice()
+        {
+            decimal totalPrice = 0;
 
-        //    foreach (Article article in _table.Articles)
-        //    {
-        //        totalPrice += article.Price * article.Quantity;
-        //    }
+            foreach (Article article in _table.Articles)
+            {
+                totalPrice += article.Price * article.Quantity;
+            }
 
-        //    return totalPrice;
-        //}
+            return totalPrice;
+        }
+
+        private async Task<XImage> GetCustomQRCode(string text)
+        {
+            string url = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + text;
+
+            HttpClient client = new HttpClient();
+            Stream stream = await client.GetStreamAsync(url);
+
+            XImage image = XImage.FromStream(stream);
+            return image;
+        }
     }
 }

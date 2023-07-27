@@ -15,7 +15,6 @@ namespace RestaurantApp.Services
         public DatabaseService(EFContext efContext)
         {
             _efContext = efContext;
-            _efContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
         public async Task<ObservableCollection<Article>> GetAllArticles()
