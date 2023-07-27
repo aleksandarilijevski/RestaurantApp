@@ -48,20 +48,6 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public List<Article> Articles
-        {
-            get
-            {
-                return _table.Articles;
-            }
-
-            set
-            {
-                _table.Articles = value;
-                RaisePropertyChanged();
-            }
-        }
-
         public Dictionary<int, ObservableCollection<Article>> TemporarySales
         {
             get
@@ -192,7 +178,6 @@ namespace RestaurantApp.ViewModels
             }
 
             _temporarySales[_table.ID] = new ObservableCollection<Article>(_table.Articles);
-            //Articles = _table.Articles;
         }
 
         private int GetAvailableQuantity(List<ArticleDetails> articleDetails)
@@ -225,7 +210,6 @@ namespace RestaurantApp.ViewModels
 
             if (_table.Articles.Count > 0)
             {
-                //Articles = _table.Articles;
                 TemporarySales[_tableId] = new ObservableCollection<Article>(_table.Articles);
             }
 
@@ -270,7 +254,7 @@ namespace RestaurantApp.ViewModels
 
         private async void ShowPaymentUserControl()
         {
-            if (Articles.Count == 0)
+            if (TemporarySales.Count == 0)
             {
                 MessageBox.Show("There are no articles to be paid!", "Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
