@@ -4,6 +4,7 @@ using Prism.Mvvm;
 using Prism.Regions;
 using RestaurantApp.Services.Interface;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -20,6 +21,7 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand<Table> _getTableCommand;
         private DelegateCommand _showPaymentUserControlCommand;
         private DelegateCommand<Article> _deleteArticleFromTableCommand;
+        private Dictionary<int, ObservableCollection<Article>> _temporarySales = new Dictionary<int, ObservableCollection<Article>>();
 
         public int TableID
         {
@@ -56,6 +58,20 @@ namespace RestaurantApp.ViewModels
             set
             {
                 _table.Articles = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public Dictionary<int, ObservableCollection<Article>> TemporarySales
+        {
+            get
+            {
+                return _temporarySales;
+            }
+
+            set
+            {
+                _temporarySales = value;
                 RaisePropertyChanged();
             }
         }
@@ -130,24 +146,40 @@ namespace RestaurantApp.ViewModels
 
             if (article is null)
             {
-                MessageBox.Show("Article with entered barcode doesn't exist in the system!","Ordering",MessageBoxButton.OK,MessageBoxImage.Error);
+                MessageBox.Show("Article with entered barcode doesn't exist in the system!", "Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            bool isAvailable = await CheckIfQuantityIsAvailable(article);
+            bool isAvailable = await IfQuantityIsAvailable(article);
 
             if (isAvailable)
             {
-                await CheckIfArticleExistsOnTable(article);
+                await IfArticleExistsOnTable(article);
                 await EditTable(_table);
             }
 
             Barcode = string.Empty;
+            RaisePropertyChanged(nameof(TemporarySales));
         }
 
-        private async Task CheckIfArticleExistsOnTable(Article article)
+        private async Task<bool> IfQuantityIsAvailable(Article article)
         {
+            int quantity = GetAvailableQuantity(article.ArticleDetails);
 
+            if (article.Quantity < quantity)
+            {
+                return true;
+            }
+            else
+            {
+                MessageBox.Show("Article is not in stock!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+        }
+
+
+        private async Task IfArticleExistsOnTable(Article article)
+        {
             if (_table.Articles.Contains(article))
             {
                 article.Quantity++;
@@ -159,47 +191,8 @@ namespace RestaurantApp.ViewModels
                 _table.Articles.Add(article);
             }
 
-            Articles = _table.Articles;
-        }
-
-        public void SellArticles(List<Article> articles)
-        {
-            foreach (Article article in articles)
-            {
-                foreach (ArticleDetails articleDetails in article.ArticleDetails)
-                {
-                    if (article.Quantity <= articleDetails.Quantity)
-                    {
-                        articleDetails.Quantity -= article.Quantity;
-                        article.Quantity = 0;
-                        _databaseService.EditArticleDetails(articleDetails);
-                        break;
-                    }
-                    else
-                    {
-                        article.Quantity -= articleDetails.Quantity;
-                        articleDetails.Quantity = 0;
-
-                        _databaseService.EditArticleDetails(articleDetails);
-                    }
-                }
-            }
-        }
-
-        private async Task<bool> CheckIfQuantityIsAvailable(Article article)
-        {
-            int quantity = GetAvailableQuantity(article.ArticleDetails);
-
-            if (article.Quantity < quantity)
-            {
-                return true;
-            }
-            else
-            {
-                MessageBox.Show("Article is not in stock!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-
-            return false;
+            _temporarySales[_table.ID] = new ObservableCollection<Article>(_table.Articles);
+            //Articles = _table.Articles;
         }
 
         private int GetAvailableQuantity(List<ArticleDetails> articleDetails)
@@ -232,14 +225,33 @@ namespace RestaurantApp.ViewModels
 
             if (_table.Articles.Count > 0)
             {
-                Articles = _table.Articles;
+                //Articles = _table.Articles;
+                TemporarySales[_tableId] = new ObservableCollection<Article>(_table.Articles);
             }
+
+            await AddArticlesToTemporarySales();
+        }
+
+        private async Task AddArticlesToTemporarySales()
+        {
+            List<Table> tables = await _databaseService.GetAllTables();
+
+            foreach (Table table in tables)
+            {
+                if (table.Articles is null)
+                {
+                    _temporarySales.Add(table.ID, new ObservableCollection<Article>(table.Articles));
+                }
+            }
+
+            RaisePropertyChanged(nameof(TemporarySales));
         }
 
         private async void DeleteArticleFromTable(Article article)
         {
             article.Quantity = 0;
             _table.Articles.Remove(article);
+            _temporarySales[_tableId].Remove(article);
             await EditTable(_table);
 
             if (_table.Articles.Count == 0)
@@ -248,7 +260,7 @@ namespace RestaurantApp.ViewModels
                 await EditTable(_table);
             }
 
-            RaisePropertyChanged(nameof(Articles));
+            RaisePropertyChanged(nameof(TemporarySales));
         }
 
         private async Task EditTable(Table table)
@@ -271,5 +283,29 @@ namespace RestaurantApp.ViewModels
 
             _regionManager.RequestNavigate("MainRegion", "Payment", navigationParameters);
         }
+
+        //public void SellArticles(List<Article> articles)
+        //{
+        //    foreach (Article article in articles)
+        //    {
+        //        foreach (ArticleDetails articleDetails in article.ArticleDetails)
+        //        {
+        //            if (article.Quantity <= articleDetails.Quantity)
+        //            {
+        //                articleDetails.Quantity -= article.Quantity;
+        //                article.Quantity = 0;
+        //                _databaseService.EditArticleDetails(articleDetails);
+        //                break;
+        //            }
+        //            else
+        //            {
+        //                article.Quantity -= articleDetails.Quantity;
+        //                articleDetails.Quantity = 0;
+
+        //                _databaseService.EditArticleDetails(articleDetails);
+        //            }
+        //        }
+        //    }
+        //}
     }
 }

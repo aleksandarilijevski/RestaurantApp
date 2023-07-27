@@ -147,7 +147,7 @@ namespace RestaurantApp.ViewModels
 
             if (article != null)
             {
-                article.Quantity = 1;
+                //article.Quantity = 1;
 
                 articleDetails.Article = article;
                 DataEntryArticles.Add(articleDetails);

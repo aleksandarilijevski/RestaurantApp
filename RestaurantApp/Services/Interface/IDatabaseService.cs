@@ -1,4 +1,5 @@
 ﻿using EntityFramework.Models;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
@@ -31,6 +32,8 @@ namespace RestaurantApp.Services.Interface
         public Task<int> AddTable(Table table);
 
         public Task EditTable(Table table);
+
+        public Task<List<Table>> GetAllTables();
 
         public Task<ArticleDetails> GetArticleDetailsByArticleID(int id);
 

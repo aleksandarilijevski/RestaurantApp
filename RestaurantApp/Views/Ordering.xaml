@@ -27,7 +27,7 @@
             <TextBox.InputBindings>
                 <KeyBinding Command="{Binding AddArticleToTableCommand}" CommandParameter="{Binding Text,ElementName=searchBox}" Key="Enter" />
             </TextBox.InputBindings>
-                        
+
             <TextBox.Style>
                 <Style TargetType="TextBox">
                     <Style.Triggers>
@@ -36,16 +36,16 @@
                             <Setter Property="FocusManager.FocusedElement" Value="{Binding RelativeSource={RelativeSource Self}}"/>
                         </DataTrigger>
                     </Style.Triggers>
-                
-                    
-                    
+
+
+
                 </Style>
             </TextBox.Style>
         </TextBox>
 
         <TextBlock Text="{Binding TableID, StringFormat='Order for table ID : {0}'}" Grid.Row="1" TextAlignment="Center" FontSize="17" Background="White" />
 
-        <DataGrid Grid.Row="2" CanUserAddRows="False" AutoGenerateColumns="False" Grid.ColumnSpan="2" ItemsSource="{Binding Articles, IsAsync=True}" EnableColumnVirtualization="true" EnableRowVirtualization="true">
+        <DataGrid Grid.Row="2" CanUserAddRows="False" AutoGenerateColumns="False" Grid.ColumnSpan="2" ItemsSource="{Binding TemporarySales.Values, IsAsync=True}" EnableColumnVirtualization="true" EnableRowVirtualization="true">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding ID}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Barcode" Binding="{Binding Barcode}" IsReadOnly="True" />
@@ -56,7 +56,7 @@
                 <DataGridTemplateColumn Header="Delete">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="Delete" Command="{Binding DataContext.DeleteArticleFromTableCommand,RelativeSource={RelativeSource AncestorType={x:Type local:Ordering}}}" CommandParameter="{Binding}"/>
+                            <Button Content="Delete" Command="{Binding DataContext.DeleteArticleFromTableCommand,RelativeSource={RelativeSource AncestorType={x:Type local:Ordering}}}" CommandParameter="{Binding Article}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

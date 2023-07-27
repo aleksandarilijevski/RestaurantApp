@@ -1,7 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
-
-namespace EntityFramework.Models
+﻿namespace EntityFramework.Models
 {
     public class Table: BaseEntity
     {

@@ -98,6 +98,12 @@ namespace RestaurantApp.Services
             await _efContext.SaveChangesAsync();
         }
 
+        public async Task<List<Table>> GetAllTables()
+        {
+            List<Table> tables = await _efContext.Tables.Select(x => x).Include(x => x.Articles).ToListAsync();
+            return tables;
+        }
+
         public async Task<ArticleDetails> GetArticleDetailsByArticleID(int id)
         {
             ArticleDetails articleDetails = await _efContext.ArticleDetails.FirstOrDefaultAsync(x => x.Article.ID == id);

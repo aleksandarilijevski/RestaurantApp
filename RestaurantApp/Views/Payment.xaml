@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:RestaurantApp.Views"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d" 
-             Height="200" Width="350">
+             Height="150" Width="350">
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
@@ -44,7 +44,7 @@
         <TextBlock Text="{Binding TotalPrice,StringFormat='Total price : {0} rsd'}" Grid.Row="2" TextAlignment="Center" Grid.ColumnSpan="2" FontSize="23"/>
 
         <Button Grid.Row="3" Grid.Column="0" Content="Issue fake bill" FontSize="15" Margin="2"/>
-        <Button Grid.Row="3" Grid.Column="1" Content="Issue bill" FontSize="15" Margin="2"/>
+        <Button Grid.Row="3" Grid.Column="1" Content="Issue bill" FontSize="15" Margin="2" Command="{Binding IssueBillCommand}"/>
 
     </Grid>
 </UserControl>
