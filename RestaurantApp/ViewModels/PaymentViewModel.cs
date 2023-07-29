@@ -187,8 +187,6 @@ namespace RestaurantApp.ViewModels
             offset += 15;
             gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
 
-            page.Height += 15;
-
             document.Save("C:\\Users\\ilije\\OneDrive\\Desktop\\invoice.pdf");
             document.Close();
         }

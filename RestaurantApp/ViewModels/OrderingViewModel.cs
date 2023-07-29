@@ -21,7 +21,7 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand<Table> _getTableCommand;
         private DelegateCommand _showPaymentUserControlCommand;
         private DelegateCommand<Article> _deleteArticleFromTableCommand;
-        private Dictionary<int, ObservableCollection<Article>> _temporarySales = new Dictionary<int, ObservableCollection<Article>>();
+        private List<Table> _temporarySales = new List<Table>();
 
         public int TableID
         {
@@ -48,7 +48,7 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public Dictionary<int, ObservableCollection<Article>> TemporarySales
+        public List<Table> TemporarySales
         {
             get
             {
@@ -177,7 +177,7 @@ namespace RestaurantApp.ViewModels
                 _table.Articles.Add(article);
             }
 
-            _temporarySales[_table.ID] = new ObservableCollection<Article>(_table.Articles);
+            _temporarySales.Add(_table);
         }
 
         private int GetAvailableQuantity(List<ArticleDetails> articleDetails)
@@ -210,32 +210,18 @@ namespace RestaurantApp.ViewModels
 
             if (_table.Articles.Count > 0)
             {
-                TemporarySales[_tableId] = new ObservableCollection<Article>(_table.Articles);
+                _temporarySales.Add(_table);
             }
 
-            await AddArticlesToTemporarySales();
-        }
 
-        private async Task AddArticlesToTemporarySales()
-        {
-            List<Table> tables = await _databaseService.GetAllTables();
-
-            foreach (Table table in tables)
-            {
-                if (table.Articles is null)
-                {
-                    _temporarySales.Add(table.ID, new ObservableCollection<Article>(table.Articles));
-                }
-            }
-
-            RaisePropertyChanged(nameof(TemporarySales));
+            _temporarySales = await _databaseService.GetAllTables();
         }
 
         private async void DeleteArticleFromTable(Article article)
         {
             article.Quantity = 0;
             _table.Articles.Remove(article);
-            _temporarySales[_tableId].Remove(article);
+            //_temporarySales.Remove(_table.Articles);
             await EditTable(_table);
 
             if (_table.Articles.Count == 0)
