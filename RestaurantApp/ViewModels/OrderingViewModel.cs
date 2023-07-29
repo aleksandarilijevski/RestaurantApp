@@ -21,7 +21,7 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand<Table> _getTableCommand;
         private DelegateCommand _showPaymentUserControlCommand;
         private DelegateCommand<Article> _deleteArticleFromTableCommand;
-        private List<Table> _temporarySales = new List<Table>();
+        private ObservableCollection<Table> _temporarySales = new ObservableCollection<Table>();
 
         public int TableID
         {
@@ -48,7 +48,7 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public List<Table> TemporarySales
+        public ObservableCollection<Table> TemporarySales
         {
             get
             {
@@ -214,7 +214,7 @@ namespace RestaurantApp.ViewModels
             }
 
 
-            _temporarySales = await _databaseService.GetAllTables();
+            _temporarySales = new ObservableCollection<Table>(await _databaseService.GetAllTables());
         }
 
         private async void DeleteArticleFromTable(Article article)

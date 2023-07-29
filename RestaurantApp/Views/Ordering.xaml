@@ -49,9 +49,9 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding ID}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Barcode" Binding="{Binding Barcode}" IsReadOnly="True" />
-                <DataGridTextColumn Header="Name" Binding="{Binding Article.Name}" IsReadOnly="True" />
-                <DataGridTextColumn Header="Quantity" Binding="{Binding Article.Quantity}" />
-                <DataGridTextColumn Header="Price" Binding="{Binding Article.Price}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}" />
+                <DataGridTextColumn Header="Price" Binding="{Binding Price}" IsReadOnly="True" />
 
                 <DataGridTemplateColumn Header="Delete">
                     <DataGridTemplateColumn.CellTemplate>
