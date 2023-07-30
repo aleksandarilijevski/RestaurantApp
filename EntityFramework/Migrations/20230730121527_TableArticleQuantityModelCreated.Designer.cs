@@ -4,6 +4,7 @@ using EntityFramework.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EntityFramework.Migrations
 {
     [DbContext(typeof(EFContext))]
-    partial class EFContextModelSnapshot : ModelSnapshot
+    [Migration("20230730121527_TableArticleQuantityModelCreated")]
+    partial class TableArticleQuantityModelCreated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -65,6 +68,9 @@ namespace EntityFramework.Migrations
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
 
                     b.HasKey("ID");
 
@@ -289,7 +295,7 @@ namespace EntityFramework.Migrations
                         .IsRequired();
 
                     b.HasOne("EntityFramework.Models.Table", "Table")
-                        .WithMany("TableArticleQuantities")
+                        .WithMany()
                         .HasForeignKey("TableID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -312,11 +318,6 @@ namespace EntityFramework.Migrations
             modelBuilder.Entity("EntityFramework.Models.DataEntry", b =>
                 {
                     b.Navigation("Articles");
-                });
-
-            modelBuilder.Entity("EntityFramework.Models.Table", b =>
-                {
-                    b.Navigation("TableArticleQuantities");
                 });
 #pragma warning restore 612, 618
         }

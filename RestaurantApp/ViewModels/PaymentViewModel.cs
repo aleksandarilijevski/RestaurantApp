@@ -120,7 +120,7 @@ namespace RestaurantApp.ViewModels
                     gfx.DrawString(article.Name, font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
                 }
 
-                gfx.DrawString($"{article.Price}".PadLeft(28) + $"{article.Quantity}".PadLeft(18) + $"{article.Price * article.Quantity}".PadLeft(28), font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+                //gfx.DrawString($"{article.Price}".PadLeft(28) + $"{article.Quantity}".PadLeft(18) + $"{article.Price * article.Quantity}".PadLeft(28), font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
                 offset += 20;
             }
 
@@ -203,7 +203,7 @@ namespace RestaurantApp.ViewModels
 
             foreach (Article article in _table.Articles)
             {
-                totalPrice += article.Price * article.Quantity;
+               // totalPrice += article.Price * article.Quantity;
             }
 
             return totalPrice;

@@ -1,12 +1,12 @@
 ﻿namespace EntityFramework.Models
 {
-    public class Table
+    public class Table : BaseEntity
     {
-        public int ID { get; set; }
-
         public bool Available { get; set; }
 
         public List<Article> Articles { get; set; }
+
+        public List<TableArticleQuantity> TableArticleQuantities { get; set; }  
 
         public int? BillID { get; set; }
 

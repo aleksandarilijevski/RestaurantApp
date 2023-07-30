@@ -4,7 +4,6 @@ using Prism.Mvvm;
 using Prism.Regions;
 using RestaurantApp.Services.Interface;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -21,7 +20,7 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand<Table> _getTableCommand;
         private DelegateCommand _showPaymentUserControlCommand;
         private DelegateCommand<Article> _deleteArticleFromTableCommand;
-        private ObservableCollection<Table> _temporarySales = new ObservableCollection<Table>();
+        private int _quantity;
 
         public int TableID
         {
@@ -48,20 +47,6 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public ObservableCollection<Table> TemporarySales
-        {
-            get
-            {
-                return _temporarySales;
-            }
-
-            set
-            {
-                _temporarySales = value;
-                RaisePropertyChanged();
-            }
-        }
-
         public string Barcode
         {
             get
@@ -72,6 +57,19 @@ namespace RestaurantApp.ViewModels
             set
             {
                 RaisePropertyChanged();
+            }
+        }
+
+        public int Quantity
+        {
+            get
+            {
+                return _quantity;
+            }
+
+            set
+            {
+                _quantity = value;
             }
         }
 
@@ -141,18 +139,48 @@ namespace RestaurantApp.ViewModels
             if (isAvailable)
             {
                 await IfArticleExistsOnTable(article);
+
+                TableArticleQuantity tableArticleQuantity = await GetTableArticleQuantity(article.ID, _table.ID);
+
+                if (tableArticleQuantity is null)
+                {
+                    tableArticleQuantity = new TableArticleQuantity
+                    {
+                        ArticleID = article.ID,
+                        TableID = _table.ID,
+                        Quantity = _quantity
+                    };
+
+                    await AddTableArticleQuantity(tableArticleQuantity);
+                }
+
+                tableArticleQuantity.Quantity = _quantity;
+                await EditTableArticleQuantity(tableArticleQuantity);
                 await EditTable(_table);
             }
 
             Barcode = string.Empty;
-            RaisePropertyChanged(nameof(TemporarySales));
+            RaisePropertyChanged(nameof(Table));
+        }
+
+        private async Task<TableArticleQuantity> GetTableArticleQuantity(int articleID, int tableID)
+        {
+            TableArticleQuantity tableArticleQuantity = await _databaseService.GetTableArticleQuantity(articleID, tableID);
+            return tableArticleQuantity;
+        }
+
+        private async Task<int> GetTableArticleTotalQuantity(int articleID)
+        {
+            int usedQuantity = await _databaseService.GetTableArticleTotalQuantity(articleID);
+            return usedQuantity;
         }
 
         private async Task<bool> IfQuantityIsAvailable(Article article)
         {
             int quantity = GetAvailableQuantity(article.ArticleDetails);
+            int usedQuantity = await GetTableArticleTotalQuantity(article.ID);
 
-            if (article.Quantity < quantity)
+            if (usedQuantity < quantity)
             {
                 return true;
             }
@@ -163,21 +191,18 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-
         private async Task IfArticleExistsOnTable(Article article)
         {
             if (_table.Articles.Contains(article))
             {
-                article.Quantity++;
+                _quantity++;
             }
             else
             {
                 _table.Available = false;
-                article.Quantity = 1;
+                _quantity = 1;
                 _table.Articles.Add(article);
             }
-
-            _temporarySales.Add(_table);
         }
 
         private int GetAvailableQuantity(List<ArticleDetails> articleDetails)
@@ -208,20 +233,12 @@ namespace RestaurantApp.ViewModels
                 _table.Articles = new List<Article>();
             }
 
-            if (_table.Articles.Count > 0)
-            {
-                _temporarySales.Add(_table);
-            }
-
-
-            _temporarySales = new ObservableCollection<Table>(await _databaseService.GetAllTables());
+            RaisePropertyChanged(nameof(Table));
         }
 
         private async void DeleteArticleFromTable(Article article)
         {
-            article.Quantity = 0;
             _table.Articles.Remove(article);
-            //_temporarySales.Remove(_table.Articles);
             await EditTable(_table);
 
             if (_table.Articles.Count == 0)
@@ -230,7 +247,12 @@ namespace RestaurantApp.ViewModels
                 await EditTable(_table);
             }
 
-            RaisePropertyChanged(nameof(TemporarySales));
+            //RaisePropertyChanged(nameof(TemporarySales));
+        }
+
+        private async Task AddTableArticleQuantity(TableArticleQuantity tableArticleQuantity)
+        {
+            await _databaseService.AddTableArticleQuantity(tableArticleQuantity);
         }
 
         private async Task EditTable(Table table)
@@ -238,9 +260,14 @@ namespace RestaurantApp.ViewModels
             await _databaseService.EditTable(table);
         }
 
+        private async Task EditTableArticleQuantity(TableArticleQuantity tableArticleQuantity)
+        {
+            await _databaseService.EditTableArticleQuantity(tableArticleQuantity);
+        }
+
         private async void ShowPaymentUserControl()
         {
-            if (TemporarySales.Count == 0)
+            if (_table.Articles.Count == 0)
             {
                 MessageBox.Show("There are no articles to be paid!", "Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;

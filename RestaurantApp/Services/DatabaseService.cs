@@ -140,5 +140,39 @@ namespace RestaurantApp.Services
             _efContext.ArticleDetails.Remove(articleDetails);
             await _efContext.SaveChangesAsync();
         }
+
+        public async Task AddTableArticleQuantity(TableArticleQuantity tableArticleQuantity)
+        {
+            _efContext.TableArticleQuantities.Add(tableArticleQuantity);
+            await _efContext.SaveChangesAsync();
+        }
+
+        public async Task<TableArticleQuantity> GetTableArticleQuantity(int articleID, int tableID)
+        {
+            TableArticleQuantity tableArticleQuantity = await _efContext.TableArticleQuantities.FirstOrDefaultAsync(x => x.TableID == tableID && x.ArticleID == articleID);
+            return tableArticleQuantity;
+        }
+
+        public async Task EditTableArticleQuantity(TableArticleQuantity tableArticleQuantity)
+        {
+            _efContext.Entry(tableArticleQuantity).State = EntityState.Modified;
+            await _efContext.SaveChangesAsync();
+        }
+
+        public async Task<int> GetTableArticleTotalQuantity(int articleID)
+        {
+            int totalQuantity = 0;
+
+            List<TableArticleQuantity> tableArticleQuantities = await _efContext.TableArticleQuantities.Select(x => x)
+                .Where(x => x.ArticleID == articleID)
+                .ToListAsync();
+
+            foreach (TableArticleQuantity tableArticleQuantity in tableArticleQuantities)
+            {
+                totalQuantity += tableArticleQuantity.Quantity;
+            }
+
+            return totalQuantity;
+        }
     }
 }

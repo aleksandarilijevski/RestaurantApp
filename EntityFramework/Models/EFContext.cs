@@ -41,5 +41,7 @@ namespace EntityFramework.Models
         public DbSet<ArticleDetails> ArticleDetails { get; set; }
 
         public DbSet<DataEntry> DataEntries { get; set; }
+
+        public DbSet<TableArticleQuantity> TableArticleQuantities { get; set; }
     }
 }
