@@ -20,7 +20,6 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand<Table> _getTableCommand;
         private DelegateCommand _showPaymentUserControlCommand;
         private DelegateCommand<Article> _deleteArticleFromTableCommand;
-        private int _quantity;
 
         public int TableID
         {
@@ -60,19 +59,6 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public int Quantity
-        {
-            get
-            {
-                return _quantity;
-            }
-
-            set
-            {
-                _quantity = value;
-            }
-        }
-
         public DelegateCommand<Table> GetTableCommand
         {
             get
@@ -109,20 +95,26 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public void OnNavigatedTo(NavigationContext navigationContext)
+        /// <summary>
+        /// While loading usercontrol it's getting table by id from the database
+        /// </summary>
+        private async Task GetTable(int id)
         {
-            _tableId = int.Parse(navigationContext.Parameters["id"].ToString());
+            _table = await _databaseService.GetTableByID(id);
+
+            if (_table is null)
+            {
+                Table table = new Table { Available = true };
+                _table = table;
+                await _databaseService.AddTable(table);
+            }
+
+            RaisePropertyChanged(nameof(Table));
         }
 
-        public bool IsNavigationTarget(NavigationContext navigationContext)
-        {
-            return false;
-        }
-
-        public void OnNavigatedFrom(NavigationContext navigationContext)
-        {
-        }
-
+        /// <summary>
+        /// Adding article to the table
+        /// </summary>
         private async void AddArticleToTable(string barcode)
         {
             long.TryParse(barcode, out long barcodeLong);
@@ -134,27 +126,24 @@ namespace RestaurantApp.ViewModels
                 return;
             }
 
-            bool isAvailable = await IfQuantityIsAvailable(article);
+            bool isQuantityAvailable = await IfQuantityIsAvailable(article);
 
-            if (isAvailable)
+            if (isQuantityAvailable)
             {
-                await IfArticleExistsOnTable(article);
-
-                TableArticleQuantity tableArticleQuantity = await GetTableArticleQuantity(article.ID, _table.ID);
+                TableArticleQuantity tableArticleQuantity = await _databaseService.GetTableArticleQuantity(article.ID, _table.ID);
 
                 if (tableArticleQuantity is null)
                 {
                     tableArticleQuantity = new TableArticleQuantity
                     {
                         ArticleID = article.ID,
-                        TableID = _table.ID,
-                        Quantity = _quantity
+                        TableID = _table.ID
                     };
 
                     await AddTableArticleQuantity(tableArticleQuantity);
                 }
 
-                tableArticleQuantity.Quantity = _quantity;
+                await CheckIfArticleIsOnTable(article, tableArticleQuantity);
                 await EditTableArticleQuantity(tableArticleQuantity);
                 await EditTable(_table);
             }
@@ -163,18 +152,28 @@ namespace RestaurantApp.ViewModels
             RaisePropertyChanged(nameof(Table));
         }
 
-        private async Task<TableArticleQuantity> GetTableArticleQuantity(int articleID, int tableID)
+        /// <summary>
+        /// Checking if article is on table
+        /// If article is on table do quantity++
+        /// If article is not on the table, add it and set quantity to 1
+        /// </summary>
+        private async Task CheckIfArticleIsOnTable(Article article,TableArticleQuantity tableArticleQuantity)
         {
-            TableArticleQuantity tableArticleQuantity = await _databaseService.GetTableArticleQuantity(articleID, tableID);
-            return tableArticleQuantity;
+            if (_table.TableArticleQuantities.Count is 0)
+            {
+                _table.Available = false;
+                tableArticleQuantity.Quantity = 1;
+                _table.TableArticleQuantities.Add(tableArticleQuantity);
+            }
+            else
+            {
+                tableArticleQuantity.Quantity++;
+            }
         }
 
-        private async Task<int> GetTableArticleTotalQuantity(int articleID)
-        {
-            int usedQuantity = await _databaseService.GetTableArticleTotalQuantity(articleID);
-            return usedQuantity;
-        }
-
+        /// <summary>
+        /// Calculating if quantity is available
+        /// </summary>
         private async Task<bool> IfQuantityIsAvailable(Article article)
         {
             int quantity = GetAvailableQuantity(article.ArticleDetails);
@@ -191,20 +190,9 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        private async Task IfArticleExistsOnTable(Article article)
-        {
-            if (_table.Articles.Contains(article))
-            {
-                _quantity++;
-            }
-            else
-            {
-                _table.Available = false;
-                _quantity = 1;
-                _table.Articles.Add(article);
-            }
-        }
-
+        /// <summary>
+        /// Calculating available quantity of the article
+        /// </summary>
         private int GetAvailableQuantity(List<ArticleDetails> articleDetails)
         {
             int quantity = 0;
@@ -217,57 +205,70 @@ namespace RestaurantApp.ViewModels
             return quantity;
         }
 
-        private async Task GetTable(int id)
-        {
-            _table = await _databaseService.GetTableByID(id);
-
-            if (_table is null)
-            {
-                Table table = new Table { Available = true };
-                _table = table;
-                await _databaseService.AddTable(table);
-            }
-
-            if (_table.Articles is null)
-            {
-                _table.Articles = new List<Article>();
-            }
-
-            RaisePropertyChanged(nameof(Table));
-        }
-
         private async void DeleteArticleFromTable(Article article)
         {
-            _table.Articles.Remove(article);
+            TableArticleQuantity tableArticleQuantity = await GetTableArticleQuantity(article.ID, _table.ID);
+            _table.TableArticleQuantities.Remove(tableArticleQuantity);
             await EditTable(_table);
 
-            if (_table.Articles.Count == 0)
+            if (_table.TableArticleQuantities.Count == 0)
             {
                 _table.Available = true;
                 await EditTable(_table);
             }
 
-            //RaisePropertyChanged(nameof(TemporarySales));
+            RaisePropertyChanged(nameof(Table));
         }
 
-        private async Task AddTableArticleQuantity(TableArticleQuantity tableArticleQuantity)
-        {
-            await _databaseService.AddTableArticleQuantity(tableArticleQuantity);
-        }
-
+        /// <summary>
+        /// Function for adding table model
+        /// </summary>
         private async Task EditTable(Table table)
         {
             await _databaseService.EditTable(table);
         }
 
+        /// <summary>
+        /// Function for adding table article quantity model
+        /// </summary>
+        private async Task AddTableArticleQuantity(TableArticleQuantity tableArticleQuantity)
+        {
+            await _databaseService.AddTableArticleQuantity(tableArticleQuantity);
+        }
+
+        /// <summary>
+        /// Function for editing table article quantity model
+        /// </summary>
         private async Task EditTableArticleQuantity(TableArticleQuantity tableArticleQuantity)
         {
             await _databaseService.EditTableArticleQuantity(tableArticleQuantity);
         }
 
+        /// <summary>
+        /// Getting table article quantity model by ArticleID and TableID from database.
+        /// </summary>
+        private async Task<TableArticleQuantity> GetTableArticleQuantity(int articleID, int tableID)
+        {
+            TableArticleQuantity tableArticleQuantity = await _databaseService.GetTableArticleQuantity(articleID, tableID);
+            return tableArticleQuantity;
+        }
+
+        /// <summary>
+        /// Getting table article total used quantity by ArticleID
+        /// </summary>
+        private async Task<int> GetTableArticleTotalQuantity(int articleID)
+        {
+            int usedQuantity = await _databaseService.GetTableArticleTotalQuantity(articleID);
+            return usedQuantity;
+        }
+
+        /// <summary>
+        /// Showing payment usercontrol
+        /// If there are no articles on table we will get error message
+        /// </summary>
         private async void ShowPaymentUserControl()
         {
-            if (_table.Articles.Count == 0)
+            if (_table.TableArticleQuantities.Count == 0)
             {
                 MessageBox.Show("There are no articles to be paid!", "Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -281,28 +282,18 @@ namespace RestaurantApp.ViewModels
             _regionManager.RequestNavigate("MainRegion", "Payment", navigationParameters);
         }
 
-        //public void SellArticles(List<Article> articles)
-        //{
-        //    foreach (Article article in articles)
-        //    {
-        //        foreach (ArticleDetails articleDetails in article.ArticleDetails)
-        //        {
-        //            if (article.Quantity <= articleDetails.Quantity)
-        //            {
-        //                articleDetails.Quantity -= article.Quantity;
-        //                article.Quantity = 0;
-        //                _databaseService.EditArticleDetails(articleDetails);
-        //                break;
-        //            }
-        //            else
-        //            {
-        //                article.Quantity -= articleDetails.Quantity;
-        //                articleDetails.Quantity = 0;
+        public void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            _tableId = int.Parse(navigationContext.Parameters["id"].ToString());
+        }
 
-        //                _databaseService.EditArticleDetails(articleDetails);
-        //            }
-        //        }
-        //    }
-        //}
+        public bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return false;
+        }
+
+        public void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+        }
     }
 }

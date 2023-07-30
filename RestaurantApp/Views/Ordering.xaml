@@ -45,13 +45,13 @@
 
         <TextBlock Text="{Binding TableID, StringFormat='Order for table ID : {0}'}" Grid.Row="1" TextAlignment="Center" FontSize="17" Background="White" />
 
-        <DataGrid Grid.Row="2" CanUserAddRows="False" AutoGenerateColumns="False" Grid.ColumnSpan="2" ItemsSource="{Binding Table.Articles, IsAsync=True}" EnableColumnVirtualization="true" EnableRowVirtualization="true">
+        <DataGrid Grid.Row="2" CanUserAddRows="False" AutoGenerateColumns="False" Grid.ColumnSpan="2" ItemsSource="{Binding Table.TableArticleQuantities, IsAsync=True}" EnableColumnVirtualization="true" EnableRowVirtualization="true">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding ID}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Barcode" Binding="{Binding Barcode}" IsReadOnly="True" />
-                <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True" />
+                <DataGridTextColumn Header="ID" Binding="{Binding Article.ID}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Barcode" Binding="{Binding Article.Barcode}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Name" Binding="{Binding Article.Name}" IsReadOnly="True" />
                 <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}" />
-                <DataGridTextColumn Header="Price" Binding="{Binding Price}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Price" Binding="{Binding Article.Price}" IsReadOnly="True" />
 
                 <DataGridTemplateColumn Header="Delete">
                     <DataGridTemplateColumn.CellTemplate>
