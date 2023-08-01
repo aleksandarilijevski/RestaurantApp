@@ -4,6 +4,8 @@ using PdfSharp.Pdf;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
+using RestaurantApp.Enums;
+using System;
 using System.IO;
 using System.Net.Http;
 using System.Text;
@@ -17,6 +19,7 @@ namespace RestaurantApp.ViewModels
         private Table _table;
         private DelegateCommand _issueBillCommand;
         private DelegateCommand _getTotalPriceCommand;
+        private PaymentType _paymentType;
 
         public PaymentViewModel()
         {
@@ -34,6 +37,19 @@ namespace RestaurantApp.ViewModels
             {
                 _totalPrice = value;
                 RaisePropertyChanged();
+            }
+        }
+
+        public PaymentType PaymentType
+        {
+            get
+            {
+                return _paymentType;
+            }
+
+            set
+            {
+                _paymentType = value;
             }
         }
 
@@ -160,6 +176,7 @@ namespace RestaurantApp.ViewModels
 
             offset += 15;
             gfx.DrawString("PFR Vreme:", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+            gfx.DrawString(DateTime.Now.ToString("dd/MM/yyyy  HH:mm:ss").PadLeft(70), font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
 
             offset += 20;
             gfx.DrawString("PFR br.rac:", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));

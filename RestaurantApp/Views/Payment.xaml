@@ -30,7 +30,7 @@
 
         <TextBlock Text="Payment type" TextAlignment="Center" FontSize="25" Grid.Row="0" Grid.ColumnSpan="2" />
         
-        <ComboBox Grid.Row="1" Grid.ColumnSpan="2" FontSize="18">
+        <ComboBox Grid.Row="1" Grid.ColumnSpan="2" FontSize="18" Text="{Binding PaymentType}">
             <ComboBoxItem Content="Cash" />
             <ComboBoxItem Content="Card" />
 
