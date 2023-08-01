@@ -5,7 +5,9 @@ using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
 using RestaurantApp.Enums;
+using RestaurantApp.Services.Interface;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Text;
@@ -15,15 +17,16 @@ namespace RestaurantApp.ViewModels
 {
     public class PaymentViewModel : BindableBase, INavigationAware
     {
+        private IDatabaseService _databaseService;
         private decimal _totalPrice;
         private Table _table;
         private DelegateCommand _issueBillCommand;
         private DelegateCommand _getTotalPriceCommand;
         private PaymentType _paymentType;
 
-        public PaymentViewModel()
+        public PaymentViewModel(IDatabaseService databaseService)
         {
-
+            _databaseService = databaseService;
         }
 
         public decimal TotalPrice
@@ -88,6 +91,16 @@ namespace RestaurantApp.ViewModels
         private async void IssueBill()
         {
             decimal totalPrice = CalculateTotalPrice();
+            List<Article> boughtArticles = await GetArticlesFromTable(_table.TableArticleQuantities);
+
+            Bill bill = new Bill
+            {
+                BoughtArticles = boughtArticles,
+                TotalPrice = totalPrice
+            };
+
+            await CreateBill(bill);
+            
 
             PdfDocument document = new PdfDocument();
             PdfPage page = document.AddPage();
@@ -235,6 +248,23 @@ namespace RestaurantApp.ViewModels
 
             XImage image = XImage.FromStream(stream);
             return image;
+        }
+
+        private async Task<List<Article>> GetArticlesFromTable(List<TableArticleQuantity> tableArticleQuantities)
+        {
+            List<Article> articles = new List<Article>();
+
+            foreach (TableArticleQuantity tableArticleQuantity in tableArticleQuantities)
+            {
+                articles.Add(tableArticleQuantity.Article);
+            }
+
+            return articles;
+        }
+
+        private async Task CreateBill(Bill bill)
+        {
+           await _databaseService.CreateBill(bill);
         }
     }
 }

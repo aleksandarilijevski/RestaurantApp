@@ -54,5 +54,7 @@ namespace RestaurantApp.Services.Interface
         public Task EditTableArticleQuantity(TableArticleQuantity tableArticleQuantity);
 
         public Task<int> GetTableArticleTotalQuantity(int articleID);
+
+        public Task<int> CreateBill(Bill bill);
     }
 }

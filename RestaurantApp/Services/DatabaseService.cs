@@ -174,5 +174,12 @@ namespace RestaurantApp.Services
 
             return totalQuantity;
         }
+
+        public async Task<int> CreateBill(Bill bill)
+        {
+            _efContext.Bills.Add(bill);
+            await _efContext.SaveChangesAsync();
+            return bill.ID;
+        }
     }
 }
