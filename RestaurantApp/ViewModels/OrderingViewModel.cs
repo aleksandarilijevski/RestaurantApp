@@ -15,7 +15,7 @@ namespace RestaurantApp.ViewModels
         private IRegionManager _regionManager;
         private DelegateCommand<string> _addArticleToTableCommand;
         private int _tableId;
-        private Table _table = new Table();
+        private Table _table;
         private string _barcode;
         private DelegateCommand<Table> _getTableCommand;
         private DelegateCommand _showPaymentUserControlCommand;
@@ -100,12 +100,12 @@ namespace RestaurantApp.ViewModels
         /// </summary>
         private async Task GetTable(int id)
         {
-            _table = await _databaseService.GetTableByID(id);
+            Table = await _databaseService.GetTableByID(id);
 
-            if (_table is null)
+            if (Table is null)
             {
                 Table table = new Table { Available = true };
-                _table = table;
+                Table = table;
                 await _databaseService.AddTable(table);
             }
 
@@ -137,7 +137,7 @@ namespace RestaurantApp.ViewModels
                     tableArticleQuantity = new TableArticleQuantity
                     {
                         ArticleID = article.ID,
-                        TableID = _table.ID
+                        TableID = Table.ID
                     };
 
                     await AddTableArticleQuantity(tableArticleQuantity);
@@ -149,7 +149,6 @@ namespace RestaurantApp.ViewModels
             }
 
             Barcode = string.Empty;
-            RaisePropertyChanged(nameof(Table));
         }
 
         /// <summary>
@@ -208,13 +207,13 @@ namespace RestaurantApp.ViewModels
         private async void DeleteArticleFromTable(Article article)
         {
             TableArticleQuantity tableArticleQuantity = await GetTableArticleQuantity(article.ID, _table.ID);
-            _table.TableArticleQuantities.Remove(tableArticleQuantity);
-            await EditTable(_table);
+            Table.TableArticleQuantities.Remove(tableArticleQuantity);
+            await EditTable(Table);
 
-            if (_table.TableArticleQuantities.Count == 0)
+            if (Table.TableArticleQuantities.Count == 0)
             {
-                _table.Available = true;
-                await EditTable(_table);
+                Table.Available = true;
+                await EditTable(Table);
             }
 
             RaisePropertyChanged(nameof(Table));
@@ -268,7 +267,7 @@ namespace RestaurantApp.ViewModels
         /// </summary>
         private async void ShowPaymentUserControl()
         {
-            if (_table.TableArticleQuantities.Count == 0)
+            if (Table.TableArticleQuantities.Count == 0)
             {
                 MessageBox.Show("There are no articles to be paid!", "Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -276,7 +275,7 @@ namespace RestaurantApp.ViewModels
 
             NavigationParameters navigationParameters = new NavigationParameters
             {
-                { "table",  _table}
+                { "table",  Table}
             };
 
             _regionManager.RequestNavigate("MainRegion", "Payment", navigationParameters);
