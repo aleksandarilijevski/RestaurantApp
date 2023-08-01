@@ -130,7 +130,7 @@ namespace RestaurantApp.ViewModels
 
             if (isQuantityAvailable)
             {
-                TableArticleQuantity tableArticleQuantity = await _databaseService.GetTableArticleQuantity(article.ID, _table.ID);
+                TableArticleQuantity tableArticleQuantity = await _databaseService.GetTableArticleQuantity(article.ID, Table.ID); ;
 
                 if (tableArticleQuantity is null)
                 {
@@ -145,7 +145,7 @@ namespace RestaurantApp.ViewModels
 
                 await CheckIfArticleIsOnTable(article, tableArticleQuantity);
                 await EditTableArticleQuantity(tableArticleQuantity);
-                await EditTable(_table);
+                await EditTable(Table);
             }
 
             Barcode = string.Empty;
@@ -158,11 +158,11 @@ namespace RestaurantApp.ViewModels
         /// </summary>
         private async Task CheckIfArticleIsOnTable(Article article,TableArticleQuantity tableArticleQuantity)
         {
-            if (_table.TableArticleQuantities.Count is 0)
+            if (Table.TableArticleQuantities.Count is 0)
             {
-                _table.Available = false;
+                Table.Available = false;
                 tableArticleQuantity.Quantity = 1;
-                _table.TableArticleQuantities.Add(tableArticleQuantity);
+                Table.TableArticleQuantities.Add(tableArticleQuantity);
             }
             else
             {
@@ -206,7 +206,7 @@ namespace RestaurantApp.ViewModels
 
         private async void DeleteArticleFromTable(Article article)
         {
-            TableArticleQuantity tableArticleQuantity = await GetTableArticleQuantity(article.ID, _table.ID);
+            TableArticleQuantity tableArticleQuantity = await GetTableArticleQuantity(article.ID, Table.ID);
             Table.TableArticleQuantities.Remove(tableArticleQuantity);
             await EditTable(Table);
 
