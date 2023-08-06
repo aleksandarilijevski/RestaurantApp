@@ -102,15 +102,14 @@ namespace RestaurantApp.ViewModels
         private async Task GetTable(int id)
         {
             //Gets table from database
-            Table tableCheck = await _databaseService.GetTableByID(id);
+            Table = await _databaseService.GetTableByID(id);
 
             //Check if table is null
             //If table is null, create new providing id and availability, add to database
-            if (tableCheck is null)
+            if (Table is null)
             {
                 Table table = new Table { ID = id, Available = true, TableArticleQuantities = new List<TableArticleQuantity>() };
                 Table = table;
-                tableCheck = table;
                 await _databaseService.AddTable(table);
             }
 
@@ -118,7 +117,7 @@ namespace RestaurantApp.ViewModels
             List<TableArticleQuantity> tableArticleQuantities = new List<TableArticleQuantity>();
 
             //Check if there is non deleted article in table, if article is not deleted add it to new list and set activeArticle value to true
-            foreach (TableArticleQuantity tableArticleQuantity in tableCheck.TableArticleQuantities)
+            foreach (TableArticleQuantity tableArticleQuantity in Table.TableArticleQuantities)
             {
                 if (tableArticleQuantity.IsDeleted == false)
                 {
@@ -131,13 +130,11 @@ namespace RestaurantApp.ViewModels
             //If not clear the list.
             if (activeArticle is true)
             {
-                tableCheck.TableArticleQuantities = tableArticleQuantities;
-                Table = tableCheck;
+                Table.TableArticleQuantities = tableArticleQuantities;
             }
             else
             {
-                tableCheck.TableArticleQuantities.Clear();
-                Table = tableCheck;
+                Table.TableArticleQuantities = new List<TableArticleQuantity>();
             }
 
             RaisePropertyChanged(nameof(Table));
