@@ -148,9 +148,9 @@ namespace RestaurantApp.Services
             await _efContext.SaveChangesAsync();
         }
 
-        public async Task<TableArticleQuantity> GetTableArticleQuantity(int articleID, int tableID)
+        public async Task<List<TableArticleQuantity>> GetTableArticleQuantities(int articleID, int tableID)
         {
-            TableArticleQuantity tableArticleQuantity = await _efContext.TableArticleQuantities.FirstOrDefaultAsync(x => x.TableID == tableID && x.ArticleID == articleID);
+            List<TableArticleQuantity> tableArticleQuantity = await _efContext.TableArticleQuantities.Select(x => x).Where(x => x.TableID == tableID && x.ArticleID == articleID).ToListAsync();
             return tableArticleQuantity;
         }
 

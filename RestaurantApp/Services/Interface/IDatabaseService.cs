@@ -49,7 +49,7 @@ namespace RestaurantApp.Services.Interface
 
         public Task AddTableArticleQuantity(TableArticleQuantity tableArticleQuantity);
 
-        public Task<TableArticleQuantity> GetTableArticleQuantity(int articleID, int tableID);
+        public Task<List<TableArticleQuantity>> GetTableArticleQuantities(int articleID, int tableID);
 
         public Task EditTableArticleQuantity(TableArticleQuantity tableArticleQuantity);
 

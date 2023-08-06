@@ -4,6 +4,7 @@ using Prism.Mvvm;
 using Prism.Regions;
 using RestaurantApp.Services.Interface;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -21,15 +22,15 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand _showPaymentUserControlCommand;
         private DelegateCommand<Article> _deleteArticleFromTableCommand;
 
-        public int TableID
-        {
-            get { return _tableId; }
-        }
-
         public OrderingViewModel(IDatabaseService databaseService, IRegionManager regionManager)
         {
             _databaseService = databaseService;
             _regionManager = regionManager;
+        }
+
+        public int TableID
+        {
+            get { return _tableId; }
         }
 
         public Table Table
@@ -161,26 +162,17 @@ namespace RestaurantApp.ViewModels
 
             if (isQuantityAvailable)
             {
-                TableArticleQuantity tableArticleQuantity = await _databaseService.GetTableArticleQuantity(article.ID, Table.ID); ;
-
-                if (tableArticleQuantity is null || tableArticleQuantity.IsDeleted == true)
+                TableArticleQuantity tableArticleQuantity = new TableArticleQuantity
                 {
-                    tableArticleQuantity = new TableArticleQuantity
-                    {
-                        ArticleID = article.ID,
-                        TableID = Table.ID,
-                        Quantity = 0,
-                        IsDeleted = false
-                    };
+                    ArticleID = article.ID,
+                    TableID = Table.ID,
+                    Quantity = 1
+                };
 
-                    await AddTableArticleQuantity(tableArticleQuantity);
-                }
-
-                await CheckIfArticleIsOnTable(article, tableArticleQuantity);
-                await EditTableArticleQuantity(tableArticleQuantity);
-                await EditTable(Table);
+                Table.TableArticleQuantities.Add(tableArticleQuantity);
             }
 
+            await EditTable(Table);
             Barcode = string.Empty;
             RaisePropertyChanged(nameof(Table));
         }
@@ -190,18 +182,11 @@ namespace RestaurantApp.ViewModels
         /// If article is on table do quantity++
         /// If article is not on the table, add it and set quantity to 1
         /// </summary>
-        private async Task CheckIfArticleIsOnTable(Article article, TableArticleQuantity tableArticleQuantity)
+        private async Task AddArticleToTable(Article article, TableArticleQuantity tableArticleQuantity)
         {
-            if (Table.TableArticleQuantities.Count is 0)
-            {
-                Table.Available = false;
-                tableArticleQuantity.Quantity = 1;
-                Table.TableArticleQuantities.Add(tableArticleQuantity);
-            }
-            else
-            {
-                tableArticleQuantity.Quantity++;
-            }
+            Table.Available = false;
+            tableArticleQuantity.Quantity = 1;
+            Table.TableArticleQuantities.Add(tableArticleQuantity);
         }
 
         /// <summary>
@@ -240,17 +225,16 @@ namespace RestaurantApp.ViewModels
 
         private async void DeleteArticleFromTable(Article article)
         {
-            TableArticleQuantity tableArticleQuantity = await GetTableArticleQuantity(article.ID, Table.ID);
-            Table.TableArticleQuantities.Remove(tableArticleQuantity);
-            await EditTable(Table);
+            //Table.TableArticleQuantities.Remove(article);
+            //await EditTable(Table);
 
-            if (Table.TableArticleQuantities.Count == 0)
-            {
-                Table.Available = true;
-                await EditTable(Table);
-            }
+            //if (Table.TableArticleQuantities.Count == 0)
+            //{
+            //    Table.Available = true;
+            //    await EditTable(Table);
+            //}
 
-            RaisePropertyChanged(nameof(Table));
+            //RaisePropertyChanged(nameof(Table));
         }
 
         /// <summary>
@@ -280,9 +264,9 @@ namespace RestaurantApp.ViewModels
         /// <summary>
         /// Getting table article quantity model by ArticleID and TableID from database.
         /// </summary>
-        private async Task<TableArticleQuantity> GetTableArticleQuantity(int articleID, int tableID)
+        private async Task<List<TableArticleQuantity>> GetTableArticleQuantities(int articleID, int tableID)
         {
-            TableArticleQuantity tableArticleQuantity = await _databaseService.GetTableArticleQuantity(articleID, tableID);
+            List<TableArticleQuantity> tableArticleQuantity = await _databaseService.GetTableArticleQuantities(articleID, tableID);
             return tableArticleQuantity;
         }
 
