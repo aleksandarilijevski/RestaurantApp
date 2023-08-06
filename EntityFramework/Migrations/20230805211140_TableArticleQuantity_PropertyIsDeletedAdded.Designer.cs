@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EntityFramework.Migrations
 {
     [DbContext(typeof(EFContext))]
-    [Migration("20230729093833_tableDoesntInheritsBaseEntity")]
-    partial class tableDoesntInheritsBaseEntity
+    [Migration("20230805211140_TableArticleQuantity_PropertyIsDeletedAdded")]
+    partial class TableArticleQuantity_PropertyIsDeletedAdded
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,21 +25,6 @@ namespace EntityFramework.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("ArticleTable", b =>
-                {
-                    b.Property<int>("ArticlesID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TablesID")
-                        .HasColumnType("int");
-
-                    b.HasKey("ArticlesID", "TablesID");
-
-                    b.HasIndex("TablesID");
-
-                    b.ToTable("ArticleTable");
-                });
-
             modelBuilder.Entity("EntityFramework.Models.Article", b =>
                 {
                     b.Property<int>("ID")
@@ -50,9 +35,6 @@ namespace EntityFramework.Migrations
 
                     b.Property<long>("Barcode")
                         .HasColumnType("bigint");
-
-                    b.Property<int?>("BillID")
-                        .HasColumnType("int");
 
                     b.Property<DateTime?>("CreatedDateTime")
                         .HasColumnType("datetime2");
@@ -67,14 +49,9 @@ namespace EntityFramework.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
+                        .HasColumnType("decimal(18,2 )");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("BillID");
 
                     b.HasIndex("DataEntryID");
 
@@ -96,7 +73,7 @@ namespace EntityFramework.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("EntryPrice")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(18,2 )");
 
                     b.Property<DateTime?>("ModifiedDateTime")
                         .HasColumnType("datetime2");
@@ -125,10 +102,15 @@ namespace EntityFramework.Migrations
                     b.Property<DateTime?>("ModifiedDateTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("TableID")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("TotalPrice")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(18,2 )");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("TableID");
 
                     b.ToTable("Bills");
                 });
@@ -151,7 +133,7 @@ namespace EntityFramework.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(18,2 )");
 
                     b.HasKey("ID");
 
@@ -161,22 +143,48 @@ namespace EntityFramework.Migrations
             modelBuilder.Entity("EntityFramework.Models.Table", b =>
                 {
                     b.Property<int>("ID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ArticleID")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Available")
+                        .HasColumnType("bit");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ArticleID");
+
+                    b.ToTable("Tables");
+                });
+
+            modelBuilder.Entity("EntityFramework.Models.TableArticleQuantity", b =>
+                {
+                    b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
-                    b.Property<bool>("Available")
+                    b.Property<int>("ArticleID")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("BillID")
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TableID")
                         .HasColumnType("int");
 
                     b.HasKey("ID");
 
-                    b.HasIndex("BillID");
+                    b.HasIndex("ArticleID");
 
-                    b.ToTable("Tables");
+                    b.HasIndex("TableID");
+
+                    b.ToTable("TableArticleQuantities");
                 });
 
             modelBuilder.Entity("EntityFramework.Models.Waiter", b =>
@@ -210,27 +218,8 @@ namespace EntityFramework.Migrations
                     b.ToTable("Waiters");
                 });
 
-            modelBuilder.Entity("ArticleTable", b =>
-                {
-                    b.HasOne("EntityFramework.Models.Article", null)
-                        .WithMany()
-                        .HasForeignKey("ArticlesID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EntityFramework.Models.Table", null)
-                        .WithMany()
-                        .HasForeignKey("TablesID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("EntityFramework.Models.Article", b =>
                 {
-                    b.HasOne("EntityFramework.Models.Bill", null)
-                        .WithMany("BoughtArticles")
-                        .HasForeignKey("BillID");
-
                     b.HasOne("EntityFramework.Models.DataEntry", null)
                         .WithMany("Articles")
                         .HasForeignKey("DataEntryID");
@@ -245,28 +234,58 @@ namespace EntityFramework.Migrations
                     b.Navigation("Article");
                 });
 
+            modelBuilder.Entity("EntityFramework.Models.Bill", b =>
+                {
+                    b.HasOne("EntityFramework.Models.Table", "Table")
+                        .WithMany()
+                        .HasForeignKey("TableID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Table");
+                });
+
             modelBuilder.Entity("EntityFramework.Models.Table", b =>
                 {
-                    b.HasOne("EntityFramework.Models.Bill", "Bill")
-                        .WithMany()
-                        .HasForeignKey("BillID");
+                    b.HasOne("EntityFramework.Models.Article", null)
+                        .WithMany("Tables")
+                        .HasForeignKey("ArticleID");
+                });
 
-                    b.Navigation("Bill");
+            modelBuilder.Entity("EntityFramework.Models.TableArticleQuantity", b =>
+                {
+                    b.HasOne("EntityFramework.Models.Article", "Article")
+                        .WithMany()
+                        .HasForeignKey("ArticleID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EntityFramework.Models.Table", "Table")
+                        .WithMany("TableArticleQuantities")
+                        .HasForeignKey("TableID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Article");
+
+                    b.Navigation("Table");
                 });
 
             modelBuilder.Entity("EntityFramework.Models.Article", b =>
                 {
                     b.Navigation("ArticleDetails");
-                });
 
-            modelBuilder.Entity("EntityFramework.Models.Bill", b =>
-                {
-                    b.Navigation("BoughtArticles");
+                    b.Navigation("Tables");
                 });
 
             modelBuilder.Entity("EntityFramework.Models.DataEntry", b =>
                 {
                     b.Navigation("Articles");
+                });
+
+            modelBuilder.Entity("EntityFramework.Models.Table", b =>
+                {
+                    b.Navigation("TableArticleQuantities");
                 });
 #pragma warning restore 612, 618
         }

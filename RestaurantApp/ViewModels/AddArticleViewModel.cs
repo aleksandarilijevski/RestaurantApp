@@ -94,7 +94,7 @@ namespace RestaurantApp.ViewModels
         private async Task ApplyArticleDetails(int articleId)
         {
             Article article = await _databaseService.GetArticleByID(articleId);
-            _articleDetails.Article = article;
+            ArticleDetails.Article = article;
         }
 
         private async Task AddArticleDetails(ArticleDetails articleDetails)
@@ -106,7 +106,7 @@ namespace RestaurantApp.ViewModels
         {
             int articleId = await _databaseService.AddArticle(article);
             await ApplyArticleDetails(articleId);
-            await AddArticleDetails(_articleDetails);
+            await AddArticleDetails(ArticleDetails);
 
             CloseDialog("true");
         }

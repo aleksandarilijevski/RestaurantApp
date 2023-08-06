@@ -143,6 +143,7 @@ namespace RestaurantApp.Services
 
         public async Task AddTableArticleQuantity(TableArticleQuantity tableArticleQuantity)
         {
+            _efContext.ChangeTracker.AutoDetectChangesEnabled = false;
             _efContext.TableArticleQuantities.Add(tableArticleQuantity);
             await _efContext.SaveChangesAsync();
         }

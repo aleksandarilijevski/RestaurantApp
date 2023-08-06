@@ -1,4 +1,5 @@
-﻿using EntityFramework.Models;
+﻿using DryIoc;
+using EntityFramework.Models;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 using Prism.Commands;
@@ -91,16 +92,25 @@ namespace RestaurantApp.ViewModels
         private async void IssueBill()
         {
             decimal totalPrice = CalculateTotalPrice();
-            List<Article> boughtArticles = await GetArticlesFromTable(_table.TableArticleQuantities);
+            //List<Article> boughtArticles = await GetArticlesFromTable(_table.TableArticleQuantities);
 
             Bill bill = new Bill
             {
-                BoughtArticles = boughtArticles,
+                TableID = _table.ID,
                 TotalPrice = totalPrice
             };
 
             await CreateBill(bill);
-            
+
+
+            foreach (TableArticleQuantity tableArticleQuantityDelete in _table.TableArticleQuantities)
+            {
+                if (tableArticleQuantityDelete.IsDeleted == false)
+                {
+                    tableArticleQuantityDelete.IsDeleted = true;
+                    await _databaseService.EditTableArticleQuantity(tableArticleQuantityDelete);
+                }
+            }
 
             PdfDocument document = new PdfDocument();
             PdfPage page = document.AddPage();
@@ -174,6 +184,7 @@ namespace RestaurantApp.ViewModels
 
             offset += 15;
             gfx.DrawString("Oznaka              Ime         Stopa                            Porez", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+            gfx.DrawString("DJ                 0-PDV        20.00%                           16.67", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
 
             offset += 15;
             gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));

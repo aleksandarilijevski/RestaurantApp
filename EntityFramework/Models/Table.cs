@@ -1,15 +1,16 @@
-﻿namespace EntityFramework.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace EntityFramework.Models
 {
     public class Table
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int ID { get; set; }
 
         public bool Available { get; set; }
 
         public List<TableArticleQuantity> TableArticleQuantities { get; set; }  
-
-        public int? BillID { get; set; }
-
-        public Bill? Bill { get; set; }
     }
 }

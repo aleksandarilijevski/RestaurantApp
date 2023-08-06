@@ -36,6 +36,12 @@ namespace RestaurantApp.ViewModels
             {
                 return _articles;
             }
+
+            set
+            {
+                _articles = value;
+                RaisePropertyChanged();
+            }
         }
 
         public List<string> ArticleNames
@@ -131,11 +137,11 @@ namespace RestaurantApp.ViewModels
 
         private async void LoadAllArticles()
         {
-            _articles = await _databaseService.GetAllArticles();
+            Articles = await _databaseService.GetAllArticles();
 
-            foreach (Article article in _articles)
+            foreach (Article article in Articles)
             {
-                _articleNames.Add(article.Name);
+                ArticleNames.Add(article.Name);
             }
         }
 
@@ -147,8 +153,6 @@ namespace RestaurantApp.ViewModels
 
             if (article != null)
             {
-                //article.Quantity = 1;
-
                 articleDetails.Article = article;
                 DataEntryArticles.Add(articleDetails);
             }
@@ -222,8 +226,8 @@ namespace RestaurantApp.ViewModels
             dataEntry.Articles = articles;
             await _databaseService.AddDataEntry(dataEntry);
 
-            MessageBox.Show("Data entry is saved!","Data entry",MessageBoxButton.OK,MessageBoxImage.Information);
-            DataEntryNumber = string.Empty; 
+            MessageBox.Show("Data entry is saved!", "Data entry", MessageBoxButton.OK, MessageBoxImage.Information);
+            DataEntryNumber = string.Empty;
             DataEntryArticles.Clear();
             RaisePropertyChanged(nameof(DataEntryArticles));
         }
@@ -257,7 +261,6 @@ namespace RestaurantApp.ViewModels
             ArticleDetails articleDetails = await _databaseService.GetArticleDetailsByArticleID(articleId);
             return articleDetails;
         }
-
 
         private async Task EditArticle(Article article)
         {

@@ -66,7 +66,7 @@ namespace RestaurantApp.ViewModels
 
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
-            _article = (Article)navigationContext.Parameters["article"];
+            Article = (Article)navigationContext.Parameters["article"];
         }
 
         private async Task<ArticleDetails> GetArticleDetailsByID(int id)

@@ -4,7 +4,9 @@ namespace EntityFramework.Models
 {
     public class Bill : BaseEntity
     {
-        public List<Article> BoughtArticles { get; set; }
+        public int TableID { get; set; }
+
+        public Table Table { get; set; }  
 
         [Column(TypeName = "decimal(18,2 )")]
         public decimal TotalPrice { get; set; }

@@ -33,9 +33,6 @@ namespace EntityFramework.Migrations
                     b.Property<long>("Barcode")
                         .HasColumnType("bigint");
 
-                    b.Property<int?>("BillID")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("CreatedDateTime")
                         .HasColumnType("datetime2");
 
@@ -52,8 +49,6 @@ namespace EntityFramework.Migrations
                         .HasColumnType("decimal(18,2 )");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("BillID");
 
                     b.HasIndex("DataEntryID");
 
@@ -104,10 +99,15 @@ namespace EntityFramework.Migrations
                     b.Property<DateTime?>("ModifiedDateTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("TableID")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,2 )");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("TableID");
 
                     b.ToTable("Bills");
                 });
@@ -140,10 +140,7 @@ namespace EntityFramework.Migrations
             modelBuilder.Entity("EntityFramework.Models.Table", b =>
                 {
                     b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
                     b.Property<int?>("ArticleID")
                         .HasColumnType("int");
@@ -151,14 +148,9 @@ namespace EntityFramework.Migrations
                     b.Property<bool>("Available")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("BillID")
-                        .HasColumnType("int");
-
                     b.HasKey("ID");
 
                     b.HasIndex("ArticleID");
-
-                    b.HasIndex("BillID");
 
                     b.ToTable("Tables");
                 });
@@ -173,6 +165,9 @@ namespace EntityFramework.Migrations
 
                     b.Property<int>("ArticleID")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -222,10 +217,6 @@ namespace EntityFramework.Migrations
 
             modelBuilder.Entity("EntityFramework.Models.Article", b =>
                 {
-                    b.HasOne("EntityFramework.Models.Bill", null)
-                        .WithMany("BoughtArticles")
-                        .HasForeignKey("BillID");
-
                     b.HasOne("EntityFramework.Models.DataEntry", null)
                         .WithMany("Articles")
                         .HasForeignKey("DataEntryID");
@@ -240,17 +231,22 @@ namespace EntityFramework.Migrations
                     b.Navigation("Article");
                 });
 
+            modelBuilder.Entity("EntityFramework.Models.Bill", b =>
+                {
+                    b.HasOne("EntityFramework.Models.Table", "Table")
+                        .WithMany()
+                        .HasForeignKey("TableID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Table");
+                });
+
             modelBuilder.Entity("EntityFramework.Models.Table", b =>
                 {
                     b.HasOne("EntityFramework.Models.Article", null)
                         .WithMany("Tables")
                         .HasForeignKey("ArticleID");
-
-                    b.HasOne("EntityFramework.Models.Bill", "Bill")
-                        .WithMany()
-                        .HasForeignKey("BillID");
-
-                    b.Navigation("Bill");
                 });
 
             modelBuilder.Entity("EntityFramework.Models.TableArticleQuantity", b =>
@@ -277,11 +273,6 @@ namespace EntityFramework.Migrations
                     b.Navigation("ArticleDetails");
 
                     b.Navigation("Tables");
-                });
-
-            modelBuilder.Entity("EntityFramework.Models.Bill", b =>
-                {
-                    b.Navigation("BoughtArticles");
                 });
 
             modelBuilder.Entity("EntityFramework.Models.DataEntry", b =>
