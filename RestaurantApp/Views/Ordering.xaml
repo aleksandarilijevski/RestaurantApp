@@ -56,7 +56,7 @@
                 <DataGridTemplateColumn Header="Delete">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="Delete" Command="{Binding DataContext.DeleteArticleFromTableCommand,RelativeSource={RelativeSource AncestorType={x:Type local:Ordering}}}" CommandParameter="{Binding Article}"/>
+                            <Button Content="Delete" Command="{Binding DataContext.DeleteArticleFromTableCommand,RelativeSource={RelativeSource AncestorType={x:Type local:Ordering}}}" CommandParameter="{Binding}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

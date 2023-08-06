@@ -20,7 +20,7 @@ namespace RestaurantApp.ViewModels
         private string _barcode;
         private DelegateCommand<Table> _getTableCommand;
         private DelegateCommand _showPaymentUserControlCommand;
-        private DelegateCommand<Article> _deleteArticleFromTableCommand;
+        private DelegateCommand<TableArticleQuantity> _deleteArticleFromTableCommand;
 
         public OrderingViewModel(IDatabaseService databaseService, IRegionManager regionManager)
         {
@@ -78,11 +78,11 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public DelegateCommand<Article> DeleteArticleFromTableCommand
+        public DelegateCommand<TableArticleQuantity> DeleteArticleFromTableCommand
         {
             get
             {
-                _deleteArticleFromTableCommand = new DelegateCommand<Article>(DeleteArticleFromTable);
+                _deleteArticleFromTableCommand = new DelegateCommand<TableArticleQuantity>(DeleteArticleFromTable);
                 return _deleteArticleFromTableCommand;
             }
         }
@@ -113,7 +113,6 @@ namespace RestaurantApp.ViewModels
                 tableCheck = table;
                 await _databaseService.AddTable(table);
             }
-
 
             bool activeArticle = false;
             List<TableArticleQuantity> tableArticleQuantities = new List<TableArticleQuantity>();
@@ -223,18 +222,18 @@ namespace RestaurantApp.ViewModels
             return quantity;
         }
 
-        private async void DeleteArticleFromTable(Article article)
+        private async void DeleteArticleFromTable(TableArticleQuantity tableArticleQuantity)
         {
-            //Table.TableArticleQuantities.Remove(article);
-            //await EditTable(Table);
+            Table.TableArticleQuantities.Remove(tableArticleQuantity);
+            await EditTable(Table);
 
-            //if (Table.TableArticleQuantities.Count == 0)
-            //{
-            //    Table.Available = true;
-            //    await EditTable(Table);
-            //}
+            if (Table.TableArticleQuantities.Count == 0)
+            {
+                Table.Available = true;
+                await EditTable(Table);
+            }
 
-            //RaisePropertyChanged(nameof(Table));
+            RaisePropertyChanged(nameof(Table));
         }
 
         /// <summary>
