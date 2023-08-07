@@ -22,6 +22,8 @@ namespace EntityFramework.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.HasSequence("TableArticleQuantitySequence");
+
             modelBuilder.Entity("EntityFramework.Models.Article", b =>
                 {
                     b.Property<int>("ID")
@@ -38,6 +40,9 @@ namespace EntityFramework.Migrations
 
                     b.Property<int?>("DataEntryID")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("ModifiedDateTime")
                         .HasColumnType("datetime2");
@@ -159,15 +164,13 @@ namespace EntityFramework.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasDefaultValueSql("NEXT VALUE FOR [TableArticleQuantitySequence]");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+                    SqlServerPropertyBuilderExtensions.UseSequence(b.Property<int>("ID"));
 
                     b.Property<int>("ArticleID")
                         .HasColumnType("int");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -182,6 +185,8 @@ namespace EntityFramework.Migrations
                     b.HasIndex("TableID");
 
                     b.ToTable("TableArticleQuantities");
+
+                    b.UseTpcMappingStrategy();
                 });
 
             modelBuilder.Entity("EntityFramework.Models.Waiter", b =>
@@ -213,6 +218,13 @@ namespace EntityFramework.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Waiters");
+                });
+
+            modelBuilder.Entity("EntityFramework.Models.SoldTableArticleQuantity", b =>
+                {
+                    b.HasBaseType("EntityFramework.Models.TableArticleQuantity");
+
+                    b.ToTable("SoldTableArticleQuantity");
                 });
 
             modelBuilder.Entity("EntityFramework.Models.Article", b =>

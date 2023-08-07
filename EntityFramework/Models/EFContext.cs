@@ -30,6 +30,11 @@ namespace EntityFramework.Models
             optionsBuilder.UseSqlServer("Data Source=(LocalDb)\\MSSQLLocalDB;Initial Catalog=Restaurant;Integrated Security=true");
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<TableArticleQuantity>().UseTpcMappingStrategy();
+        }
+
         public DbSet<Article> Articles { get; set; }
 
         public DbSet<Table> Tables { get; set; }
@@ -43,5 +48,7 @@ namespace EntityFramework.Models
         public DbSet<DataEntry> DataEntries { get; set; }
 
         public DbSet<TableArticleQuantity> TableArticleQuantities { get; set; }
+
+        public DbSet<SoldTableArticleQuantity> SoldTableArticleQuantities { get; set; }
     }
 }

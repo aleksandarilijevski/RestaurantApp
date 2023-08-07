@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EntityFramework.Migrations
 {
     [DbContext(typeof(EFContext))]
-    [Migration("20230802173531_TableARticleQuantityRemvoedFromBillModel_AndReplacedWithTableModel")]
-    partial class TableARticleQuantityRemvoedFromBillModel_AndReplacedWithTableModel
+    [Migration("20230807012248_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,8 @@ namespace EntityFramework.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.HasSequence("TableArticleQuantitySequence");
 
             modelBuilder.Entity("EntityFramework.Models.Article", b =>
                 {
@@ -41,6 +43,9 @@ namespace EntityFramework.Migrations
 
                     b.Property<int?>("DataEntryID")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("ModifiedDateTime")
                         .HasColumnType("datetime2");
@@ -162,9 +167,10 @@ namespace EntityFramework.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasDefaultValueSql("NEXT VALUE FOR [TableArticleQuantitySequence]");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+                    SqlServerPropertyBuilderExtensions.UseSequence(b.Property<int>("ID"));
 
                     b.Property<int>("ArticleID")
                         .HasColumnType("int");
@@ -182,6 +188,8 @@ namespace EntityFramework.Migrations
                     b.HasIndex("TableID");
 
                     b.ToTable("TableArticleQuantities");
+
+                    b.UseTpcMappingStrategy();
                 });
 
             modelBuilder.Entity("EntityFramework.Models.Waiter", b =>
@@ -213,6 +221,13 @@ namespace EntityFramework.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Waiters");
+                });
+
+            modelBuilder.Entity("EntityFramework.Models.SoldTableArticleQuantity", b =>
+                {
+                    b.HasBaseType("EntityFramework.Models.TableArticleQuantity");
+
+                    b.ToTable("SoldTableArticleQuantity");
                 });
 
             modelBuilder.Entity("EntityFramework.Models.Article", b =>

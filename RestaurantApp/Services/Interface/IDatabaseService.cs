@@ -56,5 +56,7 @@ namespace RestaurantApp.Services.Interface
         public Task<int> GetTableArticleTotalQuantity(int articleID);
 
         public Task<int> CreateBill(Bill bill);
+
+        public Task<int> AddSoldTableArticleQuantity(SoldTableArticleQuantity soldTableArticleQuantity);
     }
 }

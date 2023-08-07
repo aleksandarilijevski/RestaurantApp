@@ -11,20 +11,8 @@ namespace EntityFramework.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Bills",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ModifiedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Bills", x => x.ID);
-                });
+            migrationBuilder.CreateSequence(
+                name: "TableArticleQuantitySequence");
 
             migrationBuilder.CreateTable(
                 name: "DataEntries",
@@ -69,6 +57,7 @@ namespace EntityFramework.Migrations
                     Barcode = table.Column<long>(type: "bigint", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     DataEntryID = table.Column<int>(type: "int", nullable: true),
                     CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ModifiedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -124,15 +113,61 @@ namespace EntityFramework.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TableArticleQuantities",
+                name: "Bills",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TableID = table.Column<int>(type: "int", nullable: false),
+                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Bills", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Bills_Tables_TableID",
+                        column: x => x.TableID,
+                        principalTable: "Tables",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SoldTableArticleQuantity",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false, defaultValueSql: "NEXT VALUE FOR [TableArticleQuantitySequence]"),
+                    TableID = table.Column<int>(type: "int", nullable: false),
                     ArticleID = table.Column<int>(type: "int", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
-                    BillID = table.Column<int>(type: "int", nullable: true)
+                    Quantity = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SoldTableArticleQuantity", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_SoldTableArticleQuantity_Articles_ArticleID",
+                        column: x => x.ArticleID,
+                        principalTable: "Articles",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SoldTableArticleQuantity_Tables_TableID",
+                        column: x => x.TableID,
+                        principalTable: "Tables",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TableArticleQuantities",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false, defaultValueSql: "NEXT VALUE FOR [TableArticleQuantitySequence]"),
+                    TableID = table.Column<int>(type: "int", nullable: false),
+                    ArticleID = table.Column<int>(type: "int", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -143,11 +178,6 @@ namespace EntityFramework.Migrations
                         principalTable: "Articles",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_TableArticleQuantities_Bills_BillID",
-                        column: x => x.BillID,
-                        principalTable: "Bills",
-                        principalColumn: "ID");
                     table.ForeignKey(
                         name: "FK_TableArticleQuantities_Tables_TableID",
                         column: x => x.TableID,
@@ -167,14 +197,24 @@ namespace EntityFramework.Migrations
                 column: "DataEntryID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TableArticleQuantities_ArticleID",
-                table: "TableArticleQuantities",
+                name: "IX_Bills_TableID",
+                table: "Bills",
+                column: "TableID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SoldTableArticleQuantity_ArticleID",
+                table: "SoldTableArticleQuantity",
                 column: "ArticleID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TableArticleQuantities_BillID",
+                name: "IX_SoldTableArticleQuantity_TableID",
+                table: "SoldTableArticleQuantity",
+                column: "TableID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TableArticleQuantities_ArticleID",
                 table: "TableArticleQuantities",
-                column: "BillID");
+                column: "ArticleID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TableArticleQuantities_TableID",
@@ -194,13 +234,16 @@ namespace EntityFramework.Migrations
                 name: "ArticleDetails");
 
             migrationBuilder.DropTable(
+                name: "Bills");
+
+            migrationBuilder.DropTable(
+                name: "SoldTableArticleQuantity");
+
+            migrationBuilder.DropTable(
                 name: "TableArticleQuantities");
 
             migrationBuilder.DropTable(
                 name: "Waiters");
-
-            migrationBuilder.DropTable(
-                name: "Bills");
 
             migrationBuilder.DropTable(
                 name: "Tables");
@@ -210,6 +253,9 @@ namespace EntityFramework.Migrations
 
             migrationBuilder.DropTable(
                 name: "DataEntries");
+
+            migrationBuilder.DropSequence(
+                name: "TableArticleQuantitySequence");
         }
     }
 }

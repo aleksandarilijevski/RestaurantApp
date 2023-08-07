@@ -1,5 +1,4 @@
-﻿using DryIoc;
-using EntityFramework.Models;
+﻿using EntityFramework.Models;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 using Prism.Commands;
@@ -61,7 +60,7 @@ namespace RestaurantApp.ViewModels
         {
             get
             {
-               _getTotalPriceCommand = new DelegateCommand(GetTotalPrice);
+                _getTotalPriceCommand = new DelegateCommand(GetTotalPrice);
                 return _getTotalPriceCommand;
             }
         }
@@ -92,7 +91,6 @@ namespace RestaurantApp.ViewModels
         private async void IssueBill()
         {
             decimal totalPrice = CalculateTotalPrice();
-            //List<Article> boughtArticles = await GetArticlesFromTable(_table.TableArticleQuantities);
 
             Bill bill = new Bill
             {
@@ -102,14 +100,18 @@ namespace RestaurantApp.ViewModels
 
             await CreateBill(bill);
 
+            SoldTableArticleQuantity soldTableArticleQuantity = null;
 
-            foreach (TableArticleQuantity tableArticleQuantityDelete in _table.TableArticleQuantities)
+            foreach (TableArticleQuantity tableArticleQuantity in _table.TableArticleQuantities)
             {
-                if (tableArticleQuantityDelete.IsDeleted == false)
+                soldTableArticleQuantity = new SoldTableArticleQuantity
                 {
-                    tableArticleQuantityDelete.IsDeleted = true;
-                    await _databaseService.EditTableArticleQuantity(tableArticleQuantityDelete);
-                }
+                     ArticleID = tableArticleQuantity.ArticleID,
+                     TableID = tableArticleQuantity.TableID,
+                     Quantity = tableArticleQuantity.Quantity,
+                };
+
+                await _databaseService.AddSoldTableArticleQuantity(soldTableArticleQuantity);
             }
 
             PdfDocument document = new PdfDocument();
@@ -275,7 +277,7 @@ namespace RestaurantApp.ViewModels
 
         private async Task CreateBill(Bill bill)
         {
-           await _databaseService.CreateBill(bill);
+            await _databaseService.CreateBill(bill);
         }
     }
 }

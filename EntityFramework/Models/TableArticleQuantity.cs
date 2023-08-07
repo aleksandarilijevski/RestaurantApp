@@ -13,7 +13,5 @@
         public Article Article { get; set; }
 
         public int Quantity { get; set; }
-
-        public bool IsDeleted { get; set; }
     }
 }

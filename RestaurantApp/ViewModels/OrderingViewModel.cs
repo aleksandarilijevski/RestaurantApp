@@ -4,7 +4,6 @@ using Prism.Mvvm;
 using Prism.Regions;
 using RestaurantApp.Services.Interface;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -21,6 +20,7 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand<Table> _getTableCommand;
         private DelegateCommand _showPaymentUserControlCommand;
         private DelegateCommand<TableArticleQuantity> _deleteArticleFromTableCommand;
+        private TableArticleQuantity _tableArticleQuantity;
 
         public OrderingViewModel(IDatabaseService databaseService, IRegionManager regionManager)
         {
@@ -56,6 +56,20 @@ namespace RestaurantApp.ViewModels
 
             set
             {
+                RaisePropertyChanged();
+            }
+        }
+
+        public TableArticleQuantity TableArticleQuantity
+        {
+            get
+            {
+                return _tableArticleQuantity;
+            }
+
+            set
+            {
+                _tableArticleQuantity = value;
                 RaisePropertyChanged();
             }
         }
@@ -113,26 +127,7 @@ namespace RestaurantApp.ViewModels
                 await _databaseService.AddTable(table);
             }
 
-            bool activeArticle = false;
-            List<TableArticleQuantity> tableArticleQuantities = new List<TableArticleQuantity>();
-
-            //Check if there is non deleted article in table, if article is not deleted add it to new list and set activeArticle value to true
-            foreach (TableArticleQuantity tableArticleQuantity in Table.TableArticleQuantities)
-            {
-                if (tableArticleQuantity.IsDeleted == false)
-                {
-                    activeArticle = true;
-                    tableArticleQuantities.Add(tableArticleQuantity);
-                }
-            }
-
-            //If article is active replace list with new list.
-            //If not clear the list.
-            if (activeArticle is true)
-            {
-                Table.TableArticleQuantities = tableArticleQuantities;
-            }
-            else
+            if (Table.TableArticleQuantities is null)
             {
                 Table.TableArticleQuantities = new List<TableArticleQuantity>();
             }
@@ -221,16 +216,16 @@ namespace RestaurantApp.ViewModels
 
         private async void DeleteArticleFromTable(TableArticleQuantity tableArticleQuantity)
         {
-            Table.TableArticleQuantities.Remove(tableArticleQuantity);
-            await EditTable(Table);
+            //Table.TableArticleQuantities.Remove(tableArticleQuantity);
+            //await EditTable(Table);
 
-            if (Table.TableArticleQuantities.Count == 0)
-            {
-                Table.Available = true;
-                await EditTable(Table);
-            }
+            //if (Table.TableArticleQuantities.Count == 0)
+            //{
+            //    Table.Available = true;
+            //    await EditTable(Table);
+            //}
 
-            RaisePropertyChanged(nameof(Table));
+            //RaisePropertyChanged(nameof(Table));
         }
 
         /// <summary>
@@ -281,11 +276,11 @@ namespace RestaurantApp.ViewModels
         /// </summary>
         private async void ShowPaymentUserControl()
         {
-            if (Table.TableArticleQuantities.Count == 0)
-            {
-                MessageBox.Show("There are no articles to be paid!", "Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
+            //if (Table.TableArticleQuantities.Count == 0)
+            //{
+            //    MessageBox.Show("There are no articles to be paid!", "Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
+            //    return;
+            //}
 
             NavigationParameters navigationParameters = new NavigationParameters
             {

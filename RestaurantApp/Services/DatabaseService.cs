@@ -81,7 +81,7 @@ namespace RestaurantApp.Services
 
         public async Task<Table> GetTableByID(int id)
         {
-            Table table = await _efContext.Tables.Include(x => x.TableArticleQuantities).ThenInclude(x => x.Article).FirstOrDefaultAsync(x => x.ID == id);
+            Table table = await _efContext.Tables.FirstOrDefaultAsync(x => x.ID == id);
             return table;
         }
 
@@ -100,7 +100,7 @@ namespace RestaurantApp.Services
 
         public async Task<List<Table>> GetAllTables()
         {
-            List<Table> tables = await _efContext.Tables.Select(x => x).Include(x => x.TableArticleQuantities).ToListAsync();
+            List<Table> tables = await _efContext.Tables.Select(x => x).ToListAsync();
             return tables;
         }
 
@@ -181,6 +181,13 @@ namespace RestaurantApp.Services
             _efContext.Bills.Add(bill);
             await _efContext.SaveChangesAsync();
             return bill.ID;
+        }
+
+        public async Task<int> AddSoldTableArticleQuantity(SoldTableArticleQuantity soldTableArticleQuantity)
+        {
+            _efContext.SoldTableArticleQuantities.Add(soldTableArticleQuantity);
+            await _efContext.SaveChangesAsync();
+            return soldTableArticleQuantity.ID;
         }
     }
 }
