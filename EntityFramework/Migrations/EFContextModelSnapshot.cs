@@ -184,7 +184,7 @@ namespace EntityFramework.Migrations
 
                     b.HasIndex("TableID");
 
-                    b.ToTable("TableArticleQuantities");
+                    b.ToTable("TableArticleQuantity");
 
                     b.UseTpcMappingStrategy();
                 });

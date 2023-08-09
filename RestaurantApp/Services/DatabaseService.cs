@@ -81,7 +81,7 @@ namespace RestaurantApp.Services
 
         public async Task<Table> GetTableByID(int id)
         {
-            Table table = await _efContext.Tables.FirstOrDefaultAsync(x => x.ID == id);
+            Table table = await _efContext.Tables.Include(x => x.TableArticleQuantities).ThenInclude(x => x.Article).FirstOrDefaultAsync(x => x.ID == id);
             return table;
         }
 
@@ -95,6 +95,24 @@ namespace RestaurantApp.Services
         public async Task EditTable(Table table)
         {
             _efContext.Entry(table).State = EntityState.Modified;
+            await _efContext.SaveChangesAsync();
+        }
+
+        public async Task ModifyTableArticles(int tableID, List<SoldTableArticleQuantity> soldTableArticleQuantities, List<TableArticleQuantity> tableArticleQuantities)
+        {
+            Table table = _efContext.Tables.Include(x => x.TableArticleQuantities).FirstOrDefault(x => x.ID == tableID);
+
+            List<TableArticleQuantity> quantitiesToRemove = table.TableArticleQuantities
+        .OfType<TableArticleQuantity>() // Consider only instances of TableArticleQuantity
+            .ToList();
+
+            foreach (var quantity in quantitiesToRemove.ToList())
+            {
+                table.TableArticleQuantities.Remove(quantity);
+            }
+
+            table.TableArticleQuantities.AddRange(soldTableArticleQuantities);
+
             await _efContext.SaveChangesAsync();
         }
 
@@ -157,6 +175,12 @@ namespace RestaurantApp.Services
         public async Task EditTableArticleQuantity(TableArticleQuantity tableArticleQuantity)
         {
             _efContext.Entry(tableArticleQuantity).State = EntityState.Modified;
+            await _efContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteTableArticleQuantity(TableArticleQuantity tableArticleQuantity)
+        {
+            _efContext.TableArticleQuantities.Remove(tableArticleQuantity);
             await _efContext.SaveChangesAsync();
         }
 

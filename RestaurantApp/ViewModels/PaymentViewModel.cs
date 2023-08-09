@@ -101,6 +101,7 @@ namespace RestaurantApp.ViewModels
             await CreateBill(bill);
 
             SoldTableArticleQuantity soldTableArticleQuantity = null;
+            List<SoldTableArticleQuantity> soldTableArticleQuantities = new List<SoldTableArticleQuantity>();
 
             foreach (TableArticleQuantity tableArticleQuantity in _table.TableArticleQuantities)
             {
@@ -111,8 +112,10 @@ namespace RestaurantApp.ViewModels
                      Quantity = tableArticleQuantity.Quantity,
                 };
 
-                await _databaseService.AddSoldTableArticleQuantity(soldTableArticleQuantity);
+                soldTableArticleQuantities.Add(soldTableArticleQuantity);
             }
+
+            await _databaseService.ModifyTableArticles(_table.ID, soldTableArticleQuantities,_table.TableArticleQuantities);
 
             PdfDocument document = new PdfDocument();
             PdfPage page = document.AddPage();
@@ -230,8 +233,9 @@ namespace RestaurantApp.ViewModels
             offset += 15;
             gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
 
-            document.Save("C:\\Users\\ilije\\OneDrive\\Desktop\\invoice.pdf");
+            document.Save("C:\\Users\\xandro\\Desktop\\invoice.pdf");
             document.Close();
+
         }
 
         private void GetTotalPrice()

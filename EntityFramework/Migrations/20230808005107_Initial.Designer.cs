@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EntityFramework.Migrations
 {
     [DbContext(typeof(EFContext))]
-    [Migration("20230807012248_Initial")]
+    [Migration("20230808005107_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -187,7 +187,7 @@ namespace EntityFramework.Migrations
 
                     b.HasIndex("TableID");
 
-                    b.ToTable("TableArticleQuantities");
+                    b.ToTable("TableArticleQuantity");
 
                     b.UseTpcMappingStrategy();
                 });

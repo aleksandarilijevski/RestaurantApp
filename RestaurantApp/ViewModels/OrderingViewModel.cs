@@ -4,6 +4,8 @@ using Prism.Mvvm;
 using Prism.Regions;
 using RestaurantApp.Services.Interface;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -21,6 +23,7 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand _showPaymentUserControlCommand;
         private DelegateCommand<TableArticleQuantity> _deleteArticleFromTableCommand;
         private TableArticleQuantity _tableArticleQuantity;
+        private ObservableCollection<TableArticleQuantity> _tableArticleQuantities;
 
         public OrderingViewModel(IDatabaseService databaseService, IRegionManager regionManager)
         {
@@ -56,6 +59,20 @@ namespace RestaurantApp.ViewModels
 
             set
             {
+                RaisePropertyChanged();
+            }
+        }
+
+        public ObservableCollection<TableArticleQuantity> TableArticleQuantities
+        {
+            get
+            {
+                return _tableArticleQuantities;
+            }
+
+            set
+            {
+                _tableArticleQuantities = value;
                 RaisePropertyChanged();
             }
         }
@@ -132,7 +149,10 @@ namespace RestaurantApp.ViewModels
                 Table.TableArticleQuantities = new List<TableArticleQuantity>();
             }
 
+            TableArticleQuantities = new ObservableCollection<TableArticleQuantity>(_table.TableArticleQuantities.Where(x => !(x is SoldTableArticleQuantity)));
+
             RaisePropertyChanged(nameof(Table));
+            RaisePropertyChanged(nameof(TableArticleQuantities));
         }
 
         /// <summary>
@@ -146,6 +166,7 @@ namespace RestaurantApp.ViewModels
             if (article is null)
             {
                 MessageBox.Show("Article with entered barcode doesn't exist in the system!", "Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
+                Barcode = string.Empty;                
                 return;
             }
 
@@ -161,6 +182,7 @@ namespace RestaurantApp.ViewModels
                 };
 
                 Table.TableArticleQuantities.Add(tableArticleQuantity);
+                TableArticleQuantities.Add(tableArticleQuantity);
             }
 
             await EditTable(Table);
@@ -216,16 +238,17 @@ namespace RestaurantApp.ViewModels
 
         private async void DeleteArticleFromTable(TableArticleQuantity tableArticleQuantity)
         {
-            //Table.TableArticleQuantities.Remove(tableArticleQuantity);
-            //await EditTable(Table);
+            Table.TableArticleQuantities.Remove(tableArticleQuantity);
+            TableArticleQuantities.Remove(tableArticleQuantity);
+            await EditTable(Table);
 
-            //if (Table.TableArticleQuantities.Count == 0)
-            //{
-            //    Table.Available = true;
-            //    await EditTable(Table);
-            //}
+            if (Table.TableArticleQuantities.Count == 0)
+            {
+                Table.Available = true;
+                await EditTable(Table);
+            }
 
-            //RaisePropertyChanged(nameof(Table));
+            RaisePropertyChanged(nameof(Table));
         }
 
         /// <summary>

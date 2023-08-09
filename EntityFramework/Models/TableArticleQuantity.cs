@@ -1,5 +1,8 @@
-﻿namespace EntityFramework.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace EntityFramework.Models
 {
+    [Table("TableArticleQuantity")]
     public class TableArticleQuantity
     {
         public int ID { get; set; }

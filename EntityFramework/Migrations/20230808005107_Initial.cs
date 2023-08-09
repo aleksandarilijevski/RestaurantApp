@@ -161,7 +161,7 @@ namespace EntityFramework.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TableArticleQuantities",
+                name: "TableArticleQuantity",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "int", nullable: false, defaultValueSql: "NEXT VALUE FOR [TableArticleQuantitySequence]"),
@@ -171,15 +171,15 @@ namespace EntityFramework.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TableArticleQuantities", x => x.ID);
+                    table.PrimaryKey("PK_TableArticleQuantity", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_TableArticleQuantities_Articles_ArticleID",
+                        name: "FK_TableArticleQuantity_Articles_ArticleID",
                         column: x => x.ArticleID,
                         principalTable: "Articles",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_TableArticleQuantities_Tables_TableID",
+                        name: "FK_TableArticleQuantity_Tables_TableID",
                         column: x => x.TableID,
                         principalTable: "Tables",
                         principalColumn: "ID",
@@ -212,13 +212,13 @@ namespace EntityFramework.Migrations
                 column: "TableID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TableArticleQuantities_ArticleID",
-                table: "TableArticleQuantities",
+                name: "IX_TableArticleQuantity_ArticleID",
+                table: "TableArticleQuantity",
                 column: "ArticleID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TableArticleQuantities_TableID",
-                table: "TableArticleQuantities",
+                name: "IX_TableArticleQuantity_TableID",
+                table: "TableArticleQuantity",
                 column: "TableID");
 
             migrationBuilder.CreateIndex(
@@ -240,7 +240,7 @@ namespace EntityFramework.Migrations
                 name: "SoldTableArticleQuantity");
 
             migrationBuilder.DropTable(
-                name: "TableArticleQuantities");
+                name: "TableArticleQuantity");
 
             migrationBuilder.DropTable(
                 name: "Waiters");
