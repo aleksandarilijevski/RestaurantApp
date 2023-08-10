@@ -152,7 +152,6 @@ namespace RestaurantApp.ViewModels
             TableArticleQuantities = new ObservableCollection<TableArticleQuantity>(_table.TableArticleQuantities.Where(x => !(x is SoldTableArticleQuantity)));
 
             RaisePropertyChanged(nameof(Table));
-            RaisePropertyChanged(nameof(TableArticleQuantities));
         }
 
         /// <summary>
@@ -299,15 +298,16 @@ namespace RestaurantApp.ViewModels
         /// </summary>
         private async void ShowPaymentUserControl()
         {
-            //if (Table.TableArticleQuantities.Count == 0)
-            //{
-            //    MessageBox.Show("There are no articles to be paid!", "Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
-            //    return;
-            //}
+            if (TableArticleQuantities.Count == 0)
+            {
+                MessageBox.Show("There are no articles to be paid!", "Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
             NavigationParameters navigationParameters = new NavigationParameters
             {
-                { "table",  Table}
+                { "table",  Table},
+                { "tableArticleQuantities",  TableArticleQuantities.ToList()}
             };
 
             _regionManager.RequestNavigate("MainRegion", "Payment", navigationParameters);

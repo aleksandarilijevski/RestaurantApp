@@ -56,7 +56,7 @@
                 <DataGridTextColumn Header="ID" Binding="{Binding Article.ID}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Barcode" Binding="{Binding Article.Barcode}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Name" Binding="{Binding Article.Name}" IsReadOnly="True" />
-                <DataGridTextColumn Header="New quantity" Binding="{Binding Quantity}"/>
+                <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}"/>
                 <DataGridTextColumn Header="Entry price" Binding="{Binding EntryPrice}"/>
                 <DataGridTextColumn Header="Price" Binding="{Binding Article.Price}" IsReadOnly="True"/>
             </DataGrid.Columns>

@@ -42,7 +42,7 @@ namespace RestaurantApp.ViewModels
             {
                 { "id", ID }
             };
-
+            
             _regionManager.RequestNavigate("MainRegion", "Ordering", navigationParameters);
         }
     }

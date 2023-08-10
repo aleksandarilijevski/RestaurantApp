@@ -18,15 +18,18 @@ namespace RestaurantApp.ViewModels
     public class PaymentViewModel : BindableBase, INavigationAware
     {
         private IDatabaseService _databaseService;
+        private IRegionManager _regionManager;
         private decimal _totalPrice;
         private Table _table;
+        private List<TableArticleQuantity> _tableArticleQuantities;
         private DelegateCommand _issueBillCommand;
         private DelegateCommand _getTotalPriceCommand;
         private PaymentType _paymentType;
 
-        public PaymentViewModel(IDatabaseService databaseService)
+        public PaymentViewModel(IDatabaseService databaseService, IRegionManager regionManager)
         {
             _databaseService = databaseService;
+            _regionManager = regionManager;
         }
 
         public decimal TotalPrice
@@ -77,6 +80,7 @@ namespace RestaurantApp.ViewModels
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
             _table = (Table)navigationContext.Parameters["table"];
+            _tableArticleQuantities = (List<TableArticleQuantity>)navigationContext.Parameters["tableArticleQuantities"];
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)
@@ -107,15 +111,15 @@ namespace RestaurantApp.ViewModels
             {
                 soldTableArticleQuantity = new SoldTableArticleQuantity
                 {
-                     ArticleID = tableArticleQuantity.ArticleID,
-                     TableID = tableArticleQuantity.TableID,
-                     Quantity = tableArticleQuantity.Quantity,
+                    ArticleID = tableArticleQuantity.ArticleID,
+                    TableID = tableArticleQuantity.TableID,
+                    Quantity = tableArticleQuantity.Quantity,
                 };
 
                 soldTableArticleQuantities.Add(soldTableArticleQuantity);
             }
 
-            await _databaseService.ModifyTableArticles(_table.ID, soldTableArticleQuantities,_table.TableArticleQuantities);
+            await _databaseService.ModifyTableArticles(_table.ID, soldTableArticleQuantities, _table.TableArticleQuantities);
 
             PdfDocument document = new PdfDocument();
             PdfPage page = document.AddPage();
@@ -152,7 +156,7 @@ namespace RestaurantApp.ViewModels
             gfx.DrawString("Naziv                Cena                 Kol                   Ukupno", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
             offset += 20;
 
-            foreach (TableArticleQuantity tableArticleQuantity in _table.TableArticleQuantities)
+            foreach (TableArticleQuantity tableArticleQuantity in _tableArticleQuantities)
             {
                 if (tableArticleQuantity.Article.Name.Length > 15)
                 {
@@ -189,6 +193,8 @@ namespace RestaurantApp.ViewModels
 
             offset += 15;
             gfx.DrawString("Oznaka              Ime         Stopa                            Porez", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+
+            offset += 15;
             gfx.DrawString("DJ                 0-PDV        20.00%                           16.67", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
 
             offset += 15;
@@ -233,9 +239,12 @@ namespace RestaurantApp.ViewModels
             offset += 15;
             gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
 
-            document.Save("C:\\Users\\xandro\\Desktop\\invoice.pdf");
+            string path = "C:\\Users\\" + Environment.UserName + "\\Desktop\\invoice.pdf";
+
+            document.Save(path);
             document.Close();
 
+            _regionManager.RequestNavigate("MainRegion", "TableOrder");
         }
 
         private void GetTotalPrice()
@@ -248,7 +257,7 @@ namespace RestaurantApp.ViewModels
         {
             decimal totalPrice = 0;
 
-            foreach (TableArticleQuantity tableArticleQuantity in _table.TableArticleQuantities)
+            foreach (TableArticleQuantity tableArticleQuantity in _tableArticleQuantities)
             {
                 totalPrice += tableArticleQuantity.Article.Price * tableArticleQuantity.Quantity;
             }
