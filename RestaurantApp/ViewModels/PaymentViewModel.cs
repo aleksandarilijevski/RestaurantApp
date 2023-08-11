@@ -9,6 +9,7 @@ using RestaurantApp.Services.Interface;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Packaging;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -99,7 +100,8 @@ namespace RestaurantApp.ViewModels
             Bill bill = new Bill
             {
                 TableID = _table.ID,
-                TotalPrice = totalPrice
+                TotalPrice = totalPrice,
+                PaymentType = PaymentType
             };
 
             await CreateBill(bill);
@@ -123,8 +125,10 @@ namespace RestaurantApp.ViewModels
 
             PdfDocument document = new PdfDocument();
             PdfPage page = document.AddPage();
+
             page.Width = 500;
-            page.Height = 760;
+            page.Height = 0;
+
             XGraphics gfx = XGraphics.FromPdfPage(page);
 
             XPen pen = new XPen(XColors.Black, 1);
@@ -239,12 +243,14 @@ namespace RestaurantApp.ViewModels
             offset += 15;
             gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
 
+            page.Height -= offset;
+
             string path = "C:\\Users\\" + Environment.UserName + "\\Desktop\\invoice.pdf";
 
             document.Save(path);
             document.Close();
 
-            _regionManager.RequestNavigate("MainRegion", "TableOrder");
+            //_regionManager.RequestNavigate("MainRegion", "TableOrder");
         }
 
         private void GetTotalPrice()

@@ -102,9 +102,7 @@ namespace RestaurantApp.Services
         {
             Table table = _efContext.Tables.Include(x => x.TableArticleQuantities).FirstOrDefault(x => x.ID == tableID);
 
-            List<TableArticleQuantity> quantitiesToRemove = table.TableArticleQuantities
-        .OfType<TableArticleQuantity>() // Consider only instances of TableArticleQuantity
-            .ToList();
+            List<TableArticleQuantity> quantitiesToRemove = table.TableArticleQuantities.OfType<TableArticleQuantity>().ToList();
 
             foreach (var quantity in quantitiesToRemove.ToList())
             {

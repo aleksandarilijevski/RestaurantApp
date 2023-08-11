@@ -63,6 +63,7 @@ namespace RestaurantApp.ViewModels
             }
         }
 
+
         public ObservableCollection<TableArticleQuantity> TableArticleQuantities
         {
             get
@@ -165,7 +166,7 @@ namespace RestaurantApp.ViewModels
             if (article is null)
             {
                 MessageBox.Show("Article with entered barcode doesn't exist in the system!", "Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
-                Barcode = string.Empty;                
+                Barcode = string.Empty;
                 return;
             }
 

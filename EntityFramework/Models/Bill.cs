@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using RestaurantApp.Enums;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EntityFramework.Models
 {
@@ -10,5 +11,7 @@ namespace EntityFramework.Models
 
         [Column(TypeName = "decimal(18,2 )")]
         public decimal TotalPrice { get; set; }
+
+        public PaymentType PaymentType { get; set; }
     }
 }

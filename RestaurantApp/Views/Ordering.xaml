@@ -37,8 +37,6 @@
                         </DataTrigger>
                     </Style.Triggers>
 
-
-
                 </Style>
             </TextBox.Style>
         </TextBox>
