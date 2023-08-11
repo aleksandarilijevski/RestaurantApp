@@ -59,6 +59,15 @@
                 <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}"/>
                 <DataGridTextColumn Header="Entry price" Binding="{Binding EntryPrice}"/>
                 <DataGridTextColumn Header="Price" Binding="{Binding Article.Price}" IsReadOnly="True"/>
+
+                <DataGridTemplateColumn Header="Delete">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="Delete" Command="{Binding DataContext.DeleteArticleDetailsFromDataEntryCommand,RelativeSource={RelativeSource AncestorType={x:Type local:AddArticleByDataEntry}}}" CommandParameter="{Binding}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                
             </DataGrid.Columns>
         </DataGrid>
 

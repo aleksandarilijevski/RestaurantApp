@@ -17,7 +17,9 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand<string> _addArticleByBarcodeCommand;
         private DelegateCommand<string> _addArticleByNameCommand;
         private DelegateCommand _saveCommand;
+        private DelegateCommand<ArticleDetails> _deleteArticleDetailsFromDataEntryCommand;
         private ObservableCollection<Article> _articles;
+        private List<ArticleDetails> _dataEntryArticles = new List<ArticleDetails>();
         private List<string> _articleNames = new List<string>();
         private string _articleName;
         private string _dataEntryNumber;
@@ -28,7 +30,21 @@ namespace RestaurantApp.ViewModels
             _databaseService = databaseService;
         }
 
-        public List<ArticleDetails> DataEntryArticles { get; set; } = new List<ArticleDetails>();
+        //public List<ArticleDetails> DataEntryArticles { get; set; } = new List<ArticleDetails>();
+
+        public List<ArticleDetails> DataEntryArticles
+        {
+            get
+            {
+                return _dataEntryArticles;
+            }
+
+            set
+            {
+                _dataEntryArticles = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public ObservableCollection<Article> Articles
         {
@@ -107,6 +123,15 @@ namespace RestaurantApp.ViewModels
             }
         }
 
+        public DelegateCommand<ArticleDetails> DeleteArticleDetailsFromDataEntryCommand
+        {
+            get
+            {
+                _deleteArticleDetailsFromDataEntryCommand = new DelegateCommand<ArticleDetails>(DeleteArticleDetailsFromDataEntry);
+                return _deleteArticleDetailsFromDataEntryCommand;
+            }
+        }
+
         public string Barcode
         {
             get
@@ -176,6 +201,12 @@ namespace RestaurantApp.ViewModels
             RaisePropertyChanged(nameof(DataEntryArticles));
         }
 
+        private void DeleteArticleDetailsFromDataEntry(ArticleDetails articleDetails)
+        {
+            DataEntryArticles.Remove(articleDetails);
+            RaisePropertyChanged(nameof(DataEntryArticles));
+        }
+
         private decimal GetTotalAmount(List<ArticleDetails> articleDetails)
         {
             decimal totalAmount = 0;
@@ -217,7 +248,7 @@ namespace RestaurantApp.ViewModels
             {
                 if (articleDetails.EntryPrice <= 0 || articleDetails.Quantity <= 0)
                 {
-                    MessageBox.Show("One or more article properties are not valid!", "Data entry", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("One or more article details properties are not valid!", "Data entry", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
