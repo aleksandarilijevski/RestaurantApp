@@ -145,6 +145,12 @@ namespace RestaurantApp.Services
             await _efContext.SaveChangesAsync();
         }
 
+        public async Task<DataEntry> GetDataEntryByNumber(int dataEntryNumber)
+        {
+            DataEntry dataEntry = await _efContext.DataEntries.FirstOrDefaultAsync(x => x.DataEntryNumber == dataEntryNumber);
+            return dataEntry;
+        }
+
         public async Task<ArticleDetails> GetArticleDetailsByID(int id)
         {
             ArticleDetails articleDetails = await _efContext.ArticleDetails.FirstOrDefaultAsync(x => x.ID == id);

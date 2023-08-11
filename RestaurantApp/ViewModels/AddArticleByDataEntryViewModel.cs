@@ -190,7 +190,6 @@ namespace RestaurantApp.ViewModels
 
         private async void Save()
         {
-
             if (DataEntryNumber is null || DataEntryNumber == string.Empty)
             {
                 MessageBox.Show("Data entry number can't be empty!", "Data entry", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -203,13 +202,20 @@ namespace RestaurantApp.ViewModels
                 return;
             }
 
+            DataEntry dataEntryCheck = await _databaseService.GetDataEntryByNumber(int.Parse(DataEntryNumber));
+
+            if (dataEntryCheck is not null)
+            {
+                MessageBox.Show("Data entry with that number already exists!", "Data entry", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
             DataEntry dataEntry = new DataEntry();
             decimal totalAmount = 0;
 
             foreach (ArticleDetails articleDetails in DataEntryArticles)
             {
-                if (articleDetails.EntryPrice == 0 || articleDetails.Quantity == 0)
+                if (articleDetails.EntryPrice <= 0 || articleDetails.Quantity <= 0)
                 {
                     MessageBox.Show("One or more article properties are not valid!", "Data entry", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
