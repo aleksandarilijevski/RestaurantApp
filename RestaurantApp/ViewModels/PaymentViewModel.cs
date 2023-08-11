@@ -9,7 +9,6 @@ using RestaurantApp.Services.Interface;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Packaging;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -93,7 +92,7 @@ namespace RestaurantApp.ViewModels
         {
         }
 
-        private async void IssueBill()
+        private async Task AddBill()
         {
             decimal totalPrice = CalculateTotalPrice();
 
@@ -123,6 +122,12 @@ namespace RestaurantApp.ViewModels
 
             await _databaseService.ModifyTableArticles(_table.ID, soldTableArticleQuantities, _table.TableArticleQuantities);
 
+        }
+
+       
+
+        private async void DrawBill(decimal totalPrice)
+        {
             PdfDocument document = new PdfDocument();
             PdfPage page = document.AddPage();
 
@@ -183,11 +188,14 @@ namespace RestaurantApp.ViewModels
             gfx.DrawString($"Ukupan iznos :", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
             gfx.DrawString($"{totalPrice}".PadLeft(78), font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
 
-            offset += 20;
-            gfx.DrawString("Gotovina :", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+            if (PaymentType == PaymentType.Cash)
+            {
+                offset += 20;
+                gfx.DrawString("Gotovina :", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
 
-            offset += 20;
-            gfx.DrawString("Povracaj :", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+                offset += 20;
+                gfx.DrawString("Povracaj :", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+            }
 
             offset += 20;
             gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
@@ -251,6 +259,14 @@ namespace RestaurantApp.ViewModels
             document.Close();
 
             //_regionManager.RequestNavigate("MainRegion", "TableOrder");
+        }
+
+        private async void IssueBill()
+        {
+            decimal totalPrice = CalculateTotalPrice();
+
+            await AddBill();
+            DrawBill(totalPrice);
         }
 
         private void GetTotalPrice()
