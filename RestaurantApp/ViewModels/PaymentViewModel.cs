@@ -4,6 +4,7 @@ using PdfSharp.Pdf;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
+using Prism.Services.Dialogs;
 using RestaurantApp.Enums;
 using RestaurantApp.Services.Interface;
 using System;
@@ -19,6 +20,7 @@ namespace RestaurantApp.ViewModels
     {
         private IDatabaseService _databaseService;
         private IRegionManager _regionManager;
+        private IDialogService _dialogService;
         private decimal _totalPrice;
         private Table _table;
         private List<TableArticleQuantity> _tableArticleQuantities;
@@ -26,10 +28,11 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand _getTotalPriceCommand;
         private PaymentType _paymentType;
 
-        public PaymentViewModel(IDatabaseService databaseService, IRegionManager regionManager)
+        public PaymentViewModel(IDatabaseService databaseService, IRegionManager regionManager, IDialogService dialogService)
         {
             _databaseService = databaseService;
             _regionManager = regionManager;
+            _dialogService = dialogService;
         }
 
         public decimal TotalPrice
@@ -124,9 +127,7 @@ namespace RestaurantApp.ViewModels
 
         }
 
-       
-
-        private async void DrawBill(decimal totalPrice)
+        private async void DrawBill(decimal totalPrice, decimal cash, decimal change)
         {
             PdfDocument document = new PdfDocument();
             PdfPage page = document.AddPage();
@@ -191,10 +192,10 @@ namespace RestaurantApp.ViewModels
             if (PaymentType == PaymentType.Cash)
             {
                 offset += 20;
-                gfx.DrawString("Gotovina :", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+                gfx.DrawString($"Gotovina :                                                         {cash.ToString("0.00")}", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
 
                 offset += 20;
-                gfx.DrawString("Povracaj :", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+                gfx.DrawString($"Povracaj :                                                          {change}", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
             }
 
             offset += 20;
@@ -206,14 +207,17 @@ namespace RestaurantApp.ViewModels
             offset += 15;
             gfx.DrawString("Oznaka              Ime         Stopa                            Porez", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
 
+            double pdv = (double)totalPrice * 0.20;
             offset += 15;
-            gfx.DrawString("DJ                 0-PDV        20.00%                           16.67", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+            gfx.DrawString($"DJ                  0-PDV        20.00%                           {pdv}", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+
 
             offset += 15;
             gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
 
             offset += 15;
-            gfx.DrawString("Ukupan iznos poreza:", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+            gfx.DrawString($"Ukupan iznos poreza:                                              {pdv}", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+
 
             offset += 15;
             gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
@@ -258,15 +262,31 @@ namespace RestaurantApp.ViewModels
             document.Save(path);
             document.Close();
 
-            //_regionManager.RequestNavigate("MainRegion", "TableOrder");
+            _regionManager.RequestNavigate("MainRegion", "TableOrder");
         }
 
         private async void IssueBill()
         {
+            decimal change = 0;
+            decimal cash = 0;
             decimal totalPrice = CalculateTotalPrice();
 
+            if (PaymentType == PaymentType.Cash)
+            {
+                DialogParameters dialogParameters = new DialogParameters()
+                {
+                    { "totalPrice", totalPrice },
+                };
+
+                _dialogService.ShowDialog("paymentDialog", dialogParameters, result =>
+                {
+                    change = result.Parameters.GetValue<decimal>("change");
+                    cash = result.Parameters.GetValue<decimal>("cash");
+                });
+            }
+
             await AddBill();
-            DrawBill(totalPrice);
+            DrawBill(totalPrice,cash,change);
         }
 
         private void GetTotalPrice()

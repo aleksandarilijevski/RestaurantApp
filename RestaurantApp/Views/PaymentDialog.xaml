@@ -1,0 +1,45 @@
+﻿<UserControl x:Class="RestaurantApp.Views.PaymentDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:RestaurantApp.Views"
+             mc:Ignorable="d" 
+             Height="250" Width="260">
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="40" />
+
+        </Grid.RowDefinitions>
+
+        <Label Content="Total price : " Grid.ColumnSpan="2" Grid.Row="0" HorizontalAlignment="Center" FontSize="20"/>
+        <TextBox Grid.ColumnSpan="2" Grid.Row="1" Margin="3"  TextAlignment="Center" FontSize="20" Width="200" IsReadOnly="True" Text="{Binding TotalPrice}"/>
+
+        <Label Content="Cash : " Grid.ColumnSpan="2" Grid.Row="2" HorizontalAlignment="Center" FontSize="20"/>
+        <TextBox Grid.ColumnSpan="2" Grid.Row="3" Margin="3" x:Name="cashBox" TextAlignment="Center" FontSize="20" Width="200" Text="{Binding CashBox}">
+            <TextBox.InputBindings>
+                <KeyBinding Command="{Binding CalculateChangeCommand}" CommandParameter="{Binding Text,ElementName=cashBox}" Key="Enter"/>
+            </TextBox.InputBindings>
+        </TextBox>
+
+
+        <Label Content="Change : " Grid.ColumnSpan="2" Grid.Row="4" HorizontalAlignment="Center" FontSize="20"/>
+        <TextBox Grid.ColumnSpan="2" Grid.Row="5" Margin="3" TextAlignment="Center" FontSize="20" Width="200" IsReadOnly="True" Text="{Binding Change}"/>
+
+        <Button Content="Confirm" Grid.ColumnSpan="2" Grid.Row="6" Margin="3" FontSize="20" Command="{Binding ConfirmCommand}"/>
+
+    </Grid>
+</UserControl>

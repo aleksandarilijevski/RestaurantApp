@@ -59,6 +59,7 @@ namespace RestaurantApp.ViewModels
 
             set
             {
+                _barcode = value;
                 RaisePropertyChanged();
             }
         }
