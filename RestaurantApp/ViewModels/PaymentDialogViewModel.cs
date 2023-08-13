@@ -108,9 +108,16 @@ namespace RestaurantApp.ViewModels
 
         private void CalculateChange(string cashBox)
         {
-            decimal change = TotalPrice - int.Parse(cashBox);
-            change = Math.Abs(change);
-            Change = change;
+            if (int.Parse(cashBox) >= TotalPrice)
+            {
+                decimal change = TotalPrice - int.Parse(cashBox);
+                change = Math.Abs(change);
+                Change = change;
+            }
+            else
+            {
+                MessageBox.Show("Cash price can't be lower than total price!", "Payment dialog", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         protected virtual void CloseDialog(string parameter)
