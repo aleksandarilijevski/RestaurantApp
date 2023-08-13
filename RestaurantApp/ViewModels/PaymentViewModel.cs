@@ -13,6 +13,7 @@ using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Ink;
 
 namespace RestaurantApp.ViewModels
@@ -354,6 +355,7 @@ namespace RestaurantApp.ViewModels
 
         private async void IssueBill()
         {
+            bool isGood = false;
             decimal change = 0;
             decimal cash = 0;
             decimal totalPrice = CalculateTotalPrice();
@@ -365,15 +367,18 @@ namespace RestaurantApp.ViewModels
                     { "totalPrice", totalPrice },
                 };
 
-                _dialogService.ShowDialog("paymentDialog", dialogParameters, result =>
+                _dialogService.ShowDialog("paymentDialog", dialogParameters, async result =>
                 {
-                    change = result.Parameters.GetValue<decimal>("change");
-                    cash = result.Parameters.GetValue<decimal>("cash");
+                    if (result.Result == ButtonResult.OK)
+                    {
+                        change = result.Parameters.GetValue<decimal>("change");
+                        cash = result.Parameters.GetValue<decimal>("cash");
+                        isGood = true;
+                        await AddBill();
+                        DrawBill(totalPrice, cash, change);
+                    }
                 });
             }
-
-            await AddBill();
-            DrawBill(totalPrice, cash, change);
         }
 
         private void GetTotalPrice()
