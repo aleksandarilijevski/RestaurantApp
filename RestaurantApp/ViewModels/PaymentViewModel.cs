@@ -13,6 +13,7 @@ using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Ink;
 
 namespace RestaurantApp.ViewModels
 {
@@ -24,6 +25,7 @@ namespace RestaurantApp.ViewModels
         private decimal _totalPrice;
         private Table _table;
         private List<TableArticleQuantity> _tableArticleQuantities;
+        private DelegateCommand _issueFakeBillCommand;
         private DelegateCommand _issueBillCommand;
         private DelegateCommand _getTotalPriceCommand;
         private PaymentType _paymentType;
@@ -68,6 +70,15 @@ namespace RestaurantApp.ViewModels
             {
                 _getTotalPriceCommand = new DelegateCommand(GetTotalPrice);
                 return _getTotalPriceCommand;
+            }
+        }
+
+        public DelegateCommand IssueFakeBillCommand
+        {
+            get
+            {
+                _issueFakeBillCommand = new DelegateCommand(IssueFakeBill);
+                return _issueFakeBillCommand;
             }
         }
 
@@ -132,7 +143,7 @@ namespace RestaurantApp.ViewModels
             PdfDocument document = new PdfDocument();
             PdfPage page = document.AddPage();
 
-            page.Width = 500;
+            page.Width = 450;
             page.Height = 0;
 
             XGraphics gfx = XGraphics.FromPdfPage(page);
@@ -211,13 +222,11 @@ namespace RestaurantApp.ViewModels
             offset += 15;
             gfx.DrawString($"DJ                  0-PDV        20.00%                           {pdv}", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
 
-
             offset += 15;
             gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
 
             offset += 15;
             gfx.DrawString($"Ukupan iznos poreza:                                              {pdv}", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
-
 
             offset += 15;
             gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
@@ -265,6 +274,84 @@ namespace RestaurantApp.ViewModels
             _regionManager.RequestNavigate("MainRegion", "TableOrder");
         }
 
+        private void DrawFakeBill(decimal totalPrice, decimal cash, decimal change)
+        {
+            PdfDocument pdfDocument = new PdfDocument();
+            PdfPage pdfPage = pdfDocument.AddPage();
+
+            pdfPage.Width = 500;
+            pdfPage.Height = 0;
+
+            XGraphics gfx = XGraphics.FromPdfPage(pdfPage);
+
+            XPen pen = new XPen(XColors.Black, 1);
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            XFont font = new XFont("Verdana", 15, XFontStyle.Regular);
+
+            int offset = 20;
+
+            gfx.DrawString("PORUDZBINA", font, XBrushes.Black, new XRect(15, offset, pdfPage.Width, 0));
+            offset += 20;
+
+            gfx.DrawString(DateTime.Now.ToString("dd/MM/yyyy"), font, XBrushes.Black, new XRect(15, offset, pdfPage.Width, 0));
+            gfx.DrawString("-".PadLeft(45) + DateTime.Now.ToString("hh:mm").PadLeft(35), font, XBrushes.Black, new XRect(15, offset, pdfPage.Width, 0));
+            offset += 20;
+
+            gfx.DrawString("-----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, pdfPage.Width, 0));
+            offset += 20;
+
+            foreach (TableArticleQuantity tableArticleQuantity in _tableArticleQuantities)
+            {
+                if (tableArticleQuantity.Article.Name.Length > 15)
+                {
+                    gfx.DrawString(tableArticleQuantity.Article.Name, font, XBrushes.Black, new XRect(15, offset, pdfPage.Width, 0));
+                    offset += 20;
+                }
+                else
+                {
+                    gfx.DrawString(tableArticleQuantity.Article.Name, font, XBrushes.Black, new XRect(15, offset, pdfPage.Width, 0));
+                }
+
+                gfx.DrawString($"{tableArticleQuantity.Article.Price}".PadLeft(28) + $"{tableArticleQuantity.Quantity}".PadLeft(18) + $"{tableArticleQuantity.Article.Price * tableArticleQuantity.Quantity}".PadLeft(28), font, XBrushes.Black, new XRect(15, offset, pdfPage.Width, 0));
+                offset += 20;
+            }
+
+            gfx.DrawString("-----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, pdfPage.Width, 0));
+            offset += 20;
+
+            gfx.DrawString("ZA UPLATU:" + totalPrice.ToString().PadLeft(62), font, XBrushes.Black, new XRect(15, offset, pdfPage.Width, 0));
+            offset += 20;
+
+            gfx.DrawString("-----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, pdfPage.Width, 0));
+            offset += 20;
+
+            gfx.DrawString("OVO JE PORUDZBINA", font, XBrushes.Black, new XRect(15, offset, pdfPage.Width, 0));
+            offset += 40;
+
+            gfx.DrawString("SACEKAJTE VAS", font, XBrushes.Black, new XRect(15, offset, pdfPage.Width, 0));
+            offset += 20;
+
+            gfx.DrawString("FISKALNI RACUN", font, XBrushes.Black, new XRect(15, offset, pdfPage.Width, 0));
+            offset += 20;
+
+            pdfPage.Height -= offset;
+
+            string path = "C:\\Users\\" + Environment.UserName + "\\Desktop\\fakeInvoice.pdf";
+
+            pdfDocument.Save(path);
+            pdfDocument.Close();
+
+        }
+
+        private async void IssueFakeBill()
+        {
+            decimal change = 0;
+            decimal cash = 0;
+            decimal totalPrice = CalculateTotalPrice();
+
+            DrawFakeBill(totalPrice, cash, change);
+        }
+
         private async void IssueBill()
         {
             decimal change = 0;
@@ -286,7 +373,7 @@ namespace RestaurantApp.ViewModels
             }
 
             await AddBill();
-            DrawBill(totalPrice,cash,change);
+            DrawBill(totalPrice, cash, change);
         }
 
         private void GetTotalPrice()

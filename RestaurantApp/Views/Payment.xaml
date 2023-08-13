@@ -43,7 +43,7 @@
 
         <TextBlock Text="{Binding TotalPrice,StringFormat='Total price : {0} rsd'}" Grid.Row="2" TextAlignment="Center" Grid.ColumnSpan="2" FontSize="23"/>
 
-        <Button Grid.Row="3" Grid.Column="0" Content="Issue fake bill" FontSize="15" Margin="2"/>
+        <Button Grid.Row="3" Grid.Column="0" Content="Issue fake bill" FontSize="15" Margin="2" Command="{Binding IssueFakeBillCommand}"/>
         <Button Grid.Row="3" Grid.Column="1" Content="Issue bill" FontSize="15" Margin="2" Command="{Binding IssueBillCommand}"/>
 
     </Grid>
