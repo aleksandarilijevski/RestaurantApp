@@ -5,13 +5,15 @@ using Prism.Regions;
 using RestaurantApp.Services.Interface;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 
 namespace RestaurantApp.ViewModels
 {
-    public class OrderingViewModel : BindableBase, INavigationAware
+    public class OrderingViewModel : BindableBase, INavigationAware, INotifyPropertyChanged
     {
         private IDatabaseService _databaseService;
         private IRegionManager _regionManager;
@@ -22,7 +24,6 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand<Table> _getTableCommand;
         private DelegateCommand _showPaymentUserControlCommand;
         private DelegateCommand<TableArticleQuantity> _deleteArticleFromTableCommand;
-        private TableArticleQuantity _tableArticleQuantity;
         private ObservableCollection<TableArticleQuantity> _tableArticleQuantities;
 
         public OrderingViewModel(IDatabaseService databaseService, IRegionManager regionManager)
@@ -30,6 +31,8 @@ namespace RestaurantApp.ViewModels
             _databaseService = databaseService;
             _regionManager = regionManager;
         }
+
+        //public event PropertyChangedEventHandler PropertyChanged;
 
         public int TableID
         {
@@ -64,20 +67,7 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-
-        public ObservableCollection<TableArticleQuantity> TableArticleQuantities
-        {
-            get
-            {
-                return _tableArticleQuantities;
-            }
-
-            set
-            {
-                _tableArticleQuantities = value;
-                RaisePropertyChanged();
-            }
-        }
+        private TableArticleQuantity _tableArticleQuantity;
 
         public TableArticleQuantity TableArticleQuantity
         {
@@ -90,8 +80,60 @@ namespace RestaurantApp.ViewModels
             {
                 _tableArticleQuantity = value;
                 RaisePropertyChanged();
+
+                if (_tableArticleQuantity != null)
+                {
+                    _tableArticleQuantity.PropertyChanged += OnPaymentPropertyChanged;
+                }
             }
         }
+
+
+        public ObservableCollection<TableArticleQuantity> TableArticleQuantities
+        {
+            get
+            {
+                return _tableArticleQuantities;
+            }
+
+            set
+            {
+                _tableArticleQuantities = value;
+                //NotifyPropertyChanged("TableArticleQuantities");
+                RaisePropertyChanged();
+            }
+        }
+
+        private async Task CheckIfQuantityIsAvailableUI()
+        {
+            bool available = await IfQuantityIsAvailable(TableArticleQuantity.Article);
+
+            if (!available)
+            {
+                TableArticleQuantity.Quantity = 1;
+                TableArticleQuantities.FirstOrDefault(x => x.ID == TableArticleQuantity.ID).Quantity = 1;
+            }
+
+            await _databaseService.EditTableArticleQuantity(TableArticleQuantity);
+        }
+
+        private async void OnPaymentPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(TableArticleQuantity.Quantity))
+            {
+                await CheckIfQuantityIsAvailableUI();
+            }
+        }
+
+        //protected async Task NotifyPropertyChanged([CallerMemberName] string propertyName = null)
+        //{
+        //    if (propertyName.Equals("Quantity"))
+        //    {
+        //        await CheckIfQuantityIsAvailableUI();
+        //    }
+
+        //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        //}
 
         public DelegateCommand<Table> GetTableCommand
         {
@@ -192,18 +234,6 @@ namespace RestaurantApp.ViewModels
         }
 
         /// <summary>
-        /// Checking if article is on table
-        /// If article is on table do quantity++
-        /// If article is not on the table, add it and set quantity to 1
-        /// </summary>
-        private async Task AddArticleToTable(Article article, TableArticleQuantity tableArticleQuantity)
-        {
-            Table.Available = false;
-            tableArticleQuantity.Quantity = 1;
-            Table.TableArticleQuantities.Add(tableArticleQuantity);
-        }
-
-        /// <summary>
         /// Calculating if quantity is available
         /// </summary>
         private async Task<bool> IfQuantityIsAvailable(Article article)
@@ -229,9 +259,12 @@ namespace RestaurantApp.ViewModels
         {
             int quantity = 0;
 
-            foreach (ArticleDetails articleDetail in articleDetails)
+            if (articleDetails != null)
             {
-                quantity += articleDetail.Quantity;
+                foreach (ArticleDetails articleDetail in articleDetails)
+                {
+                    quantity += articleDetail.Quantity;
+                }
             }
 
             return quantity;
@@ -260,30 +293,6 @@ namespace RestaurantApp.ViewModels
             await _databaseService.EditTable(table);
         }
 
-        /// <summary>
-        /// Function for adding table article quantity model
-        /// </summary>
-        private async Task AddTableArticleQuantity(TableArticleQuantity tableArticleQuantity)
-        {
-            await _databaseService.AddTableArticleQuantity(tableArticleQuantity);
-        }
-
-        /// <summary>
-        /// Function for editing table article quantity model
-        /// </summary>
-        private async Task EditTableArticleQuantity(TableArticleQuantity tableArticleQuantity)
-        {
-            await _databaseService.EditTableArticleQuantity(tableArticleQuantity);
-        }
-
-        /// <summary>
-        /// Getting table article quantity model by ArticleID and TableID from database.
-        /// </summary>
-        private async Task<List<TableArticleQuantity>> GetTableArticleQuantities(int articleID, int tableID)
-        {
-            List<TableArticleQuantity> tableArticleQuantity = await _databaseService.GetTableArticleQuantities(articleID, tableID);
-            return tableArticleQuantity;
-        }
 
         /// <summary>
         /// Getting table article total used quantity by ArticleID

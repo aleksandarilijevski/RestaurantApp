@@ -144,7 +144,7 @@ namespace RestaurantApp.ViewModels
             PdfDocument document = new PdfDocument();
             PdfPage page = document.AddPage();
 
-            page.Width = 450;
+            page.Width = 500;
             page.Height = 0;
 
             XGraphics gfx = XGraphics.FromPdfPage(page);
@@ -221,13 +221,13 @@ namespace RestaurantApp.ViewModels
 
             double pdv = (double)totalPrice * 0.20;
             offset += 15;
-            gfx.DrawString($"DJ                  0-PDV        20.00%                           {pdv}", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+            gfx.DrawString($"DJ                  0-PDV        20.00%                           {pdv.ToString("0.00")}", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
 
             offset += 15;
             gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
 
             offset += 15;
-            gfx.DrawString($"Ukupan iznos poreza:                                              {pdv}", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+            gfx.DrawString($"Ukupan iznos poreza:                                              {pdv.ToString("0.00")}", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
 
             offset += 15;
             gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));

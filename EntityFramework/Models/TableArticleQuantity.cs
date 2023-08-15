@@ -1,10 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EntityFramework.Models
 {
     [Table("TableArticleQuantity")]
-    public class TableArticleQuantity
+    public class TableArticleQuantity : INotifyPropertyChanged
     {
+        private int _quantity;
+
         public int ID { get; set; }
 
         public int TableID { get; set; }
@@ -15,6 +18,24 @@ namespace EntityFramework.Models
 
         public Article Article { get; set; }
 
-        public int Quantity { get; set; }
+        public int Quantity
+        {
+            get => _quantity;
+            set
+            {
+                if (_quantity != value)
+                {
+                    _quantity = value;
+                    OnPropertyChanged(nameof(Quantity));
+                }
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

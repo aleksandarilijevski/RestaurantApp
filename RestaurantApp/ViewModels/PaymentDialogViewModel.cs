@@ -97,12 +97,6 @@ namespace RestaurantApp.ViewModels
                 return;
             }
 
-            if (Change == 0)
-            {
-                MessageBox.Show("Change has not been calculated!", "Payment confirmation", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
             CloseDialog("true");
         }
 
