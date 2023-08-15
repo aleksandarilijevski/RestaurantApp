@@ -81,7 +81,7 @@ namespace RestaurantApp.Services
 
         public async Task<Table> GetTableByID(int id)
         {
-            Table table = await _efContext.Tables.Include(x => x.TableArticleQuantities).ThenInclude(x => x.Article).FirstOrDefaultAsync(x => x.ID == id);
+            Table table = await _efContext.Tables.Include(x => x.TableArticleQuantities).ThenInclude(x => x.Article).ThenInclude(x => x.ArticleDetails).FirstOrDefaultAsync(x => x.ID == id);
             return table;
         }
 
@@ -192,13 +192,17 @@ namespace RestaurantApp.Services
         {
             int totalQuantity = 0;
 
-            List<TableArticleQuantity> tableArticleQuantities = await _efContext.TableArticleQuantities.Select(x => x)
-                .Where(x => x.ArticleID == articleID)
-                .ToListAsync();
-
-            foreach (TableArticleQuantity tableArticleQuantity in tableArticleQuantities)
+            using (var efContext = new EFContext())
             {
-                totalQuantity += tableArticleQuantity.Quantity;
+
+                List<TableArticleQuantity> tableArticleQuantities = await efContext.TableArticleQuantities.Select(x => x)
+                    .Where(x => x.ArticleID == articleID)
+                    .ToListAsync();
+
+                foreach (TableArticleQuantity tableArticleQuantity in tableArticleQuantities)
+                {
+                    totalQuantity += tableArticleQuantity.Quantity;
+                }
             }
 
             return totalQuantity;

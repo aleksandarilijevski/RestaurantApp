@@ -7,13 +7,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 
 namespace RestaurantApp.ViewModels
 {
-    public class OrderingViewModel : BindableBase, INavigationAware, INotifyPropertyChanged
+    public class OrderingViewModel : BindableBase, INavigationAware
     {
         private IDatabaseService _databaseService;
         private IRegionManager _regionManager;
@@ -31,8 +30,6 @@ namespace RestaurantApp.ViewModels
             _databaseService = databaseService;
             _regionManager = regionManager;
         }
-
-        //public event PropertyChangedEventHandler PropertyChanged;
 
         public int TableID
         {
@@ -99,41 +96,28 @@ namespace RestaurantApp.ViewModels
             set
             {
                 _tableArticleQuantities = value;
-                //NotifyPropertyChanged("TableArticleQuantities");
                 RaisePropertyChanged();
             }
-        }
-
-        private async Task CheckIfQuantityIsAvailableUI()
-        {
-            bool available = await IfQuantityIsAvailable(TableArticleQuantity.Article);
-
-            if (!available)
-            {
-                TableArticleQuantity.Quantity = 1;
-                TableArticleQuantities.FirstOrDefault(x => x.ID == TableArticleQuantity.ID).Quantity = 1;
-            }
-
-            await _databaseService.EditTableArticleQuantity(TableArticleQuantity);
         }
 
         private async void OnPaymentPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(TableArticleQuantity.Quantity))
             {
-                await CheckIfQuantityIsAvailableUI();
+                bool available = await IfQuantityIsAvailable(TableArticleQuantity.Article);
+
+                if (!available)
+                {
+                    _tableArticleQuantity.PropertyChanged -= OnPaymentPropertyChanged;
+                    TableArticleQuantity.Quantity = 1;
+                    TableArticleQuantities.FirstOrDefault(x => x.ID == TableArticleQuantity.ID).Quantity = 1;
+                    _tableArticleQuantity.PropertyChanged += OnPaymentPropertyChanged;
+                }
+
+
+                await _databaseService.EditTableArticleQuantity(TableArticleQuantity);
             }
         }
-
-        //protected async Task NotifyPropertyChanged([CallerMemberName] string propertyName = null)
-        //{
-        //    if (propertyName.Equals("Quantity"))
-        //    {
-        //        await CheckIfQuantityIsAvailableUI();
-        //    }
-
-        //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        //}
 
         public DelegateCommand<Table> GetTableCommand
         {
@@ -234,14 +218,19 @@ namespace RestaurantApp.ViewModels
         }
 
         /// <summary>
-        /// Calculating if quantity is available
+        /// Calculating if quantity is availabl
         /// </summary>
         private async Task<bool> IfQuantityIsAvailable(Article article)
         {
             int quantity = GetAvailableQuantity(article.ArticleDetails);
-            int usedQuantity = await GetTableArticleTotalQuantity(article.ID);
+            int usedQuantity = 0;
 
-            if (usedQuantity < quantity)
+            foreach (TableArticleQuantity tableArticleQuantity in TableArticleQuantities)
+            {
+                usedQuantity += tableArticleQuantity.Quantity;  
+            }
+
+            if (usedQuantity <= quantity)
             {
                 return true;
             }
@@ -292,7 +281,6 @@ namespace RestaurantApp.ViewModels
         {
             await _databaseService.EditTable(table);
         }
-
 
         /// <summary>
         /// Getting table article total used quantity by ArticleID
