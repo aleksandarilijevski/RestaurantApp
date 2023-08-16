@@ -66,5 +66,11 @@ namespace RestaurantApp.Services.Interface
         public Task<int> CreateBill(Bill bill);
 
         public Task<int> AddSoldTableArticleQuantity(SoldTableArticleQuantity soldTableArticleQuantity);
+
+        public Task<int> CreateConfiguration(Configuration configuration);
+
+        public Task<Configuration> GetConfiguration();
+
+        public Task EditConfiguration(Configuration configuration);
     }
 }

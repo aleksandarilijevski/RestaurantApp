@@ -224,5 +224,24 @@ namespace RestaurantApp.Services
             await _efContext.SaveChangesAsync();
             return soldTableArticleQuantity.ID;
         }
+
+        public async Task<int> CreateConfiguration(Configuration configuration)
+        {
+            _efContext.Configurations.Add(configuration);
+            await _efContext.SaveChangesAsync();
+            return configuration.ID;
+        }
+
+        public async Task<Configuration> GetConfiguration()
+        {
+            Configuration configuration = await _efContext.Configurations.FirstOrDefaultAsync();
+            return configuration;
+        }
+
+        public async Task EditConfiguration(Configuration configuration)
+        {
+            _efContext.Entry(configuration).State = EntityState.Modified;
+            await _efContext.SaveChangesAsync();
+        }
     }
 }
