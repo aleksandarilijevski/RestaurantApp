@@ -192,20 +192,23 @@ namespace RestaurantApp.Services
         {
             int totalQuantity = 0;
 
-            using (var efContext = new EFContext())
-            {
+            using EFContext efContext = new EFContext();
 
-                List<TableArticleQuantity> tableArticleQuantities = await efContext.TableArticleQuantities.Select(x => x)
-                    .Where(x => x.ArticleID == articleID)
-                    .ToListAsync();
+            List<TableArticleQuantity> tableArticleQuantities = await efContext.TableArticleQuantities.Select(x => x)
+                .Where(x => x.ArticleID == articleID)
+                .ToListAsync();
 
-                foreach (TableArticleQuantity tableArticleQuantity in tableArticleQuantities)
-                {
-                    totalQuantity += tableArticleQuantity.Quantity;
-                }
-            }
+            totalQuantity = tableArticleQuantities.Sum(x => x.Quantity);
 
             return totalQuantity;
+        }
+
+        public async Task<List<TableArticleQuantity>> GetTableArticleQuantitiesExceptProvidedID(Table table)
+        {
+            using EFContext efContext = new EFContext();
+
+            List<TableArticleQuantity> tableArticleQuantities = await efContext.TableArticleQuantities.Select(x => x).Where(x => x.Table.ID != table.ID).ToListAsync();
+            return tableArticleQuantities;
         }
 
         public async Task<int> CreateBill(Bill bill)
