@@ -5,7 +5,6 @@ using RestaurantApp.Services.Interface;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace RestaurantApp.ViewModels
@@ -170,14 +169,16 @@ namespace RestaurantApp.ViewModels
 
         private void GetArticleByBarcode(string barcode)
         {
-            long barcodeLong = long.Parse(barcode);
-            Article article = Articles.FirstOrDefault(x => x.Barcode == barcodeLong);
-            ArticleDetails articleDetails = new ArticleDetails();
-
-            if (article != null)
+            if (!long.TryParse(barcode, out long barcodeLong))
             {
-                articleDetails.Article = article;
-                DataEntryArticles.Add(articleDetails);
+                Article article = Articles.FirstOrDefault(x => x.Barcode == barcodeLong);
+                ArticleDetails articleDetails = new ArticleDetails();
+
+                if (article != null)
+                {
+                    articleDetails.Article = article;
+                    DataEntryArticles.Add(articleDetails);
+                }
             }
 
             Barcode = string.Empty;
@@ -207,9 +208,9 @@ namespace RestaurantApp.ViewModels
 
         private async void Save()
         {
-            if (DataEntryNumber is null || DataEntryNumber == string.Empty)
+            if (!int.TryParse(DataEntryNumber, out int dataEntryNumber))
             {
-                MessageBox.Show("Data entry number can't be empty!", "Data entry", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Data entry number is not valid!", "Data entry", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
