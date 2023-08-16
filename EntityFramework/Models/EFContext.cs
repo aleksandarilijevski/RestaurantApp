@@ -50,5 +50,7 @@ namespace EntityFramework.Models
         public DbSet<TableArticleQuantity> TableArticleQuantities { get; set; }
 
         public DbSet<SoldTableArticleQuantity> SoldTableArticleQuantities { get; set; }
+
+        public DbSet<Configuration> Configurations { get; set; }
     }
 }
