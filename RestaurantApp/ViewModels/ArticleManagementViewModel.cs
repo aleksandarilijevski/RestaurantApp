@@ -6,7 +6,6 @@ using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 
 namespace RestaurantApp.ViewModels
 {
@@ -29,6 +28,29 @@ namespace RestaurantApp.ViewModels
             _dialogService = dialogService;
             _databaseService = databaseService;
             _regionManager = regionManager;
+        }
+
+        public ObservableCollection<Article> Articles
+        {
+            get => _articles;
+            set
+            {
+                _articles = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public List<ArticleDetails> ArticleDetailsList
+        {
+            get
+            {
+                return _articleDetailsList;
+            }
+
+            set
+            {
+                _articleDetailsList = value;
+            }
         }
 
         public DelegateCommand ShowAddArticleDialogCommand
@@ -85,29 +107,6 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public ObservableCollection<Article> Articles
-        {
-            get => _articles;
-            set
-            {
-                _articles = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public List<ArticleDetails> ArticleDetailsList
-        {
-            get
-            {
-                return _articleDetailsList;
-            }
-
-            set
-            {
-                _articleDetailsList = value;
-            }
-        }
-
         private void ShowEditArticleDialog(Article article)
         {
             DialogParameters dialogParameters = new DialogParameters
@@ -126,15 +125,15 @@ namespace RestaurantApp.ViewModels
             Articles = await _databaseService.GetAllArticles();
         }
 
-        private async void ShowAddArticleDialog()
+        private void ShowAddArticleDialog()
         {
             _dialogService.ShowDialog("addArticleDialog");
             GetAllArticles();
         }
 
-        private async void ShowAddArticleByDataEntry()
+        private void ShowAddArticleByDataEntry()
         {
-            _regionManager.RequestNavigate("MainRegion","AddArticleByDataEntry");
+            _regionManager.RequestNavigate("MainRegion", "AddArticleByDataEntry");
         }
 
         private async void DeleteArticle(Article article)
@@ -143,14 +142,14 @@ namespace RestaurantApp.ViewModels
             Articles.Remove(article);
         }
 
-        private async void ShowArticleDetails(Article article)
+        private void ShowArticleDetails(Article article)
         {
             NavigationParameters navigationParameters = new NavigationParameters
             {
                 { "article", article }
             };
 
-            _regionManager.RequestNavigate("MainRegion","ArticleDetails", navigationParameters);
+            _regionManager.RequestNavigate("MainRegion", "ArticleDetails", navigationParameters);
         }
     }
 }

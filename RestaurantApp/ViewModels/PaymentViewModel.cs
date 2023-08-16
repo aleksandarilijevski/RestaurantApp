@@ -13,8 +13,6 @@ using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Ink;
 
 namespace RestaurantApp.ViewModels
 {
@@ -344,7 +342,7 @@ namespace RestaurantApp.ViewModels
 
         }
 
-        private async void IssueFakeBill()
+        private void IssueFakeBill()
         {
             decimal change = 0;
             decimal cash = 0;
@@ -353,9 +351,8 @@ namespace RestaurantApp.ViewModels
             DrawFakeBill(totalPrice, cash, change);
         }
 
-        private async void IssueBill()
+        private void IssueBill()
         {
-            bool isGood = false;
             decimal change = 0;
             decimal cash = 0;
             decimal totalPrice = CalculateTotalPrice();
@@ -373,7 +370,6 @@ namespace RestaurantApp.ViewModels
                     {
                         change = result.Parameters.GetValue<decimal>("change");
                         cash = result.Parameters.GetValue<decimal>("cash");
-                        isGood = true;
                         await AddBill();
                         DrawBill(totalPrice, cash, change);
                     }
@@ -408,18 +404,6 @@ namespace RestaurantApp.ViewModels
 
             XImage image = XImage.FromStream(stream);
             return image;
-        }
-
-        private async Task<List<Article>> GetArticlesFromTable(List<TableArticleQuantity> tableArticleQuantities)
-        {
-            List<Article> articles = new List<Article>();
-
-            foreach (TableArticleQuantity tableArticleQuantity in tableArticleQuantities)
-            {
-                articles.Add(tableArticleQuantity.Article);
-            }
-
-            return articles;
         }
 
         private async Task CreateBill(Bill bill)

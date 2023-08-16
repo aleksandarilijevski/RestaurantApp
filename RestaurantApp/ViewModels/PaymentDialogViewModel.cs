@@ -15,23 +15,7 @@ namespace RestaurantApp.ViewModels
         private string _cashBox;
         private decimal _change;
 
-        public DelegateCommand<string> CalculateChangeCommand
-        {
-            get
-            {
-                _calculateChangeCommand = new DelegateCommand<string>(CalculateChange);
-                return _calculateChangeCommand;
-            }
-        }
-
-        public DelegateCommand ConfirmCommand
-        {
-            get
-            {
-                _confirmCommand = new DelegateCommand(Confirm);
-                return _confirmCommand;
-            }
-        }
+        public event Action<IDialogResult> RequestClose;
 
         public string Title
         {
@@ -87,7 +71,23 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public event Action<IDialogResult> RequestClose;
+        public DelegateCommand<string> CalculateChangeCommand
+        {
+            get
+            {
+                _calculateChangeCommand = new DelegateCommand<string>(CalculateChange);
+                return _calculateChangeCommand;
+            }
+        }
+
+        public DelegateCommand ConfirmCommand
+        {
+            get
+            {
+                _confirmCommand = new DelegateCommand(Confirm);
+                return _confirmCommand;
+            }
+        }
 
         private void Confirm()
         {

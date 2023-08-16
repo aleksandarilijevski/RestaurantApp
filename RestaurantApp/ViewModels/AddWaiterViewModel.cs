@@ -79,6 +79,7 @@ namespace RestaurantApp.ViewModels
 
         public virtual void OnDialogOpened(IDialogParameters parameters)
         {
+
         }
 
         private async void AddWaiter(Waiter waiter)

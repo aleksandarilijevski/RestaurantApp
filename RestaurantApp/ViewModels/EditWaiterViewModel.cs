@@ -1,5 +1,4 @@
 ﻿using EntityFramework.Models;
-using Microsoft.EntityFrameworkCore.Storage;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
@@ -22,15 +21,6 @@ namespace RestaurantApp.ViewModels
             _databaseService = databaseService;
         }
 
-        public DelegateCommand<Waiter> EditWaiterCommand
-        {
-            get
-            {
-                _editWaiterCommand = new DelegateCommand<Waiter>(EditWaiter);
-                return _editWaiterCommand;
-            }
-        }
-
         public Waiter Waiter
         {
             get { return _waiter; }
@@ -41,6 +31,15 @@ namespace RestaurantApp.ViewModels
         {
             get { return _title; }
             set { SetProperty(ref _title, value); }
+        }
+
+        public DelegateCommand<Waiter> EditWaiterCommand
+        {
+            get
+            {
+                _editWaiterCommand = new DelegateCommand<Waiter>(EditWaiter);
+                return _editWaiterCommand;
+            }
         }
 
         protected virtual void CloseDialog(string parameter)

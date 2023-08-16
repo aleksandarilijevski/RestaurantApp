@@ -1,7 +1,6 @@
 ﻿using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
-using RestaurantApp.Services.Interface;
 
 namespace RestaurantApp.ViewModels
 {
@@ -34,7 +33,7 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        private async void ShowOrderingUsercontrol(string id)
+        private void ShowOrderingUsercontrol(string id)
         {
             ID = int.Parse(id);
 
@@ -42,7 +41,7 @@ namespace RestaurantApp.ViewModels
             {
                 { "id", ID }
             };
-            
+
             _regionManager.RequestNavigate("MainRegion", "Ordering", navigationParameters);
         }
     }

@@ -30,8 +30,6 @@ namespace RestaurantApp.ViewModels
             _databaseService = databaseService;
         }
 
-        //public List<ArticleDetails> DataEntryArticles { get; set; } = new List<ArticleDetails>();
-
         public List<ArticleDetails> DataEntryArticles
         {
             get
@@ -207,18 +205,6 @@ namespace RestaurantApp.ViewModels
             RaisePropertyChanged(nameof(DataEntryArticles));
         }
 
-        private decimal GetTotalAmount(List<ArticleDetails> articleDetails)
-        {
-            decimal totalAmount = 0;
-
-            foreach (ArticleDetails articleDetail in articleDetails)
-            {
-                totalAmount += articleDetail.EntryPrice;
-            }
-
-            return totalAmount;
-        }
-
         private async void Save()
         {
             if (DataEntryNumber is null || DataEntryNumber == string.Empty)
@@ -291,27 +277,6 @@ namespace RestaurantApp.ViewModels
             }
 
             return totalAmount;
-        }
-
-        private async Task<ArticleDetails> GetArticleDetailsByArticleID(int articleId)
-        {
-            ArticleDetails articleDetails = await _databaseService.GetArticleDetailsByArticleID(articleId);
-            return articleDetails;
-        }
-
-        private async Task EditArticle(Article article)
-        {
-            await _databaseService.EditArticle(article);
-        }
-
-        private async Task AddArticleDetails(ArticleDetails articleDetails)
-        {
-            await _databaseService.AddArticleDetails(articleDetails);
-        }
-
-        private async Task AddDataEntry(DataEntry dataEntry)
-        {
-            await _databaseService.AddDataEntry(dataEntry);
         }
     }
 }

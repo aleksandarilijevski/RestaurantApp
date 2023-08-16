@@ -4,9 +4,7 @@ using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Windows.Documents;
 
 namespace RestaurantApp.ViewModels
 {
@@ -24,15 +22,6 @@ namespace RestaurantApp.ViewModels
             _databaseService = databaseService;
         }
 
-        public DelegateCommand<Article> EditArticleCommand
-        {
-            get
-            {
-                _editArticleCommand = new DelegateCommand<Article>(EditArticle);
-                return _editArticleCommand;
-            }
-        }
-
         public Article Article
         {
             get { return _article; }
@@ -43,6 +32,15 @@ namespace RestaurantApp.ViewModels
         {
             get { return _title; }
             set { SetProperty(ref _title, value); }
+        }
+
+        public DelegateCommand<Article> EditArticleCommand
+        {
+            get
+            {
+                _editArticleCommand = new DelegateCommand<Article>(EditArticle);
+                return _editArticleCommand;
+            }
         }
 
         protected virtual void CloseDialog(string parameter)
@@ -69,18 +67,12 @@ namespace RestaurantApp.ViewModels
 
         public virtual void OnDialogClosed()
         {
-           
+
         }
 
-        public virtual async void OnDialogOpened(IDialogParameters parameters)
+        public virtual void OnDialogOpened(IDialogParameters parameters)
         {
             Article = parameters.GetValue<Article>("article");
-        }
-
-        private async Task<ArticleDetails> GetArticleDetails(int articleId)
-        {
-            ArticleDetails articleDetails = await _databaseService.GetArticleDetailsByArticleID(articleId);
-            return articleDetails;
         }
 
         private async void EditArticle(Article article)

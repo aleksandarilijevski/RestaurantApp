@@ -85,7 +85,6 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-
         public ObservableCollection<TableArticleQuantity> TableArticleQuantities
         {
             get
@@ -97,14 +96,6 @@ namespace RestaurantApp.ViewModels
             {
                 _tableArticleQuantities = value;
                 RaisePropertyChanged();
-            }
-        }
-
-        private async void OnPaymentPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(TableArticleQuantity.Quantity))
-            {
-                await IsQuantityAvailableForArticleOnTable(TableArticleQuantity.Article);
             }
         }
 
@@ -141,6 +132,17 @@ namespace RestaurantApp.ViewModels
             {
                 _showPaymentUserControlCommand = new DelegateCommand(ShowPaymentUserControl);
                 return _showPaymentUserControlCommand;
+            }
+        }
+
+        /// <summary>
+        /// This functions is triggere every time Quantity cell in dataGrid is changed.
+        /// </summary>
+        private async void OnPaymentPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(TableArticleQuantity.Quantity))
+            {
+                await IsQuantityAvailableForArticleOnTable(TableArticleQuantity.Article);
             }
         }
 
@@ -346,6 +348,7 @@ namespace RestaurantApp.ViewModels
 
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {
+
         }
     }
 }

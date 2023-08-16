@@ -17,6 +17,12 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand<Waiter> _showEditWaiterDialogCommand;
         private DelegateCommand _showAddWaiterDialogCommand;
 
+        public WaiterManagementViewModel(IDatabaseService databaseService, IDialogService dialogService)
+        {
+            _dialogService = dialogService;
+            _databaseService = databaseService;
+        }
+
         public ObservableCollection<Waiter> Waiters
         {
             get => _waiters;
@@ -26,12 +32,6 @@ namespace RestaurantApp.ViewModels
                 _waiters = value;
                 RaisePropertyChanged();
             }
-        }
-
-        public WaiterManagementViewModel(IDatabaseService databaseService,IDialogService dialogService)
-        {
-            _dialogService = dialogService;
-            _databaseService = databaseService;
         }
 
         public DelegateCommand ShowAddWaiterDialogCommand
@@ -88,7 +88,7 @@ namespace RestaurantApp.ViewModels
                 {"waiter",waiter}
             };
 
-            _dialogService.ShowDialog("editWaiterDialog",dialogParameters, r => 
+            _dialogService.ShowDialog("editWaiterDialog", dialogParameters, r =>
             {
                 Waiter resultData = r.Parameters.GetValue<Waiter>("waiter");
             });

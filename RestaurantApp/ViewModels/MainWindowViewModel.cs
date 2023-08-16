@@ -1,7 +1,6 @@
 ﻿using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
-using System.Threading.Tasks;
 
 namespace RestaurantApp.ViewModels
 {
@@ -44,7 +43,7 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        private async Task Navigate(string regionName, string viewName)
+        private void Navigate(string regionName, string viewName)
         {
             _regionManager.RequestNavigate(regionName, viewName);
         }

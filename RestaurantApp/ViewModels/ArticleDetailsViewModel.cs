@@ -69,12 +69,6 @@ namespace RestaurantApp.ViewModels
             Article = (Article)navigationContext.Parameters["article"];
         }
 
-        private async Task<ArticleDetails> GetArticleDetailsByID(int id)
-        {
-            ArticleDetails articleDetails = await _databaseService.GetArticleDetailsByID(id);
-            return articleDetails;
-        }
-
         private async void DeleteArticleDetail(ArticleDetails articleDetails)
         {
             await _databaseService.DeleteArticleDetails(articleDetails);
