@@ -169,7 +169,7 @@ namespace RestaurantApp.ViewModels
 
         private void GetArticleByBarcode(string barcode)
         {
-            if (!long.TryParse(barcode, out long barcodeLong))
+            if (long.TryParse(barcode, out long barcodeLong))
             {
                 Article article = Articles.FirstOrDefault(x => x.Barcode == barcodeLong);
                 ArticleDetails articleDetails = new ArticleDetails();
@@ -179,6 +179,10 @@ namespace RestaurantApp.ViewModels
                     articleDetails.Article = article;
                     DataEntryArticles.Add(articleDetails);
                 }
+            }
+            else
+            {
+                MessageBox.Show("Barcode is invalid!", "Data entry", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
             Barcode = string.Empty;

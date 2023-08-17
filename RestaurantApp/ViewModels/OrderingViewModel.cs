@@ -210,7 +210,6 @@ namespace RestaurantApp.ViewModels
 
         private async Task IsQuantityAvailableForArticleOnTable(Article article)
         {
-
             int quantity = GetAvailableQuantity(article.ArticleDetails);
             int usedQuantity = 0;
 
@@ -226,7 +225,6 @@ namespace RestaurantApp.ViewModels
                 usedQuantity += tableArticleQuantity.Quantity;
             }
 
-
             if (usedQuantity <= quantity)
             {
                 await _databaseService.EditTableArticleQuantity(TableArticleQuantity);
@@ -236,11 +234,12 @@ namespace RestaurantApp.ViewModels
                 _tableArticleQuantity.PropertyChanged -= OnPaymentPropertyChanged;
                 TableArticleQuantity.Quantity = 1;
                 TableArticleQuantities.FirstOrDefault(x => x.ID == TableArticleQuantity.ID).Quantity = 1;
-                _tableArticleQuantity.PropertyChanged += OnPaymentPropertyChanged;
-
                 await _databaseService.EditTableArticleQuantity(TableArticleQuantity);
+                _tableArticleQuantity.PropertyChanged += OnPaymentPropertyChanged;
                 MessageBox.Show("Article is not in stock!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+
+            RaisePropertyChanged(nameof(TableArticleQuantities));
         }
 
         /// <summary>
@@ -252,7 +251,6 @@ namespace RestaurantApp.ViewModels
 
             //We are adding +1 because once article is scanned his default quantity is 1.
             int usedQuantity = await GetTableArticleTotalQuantity(article.ID) +1;
-
 
             if (usedQuantity <= quantity)
             {

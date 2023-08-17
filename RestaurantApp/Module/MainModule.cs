@@ -33,6 +33,7 @@ namespace RestaurantApp.Module
             containerRegistry.RegisterDialog<AddWaiter, AddWaiterViewModel>("addWaiterDialog");
             containerRegistry.RegisterDialog<EditArticleDetail, EditArticleDetailViewModel>("editArticleDetailDialog");
             containerRegistry.RegisterDialog<PaymentDialog, PaymentDialogViewModel>("paymentDialog");
+            containerRegistry.RegisterDialog<ReportDetails, ReportDetailsViewModel>("reportDetailsDialog");
         }
     }
 }

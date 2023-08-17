@@ -72,5 +72,7 @@ namespace RestaurantApp.Services.Interface
         public Task<Configuration> GetConfiguration();
 
         public Task EditConfiguration(Configuration configuration);
+
+        public Task<List<Bill>> GetAllBills();
     }
 }

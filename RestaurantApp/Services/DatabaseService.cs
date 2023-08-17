@@ -243,5 +243,11 @@ namespace RestaurantApp.Services
             _efContext.Entry(configuration).State = EntityState.Modified;
             await _efContext.SaveChangesAsync();
         }
+
+        public async Task<List<Bill>> GetAllBills()
+        {
+            List<Bill> bills = await _efContext.Bills.Select(x => x).Include(x => x.Table).ThenInclude(x => x.TableArticleQuantities).ThenInclude(x => x.Article).ToListAsync();
+            return bills;
+        }
     }
 }
