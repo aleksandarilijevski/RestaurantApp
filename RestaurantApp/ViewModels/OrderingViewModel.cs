@@ -75,12 +75,17 @@ namespace RestaurantApp.ViewModels
 
             set
             {
+                if (_tableArticleQuantity != null)
+                {
+                    _tableArticleQuantity.PropertyChanged -= OnQuantityPropertyChanged;
+                }
+
                 _tableArticleQuantity = value;
                 RaisePropertyChanged();
 
                 if (_tableArticleQuantity != null)
                 {
-                    _tableArticleQuantity.PropertyChanged += OnPaymentPropertyChanged;
+                    _tableArticleQuantity.PropertyChanged += OnQuantityPropertyChanged;
                 }
             }
         }
@@ -136,13 +141,13 @@ namespace RestaurantApp.ViewModels
         }
 
         /// <summary>
-        /// This functions is triggere every time Quantity cell in dataGrid is changed.
+        /// This functions is triggers every time Quantity cell in dataGrid is changed.
         /// </summary>
-        private async void OnPaymentPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OnQuantityPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(TableArticleQuantity.Quantity))
             {
-                await IsQuantityAvailableForArticleOnTable(TableArticleQuantity.Article);
+                Task isQuantityAvailableForArticleOnTable = Task.Run(() => IsQuantityAvailableForArticleOnTable(TableArticleQuantity.Article));
             }
         }
 
@@ -231,11 +236,9 @@ namespace RestaurantApp.ViewModels
             }
             else
             {
-                _tableArticleQuantity.PropertyChanged -= OnPaymentPropertyChanged;
                 TableArticleQuantity.Quantity = 1;
                 TableArticleQuantities.FirstOrDefault(x => x.ID == TableArticleQuantity.ID).Quantity = 1;
                 await _databaseService.EditTableArticleQuantity(TableArticleQuantity);
-                _tableArticleQuantity.PropertyChanged += OnPaymentPropertyChanged;
                 MessageBox.Show("Article is not in stock!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
@@ -250,7 +253,7 @@ namespace RestaurantApp.ViewModels
             int quantity = GetAvailableQuantity(article.ArticleDetails);
 
             //We are adding +1 because once article is scanned his default quantity is 1.
-            int usedQuantity = await GetTableArticleTotalQuantity(article.ID) +1;
+            int usedQuantity = await GetTableArticleTotalQuantity(article.ID) + 1;
 
             if (usedQuantity <= quantity)
             {
