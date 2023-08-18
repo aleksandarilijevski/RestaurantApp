@@ -29,7 +29,7 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <Button Content="Print" FontSize="25" Grid.Row="2"/>
+        <Button Content="Print" FontSize="25" Grid.Row="2" Command="{Binding PrintBillCommand}"/>
 
     </Grid>
 </UserControl>

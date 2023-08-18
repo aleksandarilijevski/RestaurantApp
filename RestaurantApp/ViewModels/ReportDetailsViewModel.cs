@@ -1,18 +1,34 @@
 ﻿using EntityFramework.Models;
+using PdfSharp.Drawing;
+using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
+using RestaurantApp.Services.Interface;
+using RestaurantApp.Utilities.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Windows.Documents;
 
 namespace RestaurantApp.ViewModels
 {
     class ReportDetailsViewModel : BindableBase, IDialogAware
     {
+        private IDatabaseService _databaseService;
         private string _title = "Report details";
         private string _totalPrice = "Total price : ";
         private Bill _bill;
+        private DelegateCommand _printBillCommand;
         private ObservableCollection<TableArticleQuantity> _soldTableArticleQuantities;
+
+        public ReportDetailsViewModel(IDatabaseService databaseService)
+        {
+            _databaseService = databaseService;
+        }
 
         public string Title
         {
@@ -68,6 +84,15 @@ namespace RestaurantApp.ViewModels
             }
         }
 
+        public DelegateCommand PrintBillCommand
+        {
+            get
+            {
+                _printBillCommand = new DelegateCommand(PrintBill);
+                return _printBillCommand;
+            }
+        }
+
         public event Action<IDialogResult> RequestClose;
 
         protected virtual void CloseDialog(string parameter)
@@ -107,6 +132,33 @@ namespace RestaurantApp.ViewModels
         private void GetSoldArticles()
         {
             SoldTableArticleQuantities = new ObservableCollection<TableArticleQuantity>(_bill.Table.TableArticleQuantities.OfType<SoldTableArticleQuantity>().ToList());
+        }
+
+        private async Task<int> IncreaseBillCounter()
+        {
+            Configuration configuration = await _databaseService.GetConfiguration();
+            configuration.BillCounter += 1;
+            await _databaseService.EditConfiguration(configuration);
+            return configuration.BillCounter;
+        }
+
+        private async Task<XImage> GetCustomQRCode(string text)
+        {
+            string url = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + text;
+
+            HttpClient client = new HttpClient();
+            Stream stream = await client.GetStreamAsync(url);
+
+            XImage image = XImage.FromStream(stream);
+            return image;
+        }
+
+        private async void PrintBill()
+        {
+            int billCounter = await IncreaseBillCounter();
+            XImage qrCode = await GetCustomQRCode("test");
+            List<TableArticleQuantity> soldTableArticleQuantities = _bill.Table.TableArticleQuantities.OfType<SoldTableArticleQuantity>().Select(sold => (TableArticleQuantity)sold).ToList();
+            DrawningHelper.DrawBill(Bill, qrCode, billCounter, soldTableArticleQuantities);
         }
     }
 }

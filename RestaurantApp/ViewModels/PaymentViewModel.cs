@@ -7,11 +7,9 @@ using Prism.Services.Dialogs;
 using RestaurantApp.Enums;
 using RestaurantApp.Services.Interface;
 using RestaurantApp.Utilities.Helpers;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
-using System.Reflection.PortableExecutable;
 using System.Threading.Tasks;
 
 namespace RestaurantApp.ViewModels
@@ -105,7 +103,7 @@ namespace RestaurantApp.ViewModels
         {
         }
 
-        private async Task AddBill()
+        private async Task<Bill> AddBill(decimal cash, decimal change)
         {
             decimal totalPrice = CalculateTotalPrice();
 
@@ -113,6 +111,8 @@ namespace RestaurantApp.ViewModels
             {
                 TableID = _table.ID,
                 TotalPrice = totalPrice,
+                Cash = cash,
+                Change = change,
                 PaymentType = PaymentType
             };
 
@@ -126,6 +126,7 @@ namespace RestaurantApp.ViewModels
                 soldTableArticleQuantity = new SoldTableArticleQuantity
                 {
                     ArticleID = tableArticleQuantity.ArticleID,
+                    Article = tableArticleQuantity.Article,
                     TableID = tableArticleQuantity.TableID,
                     Quantity = tableArticleQuantity.Quantity,
                 };
@@ -134,6 +135,7 @@ namespace RestaurantApp.ViewModels
             }
 
             await _databaseService.ModifyTableArticles(_table.ID, soldTableArticleQuantities, _table.TableArticleQuantities);
+            return bill;
         }
 
         private void IssueFakeBill()
@@ -142,7 +144,19 @@ namespace RestaurantApp.ViewModels
             decimal cash = 0;
             decimal totalPrice = CalculateTotalPrice();
 
-            DrawningHelper.DrawFakeBill(totalPrice, cash, change, _tableArticleQuantities);
+            Bill fakeBill = new Bill
+            {
+                TotalPrice = totalPrice,
+                Cash = cash,
+                Change = change,
+
+                Table = new Table
+                {
+                    TableArticleQuantities = _tableArticleQuantities
+                },
+            };
+
+            DrawningHelper.DrawFakeBill(fakeBill);
         }
 
         private async Task<int> IncreaseBillCounter()
@@ -172,10 +186,10 @@ namespace RestaurantApp.ViewModels
                     {
                         change = result.Parameters.GetValue<decimal>("change");
                         cash = result.Parameters.GetValue<decimal>("cash");
-                        await AddBill();
-                        XImage xImage = await GetCustomQRCode("text");
+                        Bill bill = await AddBill(cash, change);
+                        XImage qrCode = await GetCustomQRCode("text");
                         int billCounter = await IncreaseBillCounter();
-                        DrawningHelper.DrawBill(totalPrice, cash, change, _tableArticleQuantities, xImage, PaymentType, billCounter);
+                        DrawningHelper.DrawBill(bill, qrCode, billCounter, _tableArticleQuantities);
                         _regionManager.RequestNavigate("MainRegion", "TableOrder");
                     }
                 });
@@ -211,9 +225,10 @@ namespace RestaurantApp.ViewModels
             return image;
         }
 
-        private async Task CreateBill(Bill bill)
+        private async Task<Bill> CreateBill(Bill bill)
         {
             await _databaseService.CreateBill(bill);
+            return bill;
         }
     }
 }

@@ -1,18 +1,24 @@
-﻿using Prism.Commands;
+﻿using EntityFramework.Models;
+using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
+using RestaurantApp.Services.Interface;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace RestaurantApp.ViewModels
 {
     public class TableOrderViewModel : BindableBase
     {
         private IRegionManager _regionManager;
+        private IDatabaseService _databaseService;
         private DelegateCommand<string> _orderingCommand;
         private int _id;
 
-        public TableOrderViewModel(IRegionManager regionManager)
+        public TableOrderViewModel(IRegionManager regionManager,IDatabaseService databaseService)
         {
             _regionManager = regionManager;
+            _databaseService = databaseService;
         }
 
         public int ID

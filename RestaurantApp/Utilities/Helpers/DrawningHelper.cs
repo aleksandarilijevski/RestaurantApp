@@ -10,7 +10,7 @@ namespace RestaurantApp.Utilities.Helpers
 {
     public static class DrawningHelper
     {
-        public static void DrawFakeBill(decimal totalPrice, decimal cash, decimal change, List<TableArticleQuantity> tableArticleQuantities)
+        public static void DrawFakeBill(Bill bill)
         {
             PdfDocument pdfDocument = new PdfDocument();
             PdfPage pdfPage = pdfDocument.AddPage();
@@ -36,7 +36,7 @@ namespace RestaurantApp.Utilities.Helpers
             gfx.DrawString("-----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, pdfPage.Width, 0));
             offset += 20;
 
-            foreach (TableArticleQuantity tableArticleQuantity in tableArticleQuantities)
+            foreach (TableArticleQuantity tableArticleQuantity in bill.Table.TableArticleQuantities)
             {
                 if (tableArticleQuantity.Article.Name.Length > 15)
                 {
@@ -55,7 +55,7 @@ namespace RestaurantApp.Utilities.Helpers
             gfx.DrawString("-----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, pdfPage.Width, 0));
             offset += 20;
 
-            gfx.DrawString("ZA UPLATU:" + totalPrice.ToString().PadLeft(62), font, XBrushes.Black, new XRect(15, offset, pdfPage.Width, 0));
+            gfx.DrawString("ZA UPLATU:" + bill.TotalPrice.ToString().PadLeft(62), font, XBrushes.Black, new XRect(15, offset, pdfPage.Width, 0));
             offset += 20;
 
             gfx.DrawString("-----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, pdfPage.Width, 0));
@@ -78,7 +78,7 @@ namespace RestaurantApp.Utilities.Helpers
             pdfDocument.Close();
         }
 
-        public static void DrawBill(decimal totalPrice, decimal cash, decimal change, List<TableArticleQuantity> tableArticleQuantities, XImage xImage, PaymentType paymentType, int billCounter)
+        public static void DrawBill(Bill bill, XImage qrCode, int billCounter, List<TableArticleQuantity> tableArticleQuantities)
         {
             PdfDocument document = new PdfDocument();
             PdfPage page = document.AddPage();
@@ -140,15 +140,15 @@ namespace RestaurantApp.Utilities.Helpers
 
             offset += 15;
             gfx.DrawString($"Ukupan iznos :", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
-            gfx.DrawString($"{totalPrice}".PadLeft(78), font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+            gfx.DrawString($"{bill.TotalPrice}".PadLeft(78), font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
 
-            if (paymentType == PaymentType.Cash)
+            if (bill.PaymentType == PaymentType.Cash)
             {
                 offset += 20;
-                gfx.DrawString($"Gotovina :                                                         {cash.ToString("0.00")}", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+                gfx.DrawString($"Gotovina :                                                         {bill.Cash.ToString("0.00")}", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
 
                 offset += 20;
-                gfx.DrawString($"Povracaj :                                                          {change}", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+                gfx.DrawString($"Povracaj :                                                          {bill.Change}", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
             }
 
             offset += 20;
@@ -160,7 +160,7 @@ namespace RestaurantApp.Utilities.Helpers
             offset += 15;
             gfx.DrawString("Oznaka              Ime         Stopa                            Porez", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
 
-            double pdv = (double)totalPrice * 0.20;
+            double pdv = (double)bill.TotalPrice * 0.20;
             offset += 15;
             gfx.DrawString($"DJ                  0-PDV        20.00%                           {pdv.ToString("0.00")}", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
 
@@ -193,7 +193,7 @@ namespace RestaurantApp.Utilities.Helpers
             gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
 
             offset += 10;
-            gfx.DrawImage(xImage, 150, offset, 200, 200);
+            gfx.DrawImage(qrCode, 150, offset, 200, 200);
 
             offset += 230;
             gfx.DrawString("============KRAJ FISKALNOG RACUNA============", font, XBrushes.Black, new XRect(10, offset, page.Width, 0));
