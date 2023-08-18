@@ -9,6 +9,7 @@ using RestaurantApp.Services.Interface;
 using RestaurantApp.Utilities.Helpers;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -88,21 +89,6 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public void OnNavigatedTo(NavigationContext navigationContext)
-        {
-            _table = (Table)navigationContext.Parameters["table"];
-            _tableArticleQuantities = (List<TableArticleQuantity>)navigationContext.Parameters["tableArticleQuantities"];
-        }
-
-        public bool IsNavigationTarget(NavigationContext navigationContext)
-        {
-            return false;
-        }
-
-        public void OnNavigatedFrom(NavigationContext navigationContext)
-        {
-        }
-
         private async Task<Bill> AddBill(decimal cash, decimal change)
         {
             decimal totalPrice = CalculateTotalPrice();
@@ -121,7 +107,10 @@ namespace RestaurantApp.ViewModels
             SoldTableArticleQuantity soldTableArticleQuantity = null;
             List<SoldTableArticleQuantity> soldTableArticleQuantities = new List<SoldTableArticleQuantity>();
 
-            foreach (TableArticleQuantity tableArticleQuantity in _table.TableArticleQuantities)
+            List<TableArticleQuantity> tableArticleQuantities = _table.TableArticleQuantities.Select(x => x).Where(x => !(x is SoldTableArticleQuantity)).ToList();
+
+            //foreach (TableArticleQuantity tableArticleQuantity in _table.TableArticleQuantities)
+            foreach (TableArticleQuantity tableArticleQuantity in tableArticleQuantities)
             {
                 soldTableArticleQuantity = new SoldTableArticleQuantity
                 {
@@ -129,6 +118,7 @@ namespace RestaurantApp.ViewModels
                     Article = tableArticleQuantity.Article,
                     TableID = tableArticleQuantity.TableID,
                     Quantity = tableArticleQuantity.Quantity,
+                    Bill = bill
                 };
 
                 soldTableArticleQuantities.Add(soldTableArticleQuantity);
@@ -229,6 +219,21 @@ namespace RestaurantApp.ViewModels
         {
             await _databaseService.CreateBill(bill);
             return bill;
+        }
+
+        public void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            _table = (Table)navigationContext.Parameters["table"];
+            _tableArticleQuantities = (List<TableArticleQuantity>)navigationContext.Parameters["tableArticleQuantities"];
+        }
+
+        public bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return false;
+        }
+
+        public void OnNavigatedFrom(NavigationContext navigationContext)
+        {
         }
     }
 }

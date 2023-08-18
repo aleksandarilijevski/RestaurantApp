@@ -131,7 +131,7 @@ namespace RestaurantApp.ViewModels
 
         private void GetSoldArticles()
         {
-            SoldTableArticleQuantities = new ObservableCollection<TableArticleQuantity>(_bill.Table.TableArticleQuantities.OfType<SoldTableArticleQuantity>().ToList());
+            SoldTableArticleQuantities = new ObservableCollection<TableArticleQuantity>(_bill.Table.TableArticleQuantities.Select(x => x).Where(x => x.BillID == Bill.ID && (x is SoldTableArticleQuantity)).OfType<SoldTableArticleQuantity>().ToList());
         }
 
         private async Task<int> IncreaseBillCounter()

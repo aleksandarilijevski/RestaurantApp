@@ -4,6 +4,7 @@ using PdfSharp.Pdf;
 using RestaurantApp.Enums;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace RestaurantApp.Utilities.Helpers
@@ -119,7 +120,9 @@ namespace RestaurantApp.Utilities.Helpers
             gfx.DrawString("Naziv                Cena                 Kol                   Ukupno", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
             offset += 20;
 
-            foreach (TableArticleQuantity tableArticleQuantity in tableArticleQuantities)
+            List<TableArticleQuantity> soldTableArticleQuantities = tableArticleQuantities.Where(x => x.BillID == bill.ID && (x is SoldTableArticleQuantity)).ToList();
+
+            foreach (TableArticleQuantity tableArticleQuantity in soldTableArticleQuantities)
             {
                 if (tableArticleQuantity.Article.Name.Length > 15)
                 {

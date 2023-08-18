@@ -19,6 +19,7 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand<string> _addArticleToTableCommand;
         private int _tableId;
         private Table _table;
+        private TableArticleQuantity _tableArticleQuantity;
         private string _barcode;
         private DelegateCommand<Table> _getTableCommand;
         private DelegateCommand _showPaymentUserControlCommand;
@@ -63,8 +64,6 @@ namespace RestaurantApp.ViewModels
                 RaisePropertyChanged();
             }
         }
-
-        private TableArticleQuantity _tableArticleQuantity;
 
         public TableArticleQuantity TableArticleQuantity
         {

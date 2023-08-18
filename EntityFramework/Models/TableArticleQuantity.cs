@@ -18,6 +18,10 @@ namespace EntityFramework.Models
 
         public Article Article { get; set; }
 
+        public int? BillID { get; set; }
+
+        public Bill? Bill { get; set; }
+
         public int Quantity
         {
             get => _quantity;

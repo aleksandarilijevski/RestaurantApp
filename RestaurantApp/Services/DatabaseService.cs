@@ -102,11 +102,12 @@ namespace RestaurantApp.Services
         {
             Table table = _efContext.Tables.Include(x => x.TableArticleQuantities).FirstOrDefault(x => x.ID == tableID);
 
-            List<TableArticleQuantity> quantitiesToRemove = table.TableArticleQuantities.OfType<TableArticleQuantity>().ToList();
+            //List<TableArticleQuantity> quantitiesToRemove = table.TableArticleQuantities.OfType<TableArticleQuantity>().ToList();
+            List<TableArticleQuantity> quantitiesToRemove = table.TableArticleQuantities.Where(x => !(x is SoldTableArticleQuantity)).ToList();
 
-            foreach (var quantity in quantitiesToRemove.ToList())
+            foreach (TableArticleQuantity tableArticleQuantity in quantitiesToRemove.ToList())
             {
-                table.TableArticleQuantities.Remove(quantity);
+                table.TableArticleQuantities.Remove(tableArticleQuantity);
             }
 
             table.TableArticleQuantities.AddRange(soldTableArticleQuantities);
@@ -194,8 +195,13 @@ namespace RestaurantApp.Services
 
             using EFContext efContext = new EFContext();
 
+            //List<TableArticleQuantity> tableArticleQuantities = await efContext.TableArticleQuantities.Select(x => x)
+            //    .Where(x => x.ArticleID == articleID).OfType<TableArticleQuantity>()
+            //    .ToListAsync(); 
+
+
             List<TableArticleQuantity> tableArticleQuantities = await efContext.TableArticleQuantities.Select(x => x)
-                .Where(x => x.ArticleID == articleID)
+                .Where(x => x.ArticleID == articleID && !(x is SoldTableArticleQuantity))
                 .ToListAsync();
 
             totalQuantity = tableArticleQuantities.Sum(x => x.Quantity);
@@ -246,7 +252,14 @@ namespace RestaurantApp.Services
 
         public async Task<List<Bill>> GetAllBills()
         {
-            List<Bill> bills = await _efContext.Bills.Select(x => x).Include(x => x.Table).ThenInclude(x => x.TableArticleQuantities).ThenInclude(x => x.Article).ToListAsync();
+            List<Bill> bills = await _efContext.Bills.Select(x => x)
+                .Include(x => x.Table)
+                .ThenInclude(x => x.TableArticleQuantities)
+                .ThenInclude(x => x.Article)
+                .Include(x => x.Table)
+                .ThenInclude(x => x.TableArticleQuantities)
+                .ThenInclude(x => x.Bill)
+                .ToListAsync();
             return bills;
         }
     }
