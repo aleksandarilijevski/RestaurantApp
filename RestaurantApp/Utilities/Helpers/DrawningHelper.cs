@@ -79,7 +79,7 @@ namespace RestaurantApp.Utilities.Helpers
             pdfDocument.Close();
         }
 
-        public static void DrawBill(Bill bill, XImage qrCode, int billCounter, List<TableArticleQuantity> tableArticleQuantities)
+        public static void RedrawBill(Bill bill, XImage qrCode, int billCounter, List<TableArticleQuantity> tableArticleQuantities)
         {
             PdfDocument document = new PdfDocument();
             PdfPage page = document.AddPage();
@@ -123,6 +123,140 @@ namespace RestaurantApp.Utilities.Helpers
             List<TableArticleQuantity> soldTableArticleQuantities = tableArticleQuantities.Where(x => x.BillID == bill.ID && (x is SoldTableArticleQuantity)).ToList();
 
             foreach (TableArticleQuantity tableArticleQuantity in soldTableArticleQuantities)
+            {
+                if (tableArticleQuantity.Article.Name.Length > 15)
+                {
+                    gfx.DrawString(tableArticleQuantity.Article.Name, font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+                    offset += 20;
+                }
+                else
+                {
+                    gfx.DrawString(tableArticleQuantity.Article.Name, font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+                }
+
+                gfx.DrawString($"{tableArticleQuantity.Article.Price}".PadLeft(28) + $"{tableArticleQuantity.Quantity}".PadLeft(18) + $"{tableArticleQuantity.Article.Price * tableArticleQuantity.Quantity}".PadLeft(28), font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+                offset += 20;
+            }
+
+            offset += 5;
+            gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+
+            offset += 15;
+            gfx.DrawString($"Ukupan iznos :", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+            gfx.DrawString($"{bill.TotalPrice}".PadLeft(78), font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+
+            if (bill.PaymentType == PaymentType.Cash)
+            {
+                offset += 20;
+                gfx.DrawString($"Gotovina :                                                         {bill.Cash.ToString("0.00")}", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+
+                offset += 20;
+                gfx.DrawString($"Povracaj :                                                          {bill.Change}", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+            }
+
+            offset += 20;
+            gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+
+            offset += 5;
+            gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+
+            offset += 15;
+            gfx.DrawString("Oznaka              Ime         Stopa                            Porez", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+
+            double pdv = (double)bill.TotalPrice * 0.20;
+            offset += 15;
+            gfx.DrawString($"DJ                  0-PDV        20.00%                           {pdv.ToString("0.00")}", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+
+            offset += 15;
+            gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+
+            offset += 15;
+            gfx.DrawString($"Ukupan iznos poreza:                                              {pdv.ToString("0.00")}", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+
+            offset += 15;
+            gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+
+            offset += 5;
+            gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+
+            offset += 15;
+            gfx.DrawString("PFR Vreme:", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+            gfx.DrawString(DateTime.Now.ToString("dd/MM/yyyy  HH:mm:ss").PadLeft(70), font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+
+            offset += 20;
+            gfx.DrawString("PFR br.rac:", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+
+            offset += 20;
+            gfx.DrawString("Brojac racuna:", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+
+            offset += 15;
+            gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+
+            offset += 5;
+            gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+
+            offset += 10;
+            gfx.DrawImage(qrCode, 150, offset, 200, 200);
+
+            offset += 230;
+            gfx.DrawString("============KRAJ FISKALNOG RACUNA============", font, XBrushes.Black, new XRect(10, offset, page.Width, 0));
+
+            offset += 20;
+            gfx.DrawString("HVALA NA POSETI".PadLeft(48), font, XBrushes.Black, new XRect(10, offset, page.Width, 0)); ;
+
+            offset += 15;
+            gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+
+            page.Height -= offset;
+
+            string path = "C:\\Users\\" + Environment.UserName + "\\Desktop\\invoiceReprinted.pdf";
+
+            document.Save(path);
+            document.Close();
+        }
+
+        public static void DrawBill(Bill bill, XImage qrCode, int billCounter, List<TableArticleQuantity> tableArticleQuantities)
+        {
+            PdfDocument document = new PdfDocument();
+            PdfPage page = document.AddPage();
+
+            page.Width = 500;
+            page.Height = 0;
+
+            XGraphics gfx = XGraphics.FromPdfPage(page);
+
+            XPen pen = new XPen(XColors.Black, 1);
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            XFont font = new XFont("Verdana", 15, XFontStyle.Regular);
+
+            int offset = 0;
+
+            gfx.DrawString("===============FISKALNI RACUN===============", font, XBrushes.Black, new XRect(0, offset, page.Width, page.Height), XStringFormats.TopCenter);
+            offset += 20;
+            gfx.DrawString("123456789", font, XBrushes.Black, new XRect(0, offset, page.Width, 0), XStringFormats.TopCenter);
+            offset += 20;
+            gfx.DrawString("VP DIMA TOPOLA", font, XBrushes.Black, new XRect(0, offset, page.Width, 0), XStringFormats.TopCenter);
+            offset += 20;
+            gfx.DrawString("Mije Todorovica 76", font, XBrushes.Black, new XRect(0, offset, page.Width, 0), XStringFormats.TopCenter);
+            offset += 50;
+            gfx.DrawString("Kasir :", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+            offset += 20;
+            gfx.DrawString($"ESIR Broj : {billCounter.ToString().PadLeft(70)}", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+            offset += 20;
+            gfx.DrawString($"ESIR Vreme : {DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss").PadLeft(55)}", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+            offset += 20;
+            gfx.DrawString("==============PROMET PRODAJA==============", font, XBrushes.Black, new XRect(10, offset, page.Width, 0));
+            offset += 20;
+            gfx.DrawString("Artikli", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+            offset += 20;
+            gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+            offset += 5;
+            gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+            offset += 20;
+            gfx.DrawString("Naziv                Cena                 Kol                   Ukupno", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+            offset += 20;
+
+            foreach (TableArticleQuantity tableArticleQuantity in tableArticleQuantities)
             {
                 if (tableArticleQuantity.Article.Name.Length > 15)
                 {

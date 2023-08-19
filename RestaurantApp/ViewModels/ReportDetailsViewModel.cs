@@ -158,7 +158,7 @@ namespace RestaurantApp.ViewModels
             int billCounter = await IncreaseBillCounter();
             XImage qrCode = await GetCustomQRCode("test");
             List<TableArticleQuantity> soldTableArticleQuantities = _bill.Table.TableArticleQuantities.OfType<SoldTableArticleQuantity>().Select(sold => (TableArticleQuantity)sold).ToList();
-            DrawningHelper.DrawBill(Bill, qrCode, billCounter, soldTableArticleQuantities);
+            DrawningHelper.RedrawBill(Bill, qrCode, billCounter, soldTableArticleQuantities);
         }
     }
 }

@@ -157,7 +157,7 @@ namespace RestaurantApp.ViewModels
             return configuration.BillCounter;
         }
 
-        private void IssueBill()
+        private async void IssueBill()
         {
             decimal change = 0;
             decimal cash = 0;
@@ -183,6 +183,15 @@ namespace RestaurantApp.ViewModels
                         _regionManager.RequestNavigate("MainRegion", "TableOrder");
                     }
                 });
+            }
+
+            if (PaymentType == PaymentType.Card)
+            {
+                Bill bill = await AddBill(0, 0);
+                XImage qrCode = await GetCustomQRCode("text");
+                int billCounter = await IncreaseBillCounter();
+                DrawningHelper.DrawBill(bill, qrCode, billCounter, _tableArticleQuantities);
+                _regionManager.RequestNavigate("MainRegion", "TableOrder");
             }
         }
 

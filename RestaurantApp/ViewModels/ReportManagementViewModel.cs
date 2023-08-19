@@ -137,6 +137,7 @@ namespace RestaurantApp.ViewModels
         private async void LoadAllBills()
         {
             List<Bill> bills = await _databaseService.GetAllBills();
+            bills.OrderBy(x => x.CreatedDateTime);
             Bills = new ObservableCollection<Bill>(bills);
         }
 
