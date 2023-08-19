@@ -308,6 +308,18 @@ namespace RestaurantApp.ViewModels
 
         private async void DeleteArticleFromTable(TableArticleQuantity tableArticleQuantity)
         {
+            List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleID(tableArticleQuantity.Article.ID);
+
+            foreach (ArticleDetails articleDetail in articleDetails.OrderBy(x => x.CreatedDateTime))
+            {   
+                if (articleDetail.Article.IsDeleted == false && articleDetail.Article.ID == tableArticleQuantity.Article.ID)
+                {
+                    articleDetail.Quantity += tableArticleQuantity.Quantity;
+                    await _databaseService.EditArticleDetails(articleDetail);
+                    break;
+                }
+            }
+
             Table.TableArticleQuantities.Remove(tableArticleQuantity);
             TableArticleQuantities.Remove(tableArticleQuantity);
             await EditTable(Table);

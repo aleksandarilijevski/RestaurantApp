@@ -5,8 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:RestaurantApp.Views"
              mc:Ignorable="d" 
+             xmlns:converters="clr-namespace:RestaurantApp.Converters"
              Height="400" Width="600">
-    
+
+    <UserControl.Resources>
+        <converters:TotalPriceConverter x:Key="TotalPriceConverter"/>
+    </UserControl.Resources>
+
     <Grid>
 
         <Grid.ColumnDefinitions>
@@ -21,11 +26,20 @@
 
         <TextBox FontSize="25" IsReadOnly="True" TextAlignment="Center" Text="{Binding TotalPrice}"/>
 
-        <DataGrid CanUserAddRows="False" AutoGenerateColumns="False" ItemsSource="{Binding SoldTableArticleQuantities, IsAsync=True}" IsReadOnly="True" Grid.Row="1">
+        <DataGrid CanUserAddRows="False" AutoGenerateColumns="False" ItemsSource="{Binding SoldTableArticleQuantities, IsAsync=True,Mode=TwoWay}" IsReadOnly="True" Grid.Row="1">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Article name" Binding="{Binding Article.Name}"/>
                 <DataGridTextColumn Header="Article price" Binding="{Binding Article.Price}"/>
                 <DataGridTextColumn Header="Sold quantity" Binding="{Binding Quantity}"/>
+
+                <DataGridTextColumn Header="Total price" x:Name="totalPrice">
+                    <DataGridTextColumn.Binding>
+                        <MultiBinding Converter="{StaticResource TotalPriceConverter}">
+                            <Binding Path="ItemsSource" RelativeSource="{RelativeSource AncestorType=DataGrid}"/>
+                        </MultiBinding>
+                    </DataGridTextColumn.Binding>
+                </DataGridTextColumn>
+
             </DataGrid.Columns>
         </DataGrid>
 

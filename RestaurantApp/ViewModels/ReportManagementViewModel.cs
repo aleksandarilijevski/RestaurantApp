@@ -6,6 +6,7 @@ using RestaurantApp.Services.Interface;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input.Manipulations;
 
 namespace RestaurantApp.ViewModels
@@ -14,17 +15,33 @@ namespace RestaurantApp.ViewModels
     {
         private IDatabaseService _databaseService;
         private IDialogService _dialogService;
+        private DelegateCommand _loadAllBillsCommand;
         private DateTime _dateFrom = DateTime.Now;
         private DateTime _dateTo = DateTime.Now;
         private ObservableCollection<Bill> _bills = new ObservableCollection<Bill>();
         private DelegateCommand _confirmCommand;
         private DelegateCommand _showReportDetailsCommand;
         private Bill _selectedBill;
+        private decimal _total;
 
         public ReportManagementViewModel(IDatabaseService databaseService, IDialogService dialogService)
         {
             _databaseService = databaseService;
             _dialogService = dialogService;
+        }
+
+        public decimal Total
+        {
+            get
+            {
+                return _total;
+            }
+
+            set
+            {
+                _total = value;
+                RaisePropertyChanged();
+            }
         }
 
         public DateTime DateFrom
@@ -98,6 +115,15 @@ namespace RestaurantApp.ViewModels
             }
         }
 
+        public DelegateCommand LoadAllBillsCommand
+        {
+            get
+            {
+                _loadAllBillsCommand = new DelegateCommand(LoadAllBills);
+                return _loadAllBillsCommand;
+            }
+        }
+
         private void ShowReportDetails()
         {
             DialogParameters dialogParameters = new DialogParameters
@@ -106,6 +132,12 @@ namespace RestaurantApp.ViewModels
             };
 
             _dialogService.ShowDialog("reportDetailsDialog", dialogParameters, r => { });
+        }
+
+        private async void LoadAllBills()
+        {
+            List<Bill> bills = await _databaseService.GetAllBills();
+            Bills = new ObservableCollection<Bill>(bills);
         }
 
         private async void Confirm()
@@ -120,6 +152,11 @@ namespace RestaurantApp.ViewModels
                 if (billCreatedDateTime.Date >= DateFrom.Date && billCreatedDateTime.Date <= DateTo.Date)
                 {
                     _bills.Add(bill);
+
+                    foreach (TableArticleQuantity tableArticleQuantity in bill.Table.TableArticleQuantities)
+                    {
+                        Total += tableArticleQuantity.Quantity * tableArticleQuantity.Article.Price;
+                    }
                 }
             }
         }
