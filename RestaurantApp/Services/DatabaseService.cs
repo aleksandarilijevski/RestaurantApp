@@ -20,7 +20,7 @@ namespace RestaurantApp.Services
 
         public async Task<ObservableCollection<Article>> GetAllArticles()
         {
-            List<Article> articles = await _efContext.Articles.Include(x => x.ArticleDetails).ToListAsync();
+            List<Article> articles = await _efContext.Articles.Include(x => x.ArticleDetails).Where(x => x.IsDeleted == false).ToListAsync();
             return new ObservableCollection<Article>(articles);
         }
 
@@ -32,7 +32,7 @@ namespace RestaurantApp.Services
 
         public async Task<Article> GetArticleByBarcode(long barcode)
         {
-            Article article = await _efContext.Articles.Include(x => x.ArticleDetails).FirstOrDefaultAsync(x => x.Barcode == barcode);
+            Article article = await _efContext.Articles.Include(x => x.ArticleDetails).FirstOrDefaultAsync(x => x.Barcode == barcode && x.IsDeleted == false);
             return article;
         }
 

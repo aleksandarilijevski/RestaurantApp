@@ -138,7 +138,8 @@ namespace RestaurantApp.ViewModels
 
         private async void DeleteArticle(Article article)
         {
-            await _databaseService.DeleteArticle(article);
+            article.IsDeleted = true;
+            await _databaseService.EditArticle(article);
             Articles.Remove(article);
         }
 
