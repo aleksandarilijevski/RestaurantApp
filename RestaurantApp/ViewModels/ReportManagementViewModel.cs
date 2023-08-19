@@ -6,6 +6,7 @@ using RestaurantApp.Services.Interface;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Windows.Input.Manipulations;
 
 namespace RestaurantApp.ViewModels
 {
@@ -114,7 +115,9 @@ namespace RestaurantApp.ViewModels
 
             foreach (Bill bill in bills)
             {
-                if (bill.CreatedDateTime >= DateFrom && bill.CreatedDateTime <= DateTo)
+                DateTime billCreatedDateTime = (DateTime)bill.CreatedDateTime;
+
+                if (billCreatedDateTime.Date >= DateFrom.Date && billCreatedDateTime.Date <= DateTo.Date)
                 {
                     _bills.Add(bill);
                 }

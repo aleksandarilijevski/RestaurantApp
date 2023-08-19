@@ -37,7 +37,9 @@ namespace RestaurantApp.Services.Interface
 
         public Task<List<Table>> GetAllTables();
 
-        public Task<ArticleDetails> GetArticleDetailsByArticleID(int id);
+        public Task<ArticleDetails> GetArticleDetailByArticleID(int id);
+
+        public Task<List<ArticleDetails>> GetArticleDetailsByArticleID(int articleId);
 
         public Task<List<TableArticleQuantity>> GetTableArticleQuantitiesExceptProvidedID(Table table);
 

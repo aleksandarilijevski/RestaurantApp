@@ -4,6 +4,7 @@ using RestaurantApp.Services.Interface;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace RestaurantApp.Services
@@ -121,9 +122,15 @@ namespace RestaurantApp.Services
             return tables;
         }
 
-        public async Task<ArticleDetails> GetArticleDetailsByArticleID(int id)
+        public async Task<ArticleDetails> GetArticleDetailByArticleID(int id)
         {
             ArticleDetails articleDetails = await _efContext.ArticleDetails.FirstOrDefaultAsync(x => x.Article.ID == id);
+            return articleDetails;
+        }
+
+        public async Task<List<ArticleDetails>> GetArticleDetailsByArticleID(int articleId)
+        {
+            List<ArticleDetails> articleDetails = await _efContext.ArticleDetails.Where(x => x.Article.ID == articleId).ToListAsync();
             return articleDetails;
         }
 

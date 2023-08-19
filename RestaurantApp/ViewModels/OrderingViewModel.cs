@@ -203,6 +203,8 @@ namespace RestaurantApp.ViewModels
                     Quantity = 1
                 };
 
+                await DecreaseQuantityOfArticleDetails(article.ID, tableArticleQuantity.Quantity);
+
                 Table.TableArticleQuantities.Add(tableArticleQuantity);
                 TableArticleQuantities.Add(tableArticleQuantity);
             }
@@ -212,24 +214,46 @@ namespace RestaurantApp.ViewModels
             RaisePropertyChanged(nameof(Table));
         }
 
+        private async Task DecreaseQuantityOfArticleDetails(int articleId, int quantityToSell)
+        {
+            List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleID(articleId);
+
+            foreach (ArticleDetails articleDetail in articleDetails)
+            {
+                if (articleDetail.Quantity >= quantityToSell)
+                {
+                    articleDetail.Quantity -= quantityToSell;
+                    quantityToSell = 0;
+                    await _databaseService.EditArticleDetails(articleDetail);
+                    break;
+                }
+                else
+                {
+                    quantityToSell -= articleDetail.Quantity;
+                    articleDetail.Quantity = 0;
+                    await _databaseService.EditArticleDetails(articleDetail);
+                }
+            }
+        }
+
         private async Task IsQuantityAvailableForArticleOnTable(Article article)
         {
             int quantity = GetAvailableQuantity(article.ArticleDetails);
-            int usedQuantity = 0;
+            //int usedQuantity = 0;
 
-            List<TableArticleQuantity> tableArticleQuantities = await _databaseService.GetTableArticleQuantitiesExceptProvidedID(Table);
+            //List<TableArticleQuantity> tableArticleQuantities = await _databaseService.GetTableArticleQuantitiesExceptProvidedID(Table);
 
-            foreach (TableArticleQuantity tableArticleQuantity in tableArticleQuantities)
-            {
-                usedQuantity += tableArticleQuantity.Quantity;
-            }
+            //foreach (TableArticleQuantity tableArticleQuantity in tableArticleQuantities)
+            //{
+            //    usedQuantity += tableArticleQuantity.Quantity;
+            //}
 
-            foreach (TableArticleQuantity tableArticleQuantity in TableArticleQuantities)
-            {
-                usedQuantity += tableArticleQuantity.Quantity;
-            }
+            //foreach (TableArticleQuantity tableArticleQuantity in TableArticleQuantities)
+            //{
+            //    usedQuantity += tableArticleQuantity.Quantity;
+            //}
 
-            if (usedQuantity <= quantity)
+            if (quantity != 0)
             {
                 await _databaseService.EditTableArticleQuantity(TableArticleQuantity);
             }
@@ -241,6 +265,7 @@ namespace RestaurantApp.ViewModels
                 MessageBox.Show("Article is not in stock!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
+            await DecreaseQuantityOfArticleDetails(article.ID, TableArticleQuantity.Quantity);
             RaisePropertyChanged(nameof(TableArticleQuantities));
         }
 
@@ -251,10 +276,8 @@ namespace RestaurantApp.ViewModels
         {
             int quantity = GetAvailableQuantity(article.ArticleDetails);
 
-            //We are adding +1 because once article is scanned his default quantity is 1.
-            int usedQuantity = await GetTableArticleTotalQuantity(article.ID) + 1;
-
-            if (usedQuantity <= quantity)
+            //if (usedQuantity <= quantity)
+            if (quantity != 0)
             {
                 return true;
             }
