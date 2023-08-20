@@ -24,6 +24,7 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand<Table> _getTableCommand;
         private DelegateCommand _showPaymentUserControlCommand;
         private DelegateCommand<TableArticleQuantity> _deleteArticleFromTableCommand;
+        private DelegateCommand _navigateToTablesCommand;
         private ObservableCollection<TableArticleQuantity> _tableArticleQuantities;
 
         public OrderingViewModel(IDatabaseService databaseService, IRegionManager regionManager)
@@ -136,6 +137,15 @@ namespace RestaurantApp.ViewModels
             {
                 _showPaymentUserControlCommand = new DelegateCommand(ShowPaymentUserControl);
                 return _showPaymentUserControlCommand;
+            }
+        }
+
+        public DelegateCommand NavigateToTablesCommand
+        {
+            get
+            {
+                _navigateToTablesCommand = new DelegateCommand(NavigateToTables);
+                return _navigateToTablesCommand;
             }
         }
 
@@ -348,6 +358,11 @@ namespace RestaurantApp.ViewModels
         {
             int usedQuantity = await _databaseService.GetTableArticleTotalQuantity(articleID);
             return usedQuantity;
+        }
+
+        private void NavigateToTables()
+        {
+            _regionManager.RequestNavigate("MainRegion", "TableOrder");
         }
 
         /// <summary>

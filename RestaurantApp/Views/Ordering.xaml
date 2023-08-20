@@ -23,7 +23,13 @@
             <RowDefinition Height="30" />
         </Grid.RowDefinitions>
 
-        <TextBox FontSize="20" Grid.Row="0" TextAlignment="Center" x:Name="searchBox" Text="{Binding Barcode}" Margin="3" >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Button Grid.Column="0" Margin="2" Content="&lt;---" FontSize="20" Command="{Binding NavigateToTablesCommand}" />
+        <TextBox FontSize="20" Grid.Row="0" TextAlignment="Center" x:Name="searchBox" Text="{Binding Barcode}" Margin="3" Grid.Column="1" >
             <TextBox.InputBindings>
                 <KeyBinding Command="{Binding AddArticleToTableCommand}" CommandParameter="{Binding Text,ElementName=searchBox}" Key="Enter" />
             </TextBox.InputBindings>
@@ -41,7 +47,7 @@
             </TextBox.Style>
         </TextBox>
 
-        <TextBlock Text="{Binding TableID, StringFormat='Order for table ID : {0}'}" Grid.Row="1" TextAlignment="Center" FontSize="17" Background="White" />
+        <TextBlock Text="{Binding TableID, StringFormat='Order for table ID : {0}'}" Grid.Row="1" TextAlignment="Center" FontSize="17" Background="White" Grid.ColumnSpan="2"/>
 
         <DataGrid Grid.Row="2" CanUserAddRows="False" AutoGenerateColumns="False" Grid.ColumnSpan="2" ItemsSource="{Binding TableArticleQuantities,Mode=TwoWay, IsAsync=True}" SelectedItem="{Binding TableArticleQuantity}" EnableColumnVirtualization="true" EnableRowVirtualization="true">
             <DataGrid.Columns>
