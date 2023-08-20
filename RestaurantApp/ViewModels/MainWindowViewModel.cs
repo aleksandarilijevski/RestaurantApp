@@ -66,11 +66,10 @@ namespace RestaurantApp.ViewModels
         private async void LoadConfiguration()
         {
             Configuration configuration = await _databaseService.GetConfiguration();
-            Configuration newConfiguration = null;
 
             if (configuration == null)
             {
-                newConfiguration = new Configuration { CurrentDate = DateTime.Now, BillCounter = 0 };
+                Configuration newConfiguration = new Configuration { CurrentDate = DateTime.Now, BillCounter = 0 };
                 await _databaseService.CreateConfiguration(newConfiguration);
             }
 
@@ -79,6 +78,7 @@ namespace RestaurantApp.ViewModels
             if (configuration.CurrentDate.Date != DateTime.Now.Date)
             {
                 configuration.CurrentDate = DateTime.Now;
+                configuration.BillCounter = 0;
                 await _databaseService.EditConfiguration(configuration);
             }
         }
