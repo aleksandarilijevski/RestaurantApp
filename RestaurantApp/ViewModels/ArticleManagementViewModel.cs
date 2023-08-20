@@ -118,6 +118,8 @@ namespace RestaurantApp.ViewModels
             {
                 Article resultData = r.Parameters.GetValue<Article>("article");
             });
+
+            RaisePropertyChanged(nameof(Articles));
         }
 
         private async void GetAllArticles()

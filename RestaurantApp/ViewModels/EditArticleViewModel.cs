@@ -4,15 +4,17 @@ using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
 using System;
-using System.Threading.Tasks;
+using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace RestaurantApp.ViewModels
 {
     public class EditArticleViewModel : BindableBase, IDialogAware
     {
         private IDatabaseService _databaseService;
-        private DelegateCommand<Article> _editArticleCommand;
+        private DelegateCommand _editArticleCommand;
         private Article _article;
+        private Article _deepCopyArticle;
         private string _title = "Edit article";
 
         public event Action<IDialogResult> RequestClose;
@@ -34,11 +36,11 @@ namespace RestaurantApp.ViewModels
             set { SetProperty(ref _title, value); }
         }
 
-        public DelegateCommand<Article> EditArticleCommand
+        public DelegateCommand EditArticleCommand
         {
             get
             {
-                _editArticleCommand = new DelegateCommand<Article>(EditArticle);
+                _editArticleCommand = new DelegateCommand(EditArticle);
                 return _editArticleCommand;
             }
         }
@@ -53,6 +55,20 @@ namespace RestaurantApp.ViewModels
                 result = ButtonResult.Cancel;
 
             RaiseRequestClose(new DialogResult(result));
+        }
+
+        public Article DeepCopyArticle
+        {
+            get
+            {
+                return _deepCopyArticle;
+            }
+
+            set
+            {
+                _deepCopyArticle = value;
+                RaisePropertyChanged();
+            }
         }
 
         public virtual void RaiseRequestClose(IDialogResult dialogResult)
@@ -73,11 +89,34 @@ namespace RestaurantApp.ViewModels
         public virtual void OnDialogOpened(IDialogParameters parameters)
         {
             Article = parameters.GetValue<Article>("article");
+            DeepCopyArticle = DeepCopy(Article);
         }
 
-        private async void EditArticle(Article article)
+        public T DeepCopy<T>(T source)
         {
-            await _databaseService.EditArticle(article);
+            Type targetType = source.GetType();
+            object copiedObject = Activator.CreateInstance(targetType);
+
+            foreach (PropertyInfo property in targetType.GetProperties())
+            {
+                if (property.CanWrite)
+                {
+                    object value = property.GetValue(source);
+                    property.SetValue(copiedObject, value);
+                }
+            }
+
+            return (T)copiedObject;
+        }
+        private async void EditArticle()
+        {
+            Article article = await _databaseService.GetArticleByID(DeepCopyArticle.ID);
+
+            article.Name = DeepCopyArticle.Name;
+            article.Barcode = DeepCopyArticle.Barcode;
+            article.Price = DeepCopyArticle.Barcode;
+
+            await _databaseService.EditArticle(DeepCopyArticle);
             CloseDialog("true");
         }
     }

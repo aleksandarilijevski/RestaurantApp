@@ -4,13 +4,27 @@ using PdfSharp.Pdf;
 using RestaurantApp.Enums;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace RestaurantApp.Utilities.Helpers
 {
     public static class DrawningHelper
     {
+        public static async Task<XImage> GetCustomQRCode(string text)
+        {
+            string url = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + text;
+
+            HttpClient client = new HttpClient();
+            Stream stream = await client.GetStreamAsync(url);
+
+            XImage image = XImage.FromStream(stream);
+            return image;
+        }
+
         public static void DrawFakeBill(Bill bill)
         {
             PdfDocument pdfDocument = new PdfDocument();
@@ -79,7 +93,7 @@ namespace RestaurantApp.Utilities.Helpers
             pdfDocument.Close();
         }
 
-        public static void RedrawBill(Bill bill, XImage qrCode, int billCounter, List<TableArticleQuantity> tableArticleQuantities)
+        public static async void RedrawBill(Bill bill, int billCounter, List<TableArticleQuantity> tableArticleQuantities)
         {
             PdfDocument document = new PdfDocument();
             PdfPage page = document.AddPage();
@@ -196,6 +210,7 @@ namespace RestaurantApp.Utilities.Helpers
             gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
 
             offset += 10;
+            XImage qrCode = await GetCustomQRCode("example");
             gfx.DrawImage(qrCode, 150, offset, 200, 200);
 
             offset += 230;
@@ -215,7 +230,7 @@ namespace RestaurantApp.Utilities.Helpers
             document.Close();
         }
 
-        public static void DrawBill(Bill bill, XImage qrCode, int billCounter, List<TableArticleQuantity> tableArticleQuantities)
+        public static async void DrawBill(Bill bill, int billCounter, List<TableArticleQuantity> tableArticleQuantities)
         {
             PdfDocument document = new PdfDocument();
             PdfPage page = document.AddPage();
@@ -330,6 +345,7 @@ namespace RestaurantApp.Utilities.Helpers
             gfx.DrawString("----------------------------------------------------------------------", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
 
             offset += 10;
+            XImage qrCode = await GetCustomQRCode("example");
             gfx.DrawImage(qrCode, 150, offset, 200, 200);
 
             offset += 230;

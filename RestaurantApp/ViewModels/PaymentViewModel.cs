@@ -177,9 +177,8 @@ namespace RestaurantApp.ViewModels
                         change = result.Parameters.GetValue<decimal>("change");
                         cash = result.Parameters.GetValue<decimal>("cash");
                         Bill bill = await AddBill(cash, change);
-                        XImage qrCode = await GetCustomQRCode("text");
                         int billCounter = await IncreaseBillCounter();
-                        DrawningHelper.DrawBill(bill, qrCode, billCounter, _tableArticleQuantities);
+                        DrawningHelper.DrawBill(bill, billCounter, _tableArticleQuantities);
                         _regionManager.RequestNavigate("MainRegion", "TableOrder");
                     }
                 });
@@ -188,9 +187,8 @@ namespace RestaurantApp.ViewModels
             if (PaymentType == PaymentType.Card)
             {
                 Bill bill = await AddBill(0, 0);
-                XImage qrCode = await GetCustomQRCode("text");
                 int billCounter = await IncreaseBillCounter();
-                DrawningHelper.DrawBill(bill, qrCode, billCounter, _tableArticleQuantities);
+                DrawningHelper.DrawBill(bill, billCounter, _tableArticleQuantities);
                 _regionManager.RequestNavigate("MainRegion", "TableOrder");
             }
         }
@@ -211,17 +209,6 @@ namespace RestaurantApp.ViewModels
             }
 
             return totalPrice;
-        }
-
-        private async Task<XImage> GetCustomQRCode(string text)
-        {
-            string url = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + text;
-
-            HttpClient client = new HttpClient();
-            Stream stream = await client.GetStreamAsync(url);
-
-            XImage image = XImage.FromStream(stream);
-            return image;
         }
 
         private async Task<Bill> CreateBill(Bill bill)
