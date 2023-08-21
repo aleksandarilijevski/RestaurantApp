@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EntityFramework.Migrations
 {
     [DbContext(typeof(EFContext))]
-    [Migration("20230816102411_ConfigurationModelAdded")]
-    partial class ConfigurationModelAdded
+    [Migration("20230821103027_many-To-many-Removed")]
+    partial class manyTomanyRemoved
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -100,6 +100,12 @@ namespace EntityFramework.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<decimal>("Cash")
+                        .HasColumnType("decimal(18,2 )");
+
+                    b.Property<decimal>("Change")
+                        .HasColumnType("decimal(18,2 )");
 
                     b.Property<DateTime?>("CreatedDateTime")
                         .HasColumnType("datetime2");
@@ -203,6 +209,9 @@ namespace EntityFramework.Migrations
                     b.Property<int>("ArticleID")
                         .HasColumnType("int");
 
+                    b.Property<int?>("BillID")
+                        .HasColumnType("int");
+
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
@@ -212,6 +221,8 @@ namespace EntityFramework.Migrations
                     b.HasKey("ID");
 
                     b.HasIndex("ArticleID");
+
+                    b.HasIndex("BillID");
 
                     b.HasIndex("TableID");
 
@@ -300,6 +311,10 @@ namespace EntityFramework.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("EntityFramework.Models.Bill", "Bill")
+                        .WithMany()
+                        .HasForeignKey("BillID");
+
                     b.HasOne("EntityFramework.Models.Table", "Table")
                         .WithMany("TableArticleQuantities")
                         .HasForeignKey("TableID")
@@ -307,6 +322,8 @@ namespace EntityFramework.Migrations
                         .IsRequired();
 
                     b.Navigation("Article");
+
+                    b.Navigation("Bill");
 
                     b.Navigation("Table");
                 });

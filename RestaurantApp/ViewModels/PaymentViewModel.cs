@@ -1,5 +1,4 @@
 ﻿using EntityFramework.Models;
-using PdfSharp.Drawing;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
@@ -8,9 +7,7 @@ using RestaurantApp.Enums;
 using RestaurantApp.Services.Interface;
 using RestaurantApp.Utilities.Helpers;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace RestaurantApp.ViewModels
@@ -104,15 +101,12 @@ namespace RestaurantApp.ViewModels
 
             await CreateBill(bill);
 
-            SoldTableArticleQuantity soldTableArticleQuantity = null;
             List<SoldTableArticleQuantity> soldTableArticleQuantities = new List<SoldTableArticleQuantity>();
-
             List<TableArticleQuantity> tableArticleQuantities = _table.TableArticleQuantities.Select(x => x).Where(x => !(x is SoldTableArticleQuantity)).ToList();
 
-            //foreach (TableArticleQuantity tableArticleQuantity in _table.TableArticleQuantities)
             foreach (TableArticleQuantity tableArticleQuantity in tableArticleQuantities)
             {
-                soldTableArticleQuantity = new SoldTableArticleQuantity
+               SoldTableArticleQuantity  soldTableArticleQuantity = new SoldTableArticleQuantity
                 {
                     ArticleID = tableArticleQuantity.ArticleID,
                     Article = tableArticleQuantity.Article,

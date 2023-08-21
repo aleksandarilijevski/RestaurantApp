@@ -3,26 +3,29 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Linq;
 using System.Windows.Data;
 
 namespace RestaurantApp.Converters
 {
-    public class TotalPriceConverter : IMultiValueConverter
+    public class TotalPriceConverter : IValueConverter
     {
-        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            ObservableCollection<TableArticleQuantity> soldTableArticleQuantities = (ObservableCollection<TableArticleQuantity>)values[0];
-            List<decimal> totalPrices = new List<decimal>();
+            string totalPrice = string.Empty;
 
-            foreach (TableArticleQuantity tableArticleQuantity in soldTableArticleQuantities)
+            if (value is ObservableCollection<TableArticleQuantity>)
             {
-                totalPrices.Add(tableArticleQuantity.Quantity * tableArticleQuantity.Article.Price);
+                ObservableCollection<TableArticleQuantity> tableArticleQuantities = (ObservableCollection<TableArticleQuantity>)value;
+                List<TableArticleQuantity> soldtableArticleQunatities = tableArticleQuantities.ToList();
+
+                return soldtableArticleQunatities.Sum(x => x.Quantity * x.Article.Price);
             }
 
-            return totalPrices;
+            return 0;
         }
 
-        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }

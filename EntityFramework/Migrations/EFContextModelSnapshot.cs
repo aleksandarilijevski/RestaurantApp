@@ -24,6 +24,21 @@ namespace EntityFramework.Migrations
 
             modelBuilder.HasSequence("TableArticleQuantitySequence");
 
+            modelBuilder.Entity("ArticleDetailsTableArticleQuantity", b =>
+                {
+                    b.Property<int>("ArticleDetailsID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TableArticleQuantitiesID")
+                        .HasColumnType("int");
+
+                    b.HasKey("ArticleDetailsID", "TableArticleQuantitiesID");
+
+                    b.HasIndex("TableArticleQuantitiesID");
+
+                    b.ToTable("ArticleDetailsTableArticleQuantity");
+                });
+
             modelBuilder.Entity("EntityFramework.Models.Article", b =>
                 {
                     b.Property<int>("ID")
@@ -264,6 +279,21 @@ namespace EntityFramework.Migrations
                     b.HasBaseType("EntityFramework.Models.TableArticleQuantity");
 
                     b.ToTable("SoldTableArticleQuantity");
+                });
+
+            modelBuilder.Entity("ArticleDetailsTableArticleQuantity", b =>
+                {
+                    b.HasOne("EntityFramework.Models.ArticleDetails", null)
+                        .WithMany()
+                        .HasForeignKey("ArticleDetailsID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EntityFramework.Models.TableArticleQuantity", null)
+                        .WithMany()
+                        .HasForeignKey("TableArticleQuantitiesID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("EntityFramework.Models.Article", b =>

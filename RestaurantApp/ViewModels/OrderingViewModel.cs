@@ -206,11 +206,14 @@ namespace RestaurantApp.ViewModels
 
             if (isQuantityAvailable)
             {
+                List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleID(article.ID);
+
                 TableArticleQuantity tableArticleQuantity = new TableArticleQuantity
                 {
                     ArticleID = article.ID,
                     TableID = Table.ID,
-                    Quantity = 1
+                    Quantity = 1,
+                    ArticleDetails = articleDetails
                 };
 
                 await DecreaseQuantityOfArticleDetails(article.ID, tableArticleQuantity.Quantity);
@@ -318,10 +321,10 @@ namespace RestaurantApp.ViewModels
 
         private async void DeleteArticleFromTable(TableArticleQuantity tableArticleQuantity)
         {
-            List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleID(tableArticleQuantity.Article.ID);
+            List<ArticleDetails>? articleDetails = tableArticleQuantity.ArticleDetails;
 
             foreach (ArticleDetails articleDetail in articleDetails.OrderBy(x => x.CreatedDateTime))
-            {   
+            {
                 if (articleDetail.Article.IsDeleted == false && articleDetail.Article.ID == tableArticleQuantity.Article.ID)
                 {
                     articleDetail.Quantity += tableArticleQuantity.Quantity;

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EntityFramework.Migrations
 {
     [DbContext(typeof(EFContext))]
-    [Migration("20230808005107_Initial")]
+    [Migration("20230820094227_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -101,11 +101,20 @@ namespace EntityFramework.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
+                    b.Property<decimal>("Cash")
+                        .HasColumnType("decimal(18,2 )");
+
+                    b.Property<decimal>("Change")
+                        .HasColumnType("decimal(18,2 )");
+
                     b.Property<DateTime?>("CreatedDateTime")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("ModifiedDateTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("PaymentType")
+                        .HasColumnType("int");
 
                     b.Property<int>("TableID")
                         .HasColumnType("int");
@@ -118,6 +127,31 @@ namespace EntityFramework.Migrations
                     b.HasIndex("TableID");
 
                     b.ToTable("Bills");
+                });
+
+            modelBuilder.Entity("EntityFramework.Models.Configuration", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<int>("BillCounter")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CurrentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ModifiedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Configurations");
                 });
 
             modelBuilder.Entity("EntityFramework.Models.DataEntry", b =>
@@ -172,7 +206,13 @@ namespace EntityFramework.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseSequence(b.Property<int>("ID"));
 
+                    b.Property<int?>("ArticleDetailsID")
+                        .HasColumnType("int");
+
                     b.Property<int>("ArticleID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("BillID")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
@@ -183,7 +223,11 @@ namespace EntityFramework.Migrations
 
                     b.HasKey("ID");
 
+                    b.HasIndex("ArticleDetailsID");
+
                     b.HasIndex("ArticleID");
+
+                    b.HasIndex("BillID");
 
                     b.HasIndex("TableID");
 
@@ -266,11 +310,19 @@ namespace EntityFramework.Migrations
 
             modelBuilder.Entity("EntityFramework.Models.TableArticleQuantity", b =>
                 {
+                    b.HasOne("EntityFramework.Models.ArticleDetails", "ArticleDetails")
+                        .WithMany()
+                        .HasForeignKey("ArticleDetailsID");
+
                     b.HasOne("EntityFramework.Models.Article", "Article")
                         .WithMany()
                         .HasForeignKey("ArticleID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("EntityFramework.Models.Bill", "Bill")
+                        .WithMany()
+                        .HasForeignKey("BillID");
 
                     b.HasOne("EntityFramework.Models.Table", "Table")
                         .WithMany("TableArticleQuantities")
@@ -279,6 +331,10 @@ namespace EntityFramework.Migrations
                         .IsRequired();
 
                     b.Navigation("Article");
+
+                    b.Navigation("ArticleDetails");
+
+                    b.Navigation("Bill");
 
                     b.Navigation("Table");
                 });

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EntityFramework.Migrations
 {
     [DbContext(typeof(EFContext))]
-    [Migration("20230818100204_TableArticleQuantityBillReference")]
-    partial class TableArticleQuantityBillReference
+    [Migration("20230820094745_many-to-many")]
+    partial class manytomany
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,6 +26,21 @@ namespace EntityFramework.Migrations
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.HasSequence("TableArticleQuantitySequence");
+
+            modelBuilder.Entity("ArticleDetailsTableArticleQuantity", b =>
+                {
+                    b.Property<int>("ArticleDetailsID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TableArticleQuantitiesID")
+                        .HasColumnType("int");
+
+                    b.HasKey("ArticleDetailsID", "TableArticleQuantitiesID");
+
+                    b.HasIndex("TableArticleQuantitiesID");
+
+                    b.ToTable("ArticleDetailsTableArticleQuantity");
+                });
 
             modelBuilder.Entity("EntityFramework.Models.Article", b =>
                 {
@@ -267,6 +282,21 @@ namespace EntityFramework.Migrations
                     b.HasBaseType("EntityFramework.Models.TableArticleQuantity");
 
                     b.ToTable("SoldTableArticleQuantity");
+                });
+
+            modelBuilder.Entity("ArticleDetailsTableArticleQuantity", b =>
+                {
+                    b.HasOne("EntityFramework.Models.ArticleDetails", null)
+                        .WithMany()
+                        .HasForeignKey("ArticleDetailsID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EntityFramework.Models.TableArticleQuantity", null)
+                        .WithMany()
+                        .HasForeignKey("TableArticleQuantitiesID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("EntityFramework.Models.Article", b =>

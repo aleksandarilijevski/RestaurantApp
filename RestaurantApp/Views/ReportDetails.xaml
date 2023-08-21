@@ -34,9 +34,7 @@
 
                 <DataGridTextColumn Header="Total price" x:Name="totalPrice">
                     <DataGridTextColumn.Binding>
-                        <MultiBinding Converter="{StaticResource TotalPriceConverter}">
-                            <Binding Path="ItemsSource" RelativeSource="{RelativeSource AncestorType=DataGrid}"/>
-                        </MultiBinding>
+                        <Binding Path="ItemsSource" Converter="{StaticResource TotalPriceConverter}" RelativeSource="{RelativeSource AncestorType=DataGrid}"/>
                     </DataGridTextColumn.Binding>
                 </DataGridTextColumn>
 

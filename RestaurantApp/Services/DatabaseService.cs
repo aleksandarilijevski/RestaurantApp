@@ -4,7 +4,6 @@ using RestaurantApp.Services.Interface;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace RestaurantApp.Services
@@ -82,7 +81,8 @@ namespace RestaurantApp.Services
 
         public async Task<Table> GetTableByID(int id)
         {
-            Table table = await _efContext.Tables.Include(x => x.TableArticleQuantities).ThenInclude(x => x.Article).ThenInclude(x => x.ArticleDetails).FirstOrDefaultAsync(x => x.ID == id);
+            //.ThenInclude(x => x.ArticleDetails)
+            Table table = await _efContext.Tables.Include(x => x.TableArticleQuantities).ThenInclude(x => x.ArticleDetails).ThenInclude(x => x.Article).FirstOrDefaultAsync(x => x.ID == id);
             return table;
         }
 
@@ -102,8 +102,6 @@ namespace RestaurantApp.Services
         public async Task ModifyTableArticles(int tableID, List<SoldTableArticleQuantity> soldTableArticleQuantities, List<TableArticleQuantity> tableArticleQuantities)
         {
             Table table = _efContext.Tables.Include(x => x.TableArticleQuantities).FirstOrDefault(x => x.ID == tableID);
-
-            //List<TableArticleQuantity> quantitiesToRemove = table.TableArticleQuantities.OfType<TableArticleQuantity>().ToList();
             List<TableArticleQuantity> quantitiesToRemove = table.TableArticleQuantities.Where(x => !(x is SoldTableArticleQuantity)).ToList();
 
             foreach (TableArticleQuantity tableArticleQuantity in quantitiesToRemove.ToList())
@@ -112,7 +110,6 @@ namespace RestaurantApp.Services
             }
 
             table.TableArticleQuantities.AddRange(soldTableArticleQuantities);
-
             await _efContext.SaveChangesAsync();
         }
 
