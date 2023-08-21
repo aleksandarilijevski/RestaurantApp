@@ -82,7 +82,7 @@ namespace RestaurantApp.Services
         public async Task<Table> GetTableByID(int id)
         {
             //.ThenInclude(x => x.ArticleDetails)
-            Table table = await _efContext.Tables.Include(x => x.TableArticleQuantities).ThenInclude(x => x.Article).FirstOrDefaultAsync(x => x.ID == id);
+            Table table = await _efContext.Tables.Include(x => x.TableArticleQuantities).ThenInclude(x => x.ArticleDetails).ThenInclude(x => x.Article).FirstOrDefaultAsync(x => x.ID == id);
             return table;
         }
 
@@ -101,7 +101,9 @@ namespace RestaurantApp.Services
 
         public async Task ModifyTableArticles(Table table, List<SoldTableArticleQuantity> soldTableArticleQuantities)
         {
-            foreach (TableArticleQuantity tableArticleQuantity in table.TableArticleQuantities.ToList())
+            List<TableArticleQuantity> quantitiesToRemove = table.TableArticleQuantities.Where(x => !(x is SoldTableArticleQuantity)).ToList();
+
+            foreach (TableArticleQuantity tableArticleQuantity in quantitiesToRemove.ToList())
             {
                 table.TableArticleQuantities.Remove(tableArticleQuantity);
                 _efContext.TableArticleQuantities.Remove(tableArticleQuantity);

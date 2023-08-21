@@ -213,10 +213,10 @@ namespace RestaurantApp.ViewModels
                     ArticleID = article.ID,
                     TableID = Table.ID,
                     Quantity = 1,
-                    //ArticleDetails = articleDetails
+                    ArticleDetails = articleDetails
                 };
 
-               // await DecreaseQuantityOfArticleDetails(article.ID, tableArticleQuantity.Quantity);
+                await DecreaseQuantityOfArticleDetails(article.ID, tableArticleQuantity.Quantity);
 
                 Table.TableArticleQuantities.Add(tableArticleQuantity);
                 TableArticleQuantities.Add(tableArticleQuantity);
@@ -252,7 +252,7 @@ namespace RestaurantApp.ViewModels
         private async Task IsQuantityAvailableForArticleOnTable(Article article)
         {
             int quantity = GetAvailableQuantity(article.ArticleDetails);
-            //int usedQuantity = 0;
+            int usedQuantity = 0;
 
             //List<TableArticleQuantity> tableArticleQuantities = await _databaseService.GetTableArticleQuantitiesExceptProvidedID(Table);
 
@@ -321,17 +321,17 @@ namespace RestaurantApp.ViewModels
 
         private async void DeleteArticleFromTable(TableArticleQuantity tableArticleQuantity)
         {
-            //List<ArticleDetails>? articleDetails = tableArticleQuantity.ArticleDetails;
+            List<ArticleDetails>? articleDetails = tableArticleQuantity.ArticleDetails;
 
-            //foreach (ArticleDetails articleDetail in articleDetails.OrderBy(x => x.CreatedDateTime))
-            //{
-            //    if (articleDetail.Article.IsDeleted == false && articleDetail.Article.ID == tableArticleQuantity.Article.ID)
-            //    {
-            //        articleDetail.Quantity += tableArticleQuantity.Quantity;
-            //        await _databaseService.EditArticleDetails(articleDetail);
-            //        break;
-            //    }
-            //}
+            foreach (ArticleDetails articleDetail in articleDetails.OrderBy(x => x.CreatedDateTime))
+            {
+                if (articleDetail.Article.IsDeleted == false && articleDetail.Article.ID == tableArticleQuantity.Article.ID)
+                {
+                    articleDetail.Quantity += tableArticleQuantity.Quantity;
+                    await _databaseService.EditArticleDetails(articleDetail);
+                    break;
+                }
+            }
 
             Table.TableArticleQuantities.Remove(tableArticleQuantity);
             TableArticleQuantities.Remove(tableArticleQuantity);
