@@ -31,7 +31,7 @@ namespace RestaurantApp.Services.Interface
 
         public Task<int> AddTable(Table table);
 
-        public Task ModifyTableArticles(int tableID, List<SoldTableArticleQuantity> soldTableArticleQuantities, List<TableArticleQuantity> tableArticleQuantities);
+        public Task ModifyTableArticles(Table table, List<SoldTableArticleQuantity> soldTableArticleQuantities);
 
         public Task EditTable(Table table);
 

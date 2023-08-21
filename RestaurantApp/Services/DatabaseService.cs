@@ -82,7 +82,7 @@ namespace RestaurantApp.Services
         public async Task<Table> GetTableByID(int id)
         {
             //.ThenInclude(x => x.ArticleDetails)
-            Table table = await _efContext.Tables.Include(x => x.TableArticleQuantities).ThenInclude(x => x.ArticleDetails).ThenInclude(x => x.Article).FirstOrDefaultAsync(x => x.ID == id);
+            Table table = await _efContext.Tables.Include(x => x.TableArticleQuantities).ThenInclude(x => x.Article).FirstOrDefaultAsync(x => x.ID == id);
             return table;
         }
 
@@ -99,15 +99,15 @@ namespace RestaurantApp.Services
             await _efContext.SaveChangesAsync();
         }
 
-        public async Task ModifyTableArticles(int tableID, List<SoldTableArticleQuantity> soldTableArticleQuantities, List<TableArticleQuantity> tableArticleQuantities)
+        public async Task ModifyTableArticles(Table table, List<SoldTableArticleQuantity> soldTableArticleQuantities)
         {
-            Table table = _efContext.Tables.Include(x => x.TableArticleQuantities).FirstOrDefault(x => x.ID == tableID);
-            List<TableArticleQuantity> quantitiesToRemove = table.TableArticleQuantities.Where(x => !(x is SoldTableArticleQuantity)).ToList();
-
-            foreach (TableArticleQuantity tableArticleQuantity in quantitiesToRemove.ToList())
+            foreach (TableArticleQuantity tableArticleQuantity in table.TableArticleQuantities.ToList())
             {
                 table.TableArticleQuantities.Remove(tableArticleQuantity);
+                _efContext.TableArticleQuantities.Remove(tableArticleQuantity);
             }
+
+            _efContext.Entry(table).State = EntityState.Modified;
 
             table.TableArticleQuantities.AddRange(soldTableArticleQuantities);
             await _efContext.SaveChangesAsync();

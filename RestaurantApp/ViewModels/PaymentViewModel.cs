@@ -118,7 +118,7 @@ namespace RestaurantApp.ViewModels
                 soldTableArticleQuantities.Add(soldTableArticleQuantity);
             }
 
-            await _databaseService.ModifyTableArticles(_table.ID, soldTableArticleQuantities, _table.TableArticleQuantities);
+            await _databaseService.ModifyTableArticles(_table, soldTableArticleQuantities);
             return bill;
         }
 

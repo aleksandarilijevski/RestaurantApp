@@ -12,6 +12,6 @@ namespace EntityFramework.Models
         [Column(TypeName = "decimal(18,2 )")]
         public decimal EntryPrice { get; set; }
 
-        public List<TableArticleQuantity> TableArticleQuantities { get; set; }
+        //public List<TableArticleQuantity> TableArticleQuantities { get; set; }
     }
 }
