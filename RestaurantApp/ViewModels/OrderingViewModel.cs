@@ -165,11 +165,8 @@ namespace RestaurantApp.ViewModels
         /// </summary>
         private async Task GetTable(int id)
         {
-            //Gets table from database
             Table = await _databaseService.GetTableByID(id);
 
-            //Check if table is null
-            //If table is null, create new providing id and availability, add to database
             if (Table is null)
             {
                 Table table = new Table { ID = id, Available = true, TableArticleQuantities = new List<TableArticleQuantity>() };

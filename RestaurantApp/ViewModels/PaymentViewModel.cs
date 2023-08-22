@@ -6,6 +6,7 @@ using Prism.Services.Dialogs;
 using RestaurantApp.Enums;
 using RestaurantApp.Services.Interface;
 using RestaurantApp.Utilities.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -89,6 +90,10 @@ namespace RestaurantApp.ViewModels
         private async Task<Bill> AddBill(decimal cash, decimal change)
         {
             decimal totalPrice = CalculateTotalPrice();
+            Configuration configuration = await _databaseService.GetConfiguration();
+
+            int billCounter = await IncreaseBillCounter();
+            string registrationNumber = billCounter.ToString() + "/" + DateTime.Now.ToString("ddMMyyyy");
 
             Bill bill = new Bill
             {
@@ -96,7 +101,8 @@ namespace RestaurantApp.ViewModels
                 TotalPrice = totalPrice,
                 Cash = cash,
                 Change = change,
-                PaymentType = PaymentType
+                PaymentType = PaymentType,
+                RegistrationNumber = registrationNumber
             };
 
             await CreateBill(bill);
@@ -171,8 +177,7 @@ namespace RestaurantApp.ViewModels
                         change = result.Parameters.GetValue<decimal>("change");
                         cash = result.Parameters.GetValue<decimal>("cash");
                         Bill bill = await AddBill(cash, change);
-                        int billCounter = await IncreaseBillCounter();
-                        DrawningHelper.DrawBill(bill, billCounter, _tableArticleQuantities);
+                        DrawningHelper.DrawBill(bill, _tableArticleQuantities);
                         _regionManager.RequestNavigate("MainRegion", "TableOrder");
                     }
                 });
@@ -181,8 +186,7 @@ namespace RestaurantApp.ViewModels
             if (PaymentType == PaymentType.Card)
             {
                 Bill bill = await AddBill(0, 0);
-                int billCounter = await IncreaseBillCounter();
-                DrawningHelper.DrawBill(bill, billCounter, _tableArticleQuantities);
+                DrawningHelper.DrawBill(bill, _tableArticleQuantities);
                 _regionManager.RequestNavigate("MainRegion", "TableOrder");
             }
         }

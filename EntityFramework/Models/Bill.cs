@@ -7,7 +7,7 @@ namespace EntityFramework.Models
     {
         public int TableID { get; set; }
 
-        public Table Table { get; set; }  
+        public Table Table { get; set; }
 
         [Column(TypeName = "decimal(18,2 )")]
         public decimal TotalPrice { get; set; }
@@ -19,5 +19,7 @@ namespace EntityFramework.Models
         public decimal Change { get; set; }
 
         public PaymentType PaymentType { get; set; }
+
+        public string RegistrationNumber { get; set; }
     }
 }

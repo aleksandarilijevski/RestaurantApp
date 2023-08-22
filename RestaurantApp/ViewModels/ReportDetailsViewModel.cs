@@ -134,14 +134,6 @@ namespace RestaurantApp.ViewModels
             SoldTableArticleQuantities = new ObservableCollection<TableArticleQuantity>(_bill.Table.TableArticleQuantities.Select(x => x).Where(x => x.BillID == Bill.ID && (x is SoldTableArticleQuantity)).OfType<SoldTableArticleQuantity>().ToList());
         }
 
-        private async Task<int> IncreaseBillCounter()
-        {
-            Configuration configuration = await _databaseService.GetConfiguration();
-            configuration.BillCounter += 1;
-            await _databaseService.EditConfiguration(configuration);
-            return configuration.BillCounter;
-        }
-
         private async Task<XImage> GetCustomQRCode(string text)
         {
             string url = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + text;
@@ -155,10 +147,9 @@ namespace RestaurantApp.ViewModels
 
         private async void PrintBill()
         {
-            int billCounter = await IncreaseBillCounter();
             XImage qrCode = await GetCustomQRCode("test");
             List<TableArticleQuantity> soldTableArticleQuantities = _bill.Table.TableArticleQuantities.OfType<SoldTableArticleQuantity>().Select(sold => (TableArticleQuantity)sold).ToList();
-            DrawningHelper.RedrawBill(Bill, billCounter, soldTableArticleQuantities);
+            DrawningHelper.RedrawBill(Bill, soldTableArticleQuantities);
         }
     }
 }

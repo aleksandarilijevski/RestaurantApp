@@ -93,7 +93,7 @@ namespace RestaurantApp.Utilities.Helpers
             pdfDocument.Close();
         }
 
-        public static async void RedrawBill(Bill bill, int billCounter, List<TableArticleQuantity> tableArticleQuantities)
+        public static async void RedrawBill(Bill bill, List<TableArticleQuantity> tableArticleQuantities)
         {
             PdfDocument document = new PdfDocument();
             PdfPage page = document.AddPage();
@@ -119,9 +119,7 @@ namespace RestaurantApp.Utilities.Helpers
             offset += 50;
             gfx.DrawString("Kasir :", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
             offset += 20;
-            gfx.DrawString($"ESIR Broj : {billCounter.ToString().PadLeft(70)}", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
-            offset += 20;
-            gfx.DrawString($"ESIR Vreme : {bill.CreatedDateTime?.ToString("dd/MM/yyyy hh:mm:ss").PadLeft(55)}", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+            gfx.DrawString($"ESIR Broj : {bill.RegistrationNumber.PadLeft(65)}", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
             offset += 20;
             gfx.DrawString("==============PROMET PRODAJA==============", font, XBrushes.Black, new XRect(10, offset, page.Width, 0));
             offset += 20;
@@ -230,7 +228,7 @@ namespace RestaurantApp.Utilities.Helpers
             document.Close();
         }
 
-        public static async void DrawBill(Bill bill, int billCounter, List<TableArticleQuantity> tableArticleQuantities)
+        public static async void DrawBill(Bill bill, List<TableArticleQuantity> tableArticleQuantities)
         {
             PdfDocument document = new PdfDocument();
             PdfPage page = document.AddPage();
@@ -256,9 +254,7 @@ namespace RestaurantApp.Utilities.Helpers
             offset += 50;
             gfx.DrawString("Kasir :", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
             offset += 20;
-            gfx.DrawString($"ESIR Broj : {billCounter.ToString().PadLeft(70)}", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
-            offset += 20;
-            gfx.DrawString($"ESIR Vreme : {DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss").PadLeft(55)}", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+            gfx.DrawString($"ESIR Broj : {bill.RegistrationNumber.PadLeft(65)}", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
             offset += 20;
             gfx.DrawString("==============PROMET PRODAJA==============", font, XBrushes.Black, new XRect(10, offset, page.Width, 0));
             offset += 20;
@@ -330,7 +326,7 @@ namespace RestaurantApp.Utilities.Helpers
 
             offset += 15;
             gfx.DrawString("PFR Vreme:", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
-            gfx.DrawString(DateTime.Now.ToString("dd/MM/yyyy  HH:mm:ss").PadLeft(70), font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+            gfx.DrawString(bill.CreatedDateTime?.ToString("dd/MM/yyyy  HH:mm:ss").PadLeft(75), font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
 
             offset += 20;
             gfx.DrawString("PFR br.rac:", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
