@@ -4,6 +4,7 @@ using EntityFramework.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EntityFramework.Migrations
 {
     [DbContext(typeof(EFContext))]
-    partial class EFContextModelSnapshot : ModelSnapshot
+    [Migration("20230822220406_ManyToManyIsRemoved")]
+    partial class ManyToManyIsRemoved
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -206,9 +209,6 @@ namespace EntityFramework.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseSequence(b.Property<int>("ID"));
 
-                    b.Property<int>("ArticleDetailsID")
-                        .HasColumnType("int");
-
                     b.Property<int>("ArticleID")
                         .HasColumnType("int");
 
@@ -222,8 +222,6 @@ namespace EntityFramework.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("ArticleDetailsID");
 
                     b.HasIndex("ArticleID");
 
@@ -310,12 +308,6 @@ namespace EntityFramework.Migrations
 
             modelBuilder.Entity("EntityFramework.Models.TableArticleQuantity", b =>
                 {
-                    b.HasOne("EntityFramework.Models.ArticleDetails", "ArticleDetails")
-                        .WithMany()
-                        .HasForeignKey("ArticleDetailsID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("EntityFramework.Models.Article", "Article")
                         .WithMany()
                         .HasForeignKey("ArticleID")
@@ -333,8 +325,6 @@ namespace EntityFramework.Migrations
                         .IsRequired();
 
                     b.Navigation("Article");
-
-                    b.Navigation("ArticleDetails");
 
                     b.Navigation("Bill");
 

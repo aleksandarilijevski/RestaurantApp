@@ -203,7 +203,7 @@ namespace RestaurantApp.ViewModels
 
             if (isQuantityAvailable)
             {
-                List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleID(article.ID);
+                ArticleDetails articleDetails = await _databaseService.GetArticleDetailByArticleID(article.ID);
 
                 TableArticleQuantity tableArticleQuantity = new TableArticleQuantity
                 {
@@ -213,7 +213,7 @@ namespace RestaurantApp.ViewModels
                     ArticleDetails = articleDetails
                 };
 
-                await DecreaseQuantityOfArticleDetails(article.ID, tableArticleQuantity.Quantity);
+                await DecreaseQuantityOfArticleDetails(articleDetails, tableArticleQuantity.Quantity);
 
                 Table.TableArticleQuantities.Add(tableArticleQuantity);
                 TableArticleQuantities.Add(tableArticleQuantity);
@@ -224,25 +224,19 @@ namespace RestaurantApp.ViewModels
             RaisePropertyChanged(nameof(Table));
         }
 
-        private async Task DecreaseQuantityOfArticleDetails(int articleId, int quantityToSell)
+        private async Task DecreaseQuantityOfArticleDetails(ArticleDetails articleDetails, int quantityToSell)
         {
-            List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleID(articleId);
-
-            foreach (ArticleDetails articleDetail in articleDetails)
+            if (articleDetails.Quantity >= quantityToSell)
             {
-                if (articleDetail.Quantity >= quantityToSell)
-                {
-                    articleDetail.Quantity -= quantityToSell;
-                    quantityToSell = 0;
-                    await _databaseService.EditArticleDetails(articleDetail);
-                    break;
-                }
-                else
-                {
-                    quantityToSell -= articleDetail.Quantity;
-                    articleDetail.Quantity = 0;
-                    await _databaseService.EditArticleDetails(articleDetail);
-                }
+                articleDetails.Quantity -= quantityToSell;
+                quantityToSell = 0;
+                await _databaseService.EditArticleDetails(articleDetails);
+            }
+            else
+            {
+                quantityToSell -= articleDetails.Quantity;
+                articleDetails.Quantity = 0;
+                await _databaseService.EditArticleDetails(articleDetails);
             }
         }
 
@@ -275,7 +269,7 @@ namespace RestaurantApp.ViewModels
                 MessageBox.Show("Article is not in stock!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
-            await DecreaseQuantityOfArticleDetails(article.ID, TableArticleQuantity.Quantity);
+            await DecreaseQuantityOfArticleDetails(TableArticleQuantity.ArticleDetails, TableArticleQuantity.Quantity);
             RaisePropertyChanged(nameof(TableArticleQuantities));
         }
 
@@ -318,7 +312,7 @@ namespace RestaurantApp.ViewModels
 
         private async void DeleteArticleFromTable(TableArticleQuantity tableArticleQuantity)
         {
-            List<ArticleDetails>? articleDetails = tableArticleQuantity.ArticleDetails;
+            List<ArticleDetails>? articleDetails = await _databaseService.GetArticleDetailsByArticleID(tableArticleQuantity.ArticleID);
 
             foreach (ArticleDetails articleDetail in articleDetails.OrderBy(x => x.CreatedDateTime))
             {
