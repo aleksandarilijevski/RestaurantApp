@@ -7,7 +7,9 @@ namespace EntityFramework.Models
     {
         public Article Article { get; set; }
 
-        public int Quantity { get; set; }
+        public int OriginalQuantity { get; set; }
+
+        public int ReservedQuantity { get; set; }
 
         [Column(TypeName = "decimal(18,2 )")]
         public decimal EntryPrice { get; set; }

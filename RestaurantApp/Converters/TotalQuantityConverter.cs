@@ -13,7 +13,7 @@ namespace RestaurantApp.Converters
         {
             if (value is List<ArticleDetails> articleDetails)
             {
-                return articleDetails.Sum(details => details.Quantity);
+                return articleDetails.Sum(details => details.OriginalQuantity);
             }
 
             return 0;

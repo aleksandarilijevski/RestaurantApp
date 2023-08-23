@@ -237,7 +237,7 @@ namespace RestaurantApp.ViewModels
 
             foreach (ArticleDetails articleDetails in DataEntryArticles)
             {
-                if (articleDetails.EntryPrice <= 0 || articleDetails.Quantity <= 0)
+                if (articleDetails.EntryPrice <= 0 || articleDetails.OriginalQuantity <= 0)
                 {
                     MessageBox.Show("One or more article details properties are not valid!", "Data entry", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
@@ -275,11 +275,7 @@ namespace RestaurantApp.ViewModels
         private decimal CalculateTotalAmount(List<ArticleDetails> articleDetails)
         {
             decimal totalAmount = 0;
-
-            foreach (ArticleDetails articleDetail in articleDetails)
-            {
-                totalAmount += articleDetail.EntryPrice * articleDetail.Quantity;
-            }
+            totalAmount += articleDetails.Sum(x => x.EntryPrice * x.ReservedQuantity);
 
             return totalAmount;
         }

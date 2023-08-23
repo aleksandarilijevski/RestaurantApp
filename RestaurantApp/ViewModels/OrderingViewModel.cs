@@ -203,7 +203,7 @@ namespace RestaurantApp.ViewModels
 
             if (isQuantityAvailable)
             {
-                ArticleDetails articleDetails = await _databaseService.GetArticleDetailByArticleID(article.ID);
+                List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleID(article.ID);
 
                 TableArticleQuantity tableArticleQuantity = new TableArticleQuantity
                 {
@@ -224,19 +224,17 @@ namespace RestaurantApp.ViewModels
             RaisePropertyChanged(nameof(Table));
         }
 
-        private async Task DecreaseQuantityOfArticleDetails(ArticleDetails articleDetails, int quantityToSell)
+        private async Task DecreaseQuantityOfArticleDetails(List<ArticleDetails> articleDetails, int quantityToSell)
         {
-            if (articleDetails.Quantity >= quantityToSell)
+            foreach (ArticleDetails articleDetail in articleDetails)
             {
-                articleDetails.Quantity -= quantityToSell;
-                quantityToSell = 0;
-                await _databaseService.EditArticleDetails(articleDetails);
-            }
-            else
-            {
-                quantityToSell -= articleDetails.Quantity;
-                articleDetails.Quantity = 0;
-                await _databaseService.EditArticleDetails(articleDetails);
+                if (articleDetail.OriginalQuantity > articleDetail.ReservedQuantity)
+                {
+                    articleDetail.ReservedQuantity += quantityToSell;
+                    quantityToSell = 0;
+                    await _databaseService.EditArticleDetails(articleDetail);
+                    break;
+                }
             }
         }
 
@@ -301,10 +299,7 @@ namespace RestaurantApp.ViewModels
 
             if (articleDetails != null)
             {
-                foreach (ArticleDetails articleDetail in articleDetails)
-                {
-                    quantity += articleDetail.Quantity;
-                }
+                quantity += articleDetails.Sum(x => x.OriginalQuantity - x.ReservedQuantity);
             }
 
             return quantity;
@@ -318,9 +313,12 @@ namespace RestaurantApp.ViewModels
             {
                 if (articleDetail.Article.IsDeleted == false && articleDetail.Article.ID == tableArticleQuantity.Article.ID)
                 {
-                    articleDetail.Quantity += tableArticleQuantity.Quantity;
-                    await _databaseService.EditArticleDetails(articleDetail);
-                    break;
+                    if (articleDetail.ReservedQuantity != 0)
+                    {
+                        articleDetail.ReservedQuantity--;
+                        await _databaseService.EditArticleDetails(articleDetail);
+                        break;
+                    }
                 }
             }
 

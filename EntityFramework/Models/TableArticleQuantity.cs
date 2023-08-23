@@ -22,9 +22,7 @@ namespace EntityFramework.Models
 
         public Bill? Bill { get; set; }
 
-        public int ArticleDetailsID { get; set; }
-
-        public ArticleDetails ArticleDetails { get; set; }
+        public List<ArticleDetails> ArticleDetails { get; set; }
 
         public int Quantity
         {

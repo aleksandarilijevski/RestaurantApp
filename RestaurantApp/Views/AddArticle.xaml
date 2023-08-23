@@ -32,7 +32,7 @@
 
         <TextBox Grid.Column="1" Grid.Row="0" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding Article.Barcode}"/>
         <TextBox Grid.Column="1" Grid.Row="1" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding Article.Name}"/>
-        <TextBox Grid.Column="1" Grid.Row="3" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding ArticleDetails.Quantity}"/>
+        <TextBox Grid.Column="1" Grid.Row="3" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding ArticleDetails.OriginalQuantity}"/>
         <TextBox Grid.Column="1" Grid.Row="4" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding ArticleDetails.EntryPrice}"/>
         <TextBox Grid.Column="1" Grid.Row="5" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding Article.Price}"/>
 
