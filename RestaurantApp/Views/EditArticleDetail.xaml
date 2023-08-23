@@ -34,7 +34,7 @@
         <TextBlock Text="Entry price : " FontSize="30" Grid.Row="2" Margin="10" />
 
         <TextBox Grid.Column="1" Grid.Row="0" IsReadOnly="True" FontSize="25" TextAlignment="Center" Text="{Binding ArticleDetails.ID}" Margin="10"/>
-        <TextBox Grid.Column="2" Grid.Row="1" FontSize="25" TextAlignment="Center" Text="{Binding ArticleDetails.Quantity}" Margin="10"/>
+        <TextBox Grid.Column="2" Grid.Row="1" FontSize="25" TextAlignment="Center" Text="{Binding ArticleDetails.OriginalQuantity}" Margin="10"/>
         <TextBox Grid.Column="3" Grid.Row="2" FontSize="25" TextAlignment="Center" Text="{Binding ArticleDetails.EntryPrice}" Margin="10"/>
 
         <Button Content="Apply" FontSize="20"  Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="2" Command="{Binding EditArticleDetailsCommand}" CommandParameter="{Binding ArticleDetails}"/>
