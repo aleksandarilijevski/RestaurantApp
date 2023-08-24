@@ -238,25 +238,25 @@ namespace RestaurantApp.ViewModels
             }
         }
 
+        public int GetReservedQuantity(List<ArticleDetails> articleDetails)
+        {
+            int reservedQuantity = 0;
+            reservedQuantity += articleDetails.Sum(x => x.ReservedQuantity);
+            return reservedQuantity;
+        }
+
         private async Task IsQuantityAvailableForArticleOnTable(Article article)
         {
-            int quantity = GetAvailableQuantity(article.ArticleDetails);
-            int usedQuantity = 0;
+            int availableQuantity = GetAvailableQuantity(article.ArticleDetails);
 
-            //List<TableArticleQuantity> tableArticleQuantities = await _databaseService.GetTableArticleQuantitiesExceptProvidedID(Table);
-
-            //foreach (TableArticleQuantity tableArticleQuantity in tableArticleQuantities)
-            //{
-            //    usedQuantity += tableArticleQuantity.Quantity;
-            //}
-
-            //foreach (TableArticleQuantity tableArticleQuantity in TableArticleQuantities)
-            //{
-            //    usedQuantity += tableArticleQuantity.Quantity;
-            //}
-
-            if (quantity != 0)
+            if (availableQuantity >= TableArticleQuantity.Quantity)
             {
+                foreach (ArticleDetails articleDetails in article.ArticleDetails)
+                {
+                    articleDetails.ReservedQuantity += TableArticleQuantity.Quantity - 1;
+                    break;
+                }
+
                 await _databaseService.EditTableArticleQuantity(TableArticleQuantity);
             }
             else
@@ -264,10 +264,11 @@ namespace RestaurantApp.ViewModels
                 TableArticleQuantity.Quantity = 1;
                 TableArticleQuantities.FirstOrDefault(x => x.ID == TableArticleQuantity.ID).Quantity = 1;
                 await _databaseService.EditTableArticleQuantity(TableArticleQuantity);
+                
+
                 MessageBox.Show("Article is not in stock!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
-            await DecreaseQuantityOfArticleDetails(TableArticleQuantity.ArticleDetails, TableArticleQuantity.Quantity);
             RaisePropertyChanged(nameof(TableArticleQuantities));
         }
 
@@ -278,7 +279,6 @@ namespace RestaurantApp.ViewModels
         {
             int quantity = GetAvailableQuantity(article.ArticleDetails);
 
-            //if (usedQuantity <= quantity)
             if (quantity != 0)
             {
                 return true;
@@ -315,7 +315,7 @@ namespace RestaurantApp.ViewModels
                 {
                     if (articleDetail.ReservedQuantity != 0)
                     {
-                        articleDetail.ReservedQuantity--;
+                        articleDetail.ReservedQuantity -= tableArticleQuantity.Quantity;
                         await _databaseService.EditArticleDetails(articleDetail);
                         break;
                     }
@@ -341,15 +341,6 @@ namespace RestaurantApp.ViewModels
         private async Task EditTable(Table table)
         {
             await _databaseService.EditTable(table);
-        }
-
-        /// <summary>
-        /// Getting table article total used quantity by ArticleID
-        /// </summary>
-        private async Task<int> GetTableArticleTotalQuantity(int articleID)
-        {
-            int usedQuantity = await _databaseService.GetTableArticleTotalQuantity(articleID);
-            return usedQuantity;
         }
 
         private void NavigateToTables()
