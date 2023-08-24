@@ -248,17 +248,22 @@ namespace RestaurantApp.ViewModels
 
         private async Task IsQuantityAvailableForArticleOnTable(Article article)
         {
+            TableArticleQuantity.PropertyChanged -= OnQuantityPropertyChanged;
             int availableQuantity = GetAvailableQuantity(article.ArticleDetails);
 
             if (availableQuantity >= TableArticleQuantity.Quantity)
             {
                 foreach (ArticleDetails articleDetails in article.ArticleDetails)
                 {
-                    articleDetails.ReservedQuantity += TableArticleQuantity.Quantity - 1;
-                    break;
+                    if (articleDetails.ReservedQuantity != articleDetails.OriginalQuantity && TableArticleQuantity.Quantity != 0)
+                    {
+                        articleDetails.ReservedQuantity += articleDetails.OriginalQuantity;
+                        TableArticleQuantity.Quantity -= articleDetails.OriginalQuantity;
+                    }
                 }
 
                 await _databaseService.EditTableArticleQuantity(TableArticleQuantity);
+                TableArticleQuantity.PropertyChanged += OnQuantityPropertyChanged;
             }
             else
             {

@@ -27,7 +27,7 @@
         </Grid.RowDefinitions>
 
         <ContentControl prism:RegionManager.RegionName="OptionsRegion"/>
-        <Button Content="   Table&#xa;overview" Grid.Row="1" Grid.Column="1" FontSize="15" Command="{Binding ShowTableOverviewCommand}" />
+        <Button Content="   Table&#xa;overview" Grid.Row="1" Grid.Column="1" FontSize="15" Command="{Binding ShowTableOverviewCommand}"/>
         <Button Content="     Article&#xa;Management" Grid.Row="1" Grid.Column="3" FontSize="15" Command="{Binding ShowArticleManagementCommand}"/>
         <Button Content="     Waiter&#xa;Management" Grid.Row="1" Grid.Column="5" FontSize="15" Command="{Binding ShowWaiterManagementCommand}"/>
         <Button Content="Reports" Grid.Row="1" Grid.Column="7" FontSize="15" Command="{Binding ShowReportManagementCommand}"/>

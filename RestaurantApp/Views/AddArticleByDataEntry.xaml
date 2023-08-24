@@ -8,7 +8,7 @@
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:behaviors="clr-namespace:WPFTextBoxAutoComplete;assembly=WPFTextBoxAutoComplete"
              mc:Ignorable="d" 
-             Height="550" Width="800">
+             Height="auto" Width="auto">
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
