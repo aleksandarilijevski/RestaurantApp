@@ -3,6 +3,7 @@ using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
 using RestaurantApp.Services.Interface;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -264,7 +265,6 @@ namespace RestaurantApp.ViewModels
                 TableArticleQuantity.Quantity = 1;
                 TableArticleQuantities.FirstOrDefault(x => x.ID == TableArticleQuantity.ID).Quantity = 1;
                 await _databaseService.EditTableArticleQuantity(TableArticleQuantity);
-                
 
                 MessageBox.Show("Article is not in stock!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
