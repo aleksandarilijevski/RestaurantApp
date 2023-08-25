@@ -27,6 +27,7 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand<TableArticleQuantity> _deleteArticleFromTableCommand;
         private DelegateCommand _navigateToTablesCommand;
         private ObservableCollection<TableArticleQuantity> _tableArticleQuantities;
+        private int _quantityValueBeforeChange = 0;
 
         public OrderingViewModel(IDatabaseService databaseService, IRegionManager regionManager)
         {
@@ -78,6 +79,8 @@ namespace RestaurantApp.ViewModels
             {
                 if (_tableArticleQuantity != null)
                 {
+                    _quantityValueBeforeChange = _tableArticleQuantity.Quantity;
+
                     _tableArticleQuantity.PropertyChanged -= OnQuantityPropertyChanged;
                 }
 
@@ -86,6 +89,8 @@ namespace RestaurantApp.ViewModels
 
                 if (_tableArticleQuantity != null)
                 {
+                    _quantityValueBeforeChange = _tableArticleQuantity.Quantity;
+
                     _tableArticleQuantity.PropertyChanged += OnQuantityPropertyChanged;
                 }
             }
@@ -227,15 +232,23 @@ namespace RestaurantApp.ViewModels
 
         private async Task DecreaseQuantityOfArticleDetails(List<ArticleDetails> articleDetails, int quantityToSell)
         {
+            quantityToSell = Math.Abs(_quantityValueBeforeChange - quantityToSell);
+
             foreach (ArticleDetails articleDetail in articleDetails)
             {
-                if (articleDetail.OriginalQuantity > articleDetail.ReservedQuantity)
-                {
-                    articleDetail.ReservedQuantity += quantityToSell;
-                    quantityToSell = 0;
-                    await _databaseService.EditArticleDetails(articleDetail);
-                    break;
-                }
+                if (quantityToSell <= 0)
+                    break; // No more quantity to sell, exit the loop
+
+                int availableQuantity = articleDetail.OriginalQuantity - articleDetail.ReservedQuantity;
+                int quantityToReserve = Math.Min(availableQuantity, quantityToSell);
+
+                // Reserve quantityToReserve for the current articleDetail
+                articleDetail.ReservedQuantity += quantityToReserve;
+
+                // Reduce remainingQuantityToSell
+                quantityToSell -= quantityToReserve;
+
+                await _databaseService.EditArticleDetails(articleDetail);
             }
         }
 
