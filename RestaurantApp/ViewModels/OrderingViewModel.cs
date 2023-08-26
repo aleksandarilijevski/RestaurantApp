@@ -266,14 +266,16 @@ namespace RestaurantApp.ViewModels
 
             if (availableQuantity >= TableArticleQuantity.Quantity)
             {
-                foreach (ArticleDetails articleDetails in article.ArticleDetails)
-                {
-                    if (articleDetails.ReservedQuantity != articleDetails.OriginalQuantity && TableArticleQuantity.Quantity != 0)
-                    {
-                        articleDetails.ReservedQuantity += articleDetails.OriginalQuantity;
-                        TableArticleQuantity.Quantity -= articleDetails.OriginalQuantity;
-                    }
-                }
+                //foreach (ArticleDetails articleDetails in article.ArticleDetails)
+                //{
+                //    if (articleDetails.ReservedQuantity != articleDetails.OriginalQuantity && TableArticleQuantity.Quantity != 0)
+                //    {
+                //        articleDetails.ReservedQuantity += TableArticleQuantity.Quantity;
+                //        TableArticleQuantity.Quantity -= articleDetails.OriginalQuantity;
+                //    }
+                //}
+
+                await DecreaseQuantityOfArticleDetails(article.ArticleDetails, TableArticleQuantity.Quantity);
 
                 await _databaseService.EditTableArticleQuantity(TableArticleQuantity);
                 TableArticleQuantity.PropertyChanged += OnQuantityPropertyChanged;
@@ -317,7 +319,7 @@ namespace RestaurantApp.ViewModels
 
             if (articleDetails != null)
             {
-                quantity += articleDetails.Sum(x => x.OriginalQuantity - x.ReservedQuantity);
+                quantity = articleDetails.Sum(x => x.OriginalQuantity - x.ReservedQuantity);
             }
 
             return quantity;
@@ -329,14 +331,29 @@ namespace RestaurantApp.ViewModels
 
             foreach (ArticleDetails articleDetail in articleDetails.OrderBy(x => x.CreatedDateTime))
             {
+                int taqQuantity = TableArticleQuantity.Quantity;
                 if (articleDetail.Article.IsDeleted == false && articleDetail.Article.ID == tableArticleQuantity.Article.ID)
                 {
-                    if (articleDetail.ReservedQuantity != 0)
+                    if (taqQuantity <= 0)
                     {
-                        articleDetail.ReservedQuantity -= tableArticleQuantity.Quantity;
-                        await _databaseService.EditArticleDetails(articleDetail);
                         break;
                     }
+
+                    int reservedDelete = articleDetail.ReservedQuantity - TableArticleQuantity.Quantity;
+
+                    if (reservedDelete != 0)
+                    {
+                        articleDetail.ReservedQuantity -= reservedDelete;
+                        taqQuantity -= reservedDelete;
+                    }
+                    else
+                    {
+                        articleDetail.ReservedQuantity--;
+                        taqQuantity--;
+                    }
+
+                    await _databaseService.EditArticleDetails(articleDetail);
+                    break;
                 }
             }
 

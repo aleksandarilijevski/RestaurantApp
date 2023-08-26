@@ -15,6 +15,7 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand _navigateToWaiterManagementCommand;
         private DelegateCommand _navigateToMenuCommand;
         private DelegateCommand _loadConfigurationCommand;
+        private DelegateCommand _showTableOverviewCommand;
 
         public MainWindowViewModel(IRegionManager regionManager, IDatabaseService databaseService)
         {
@@ -57,6 +58,16 @@ namespace RestaurantApp.ViewModels
                 return _loadConfigurationCommand;
             }
         }
+
+        public DelegateCommand NavigateToTableOrderCommand
+        {
+            get
+            {
+                _showTableOverviewCommand = new DelegateCommand(() => Navigate("MainRegion", "TableOrder"));
+                return _showTableOverviewCommand;
+            }
+        }
+
 
         private void Navigate(string regionName, string viewName)
         {
