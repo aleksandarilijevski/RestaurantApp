@@ -5,9 +5,20 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:RestaurantApp.Views"
              mc:Ignorable="d" 
-             Height="600"  Width="1200">
+             Height="auto"  Width="auto">
     <Grid>
-        <DataGrid AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding Article.ArticleDetails, IsAsync=True}" IsReadOnly="True">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="50" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+
+        <DataGrid AutoGenerateColumns="False" CanUserAddRows="False" FontSize="20" Grid.Row="0" Grid.RowSpan="2" Grid.ColumnSpan="2" Grid.Column="0" ItemsSource="{Binding Article.ArticleDetails, IsAsync=True}" IsReadOnly="True">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding ID}"/>
                 <DataGridTextColumn Header="Article name" Binding="{Binding Article.Name}" />

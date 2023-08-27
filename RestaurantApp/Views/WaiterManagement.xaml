@@ -29,7 +29,7 @@
         
         <ContentControl prism:RegionManager.RegionName="WaiterManagementRegion"/>
     
-        <DataGrid ItemsSource="{Binding Waiters}" AutoGenerateColumns="False" IsReadOnly="True">
+        <DataGrid ItemsSource="{Binding Waiters}" AutoGenerateColumns="False" IsReadOnly="True" FontSize="20">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding ID}"/>
                 <DataGridTextColumn Header="Barcode" Binding="{Binding Barcode}"/>

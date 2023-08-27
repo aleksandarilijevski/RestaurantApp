@@ -4,7 +4,6 @@ using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
-using System.Threading.Tasks;
 
 namespace RestaurantApp.ViewModels
 {

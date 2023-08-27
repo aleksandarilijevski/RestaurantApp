@@ -34,7 +34,7 @@
 
         <ContentControl prism:RegionManager.RegionName="ArticleManagementRegion"/>
         
-        <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding Articles, IsAsync=True}" IsReadOnly="true" Grid.Row="0" Grid.ColumnSpan="2" EnableColumnVirtualization="true" EnableRowVirtualization="true">
+        <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding Articles, IsAsync=True}" FontSize="20" IsReadOnly="true" Grid.Row="0" Grid.ColumnSpan="2" EnableColumnVirtualization="true" EnableRowVirtualization="true">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding ID}"/>
                 <DataGridTextColumn Header="Barcode" Binding="{Binding Barcode}"/>

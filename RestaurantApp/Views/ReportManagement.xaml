@@ -16,28 +16,75 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="40" />
+            <RowDefinition Height="10" />
+            <RowDefinition Height="65" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="325"/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="120"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <DatePicker Grid.Row="0" Grid.Column="0" FontSize="25" SelectedDate="{Binding DateFrom}"/>
-        <DatePicker Grid.Row="0" Grid.Column="1" FontSize="25" SelectedDate="{Binding DateTo}"/>
-        <Button Grid.Row="0" Grid.Column="2" Content="Confirm" FontSize="15" Margin="5" Command="{Binding ConfirmCommand}"/>
 
-        <DataGrid Grid.Row="1" Grid.ColumnSpan="3" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding Bills,IsAsync=True}" SelectedItem="{Binding SelectedBill}" IsReadOnly="True">
+        <Border BorderThickness="2" Grid.Column="0" Grid.Row="1" BorderBrush="Black">
+            <StackPanel>
+                <Label Content="Bill counter" FontSize="15" HorizontalAlignment="Center"/>
+                <TextBox TextAlignment="Center" FontSize="15" Margin="5,0,5,0"/>
+            </StackPanel>
+        </Border>
+
+        <Border BorderThickness="2" Grid.Column="1" Grid.Row="1" BorderBrush="Black">
+            <StackPanel>
+                <Label Content="Date time" FontSize="15" HorizontalAlignment="Center"/>
+
+                <StackPanel Orientation="Horizontal">
+                    <DatePicker FontSize="15" SelectedDate="{Binding DateFrom}" HorizontalAlignment="Left" Margin="5,0,5,0"/>
+                    <DatePicker FontSize="15" SelectedDate="{Binding DateTo}" HorizontalAlignment="Right" Margin="5,0,5,0" />
+                </StackPanel>
+
+            </StackPanel>
+        </Border>
+
+        <Border BorderThickness="2" Grid.Column="2" Grid.Row="1" BorderBrush="Black">
+            <StackPanel>
+                <Label Content="Table ID" FontSize="15" HorizontalAlignment="Center"/>
+                <TextBox TextAlignment="Center" FontSize="15" Margin="5,0,5,0"/>
+            </StackPanel>
+        </Border>
+
+        <Border BorderThickness="2" Grid.Column="3" Grid.Row="1" BorderBrush="Black">
+            <StackPanel>
+                <Label Content="Filter by" FontSize="15" HorizontalAlignment="Center"/>
+                <ComboBox Margin="5,0,5,0">
+                    <ComboBoxItem Content="Filter by bill counter"/>
+                    <ComboBoxItem Content="Filter by date time"/>
+                    <ComboBoxItem Content="Filter by table id"/>
+                </ComboBox>
+            </StackPanel>
+        </Border>
+
+        <Button Content="Filter" Grid.Row="1" Grid.Column="4" FontSize="15" Height="30" Margin="5,20,5,0"/>
+        
+        <!--<DatePicker Grid.Row="0" Grid.Column="0" FontSize="25" SelectedDate="{Binding DateFrom}"/>
+        <DatePicker Grid.Row="0" Grid.Column="1" FontSize="25" SelectedDate="{Binding DateTo}"/>
+                <Button Content="Filter" Grid.Row="1" Grid.Column="3" FontSize="15" Margin="5,35,5,5"/>
+
+        <Button Grid.Row="0" Grid.Column="2" Content="Confirm" FontSize="15" Margin="5" Command="{Binding ConfirmCommand}"/>-->
+
+        <DataGrid Grid.Row="2" Grid.RowSpan="2" Grid.ColumnSpan="7" FontSize="20" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding Bills,IsAsync=True}" SelectedItem="{Binding SelectedBill}" IsReadOnly="True">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Table ID" Binding="{Binding Table.ID}"/>
                 <DataGridTextColumn Header="Payment Type" Binding="{Binding PaymentType}"/>
                 <DataGridTextColumn Header="Total price" Binding="{Binding TotalPrice}"/>
                 <DataGridTextColumn Header="Created date" Binding="{Binding CreatedDateTime}"/>
 
-                <DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Details">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Button Content="Details" Command="{Binding DataContext.ShowReportDetailsCommand,RelativeSource={RelativeSource AncestorType={x:Type local:ReportManagement}}}"/> 
@@ -47,6 +94,5 @@
                 
             </DataGrid.Columns>            
         </DataGrid>
-        
     </Grid>
 </UserControl>

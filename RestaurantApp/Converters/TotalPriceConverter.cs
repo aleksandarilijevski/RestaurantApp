@@ -1,31 +1,25 @@
-﻿using EntityFramework.Models;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Globalization;
-using System.Linq;
+﻿using System.Globalization;
 using System.Windows.Data;
+using System;
 
 namespace RestaurantApp.Converters
 {
-    public class TotalPriceConverter : IValueConverter
+    //MultivalueConverter prima vise parametara.
+    public class TotalPriceConverter : IMultiValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            string totalPrice = string.Empty;
+            if (values.Length != 2 || values[0] == null || values[1] == null)
+                return 0;
 
-            if (value is ObservableCollection<TableArticleQuantity>)
-            {
-                ObservableCollection<TableArticleQuantity> tableArticleQuantities = (ObservableCollection<TableArticleQuantity>)value;
-                List<TableArticleQuantity> soldtableArticleQunatities = tableArticleQuantities.ToList();
+            if (!(values[0] is int quantity) || !(values[1] is decimal price))
+                return 0;
 
-                return soldtableArticleQunatities.Sum(x => x.Quantity * x.Article.Price);
-            }
-
-            return 0;
+            decimal totalPrice = quantity * price;
+            return totalPrice.ToString();
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }

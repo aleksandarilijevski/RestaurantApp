@@ -9,7 +9,7 @@ namespace EntityFramework.Models
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int ID { get; set; }
 
-        public bool Available { get; set; }
+        public bool InUse { get; set; }
 
         public List<TableArticleQuantity> TableArticleQuantities { get; set; }  
     }
