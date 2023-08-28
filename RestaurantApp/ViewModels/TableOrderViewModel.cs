@@ -3,9 +3,6 @@ using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
 using RestaurantApp.Services.Interface;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 
 namespace RestaurantApp.ViewModels
 {
@@ -15,6 +12,7 @@ namespace RestaurantApp.ViewModels
         private IDatabaseService _databaseService;
         private DelegateCommand<string> _orderingCommand;
         private int _id;
+        private Table _table;
 
         public TableOrderViewModel(IRegionManager regionManager,IDatabaseService databaseService)
         {
@@ -28,6 +26,20 @@ namespace RestaurantApp.ViewModels
             set
             {
                 SetProperty(ref _id, value);
+            }
+        }
+
+        public Table Table
+        {
+            get
+            {
+                return _table;
+            }
+
+            set
+            {
+                SetProperty(ref _table, value);
+                RaisePropertyChanged();
             }
         }
 

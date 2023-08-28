@@ -35,7 +35,7 @@
         <Border BorderThickness="2" Grid.Column="0" Grid.Row="1" BorderBrush="Black">
             <StackPanel>
                 <Label Content="Bill counter" FontSize="15" HorizontalAlignment="Center"/>
-                <TextBox TextAlignment="Center" FontSize="15" Margin="5,0,5,0"/>
+                <TextBox TextAlignment="Center" FontSize="15" Margin="5,0,5,0" Text="{Binding FilterBillCounter}"/>
             </StackPanel>
         </Border>
 
@@ -44,8 +44,8 @@
                 <Label Content="Date time" FontSize="15" HorizontalAlignment="Center"/>
 
                 <StackPanel Orientation="Horizontal">
-                    <DatePicker FontSize="15" SelectedDate="{Binding DateFrom}" HorizontalAlignment="Left" Margin="5,0,5,0"/>
-                    <DatePicker FontSize="15" SelectedDate="{Binding DateTo}" HorizontalAlignment="Right" Margin="5,0,5,0" />
+                    <DatePicker FontSize="15" SelectedDate="{Binding FilterDateFrom}" HorizontalAlignment="Left" Margin="5,0,5,0" Text="{Binding FilterDateFrom}"/>
+                    <DatePicker FontSize="15" SelectedDate="{Binding FilterDateTo}" HorizontalAlignment="Right" Margin="5,0,5,0"  Text="{Binding FilterDateTo}"/>
                 </StackPanel>
 
             </StackPanel>
@@ -54,29 +54,13 @@
         <Border BorderThickness="2" Grid.Column="2" Grid.Row="1" BorderBrush="Black">
             <StackPanel>
                 <Label Content="Table ID" FontSize="15" HorizontalAlignment="Center"/>
-                <TextBox TextAlignment="Center" FontSize="15" Margin="5,0,5,0"/>
+                <TextBox TextAlignment="Center" FontSize="15" Margin="5,0,5,0" Text="{Binding FilterTableID}"/>
             </StackPanel>
         </Border>
 
-        <Border BorderThickness="2" Grid.Column="3" Grid.Row="1" BorderBrush="Black">
-            <StackPanel>
-                <Label Content="Filter by" FontSize="15" HorizontalAlignment="Center"/>
-                <ComboBox Margin="5,0,5,0">
-                    <ComboBoxItem Content="Filter by bill counter"/>
-                    <ComboBoxItem Content="Filter by date time"/>
-                    <ComboBoxItem Content="Filter by table id"/>
-                </ComboBox>
-            </StackPanel>
-        </Border>
-
-        <Button Content="Filter" Grid.Row="1" Grid.Column="4" FontSize="15" Height="30" Margin="5,20,5,0"/>
+           <Button Content="Clear filters" Grid.Column="3" Grid.Row="1"  FontSize="15" Height="30" Margin="5,0,5,35" Command="{Binding ClearFiltersCommand}"/>
+           <Button Content="Filter" Grid.Column="3" Grid.Row="1"  FontSize="15" Height="30" Margin="5,30,5,0" Command="{Binding FilterCommand}"/>
         
-        <!--<DatePicker Grid.Row="0" Grid.Column="0" FontSize="25" SelectedDate="{Binding DateFrom}"/>
-        <DatePicker Grid.Row="0" Grid.Column="1" FontSize="25" SelectedDate="{Binding DateTo}"/>
-                <Button Content="Filter" Grid.Row="1" Grid.Column="3" FontSize="15" Margin="5,35,5,5"/>
-
-        <Button Grid.Row="0" Grid.Column="2" Content="Confirm" FontSize="15" Margin="5" Command="{Binding ConfirmCommand}"/>-->
-
         <DataGrid Grid.Row="2" Grid.RowSpan="2" Grid.ColumnSpan="7" FontSize="20" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding Bills,IsAsync=True}" SelectedItem="{Binding SelectedBill}" IsReadOnly="True">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Table ID" Binding="{Binding Table.ID}"/>

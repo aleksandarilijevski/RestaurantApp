@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Input.Manipulations;
 
 namespace RestaurantApp.ViewModels
 {
@@ -19,10 +18,15 @@ namespace RestaurantApp.ViewModels
         private DateTime _dateFrom = DateTime.Now;
         private DateTime _dateTo = DateTime.Now;
         private ObservableCollection<Bill> _bills = new ObservableCollection<Bill>();
-        private DelegateCommand _confirmCommand;
         private DelegateCommand _showReportDetailsCommand;
+        private DelegateCommand _filterCommand;
+        private DelegateCommand _clearFiltersCommand;
         private Bill _selectedBill;
         private decimal _total;
+        private string _filterBillCounter;
+        private string _filterTableID;
+        private DateTime _filterDateFrom;
+        private DateTime _filterDateTo;
 
         public ReportManagementViewModel(IDatabaseService databaseService, IDialogService dialogService)
         {
@@ -44,29 +48,57 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public DateTime DateFrom
+        public string FilterBillCounter
         {
             get
             {
-                return _dateFrom;
+                return _filterBillCounter;
             }
 
             set
             {
-                _dateFrom = value;
+                _filterBillCounter = value;
+                RaisePropertyChanged();
             }
         }
 
-        public DateTime DateTo
+        public string FilterTableID
         {
             get
             {
-                return _dateTo;
+                return _filterTableID;
             }
 
             set
             {
-                _dateTo = value;
+                _filterTableID = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public DateTime FilterDateFrom
+        {
+            get
+            {
+                return _filterDateFrom;
+            }
+
+            set
+            {
+                _filterDateFrom = value;
+            }
+        }
+
+        public DateTime FilterDateTo
+        {
+            get
+            {
+                return _filterDateTo;
+            }
+
+            set
+            {
+                _filterDateTo = value;
             }
         }
 
@@ -97,15 +129,6 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public DelegateCommand ConfirmCommand
-        {
-            get
-            {
-                _confirmCommand = new DelegateCommand(Confirm);
-                return _confirmCommand;
-            }
-        }
-
         public DelegateCommand ShowReportDetailsCommand
         {
             get
@@ -121,6 +144,24 @@ namespace RestaurantApp.ViewModels
             {
                 _loadAllBillsCommand = new DelegateCommand(LoadAllBills);
                 return _loadAllBillsCommand;
+            }
+        }
+
+        public DelegateCommand FilterCommand
+        {
+            get
+            {
+                _filterCommand = new DelegateCommand(Filter);
+                return _filterCommand;
+            }
+        }
+
+        public DelegateCommand ClearFiltersCommand
+        {
+            get
+            {
+                _clearFiltersCommand = new DelegateCommand(ClearFilters);
+                return _clearFiltersCommand;
             }
         }
 
@@ -141,25 +182,65 @@ namespace RestaurantApp.ViewModels
             Bills = new ObservableCollection<Bill>(bills);
         }
 
-        private async void Confirm()
+        private async void Filter()
         {
-            _bills.Clear();
             List<Bill> bills = await _databaseService.GetAllBills();
+            List<Bill> filteredBills = new List<Bill>();
+
+            if (int.TryParse(FilterTableID, out int tableId) == true)
+            {
+                filteredBills.AddRange(FilterByTableID(bills, tableId));
+            }
+
+            if (int.TryParse(FilterBillCounter, out int billCounter) == true)
+            {
+                filteredBills.AddRange(FilterByBillCounter(bills, billCounter));
+            }
+
+            if (FilterDateFrom != DateTime.MinValue && FilterDateTo != DateTime.MinValue)
+            {
+                filteredBills.AddRange(FilterByDateTime(bills));
+            }
+
+            Bills = new ObservableCollection<Bill>(filteredBills);
+        }
+
+        private List<Bill> FilterByTableID(List<Bill> bills, int tableId)
+        {
+            return bills.Where(x => x.TableID == tableId).ToList();
+        }
+
+        private List<Bill> FilterByBillCounter(List<Bill> bills, int billCounter)
+        {
+            return bills.Where(x => x.RegistrationNumber.Contains(billCounter.ToString() + "/")).ToList();
+        }
+
+        private List<Bill> FilterByDateTime(List<Bill> bills)
+        {
+            List<Bill> filteredBills = new List<Bill>();
 
             foreach (Bill bill in bills)
             {
                 DateTime billCreatedDateTime = (DateTime)bill.CreatedDateTime;
 
-                if (billCreatedDateTime.Date >= DateFrom.Date && billCreatedDateTime.Date <= DateTo.Date)
+                if (billCreatedDateTime.Date >= FilterDateFrom.Date && billCreatedDateTime.Date <= FilterDateTo.Date)
                 {
-                    _bills.Add(bill);
-
-                    foreach (TableArticleQuantity tableArticleQuantity in bill.Table.TableArticleQuantities)
-                    {
-                        Total += tableArticleQuantity.Quantity * tableArticleQuantity.Article.Price;
-                    }
+                    filteredBills.Add(bill);
                 }
             }
+
+            return filteredBills;
+        }
+
+        private async void ClearFilters()
+        {
+            FilterBillCounter = string.Empty;
+            FilterTableID = string.Empty;
+            FilterDateFrom = DateTime.MinValue;
+            FilterDateTo = DateTime.MinValue;
+
+            List<Bill> bills = await _databaseService.GetAllBills();
+            Bills = new ObservableCollection<Bill>(bills);
         }
     }
 }

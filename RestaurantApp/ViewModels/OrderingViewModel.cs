@@ -219,7 +219,7 @@ namespace RestaurantApp.ViewModels
                     ArticleDetails = articleDetails
                 };
 
-                await DecreaseQuantityOfArticleDetails(articleDetails, tableArticleQuantity.Quantity);
+                await IncreaseReservedQuantity(articleDetails, tableArticleQuantity.Quantity);
 
                 Table.TableArticleQuantities.Add(tableArticleQuantity);
                 TableArticleQuantities.Add(tableArticleQuantity);
@@ -230,31 +230,37 @@ namespace RestaurantApp.ViewModels
             RaisePropertyChanged(nameof(Table));
         }
 
-        private async Task DecreaseQuantityOfArticleDetails(List<ArticleDetails> articleDetails, int quantityToSell)
+        /// <summary>
+        /// Increasing reserved quantity
+        /// </summary>
+        private async Task IncreaseReservedQuantity(List<ArticleDetails> articleDetails, int quantityToBeReserved)
         {
-            if (quantityToSell != 1)
+            if (quantityToBeReserved != 1)
             {
-                quantityToSell = Math.Abs(_quantityValueBeforeChange - quantityToSell);
+                quantityToBeReserved = Math.Abs(_quantityValueBeforeChange - quantityToBeReserved);
             }
 
             foreach (ArticleDetails articleDetail in articleDetails)
             {
-                if (quantityToSell <= 0)
+                if (quantityToBeReserved <= 0)
                     break; // No more quantity to sell, exit the loop
 
                 int availableQuantity = articleDetail.OriginalQuantity - articleDetail.ReservedQuantity;
-                int quantityToReserve = Math.Min(availableQuantity, quantityToSell);
+                int quantityToReserve = Math.Min(availableQuantity, quantityToBeReserved);
 
                 // Reserve quantityToReserve for the current articleDetail
                 articleDetail.ReservedQuantity += quantityToReserve;
 
                 // Reduce remainingQuantityToSell
-                quantityToSell -= quantityToReserve;
+                quantityToBeReserved -= quantityToReserve;
 
                 await _databaseService.EditArticleDetails(articleDetail);
             }
         }
 
+        /// <summary>
+        /// Gets all reserved quantities from each articleDetails.
+        /// </summary>
         public int GetReservedQuantity(List<ArticleDetails> articleDetails)
         {
             int reservedQuantity = 0;
@@ -262,6 +268,10 @@ namespace RestaurantApp.ViewModels
             return reservedQuantity;
         }
 
+        /// <summary>
+        /// Checking if quantity is available for article on table.
+        /// This function is called when quantity is changed from dataGrid cell.
+        /// </summary>
         private async Task IsQuantityAvailableForArticleOnTable(Article article)
         {
             TableArticleQuantity.PropertyChanged -= OnQuantityPropertyChanged;
@@ -271,7 +281,7 @@ namespace RestaurantApp.ViewModels
             {
                 if (availableQuantity >= TableArticleQuantity.Quantity - _quantityValueBeforeChange)
                 {
-                    await DecreaseQuantityOfArticleDetails(article.ArticleDetails, TableArticleQuantity.Quantity);
+                    await IncreaseReservedQuantity(article.ArticleDetails, TableArticleQuantity.Quantity);
                     await _databaseService.EditTableArticleQuantity(TableArticleQuantity);
                     TableArticleQuantity.PropertyChanged += OnQuantityPropertyChanged;
                 }
@@ -284,28 +294,30 @@ namespace RestaurantApp.ViewModels
             else
             {
                 int quantityToRemove = Math.Abs(TableArticleQuantity.Quantity - _quantityValueBeforeChange);
-              
-                await IncreaseQuantityOfArticleDetails(article.ArticleDetails, quantityToRemove);
+                await DecreaseReservedQuantity(article.ArticleDetails, quantityToRemove);
             }
 
             RaisePropertyChanged(nameof(TableArticleQuantities));
         }
 
-        private async Task IncreaseQuantityOfArticleDetails(List<ArticleDetails> articleDetails, int quantityToPutBack)
+        /// <summary>
+        /// Decreasing reserved quantity.
+        /// </summary>
+        private async Task DecreaseReservedQuantity(List<ArticleDetails> articleDetails, int reservedQuantityToBeDecreased)
         {
             foreach (ArticleDetails articleDetail in articleDetails)
             {
-                if (quantityToPutBack <= 0)
+                if (reservedQuantityToBeDecreased <= 0)
                     break; // No more quantity to sell, exit the loop
 
                 int availableQuantity = articleDetail.OriginalQuantity - articleDetail.ReservedQuantity;
-                int quantityToReserve = Math.Min(availableQuantity, quantityToPutBack);
+                int quantityToReserve = Math.Min(availableQuantity, reservedQuantityToBeDecreased);
 
                 // Reserve quantityToReserve for the current articleDetail
                 articleDetail.ReservedQuantity -= quantityToReserve;
 
                 // Reduce remainingQuantityToSell
-                quantityToPutBack += quantityToReserve;
+                reservedQuantityToBeDecreased += quantityToReserve;
 
                 await _databaseService.EditArticleDetails(articleDetail);
             }
@@ -344,6 +356,9 @@ namespace RestaurantApp.ViewModels
             return quantity;
         }
 
+        /// <summary>
+        /// Deleting articles from table and restoring reserved quantity
+        /// </summary>
         private async void DeleteArticleFromTable(TableArticleQuantity tableArticleQuantity)
         {
             List<ArticleDetails>? articleDetails = await _databaseService.GetArticleDetailsByArticleID(tableArticleQuantity.ArticleID);
@@ -406,6 +421,9 @@ namespace RestaurantApp.ViewModels
             await _databaseService.EditTable(table);
         }
 
+        /// <summary>
+        /// Function for navigating to tables
+        /// </summary>
         private void NavigateToTables()
         {
             _regionManager.RequestNavigate("MainRegion", "TableOrder");
