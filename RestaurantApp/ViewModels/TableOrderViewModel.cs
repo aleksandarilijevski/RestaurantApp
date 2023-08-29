@@ -3,6 +3,8 @@ using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
 using RestaurantApp.Services.Interface;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace RestaurantApp.ViewModels
 {
@@ -11,10 +13,11 @@ namespace RestaurantApp.ViewModels
         private IRegionManager _regionManager;
         private IDatabaseService _databaseService;
         private DelegateCommand<string> _orderingCommand;
+        private DelegateCommand _loadAllTablesCommand;
         private int _id;
-        private Table _table;
+        private ObservableCollection<Table> _tables;
 
-        public TableOrderViewModel(IRegionManager regionManager,IDatabaseService databaseService)
+        public TableOrderViewModel(IRegionManager regionManager, IDatabaseService databaseService)
         {
             _regionManager = regionManager;
             _databaseService = databaseService;
@@ -29,20 +32,6 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public Table Table
-        {
-            get
-            {
-                return _table;
-            }
-
-            set
-            {
-                SetProperty(ref _table, value);
-                RaisePropertyChanged();
-            }
-        }
-
         public DelegateCommand<string> OrderingCommand
         {
             get
@@ -50,6 +39,34 @@ namespace RestaurantApp.ViewModels
                 _orderingCommand = new DelegateCommand<string>(ShowOrderingUsercontrol);
                 return _orderingCommand;
             }
+        }
+
+        public DelegateCommand LoadAllTablesCommand
+        {
+            get
+            {
+                _loadAllTablesCommand = new DelegateCommand(LoadAllTables);
+                return _loadAllTablesCommand;
+            }
+        }
+
+        public ObservableCollection<Table> Tables
+        {
+            get
+            {
+                return _tables;
+            }
+
+            set
+            {
+                SetProperty(ref _tables, value);
+            }
+        }
+
+        private async void LoadAllTables()
+        {
+            List<Table> tables = await _databaseService.GetAllTables();
+            Tables = new ObservableCollection<Table>(tables);
         }
 
         private void ShowOrderingUsercontrol(string id)

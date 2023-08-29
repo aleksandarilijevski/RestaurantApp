@@ -185,34 +185,23 @@ namespace RestaurantApp.ViewModels
         private async void Filter()
         {
             List<Bill> bills = await _databaseService.GetAllBills();
-            List<Bill> filteredBills = new List<Bill>();
 
             if (int.TryParse(FilterTableID, out int tableId) == true)
             {
-                filteredBills.AddRange(FilterByTableID(bills, tableId));
+                bills =  bills.Where(x => x.TableID == tableId).ToList();
             }
 
             if (int.TryParse(FilterBillCounter, out int billCounter) == true)
             {
-                filteredBills.AddRange(FilterByBillCounter(bills, billCounter));
+                bills = bills.Where(x => x.RegistrationNumber.Contains(billCounter.ToString() + "/")).ToList();
             }
 
             if (FilterDateFrom != DateTime.MinValue && FilterDateTo != DateTime.MinValue)
             {
-                filteredBills.AddRange(FilterByDateTime(bills));
+                bills = FilterByDateTime(bills);
             }
 
-            Bills = new ObservableCollection<Bill>(filteredBills);
-        }
-
-        private List<Bill> FilterByTableID(List<Bill> bills, int tableId)
-        {
-            return bills.Where(x => x.TableID == tableId).ToList();
-        }
-
-        private List<Bill> FilterByBillCounter(List<Bill> bills, int billCounter)
-        {
-            return bills.Where(x => x.RegistrationNumber.Contains(billCounter.ToString() + "/")).ToList();
+            Bills = new ObservableCollection<Bill>(bills);
         }
 
         private List<Bill> FilterByDateTime(List<Bill> bills)

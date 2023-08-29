@@ -175,7 +175,7 @@ namespace RestaurantApp.ViewModels
 
             if (Table is null)
             {
-                Table table = new Table { ID = id, InUse = true, TableArticleQuantities = new List<TableArticleQuantity>() };
+                Table table = new Table { ID = id, InUse = false, TableArticleQuantities = new List<TableArticleQuantity>() };
                 Table = table;
                 await _databaseService.AddTable(table);
             }
@@ -209,6 +209,8 @@ namespace RestaurantApp.ViewModels
 
             if (isQuantityAvailable)
             {
+                Table.InUse = true;
+
                 List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleID(article.ID);
 
                 TableArticleQuantity tableArticleQuantity = new TableArticleQuantity
@@ -223,9 +225,9 @@ namespace RestaurantApp.ViewModels
 
                 Table.TableArticleQuantities.Add(tableArticleQuantity);
                 TableArticleQuantities.Add(tableArticleQuantity);
+                await EditTable(Table);
             }
 
-            await EditTable(Table);
             Barcode = string.Empty;
             RaisePropertyChanged(nameof(Table));
         }
@@ -404,9 +406,11 @@ namespace RestaurantApp.ViewModels
             TableArticleQuantities.Remove(tableArticleQuantity);
             await EditTable(Table);
 
-            if (Table.TableArticleQuantities.Count == 0)
+            List<TableArticleQuantity> tableArticleQuantities = Table.TableArticleQuantities.Where(x => !(x is SoldTableArticleQuantity)).ToList();
+
+            if (tableArticleQuantities.Count == 0)
             {
-                Table.InUse = true;
+                Table.InUse = false;
                 await EditTable(Table);
             }
 

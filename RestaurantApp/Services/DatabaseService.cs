@@ -116,7 +116,9 @@ namespace RestaurantApp.Services
 
         public async Task<List<Table>> GetAllTables()
         {
-            List<Table> tables = await _efContext.Tables.Select(x => x).ToListAsync();
+            using EFContext efContext = new EFContext();
+
+            List<Table> tables = await efContext.Tables.Select(x => x).ToListAsync();
             return tables;
         }
 
@@ -199,11 +201,6 @@ namespace RestaurantApp.Services
             int totalQuantity = 0;
 
             using EFContext efContext = new EFContext();
-
-            //List<TableArticleQuantity> tableArticleQuantities = await efContext.TableArticleQuantities.Select(x => x)
-            //    .Where(x => x.ArticleID == articleID).OfType<TableArticleQuantity>()
-            //    .ToListAsync(); 
-
 
             List<TableArticleQuantity> tableArticleQuantities = await efContext.TableArticleQuantities.Select(x => x)
                 .Where(x => x.ArticleID == articleID && !(x is SoldTableArticleQuantity))
