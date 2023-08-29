@@ -83,7 +83,7 @@ namespace EntityFramework.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
-                    b.Property<int?>("ArticleID")
+                    b.Property<int>("ArticleID")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("CreatedDateTime")
@@ -313,7 +313,9 @@ namespace EntityFramework.Migrations
                 {
                     b.HasOne("EntityFramework.Models.Article", "Article")
                         .WithMany("ArticleDetails")
-                        .HasForeignKey("ArticleID");
+                        .HasForeignKey("ArticleID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Article");
                 });

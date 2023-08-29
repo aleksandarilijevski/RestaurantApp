@@ -81,6 +81,7 @@ namespace RestaurantApp.Services
 
         public async Task<Table> GetTableByID(int id)
         {
+            //.ThenInclude(x => x.ArticleDetails)
             Table table = await _efContext.Tables.Include(x => x.TableArticleQuantities).ThenInclude(x => x.ArticleDetails).ThenInclude(x => x.Article).FirstOrDefaultAsync(x => x.ID == id);
             return table;
         }
@@ -262,6 +263,9 @@ namespace RestaurantApp.Services
                 .Include(x => x.Table)
                 .ThenInclude(x => x.TableArticleQuantities)
                 .ThenInclude(x => x.Bill)
+                .Include(x => x.Table)
+                .ThenInclude(x => x.TableArticleQuantities)
+                .ThenInclude(x => x.ArticleDetails)
                 .ToListAsync();
             return bills;
         }

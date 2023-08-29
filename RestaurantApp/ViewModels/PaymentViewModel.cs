@@ -9,6 +9,7 @@ using RestaurantApp.Utilities.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace RestaurantApp.ViewModels
@@ -125,6 +126,9 @@ namespace RestaurantApp.ViewModels
             }
 
             await CreateBill(bill);
+
+            _table.InUse = false;
+            await _databaseService.EditTable(_table);
 
             List<SoldTableArticleQuantity> soldTableArticleQuantities = new List<SoldTableArticleQuantity>();
             List<TableArticleQuantity> tableArticleQuantities = _table.TableArticleQuantities.Select(x => x).Where(x => !(x is SoldTableArticleQuantity)).ToList();
@@ -244,12 +248,7 @@ namespace RestaurantApp.ViewModels
                 // Reduce remainingQuantityToSell
                 reservedQuantityToBeDecreased -= quantityToReserve;
 
-                articleDetail.Article = articleDetail.Article;
-
-                //Ask why
-                //If articleDetails is edited ArticleID becames null value in database.
-                //await _databaseService.EditArticleDetails(articleDetail);
-                await _databaseService.EditArticle(articleDetail.Article);
+                await _databaseService.EditArticleDetails(articleDetail);
             }
         }
 

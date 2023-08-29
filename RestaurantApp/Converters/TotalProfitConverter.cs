@@ -24,10 +24,11 @@ namespace RestaurantApp.Converters
                 foreach (ArticleDetails articleDetails in tableArticleQuantity.ArticleDetails)
                 {
                     profit += totalPrice - (articleDetails.EntryPrice * tableArticleQuantity.Quantity);
+                    return profit.ToString();
                 }
             }
 
-            return null;
+            return 0;
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

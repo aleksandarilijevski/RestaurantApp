@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EntityFramework.Migrations
 {
     [DbContext(typeof(EFContext))]
-    [Migration("20230820094745_many-to-many")]
-    partial class manytomany
+    [Migration("20230829165044_ArticleIDAddedToArticleDetails")]
+    partial class ArticleIDAddedToArticleDetails
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -86,7 +86,7 @@ namespace EntityFramework.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
-                    b.Property<int?>("ArticleID")
+                    b.Property<int>("ArticleID")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("CreatedDateTime")
@@ -98,7 +98,10 @@ namespace EntityFramework.Migrations
                     b.Property<DateTime?>("ModifiedDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Quantity")
+                    b.Property<int>("OriginalQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ReservedQuantity")
                         .HasColumnType("int");
 
                     b.HasKey("ID");
@@ -130,6 +133,9 @@ namespace EntityFramework.Migrations
 
                     b.Property<int>("PaymentType")
                         .HasColumnType("int");
+
+                    b.Property<string>("RegistrationNumber")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TableID")
                         .HasColumnType("int");
@@ -202,7 +208,7 @@ namespace EntityFramework.Migrations
                     b.Property<int?>("ArticleID")
                         .HasColumnType("int");
 
-                    b.Property<bool>("Available")
+                    b.Property<bool>("InUse")
                         .HasColumnType("bit");
 
                     b.HasKey("ID");
@@ -310,7 +316,9 @@ namespace EntityFramework.Migrations
                 {
                     b.HasOne("EntityFramework.Models.Article", "Article")
                         .WithMany("ArticleDetails")
-                        .HasForeignKey("ArticleID");
+                        .HasForeignKey("ArticleID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Article");
                 });
