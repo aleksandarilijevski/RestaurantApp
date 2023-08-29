@@ -40,7 +40,11 @@
         <Border BorderThickness="2" Grid.Column="0" Grid.Row="1" BorderBrush="Black">
             <StackPanel>
                 <Label Content="Bill counter" FontSize="15" HorizontalAlignment="Center"/>
-                <TextBox TextAlignment="Center" FontSize="15" Margin="5,0,5,0" Text="{Binding FilterBillCounter}"/>
+                <TextBox TextAlignment="Center" FontSize="15" Margin="5,0,5,0" Text="{Binding FilterBillCounter}">
+                    <TextBox.InputBindings>
+                        <KeyBinding Command="{Binding FilterCommand}" Key="Enter" />
+                    </TextBox.InputBindings>
+                </TextBox>
             </StackPanel>
         </Border>
 
@@ -59,7 +63,11 @@
         <Border BorderThickness="2" Grid.Column="2" Grid.Row="1" BorderBrush="Black">
             <StackPanel>
                 <Label Content="Table ID" FontSize="15" HorizontalAlignment="Center"/>
-                <TextBox TextAlignment="Center" FontSize="15" Margin="5,0,5,0" Text="{Binding FilterTableID}"/>
+                <TextBox TextAlignment="Center" FontSize="15" Margin="5,0,5,0" Text="{Binding FilterTableID}">
+                    <TextBox.InputBindings>
+                        <KeyBinding Command="{Binding FilterCommand}" Key="Enter" />
+                    </TextBox.InputBindings>
+                </TextBox>
             </StackPanel>
         </Border>
 

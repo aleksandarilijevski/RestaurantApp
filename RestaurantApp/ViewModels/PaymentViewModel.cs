@@ -108,7 +108,7 @@ namespace RestaurantApp.ViewModels
             foreach (TableArticleQuantity tableArticleQuantity in _tableArticleQuantities)
             {
                 await DecreaseReservedQuantity(tableArticleQuantity.ArticleDetails, tableArticleQuantity.Quantity);
-                await DecreaseOriginalQuantity(tableArticleQuantity.ArticleDetails, tableArticleQuantity.Quantity);
+                //await DecreaseOriginalQuantity(tableArticleQuantity.ArticleDetails, tableArticleQuantity.Quantity);
             }
 
             await CreateBill(bill);

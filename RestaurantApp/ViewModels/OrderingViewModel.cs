@@ -222,9 +222,9 @@ namespace RestaurantApp.ViewModels
                 };
 
                 await IncreaseReservedQuantity(articleDetails, tableArticleQuantity.Quantity);
-
                 Table.TableArticleQuantities.Add(tableArticleQuantity);
                 TableArticleQuantities.Add(tableArticleQuantity);
+
                 await EditTable(Table);
             }
 
