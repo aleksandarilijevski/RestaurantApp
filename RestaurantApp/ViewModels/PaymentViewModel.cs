@@ -33,6 +33,19 @@ namespace RestaurantApp.ViewModels
             _dialogService = dialogService;
         }
 
+        public List<TableArticleQuantity> TableArticleQuantities
+        {
+            get
+            {
+                return _tableArticleQuantities;
+            }
+
+            set
+            {
+                _tableArticleQuantities = value;
+            }
+        }
+
         public decimal TotalPrice
         {
             get
@@ -105,10 +118,10 @@ namespace RestaurantApp.ViewModels
                 RegistrationNumber = registrationNumber
             };
 
-            foreach (TableArticleQuantity tableArticleQuantity in _tableArticleQuantities)
+            foreach (TableArticleQuantity tableArticleQuantity in TableArticleQuantities)
             {
                 await DecreaseReservedQuantity(tableArticleQuantity.ArticleDetails, tableArticleQuantity.Quantity);
-                //await DecreaseOriginalQuantity(tableArticleQuantity.ArticleDetails, tableArticleQuantity.Quantity);
+                await DecreaseOriginalQuantity(tableArticleQuantity.ArticleDetails, tableArticleQuantity.Quantity);
             }
 
             await CreateBill(bill);
@@ -231,7 +244,12 @@ namespace RestaurantApp.ViewModels
                 // Reduce remainingQuantityToSell
                 reservedQuantityToBeDecreased -= quantityToReserve;
 
-                await _databaseService.EditArticleDetails(articleDetail);
+                articleDetail.Article = articleDetail.Article;
+
+                //Ask why
+                //If articleDetails is edited ArticleID becames null value in database.
+                //await _databaseService.EditArticleDetails(articleDetail);
+                await _databaseService.EditArticle(articleDetail.Article);
             }
         }
 
@@ -262,7 +280,7 @@ namespace RestaurantApp.ViewModels
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
             _table = (Table)navigationContext.Parameters["table"];
-            _tableArticleQuantities = (List<TableArticleQuantity>)navigationContext.Parameters["tableArticleQuantities"];
+            TableArticleQuantities = (List<TableArticleQuantity>)navigationContext.Parameters["tableArticleQuantities"];
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)
