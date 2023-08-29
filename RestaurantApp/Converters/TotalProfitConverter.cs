@@ -16,7 +16,16 @@ namespace RestaurantApp.Converters
             decimal totalPrice = (decimal)values[2];
 
             List<TableArticleQuantity> filtered = tableArticleQuantities.Where(x => x.BillID == billId).ToList();
-            decimal totalProfit = 0;
+
+            decimal profit = 0;
+
+            foreach (TableArticleQuantity tableArticleQuantity in filtered)
+            {
+                foreach (ArticleDetails articleDetails in tableArticleQuantity.ArticleDetails)
+                {
+                    profit += totalPrice - (articleDetails.EntryPrice * tableArticleQuantity.Quantity);
+                }
+            }
 
             return null;
         }
