@@ -55,7 +55,14 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <Button Content="Add waiter" Grid.Column="0" Grid.Row="1" FontSize="20" Command="{Binding ShowAddWaiterDialogCommand}"/>
+        <Button
+            Width="auto"
+            Height="45"
+            Content="Add waiter"
+            Grid.Column="0"
+            Grid.Row="1"
+            FontSize="20"
+            Command="{Binding ShowAddWaiterDialogCommand}"/>
 
     </Grid>
 </UserControl>

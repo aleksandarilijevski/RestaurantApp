@@ -71,7 +71,16 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <Button Content="Save" FontSize="25" Grid.Row="2" Grid.Column="3" Margin="100,5,5,5" Command="{Binding SaveCommand}"/>
+        <Button
+            HorizontalAlignment="Right"
+            Width="350"
+            Height="45"
+            Content="Save"
+            FontSize="25"
+            Grid.Row="2"
+            Grid.Column="3"
+            Margin="0,0,10,10"
+            Command="{Binding SaveCommand}"/>
 
     </Grid>
 

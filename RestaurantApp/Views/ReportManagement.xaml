@@ -53,8 +53,8 @@
                 <Label Content="Date time" FontSize="15" HorizontalAlignment="Center"/>
 
                 <StackPanel Orientation="Horizontal">
-                    <DatePicker FontSize="15" SelectedDate="{Binding FilterDateFrom}" HorizontalAlignment="Left" Margin="5,0,5,0" Text="{Binding FilterDateFrom}"/>
-                    <DatePicker FontSize="15" SelectedDate="{Binding FilterDateTo}" HorizontalAlignment="Right" Margin="5,0,5,0"  Text="{Binding FilterDateTo}"/>
+                    <DatePicker FontSize="15" SelectedDate="{Binding FilterDateFrom}" Margin="65,0,0,0"  Text="{Binding FilterDateFrom}"/>
+                    <DatePicker FontSize="15" SelectedDate="{Binding FilterDateTo}" Margin="35,0,5,0" Text="{Binding FilterDateTo}"/>
                 </StackPanel>
 
             </StackPanel>

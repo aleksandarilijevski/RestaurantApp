@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:RestaurantApp.Views"
              mc:Ignorable="d" 
-             Height="240" Width="500">
+             Height="250" Width="500">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto" />
@@ -32,7 +32,15 @@
         <TextBox Grid.Column="1" Grid.Row="2" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding Waiter.DateOfBirth}"/>
         <TextBox Grid.Column="1" Grid.Row="3" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding Waiter.JMBG}"/>
 
-        <Button Content="Add new waiter" Grid.ColumnSpan="2" Grid.Row="4" FontSize="25" Command="{Binding AddWaiterCommand}" CommandParameter="{Binding Waiter}"/>
+        <Button
+            Height="40"
+            Width="auto"
+            Content="Add new waiter"
+            Grid.ColumnSpan="2" 
+            Grid.Row="4" 
+            FontSize="25"
+            Command="{Binding AddWaiterCommand}"
+            CommandParameter="{Binding Waiter}"/>
 
     </Grid>
 

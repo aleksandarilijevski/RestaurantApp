@@ -20,7 +20,7 @@
             <RowDefinition Height="35" />
             <RowDefinition Height="25" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="30" />
+            <RowDefinition Height="35" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
@@ -28,8 +28,17 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Button Grid.Column="0" Margin="2" Content="&lt;---" FontSize="20" Command="{Binding NavigateToTablesCommand}" />
-        <TextBox FontSize="20" Grid.Row="0" TextAlignment="Center" x:Name="searchBox" Text="{Binding Barcode}" Margin="3" Grid.Column="1" >
+        <!--<Button
+            Height="50"
+            Grid.Column="0"
+            Margin="2"
+            Content="&lt;" 
+            FontSize="20"
+            Command="{Binding NavigateToTablesCommand}" />-->
+        
+        
+        
+        <TextBox FontSize="20" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" TextAlignment="Center" x:Name="searchBox" Text="{Binding Barcode}" Margin="3">
             <TextBox.InputBindings>
                 <KeyBinding Command="{Binding AddArticleToTableCommand}" CommandParameter="{Binding Text,ElementName=searchBox}" Key="Enter" />
             </TextBox.InputBindings>
@@ -47,7 +56,7 @@
             </TextBox.Style>
         </TextBox>
 
-        <TextBlock Text="{Binding TableID, StringFormat='Order for table ID : {0}'}" Grid.Row="1" TextAlignment="Center" FontSize="17" Background="White" Grid.ColumnSpan="2"/>
+        <TextBlock Text="{Binding TableID, StringFormat='Order for table ID : {0}'}" Grid.Row="1" Grid.RowSpan="2" TextAlignment="Center" FontSize="17" Background="White" Grid.ColumnSpan="2"/>
 
         <DataGrid Grid.Row="2" CanUserAddRows="False" AutoGenerateColumns="False" FontSize="20" Grid.ColumnSpan="2" ItemsSource="{Binding TableArticleQuantities,Mode=TwoWay, IsAsync=True}" SelectedItem="{Binding TableArticleQuantity}" EnableColumnVirtualization="true" EnableRowVirtualization="true">
             <DataGrid.Columns>
@@ -67,7 +76,13 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <Button Content="Go to payment" FontSize="16" Grid.Row="3" Grid.ColumnSpan="2" Command="{Binding ShowPaymentUserControlCommand}"/>
+        <Button
+            Height="35"
+            Content="Go to payment"
+            FontSize="16"
+            Grid.Row="3"
+            Grid.ColumnSpan="2" 
+            Command="{Binding ShowPaymentUserControlCommand}"/>
 
     </Grid>
 </UserControl>
