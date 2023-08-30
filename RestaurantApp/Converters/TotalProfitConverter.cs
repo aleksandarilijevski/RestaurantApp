@@ -23,9 +23,11 @@ namespace RestaurantApp.Converters
             {
                 foreach (ArticleDetails articleDetails in tableArticleQuantity.ArticleDetails)
                 {
-                    profit += totalPrice - (articleDetails.EntryPrice * tableArticleQuantity.Quantity);
-                    return profit.ToString();
+                    int soldQuantity = filtered.Sum(x => x.Quantity);
+                    profit += totalPrice - (articleDetails.EntryPrice * soldQuantity);
                 }
+
+                return profit.ToString();
             }
 
             return 0;

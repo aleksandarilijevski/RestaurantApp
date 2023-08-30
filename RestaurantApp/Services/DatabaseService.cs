@@ -19,7 +19,9 @@ namespace RestaurantApp.Services
 
         public async Task<ObservableCollection<Article>> GetAllArticles()
         {
-            List<Article> articles = await _efContext.Articles.Include(x => x.ArticleDetails).Where(x => x.IsDeleted == false).ToListAsync();
+            using EFContext efContext = new EFContext();
+
+            List<Article> articles = await efContext.Articles.Include(x => x.ArticleDetails).Where(x => x.IsDeleted == false).ToListAsync();
             return new ObservableCollection<Article>(articles);
         }
 

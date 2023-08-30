@@ -79,7 +79,6 @@
                 <DataGridTextColumn Header="Table ID" Binding="{Binding Table.ID}"/>
                 <DataGridTextColumn Header="Payment Type" Binding="{Binding PaymentType}"/>
                 <DataGridTextColumn Header="Total price" Binding="{Binding TotalPrice}"/>
-                <DataGridTextColumn Header="Created date" Binding="{Binding CreatedDateTime}"/>
 
                 <DataGridTextColumn Header="Total profit">
                     <DataGridTextColumn.Binding>
@@ -90,6 +89,8 @@
                         </MultiBinding>
                     </DataGridTextColumn.Binding>
                 </DataGridTextColumn>
+
+                <DataGridTextColumn Header="Created date" Binding="{Binding CreatedDateTime}"/>
 
                 <DataGridTemplateColumn Header="Details">
                     <DataGridTemplateColumn.CellTemplate>

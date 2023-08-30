@@ -13,7 +13,7 @@ namespace RestaurantApp.Converters
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            Brush green = Brushes.Green;
+            Brush limeGreen = Brushes.LimeGreen;
             Brush gray = Brushes.Gray;
 
             if (values[0] is ObservableCollection<Table> && values[1] is string)
@@ -33,7 +33,7 @@ namespace RestaurantApp.Converters
 
                 if (table.InUse)
                 {
-                    return green;
+                    return limeGreen;
                 }
 
                 if (!table.InUse)
