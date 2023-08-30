@@ -5,6 +5,7 @@ using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
 using System;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace RestaurantApp.ViewModels
 {
@@ -104,6 +105,24 @@ namespace RestaurantApp.ViewModels
 
         private async void AddArticle(Article article)
         {
+            if (article.Name is null)
+            {
+                MessageBox.Show("Article name can not be empty!", "Add article", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (article.Price <= 0)
+            {
+                MessageBox.Show("Article price can not be zero or less!", "Add article", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (ArticleDetails.EntryPrice <= 0)
+            {
+                MessageBox.Show("Article detail entry price can not be zero or less!", "Add article", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             int articleId = await _databaseService.AddArticle(article);
             await ApplyArticleDetails(articleId);
             await AddArticleDetails(ArticleDetails);

@@ -22,7 +22,7 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="35"/>
+            <ColumnDefinition Width="33"/>
             <ColumnDefinition Width="30"/>
             <ColumnDefinition Width="40"/>
             <ColumnDefinition Width="40"/>
@@ -61,7 +61,7 @@
         <ContentControl prism:RegionManager.RegionName="TableOrderRegion"/>
 
 
-        <Button Content="1" FontSize="25" Grid.Row="1" Grid.Column="1" Command="{Binding OrderingCommand}" CommandParameter="1" Background="Transparent">
+        <Button Content="1" FontSize="25" Grid.Row="1" Grid.Column="1" Command="{Binding OrderingCommand}" CommandParameter="1" Background="Transparent" Height="50">
             <Button.Foreground>
                 <MultiBinding Converter="{StaticResource TableOrderConverter}">
                     <Binding Path="Tables"/>
@@ -70,7 +70,7 @@
             </Button.Foreground>
         </Button>
 
-        <Button Content="2" FontSize="25" Grid.Row="1" Grid.Column="2"  Command="{Binding OrderingCommand}" CommandParameter="2" Background="Transparent">
+        <Button Content="2" FontSize="25" Grid.Row="1" Grid.Column="2"  Command="{Binding OrderingCommand}" CommandParameter="2" Background="Transparent" Height="50">
             <Button.Foreground>
                 <MultiBinding Converter="{StaticResource TableOrderConverter}">
                     <Binding Path="Tables"/>
@@ -79,7 +79,7 @@
             </Button.Foreground>
         </Button>
 
-        <Button Content="3" FontSize="25" Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" Margin="20,1,43,1"  Command="{Binding OrderingCommand}" CommandParameter="3" Background="Transparent">
+        <Button Content="3" FontSize="25" Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" Margin="20,1,43,1"  Command="{Binding OrderingCommand}" CommandParameter="3" Background="Transparent" Height="50">
             <Button.Foreground>
                 <MultiBinding Converter="{StaticResource TableOrderConverter}">
                     <Binding Path="Tables"/>
@@ -89,7 +89,7 @@
         </Button>
 
 
-        <Button Content="4" FontSize="25" Grid.Row="1" Grid.Column="4" Grid.ColumnSpan="2" Margin="45,1,22,1"  Command="{Binding OrderingCommand}" CommandParameter="4" Background="Transparent">
+        <Button Content="4" FontSize="25" Grid.Row="1" Grid.Column="4" Grid.ColumnSpan="2" Margin="45,1,22,1"  Command="{Binding OrderingCommand}" CommandParameter="4" Background="Transparent" Height="50">
             <Button.Foreground>
                 <MultiBinding Converter="{StaticResource TableOrderConverter}">
                     <Binding Path="Tables"/>
@@ -99,7 +99,7 @@
         </Button>
 
 
-        <Button Content="5" FontSize="25" Grid.Row="1" Grid.Column="5" Margin="23,0,40,0" Grid.ColumnSpan="2"  Command="{Binding OrderingCommand}" CommandParameter="5" Background="Transparent">
+        <Button Content="5" FontSize="25" Grid.Row="1" Grid.Column="5" Margin="23,0,40,0" Grid.ColumnSpan="2"  Command="{Binding OrderingCommand}" CommandParameter="5" Background="Transparent" Height="50">
             <Button.Foreground>
                 <MultiBinding Converter="{StaticResource TableOrderConverter}">
                     <Binding Path="Tables"/>
@@ -108,16 +108,16 @@
             </Button.Foreground>
         </Button>
 
-        <Button Content="6" FontSize="25" Grid.Row="1" Grid.Column="6" Grid.ColumnSpan="2"  Margin="40,1,48,1" Command="{Binding OrderingCommand}" CommandParameter="6" Background="Transparent">
-             <Button.Foreground>
-                 <MultiBinding Converter="{StaticResource TableOrderConverter}">
-                     <Binding Path="Tables"/>
-                     <Binding Source="6"/>
-                  </MultiBinding>
-              </Button.Foreground>
+        <Button Content="6" FontSize="25" Grid.Row="1" Grid.Column="6" Grid.ColumnSpan="2"  Margin="40,1,48,1" Command="{Binding OrderingCommand}" CommandParameter="6" Background="Transparent" Height="50">
+            <Button.Foreground>
+                <MultiBinding Converter="{StaticResource TableOrderConverter}">
+                    <Binding Path="Tables"/>
+                    <Binding Source="6"/>
+                </MultiBinding>
+            </Button.Foreground>
         </Button>
 
-        <Button Content="7" FontSize="25" Grid.Row="1" Grid.Column="8" Margin="22,1,10,1" Command="{Binding OrderingCommand}" CommandParameter="7" Background="Transparent">
+        <Button Content="7" FontSize="25" Grid.Row="1" Grid.Column="8" Margin="22,1,10,1" Command="{Binding OrderingCommand}" CommandParameter="7" Background="Transparent" Height="50">
             <Button.Foreground>
                 <MultiBinding Converter="{StaticResource TableOrderConverter}">
                     <Binding Path="Tables"/>
@@ -127,7 +127,7 @@
         </Button>
 
 
-        <Button Content="8" FontSize="25" Grid.Row="1" Grid.Column="7" Margin="58,1,43,1" Grid.ColumnSpan="2" Command="{Binding OrderingCommand}" CommandParameter="8" Background="Transparent">
+        <Button Content="8" FontSize="25" Grid.Row="1" Grid.Column="7" Margin="58,1,43,1" Grid.ColumnSpan="2" Command="{Binding OrderingCommand}" CommandParameter="8" Background="Transparent" Height="50">
             <Button.Foreground>
                 <MultiBinding Converter="{StaticResource TableOrderConverter}">
                     <Binding Path="Tables"/>
@@ -136,7 +136,7 @@
             </Button.Foreground>
         </Button>
 
-        <Button Content="9" FontSize="25" Grid.Row="1" Grid.Column="9" Margin="17,0,53,0" Grid.ColumnSpan="2" Command="{Binding OrderingCommand}" CommandParameter="9" Background="Transparent">
+        <Button Content="9" FontSize="25" Grid.Row="1" Grid.Column="9" Margin="17,0,53,0" Grid.ColumnSpan="2" Command="{Binding OrderingCommand}" CommandParameter="9" Background="Transparent" Height="50">
             <Button.Foreground>
                 <MultiBinding Converter="{StaticResource TableOrderConverter}">
                     <Binding Path="Tables"/>
@@ -145,7 +145,7 @@
             </Button.Foreground>
         </Button>
 
-        <Button Content="10" FontSize="25" Grid.Row="3" Grid.Column="1" Margin="23,0,0,0" Grid.ColumnSpan="2" Command="{Binding OrderingCommand}" CommandParameter="10" Background="Transparent">
+        <Button Content="10" FontSize="25" Grid.Row="2" Grid.Column="1" Margin="19,52,31,8" Grid.ColumnSpan="3" Command="{Binding OrderingCommand}" CommandParameter="10" Background="Transparent" Grid.RowSpan="2">
             <Button.Foreground>
                 <MultiBinding Converter="{StaticResource TableOrderConverter}">
                     <Binding Path="Tables"/>
