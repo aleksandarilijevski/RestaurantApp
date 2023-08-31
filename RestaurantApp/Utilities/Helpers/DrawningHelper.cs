@@ -14,7 +14,7 @@ namespace RestaurantApp.Utilities.Helpers
 {
     public static class DrawningHelper
     {
-        public static async Task<XImage> GetCustomQRCode(string text)
+        private static async Task<XImage> GetCustomQRCode(string text)
         {
             string url = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + text;
 

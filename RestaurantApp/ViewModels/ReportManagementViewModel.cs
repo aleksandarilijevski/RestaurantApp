@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace RestaurantApp.ViewModels
 {
@@ -15,12 +17,12 @@ namespace RestaurantApp.ViewModels
         private IDatabaseService _databaseService;
         private IDialogService _dialogService;
         private DelegateCommand _loadAllBillsCommand;
-        private DateTime _dateFrom = DateTime.Now;
-        private DateTime _dateTo = DateTime.Now;
+        private List<Bill> _originalBills = new List<Bill>();
         private ObservableCollection<Bill> _bills = new ObservableCollection<Bill>();
         private DelegateCommand _showReportDetailsCommand;
         private DelegateCommand _filterCommand;
         private DelegateCommand _clearFiltersCommand;
+        private DelegateCommand _exportToExcelCommand;
         private Bill _selectedBill;
         private decimal _total;
         private string _filterBillCounter;
@@ -102,6 +104,19 @@ namespace RestaurantApp.ViewModels
             }
         }
 
+        public List<Bill> OriginalBills
+        {
+            get
+            {
+                return _originalBills;
+            }
+
+            set
+            {
+                _originalBills = value;
+            }
+        }
+
         public ObservableCollection<Bill> Bills
         {
             get
@@ -165,6 +180,15 @@ namespace RestaurantApp.ViewModels
             }
         }
 
+        public DelegateCommand ExportToExcelCommand
+        {
+            get
+            {
+                _exportToExcelCommand = new DelegateCommand(ExportToExcel);
+                return _exportToExcelCommand;
+            }
+        }
+
         private void ShowReportDetails()
         {
             DialogParameters dialogParameters = new DialogParameters
@@ -179,29 +203,31 @@ namespace RestaurantApp.ViewModels
         {
             List<Bill> bills = await _databaseService.GetAllBills();
             bills.OrderBy(x => x.CreatedDateTime);
-            Bills = new ObservableCollection<Bill>(bills);
+
+            OriginalBills = bills;
+            Bills = new ObservableCollection<Bill>(OriginalBills);
         }
 
-        private async void Filter()
+        private void Filter()
         {
-            List<Bill> bills = await _databaseService.GetAllBills();
+            List<Bill> originalBills = OriginalBills;
 
             if (int.TryParse(FilterTableID, out int tableId) == true)
             {
-                bills =  bills.Where(x => x.TableID == tableId).ToList();
+                originalBills = originalBills.Where(x => x.TableID == tableId).ToList();
             }
 
             if (int.TryParse(FilterBillCounter, out int billCounter) == true)
             {
-                bills = bills.Where(x => x.RegistrationNumber.Contains(billCounter.ToString() + "/")).ToList();
+                originalBills = originalBills.Where(x => x.RegistrationNumber.Contains(billCounter.ToString() + "/")).ToList();
             }
 
             if (FilterDateFrom != DateTime.MinValue && FilterDateTo != DateTime.MinValue)
             {
-                bills = FilterByDateTime(bills);
+                originalBills = FilterByDateTime(originalBills);
             }
 
-            Bills = new ObservableCollection<Bill>(bills);
+            Bills = new ObservableCollection<Bill>(originalBills);
         }
 
         private List<Bill> FilterByDateTime(List<Bill> bills)
@@ -230,6 +256,85 @@ namespace RestaurantApp.ViewModels
 
             List<Bill> bills = await _databaseService.GetAllBills();
             Bills = new ObservableCollection<Bill>(bills);
+        }
+
+        private void ExportToExcel()
+        {
+            Excel.Application excel = new Excel.Application();
+            Excel.Workbook workbook = (Excel.Workbook)(excel.Workbooks.Add(Missing.Value));
+            Excel.Worksheet worksheet = (Excel.Worksheet)workbook.ActiveSheet;
+
+            worksheet.Columns[1].ColumnWidth = 20;
+            worksheet.Columns[2].ColumnWidth = 15;
+            worksheet.Columns[3].ColumnWidth = 15;
+            worksheet.Columns[4].ColumnWidth = 15;
+            worksheet.Columns[5].ColumnWidth = 20;
+
+            int cellIndex = 1;
+
+            foreach (Bill bill in Bills)
+            {
+                List<TableArticleQuantity> soldTableArticleQuantities = bill.Table.TableArticleQuantities.Where(x => (x is SoldTableArticleQuantity)).ToList();
+
+                worksheet.Cells[cellIndex, 1] = "Table ID";
+                worksheet.Cells[cellIndex, 2] = "Payment type";
+                worksheet.Cells[cellIndex, 3] = "Total price";
+                worksheet.Cells[cellIndex, 4] = "Total profit";
+                worksheet.Cells[cellIndex, 5] = "Created date";
+
+                worksheet.Cells[cellIndex, 1].EntireRow.Font.Bold = true;
+
+                cellIndex++;
+
+                worksheet.Cells[cellIndex, 1] = bill.TableID;
+                worksheet.Cells[cellIndex, 2] = bill.PaymentType;
+                worksheet.Cells[cellIndex, 3] = bill.TotalPrice;
+
+                decimal totalProfit = 0;
+
+                List<TableArticleQuantity> filteredSoldTableArticleQuantities = soldTableArticleQuantities.Where(x => x.BillID == bill.ID).ToList();
+
+                foreach (SoldTableArticleQuantity soldTableArticleQuantity in filteredSoldTableArticleQuantities)
+                {
+                    int quantity = filteredSoldTableArticleQuantities.Sum(x => x.Quantity);
+
+                    foreach (ArticleDetails articleDetail in soldTableArticleQuantity.ArticleDetails)
+                    {
+                        totalProfit = bill.TotalPrice - (quantity * articleDetail.EntryPrice);
+                    }
+                }
+
+                worksheet.Cells[cellIndex, 4] = totalProfit;
+                worksheet.Cells[cellIndex, 5] = bill.CreatedDateTime;
+
+                cellIndex++;
+                worksheet.Cells[cellIndex, 1] = "Article name";
+                worksheet.Cells[cellIndex, 2] = "Article price";
+                worksheet.Cells[cellIndex, 3] = "Sold quantity";
+                worksheet.Cells[cellIndex, 4] = "Total price";
+                worksheet.Cells[cellIndex, 1].EntireRow.Font.Bold = true;
+
+                cellIndex++;
+
+                foreach (SoldTableArticleQuantity soldTableArticleQuantity in soldTableArticleQuantities)
+                {
+                    if (soldTableArticleQuantity.BillID == bill.ID)
+                    {
+                        worksheet.Cells[cellIndex, 1] = soldTableArticleQuantity.Article.Name;
+                        worksheet.Cells[cellIndex, 2] = soldTableArticleQuantity.Article.Price;
+                        worksheet.Cells[cellIndex, 3] = soldTableArticleQuantity.Quantity;
+                        worksheet.Cells[cellIndex, 4] = soldTableArticleQuantity.Quantity * soldTableArticleQuantity.Article.Price;
+                        cellIndex++;
+                    }
+                }
+
+                cellIndex += 3;
+                worksheet.Cells[cellIndex] = string.Empty;
+            }
+
+            string fileName = DateTime.Now.ToString("ddMMyyyyhhmmss");
+
+            workbook.SaveAs("C:\\Users\\XANDRO\\Desktop\\" + fileName + ".xls", Excel.XlFileFormat.xlWorkbookNormal);
         }
     }
 }

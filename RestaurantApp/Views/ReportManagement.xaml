@@ -71,9 +71,33 @@
             </StackPanel>
         </Border>
 
-        <Button Content="Clear filters" Grid.Column="3" Grid.Row="1"  FontSize="15" Height="30" Margin="5,0,5,35" Command="{Binding ClearFiltersCommand}"/>
-        <Button Content="Filter" Grid.Column="3" Grid.Row="1"  FontSize="15" Height="30" Margin="5,30,5,0" Command="{Binding FilterCommand}"/>
+        <Button
+            Content="Clear filters"
+            Grid.Column="3"
+            Grid.Row="1"
+            FontSize="15"
+            Height="30" 
+            Margin="5,0,5,35"
+            Command="{Binding ClearFiltersCommand}"/>
         
+        <Button
+            Content="Filter"
+            Grid.Column="3"
+            Grid.Row="1"
+            FontSize="15"
+            Height="30"
+            Margin="5,30,5,0"
+            Command="{Binding FilterCommand}"/>
+
+        <Button
+            Width="150"
+            Content="Export to excel"
+            Grid.Column="6"
+            Grid.Row="1"
+            FontSize="15"
+            Margin="0,15,5,0"
+            Command="{Binding ExportToExcelCommand}"/> 
+
         <DataGrid Grid.Row="2" Grid.RowSpan="2" Grid.ColumnSpan="7" FontSize="20" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding Bills,IsAsync=True}" SelectedItem="{Binding SelectedBill}" IsReadOnly="True">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Table ID" Binding="{Binding Table.ID}"/>
