@@ -24,6 +24,7 @@
             <RowDefinition Height="10" />
             <RowDefinition Height="65" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="40" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
@@ -126,5 +127,15 @@
 
             </DataGrid.Columns>            
         </DataGrid>
+
+        <TextBox
+            Text="{Binding TotalProfit}"
+            Grid.Row="3"
+            Grid.ColumnSpan="7"
+            TextAlignment="Center"
+            FontSize="20"
+            IsReadOnly="True"
+            />
+
     </Grid>
 </UserControl>

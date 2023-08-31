@@ -29,6 +29,7 @@ namespace RestaurantApp.ViewModels
         private string _filterTableID;
         private DateTime _filterDateFrom;
         private DateTime _filterDateTo;
+        private string _totalProfit;
 
         public ReportManagementViewModel(IDatabaseService databaseService, IDialogService dialogService)
         {
@@ -46,6 +47,20 @@ namespace RestaurantApp.ViewModels
             set
             {
                 _total = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public string TotalProfit
+        {
+            get
+            {
+                return _totalProfit;
+            }
+
+            set
+            {
+                _totalProfit = value;
                 RaisePropertyChanged();
             }
         }
@@ -206,6 +221,9 @@ namespace RestaurantApp.ViewModels
 
             OriginalBills = bills;
             Bills = new ObservableCollection<Bill>(OriginalBills);
+
+            decimal totalProfit = CalculateTotalProfit();
+            TotalProfit = "Total profit : " + totalProfit.ToString("0.00");
         }
 
         private void Filter()
@@ -228,6 +246,8 @@ namespace RestaurantApp.ViewModels
             }
 
             Bills = new ObservableCollection<Bill>(originalBills);
+            decimal totalProfit = CalculateTotalProfit();
+            TotalProfit = "Total profit : " + totalProfit.ToString("0.00");
         }
 
         private List<Bill> FilterByDateTime(List<Bill> bills)
@@ -256,6 +276,9 @@ namespace RestaurantApp.ViewModels
 
             List<Bill> bills = await _databaseService.GetAllBills();
             Bills = new ObservableCollection<Bill>(bills);
+
+            decimal totalProfit = CalculateTotalProfit();
+            TotalProfit = "Total profit : " + totalProfit.ToString("0.00");
         }
 
         private void ExportToExcel()
@@ -336,5 +359,30 @@ namespace RestaurantApp.ViewModels
 
             workbook.SaveAs("C:\\Users\\XANDRO\\Desktop\\" + fileName + ".xls", Excel.XlFileFormat.xlWorkbookNormal);
         }
+
+        private decimal CalculateTotalProfit()
+        {
+            decimal totalProfit = 0;
+            decimal totalPrice = 0;
+
+            foreach (Bill bill in Bills)
+            {
+                List<TableArticleQuantity> filteredSoldTableArticleQuantity = bill.Table.TableArticleQuantities.Where(x => x.BillID == bill.ID).ToList();
+                totalPrice += bill.TotalPrice;
+
+                foreach (SoldTableArticleQuantity soldTableArticleQuantity in filteredSoldTableArticleQuantity)
+                {
+                    foreach (ArticleDetails articleDetail in soldTableArticleQuantity.ArticleDetails)
+                    {
+                        totalProfit += articleDetail.EntryPrice * soldTableArticleQuantity.Quantity;
+                    }
+                }
+            }
+
+            totalProfit = totalPrice - totalProfit;
+
+            return totalProfit;
+        }
+
     }
 }
