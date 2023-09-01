@@ -313,7 +313,7 @@ namespace RestaurantApp.ViewModels
                 worksheet.Cells[cellIndex, 2] = bill.PaymentType;
                 worksheet.Cells[cellIndex, 3] = bill.TotalPrice;
 
-                decimal totalProfit = 0;
+                decimal profit = 0;
 
                 List<TableArticleQuantity> filteredSoldTableArticleQuantities = soldTableArticleQuantities.Where(x => x.BillID == bill.ID).ToList();
 
@@ -323,11 +323,11 @@ namespace RestaurantApp.ViewModels
 
                     foreach (ArticleDetails articleDetail in soldTableArticleQuantity.ArticleDetails)
                     {
-                        totalProfit = bill.TotalPrice - (quantity * articleDetail.EntryPrice);
+                        profit = bill.TotalPrice - (quantity * articleDetail.EntryPrice);
                     }
                 }
 
-                worksheet.Cells[cellIndex, 4] = totalProfit;
+                worksheet.Cells[cellIndex, 4] = profit;
                 worksheet.Cells[cellIndex, 5] = bill.CreatedDateTime;
 
                 cellIndex++;
@@ -354,6 +354,11 @@ namespace RestaurantApp.ViewModels
                 cellIndex += 3;
                 worksheet.Cells[cellIndex] = string.Empty;
             }
+
+            decimal totalProfit = CalculateTotalProfit();
+            worksheet.Cells[cellIndex,1].EntireRow.Font.Bold = true;
+            worksheet.Cells[cellIndex, 1] = "Total profit";
+            worksheet.Cells[cellIndex, 2] = totalProfit;
 
             string fileName = DateTime.Now.ToString("ddMMyyyyhhmmss");
 
