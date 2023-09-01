@@ -1,4 +1,5 @@
 ﻿using EntityFramework.Models;
+using Microsoft.Win32;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
@@ -6,8 +7,10 @@ using RestaurantApp.Services.Interface;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Windows;
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace RestaurantApp.ViewModels
@@ -283,6 +286,28 @@ namespace RestaurantApp.ViewModels
 
         private void ExportToExcel()
         {
+            string defaultFileName = DateTime.Now.ToString("dd MM yyyy hh mm ss");
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.FileName = defaultFileName;
+            saveFileDialog.DefaultExt = ".xls";
+            saveFileDialog.AddExtension = true;
+            saveFileDialog.Filter = "Microsoft Excel (.xls)|*.xls";
+            bool? result = saveFileDialog.ShowDialog();
+
+            if (result == false)
+            {
+                return;
+            }
+
+            string fileLocation = saveFileDialog.FileName;
+
+            if (Path.GetExtension(fileLocation) != ".xls")
+            {
+                MessageBox.Show("Invalid format!", "Export to excel", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             Excel.Application excel = new Excel.Application();
             Excel.Workbook workbook = (Excel.Workbook)(excel.Workbooks.Add(Missing.Value));
             Excel.Worksheet worksheet = (Excel.Worksheet)workbook.ActiveSheet;
@@ -356,13 +381,11 @@ namespace RestaurantApp.ViewModels
             }
 
             decimal totalProfit = CalculateTotalProfit();
-            worksheet.Cells[cellIndex,1].EntireRow.Font.Bold = true;
+            worksheet.Cells[cellIndex, 1].EntireRow.Font.Bold = true;
             worksheet.Cells[cellIndex, 1] = "Total profit";
             worksheet.Cells[cellIndex, 2] = totalProfit;
 
-            string fileName = DateTime.Now.ToString("ddMMyyyyhhmmss");
-
-            workbook.SaveAs("C:\\Users\\XANDRO\\Desktop\\" + fileName + ".xls", Excel.XlFileFormat.xlWorkbookNormal);
+            workbook.SaveAs(fileLocation, Excel.XlFileFormat.xlWorkbookNormal);
         }
 
         private decimal CalculateTotalProfit()
