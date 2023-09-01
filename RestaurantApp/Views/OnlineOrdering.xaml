@@ -1,0 +1,95 @@
+﻿<UserControl x:Class="RestaurantApp.Views.OnlineOrdering"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:RestaurantApp.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="650" d:DesignWidth="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="160"/>
+            <ColumnDefinition Width="150"/>
+            <ColumnDefinition Width="130"/>
+            <ColumnDefinition Width="195"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="45"/>
+            <RowDefinition Height="45"/>
+            <RowDefinition Height="45"/>
+            <RowDefinition Height="45"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Firstname :" FontSize="20" Margin="10,10,0,0"/>
+        <TextBox  FontSize="20" Grid.Row="0" Grid.Column="1" TextAlignment="Center"/>
+
+        <TextBlock Text="Lastname :" FontSize="20" Margin="10,10,0,0" Grid.Row="1" Grid.Column="0"/>
+        <TextBox  FontSize="20" Grid.Row="1" Grid.Column="1" TextAlignment="Center"/>
+
+        <TextBlock Text="Address :" FontSize="20" Margin="10,10,0,0" Grid.Row="0" Grid.Column="3"/>
+        <TextBox  FontSize="20" Grid.Row="0" Grid.Column="4" TextAlignment="Center"/>
+
+        <TextBlock Text="Floor :" FontSize="20" Margin="10,10,0,0" Grid.Row="1" Grid.Column="3"/>
+        <TextBox  FontSize="20" Grid.Row="1" Grid.Column="4" TextAlignment="Center"/>
+
+        <TextBlock Text="Phone number :" FontSize="20" Margin="10,10,0,0" Grid.Row="2" Grid.Column="0"/>
+        <TextBox  FontSize="20" Grid.Row="2" Grid.Column="1" TextAlignment="Center"/>
+
+        <TextBlock Text="Apartment number :" FontSize="20" Margin="10,10,0,0" Grid.Row="2" Grid.Column="3"/>
+        <TextBox  FontSize="20" Grid.Row="2" Grid.Column="4" TextAlignment="Center"/>
+
+        <TextBlock Text="Comment :" FontSize="20" Margin="10,10,0,0" Grid.Row="3" Grid.Column="0"/>
+        <TextBox  FontSize="20" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="4" TextAlignment="Left" Width="auto" Height="auto"/>
+
+
+
+        <TextBox  FontSize="20" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="5" x:Name="SearchTermTextBox" TextAlignment="Center" Margin="0,10,0,0">
+            <TextBox.Style>
+                <Style TargetType="TextBox" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+                    <Style.Resources>
+                        <VisualBrush x:Key="CueBannerBrush" AlignmentX="Center" Stretch="None">
+                            <VisualBrush.Visual>
+                                <Label Content="Article barcode" Foreground="LightGray" FontSize="20"/>
+                            </VisualBrush.Visual>
+                        </VisualBrush>
+                    </Style.Resources>
+                    <Style.Triggers>
+                        <Trigger Property="Text" Value="{x:Static sys:String.Empty}">
+                            <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
+                        </Trigger>
+                        <Trigger Property="Text" Value="{x:Null}">
+                            <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Setter Property="Background" Value="White" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBox.Style>
+        </TextBox>
+
+
+        <DataGrid Grid.Row="5" CanUserAddRows="False" AutoGenerateColumns="False" FontSize="20" Grid.Column="0" Grid.ColumnSpan="5" ItemsSource="{Binding TableArticleQuantities,Mode=TwoWay, IsAsync=True}" SelectedItem="{Binding TableArticleQuantity}" EnableColumnVirtualization="true" EnableRowVirtualization="true">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Article.ID}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Barcode" Binding="{Binding Article.Barcode}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Name" Binding="{Binding Article.Name}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}"/>
+                <DataGridTextColumn Header="Price" Binding="{Binding Article.Price}" IsReadOnly="True" />
+
+                <DataGridTemplateColumn Header="Delete">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="Delete" Command="{Binding DataContext.DeleteArticleFromTableCommand,RelativeSource={RelativeSource AncestorType={x:Type local:Ordering}}}" CommandParameter="{Binding}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+    </Grid>
+</UserControl>

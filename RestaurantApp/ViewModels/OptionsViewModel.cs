@@ -11,6 +11,7 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand _showArticleManagementCommand;
         private DelegateCommand _showWaiterManagementCommand;
         private DelegateCommand _showReportManagementCommand;
+        private DelegateCommand _showOnlineOrderingCommand;
 
         public OptionsViewModel(IRegionManager regionManager)
         {
@@ -50,6 +51,15 @@ namespace RestaurantApp.ViewModels
             {
                 _showReportManagementCommand = new DelegateCommand(() => Navigate("MainRegion", "ReportManagement"));
                 return _showReportManagementCommand;
+            }
+        }
+
+        public DelegateCommand ShowOnlineOrderingCommand
+        {
+            get
+            {
+                _showOnlineOrderingCommand = new DelegateCommand(() => Navigate("MainRegion", "OnlineOrdering"));
+                return _showOnlineOrderingCommand;
             }
         }
 

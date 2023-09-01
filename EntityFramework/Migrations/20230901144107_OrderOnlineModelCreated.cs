@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace EntityFramework.Migrations
 {
     /// <inheritdoc />
-    public partial class ArticleIDAddedToArticleDetails : Migration
+    public partial class OrderOnlineModelCreated : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

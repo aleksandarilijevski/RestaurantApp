@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EntityFramework.Migrations
 {
     [DbContext(typeof(EFContext))]
-    [Migration("20230829165044_ArticleIDAddedToArticleDetails")]
-    partial class ArticleIDAddedToArticleDetails
+    [Migration("20230901144224_OrderOnlineModelCreatedEFContext")]
+    partial class OrderOnlineModelCreatedEFContext
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -200,6 +200,46 @@ namespace EntityFramework.Migrations
                     b.ToTable("DataEntries");
                 });
 
+            modelBuilder.Entity("EntityFramework.Models.OnlineOrder", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ApartmentNumber")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Firstname")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Floor")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Lastname")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("PhoneNumber")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("OnlineOrders");
+                });
+
             modelBuilder.Entity("EntityFramework.Models.Table", b =>
                 {
                     b.Property<int>("ID")
@@ -233,6 +273,9 @@ namespace EntityFramework.Migrations
                     b.Property<int?>("BillID")
                         .HasColumnType("int");
 
+                    b.Property<int?>("OnlineOrderID")
+                        .HasColumnType("int");
+
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
@@ -244,6 +287,8 @@ namespace EntityFramework.Migrations
                     b.HasIndex("ArticleID");
 
                     b.HasIndex("BillID");
+
+                    b.HasIndex("OnlineOrderID");
 
                     b.HasIndex("TableID");
 
@@ -353,6 +398,10 @@ namespace EntityFramework.Migrations
                         .WithMany()
                         .HasForeignKey("BillID");
 
+                    b.HasOne("EntityFramework.Models.OnlineOrder", null)
+                        .WithMany("TableArticleQuantities")
+                        .HasForeignKey("OnlineOrderID");
+
                     b.HasOne("EntityFramework.Models.Table", "Table")
                         .WithMany("TableArticleQuantities")
                         .HasForeignKey("TableID")
@@ -376,6 +425,11 @@ namespace EntityFramework.Migrations
             modelBuilder.Entity("EntityFramework.Models.DataEntry", b =>
                 {
                     b.Navigation("Articles");
+                });
+
+            modelBuilder.Entity("EntityFramework.Models.OnlineOrder", b =>
+                {
+                    b.Navigation("TableArticleQuantities");
                 });
 
             modelBuilder.Entity("EntityFramework.Models.Table", b =>

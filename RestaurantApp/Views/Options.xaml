@@ -8,11 +8,13 @@
              xmlns:prism="http://prismlibrary.com/"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:materialDesignConverters="clr-namespace:MaterialDesignThemes.Wpf.Converters;assembly=MaterialDesignThemes.Wpf"
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="1100">
 
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="140"/>
+            <ColumnDefinition Width="80"/>
             <ColumnDefinition Width="140"/>
             <ColumnDefinition Width="80"/>
             <ColumnDefinition Width="140"/>
@@ -66,11 +68,21 @@
             Style="{StaticResource MaterialDesignFlatSecondaryDarkBgButton}"
             Width="130"
             Height="130"
-            Content="Reports"
+            Content=" Online&#xa;ordering"
             Grid.Row="1"
             Grid.Column="7"
             FontSize="15"
-            Command="{Binding ShowReportManagementCommand}"/>
+            Command="{Binding ShowOnlineOrderingCommand}"/>
 
+        <Button
+            Style="{StaticResource MaterialDesignFlatSecondaryDarkBgButton}"
+            Width="130"
+            Height="130"
+            Content="     Report&#xa;Management"
+            Grid.Row="1"
+            Grid.Column="9"
+            FontSize="15"
+            Command="{Binding ShowReportManagementCommand}"/>
+        
     </Grid>
 </UserControl>
