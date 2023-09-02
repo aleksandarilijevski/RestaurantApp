@@ -215,10 +215,8 @@ namespace RestaurantApp.ViewModels
 
                 TableArticleQuantity tableArticleQuantity = new TableArticleQuantity
                 {
-                    //ArticleID = article.ID,
-                    Article = article,
-                    //TableID = Table.ID,
-                    Table = Table,
+                    ArticleID = article.ID,
+                    TableID = Table.ID,
                     Quantity = 1,
                     ArticleDetails = articleDetails
                 };
@@ -228,7 +226,6 @@ namespace RestaurantApp.ViewModels
                 Table.TableArticleQuantities.Add(tableArticleQuantity);
                 TableArticleQuantities.Add(tableArticleQuantity);
 
-                //await _databaseService.AddTableArticleQuantity(tableArticleQuantity);
                 await EditTable(Table);
             }
 

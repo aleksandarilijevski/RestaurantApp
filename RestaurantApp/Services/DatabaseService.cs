@@ -38,29 +38,30 @@ namespace RestaurantApp.Services
         {
             using EFContext efContext = new EFContext();
 
-            Article article = await efContext.Articles.Include(x => x.ArticleDetails).FirstOrDefaultAsync(x => x.Barcode == barcode && x.IsDeleted == false);
+            //AsNoTracking() is added.
+            Article article = await efContext.Articles.AsNoTracking().Include(x => x.ArticleDetails).FirstOrDefaultAsync(x => x.Barcode == barcode && x.IsDeleted == false);
             return article;
         }
 
-        public async Task<int> AddArticle(Article Article)
+        public async Task<int> AddArticle(Article article)
         {
             using EFContext efContext = new EFContext();
-            efContext.Articles.Add(Article);
+            efContext.Articles.Add(article);
             await efContext.SaveChangesAsync();
-            return Article.ID;
+            return article.ID;
         }
 
-        public async Task EditArticle(Article Article)
+        public async Task EditArticle(Article article)
         {
             using EFContext efContext = new EFContext();
-            efContext.Entry(Article).State = EntityState.Modified;
+            efContext.Entry(article).State = EntityState.Modified;
             await efContext.SaveChangesAsync();
         }
 
-        public async Task DeleteArticle(Article Article)
+        public async Task DeleteArticle(Article article)
         {
             using EFContext efContext = new EFContext();
-            efContext.Articles.Remove(Article);
+            efContext.Articles.Remove(article);
             await efContext.SaveChangesAsync();
         }
 
