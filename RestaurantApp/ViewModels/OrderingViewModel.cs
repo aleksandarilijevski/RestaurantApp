@@ -215,18 +215,20 @@ namespace RestaurantApp.ViewModels
 
                 TableArticleQuantity tableArticleQuantity = new TableArticleQuantity
                 {
-                    ArticleID = article.ID,
+                    //ArticleID = article.ID,
                     Article = article,
-                    TableID = Table.ID,
+                    //TableID = Table.ID,
                     Table = Table,
                     Quantity = 1,
                     ArticleDetails = articleDetails
                 };
 
                 await IncreaseReservedQuantity(articleDetails, tableArticleQuantity.Quantity);
+
                 Table.TableArticleQuantities.Add(tableArticleQuantity);
                 TableArticleQuantities.Add(tableArticleQuantity);
 
+                //await _databaseService.AddTableArticleQuantity(tableArticleQuantity);
                 await EditTable(Table);
             }
 
@@ -409,9 +411,9 @@ namespace RestaurantApp.ViewModels
                 }
             }
 
-            Table.TableArticleQuantities.Remove(tableArticleQuantity);
+            //Table.TableArticleQuantities.Remove(tableArticleQuantity);
             TableArticleQuantities.Remove(tableArticleQuantity);
-            await EditTable(Table);
+            await _databaseService.DeleteTableArticleQuantity(tableArticleQuantity);
 
             List<TableArticleQuantity> tableArticleQuantities = Table.TableArticleQuantities.Where(x => !(x is SoldTableArticleQuantity)).ToList();
 

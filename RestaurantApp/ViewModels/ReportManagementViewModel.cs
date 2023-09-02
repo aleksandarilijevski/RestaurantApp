@@ -202,6 +202,7 @@ namespace RestaurantApp.ViewModels
         {
             get
             {
+
                 _exportToExcelCommand = new DelegateCommand(ExportToExcel);
                 return _exportToExcelCommand;
             }
@@ -286,6 +287,12 @@ namespace RestaurantApp.ViewModels
 
         private void ExportToExcel()
         {
+            if (Bills.Count == 0)
+            {
+                MessageBox.Show("There is nothing to be exported!", "Export to excel", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             string defaultFileName = DateTime.Now.ToString("dd MM yyyy hh mm ss");
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();

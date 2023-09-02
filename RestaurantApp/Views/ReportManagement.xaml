@@ -96,7 +96,7 @@
             Grid.Column="6"
             Grid.Row="1"
             FontSize="15"
-            Margin="0,15,5,0"
+            Margin="5,15,0,0"
             Command="{Binding ExportToExcelCommand}"/> 
 
         <DataGrid Grid.Row="2" Grid.RowSpan="2" Grid.ColumnSpan="7" FontSize="20" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding Bills,IsAsync=True}" SelectedItem="{Binding SelectedBill}" IsReadOnly="True">

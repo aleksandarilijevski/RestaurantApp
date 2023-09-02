@@ -207,11 +207,9 @@ namespace RestaurantApp.Services
 
         public async Task AddTableArticleQuantity(TableArticleQuantity tableArticleQuantity)
         {
-            //_efContext.ChangeTracker.AutoDetectChangesEnabled = false;
             using EFContext efContext = new EFContext();
             efContext.TableArticleQuantities.Add(tableArticleQuantity);
             await efContext.SaveChangesAsync();
-            //_efContext.ChangeTracker.AutoDetectChangesEnabled = true;
         }
 
         public async Task<List<TableArticleQuantity>> GetTableArticleQuantities(int articleID, int tableID)

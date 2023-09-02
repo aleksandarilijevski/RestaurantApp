@@ -152,7 +152,7 @@ namespace RestaurantApp.ViewModels
                 { "article", article }
             };
 
-            _regionManager.RequestNavigate("MainRegion", "ArticleDetails", navigationParameters);
+            _regionManager.RequestNavigate("MainRegion", "ArticleDetailsUserControl", navigationParameters);
         }
     }
 }
