@@ -1,5 +1,4 @@
 ﻿using EntityFramework.Models;
-
 using Microsoft.EntityFrameworkCore;
 using RestaurantApp.Services.Interface;
 using RestaurantApp.Views;
@@ -29,102 +28,119 @@ namespace RestaurantApp.Services
 
         public async Task<Article> GetArticleByID(int id)
         {
-            Article article = await _efContext.Articles.FirstOrDefaultAsync(x => x.ID == id);
+            using EFContext efContext = new EFContext();
+
+            Article article = await efContext.Articles.FirstOrDefaultAsync(x => x.ID == id);
             return article;
         }
 
         public async Task<Article> GetArticleByBarcode(long barcode)
         {
-            Article article = await _efContext.Articles.Include(x => x.ArticleDetails).FirstOrDefaultAsync(x => x.Barcode == barcode && x.IsDeleted == false);
+            using EFContext efContext = new EFContext();
+
+            Article article = await efContext.Articles.Include(x => x.ArticleDetails).FirstOrDefaultAsync(x => x.Barcode == barcode && x.IsDeleted == false);
             return article;
         }
 
         public async Task<int> AddArticle(Article Article)
         {
-            _efContext.Articles.Add(Article);
-            await _efContext.SaveChangesAsync();
+            using EFContext efContext = new EFContext();
+            efContext.Articles.Add(Article);
+            await efContext.SaveChangesAsync();
             return Article.ID;
         }
 
         public async Task EditArticle(Article Article)
         {
-            _efContext.Entry(Article).State = EntityState.Modified;
-            await _efContext.SaveChangesAsync();
+            using EFContext efContext = new EFContext();
+            efContext.Entry(Article).State = EntityState.Modified;
+            await efContext.SaveChangesAsync();
         }
 
         public async Task DeleteArticle(Article Article)
         {
-            _efContext.Articles.Remove(Article);
-            await _efContext.SaveChangesAsync();
+            using EFContext efContext = new EFContext();
+            efContext.Articles.Remove(Article);
+            await efContext.SaveChangesAsync();
         }
 
         public async Task<ObservableCollection<Waiter>> GetAllWaiters()
         {
-            List<Waiter> waiters = await _efContext.Waiters.ToListAsync();
+            using EFContext efContext = new EFContext();
+            List<Waiter> waiters = await efContext.Waiters.ToListAsync();
             return new ObservableCollection<Waiter>(waiters);
         }
 
         public async Task<int> AddWaiter(Waiter waiter)
         {
-            _efContext.Waiters.Add(waiter);
-            await _efContext.SaveChangesAsync();
+            using EFContext efContext = new EFContext();
+            efContext.Waiters.Add(waiter);
+            await efContext.SaveChangesAsync();
             return waiter.ID;
         }
 
         public async Task EditWaiter(Waiter waiter)
         {
-            _efContext.Entry(waiter).State = EntityState.Modified;
-            await _efContext.SaveChangesAsync();
+            using EFContext efContext = new EFContext();
+            efContext.Entry(waiter).State = EntityState.Modified;
+            await efContext.SaveChangesAsync();
         }
 
         public async Task DeleteWaiter(Waiter waiter)
         {
-            _efContext.Waiters.Remove(waiter);
-            await _efContext.SaveChangesAsync();
+            using EFContext efContext = new EFContext();
+            efContext.Waiters.Remove(waiter);
+            await efContext.SaveChangesAsync();
         }
 
         public async Task<Table> GetTableByID(int id)
         {
             //.ThenInclude(x => x.ArticleDetails)
-            Table table = await _efContext.Tables.Include(x => x.TableArticleQuantities).ThenInclude(x => x.ArticleDetails).ThenInclude(x => x.Article).FirstOrDefaultAsync(x => x.ID == id);
+            using EFContext efContext = new EFContext();
+            Table table = await efContext.Tables.Include(x => x.TableArticleQuantities).ThenInclude(x => x.ArticleDetails).ThenInclude(x => x.Article).FirstOrDefaultAsync(x => x.ID == id);
             return table;
         }
 
         public async Task<int> AddTable(Table table)
         {
-            _efContext.Tables.Add(table);
-            await _efContext.SaveChangesAsync();
+            using EFContext efContext = new EFContext();
+
+            efContext.Tables.Add(table);
+            await efContext.SaveChangesAsync();
             return table.ID;
         }
 
         public async Task EditTable(Table table)
         {
             using EFContext efContext = new EFContext();
+            efContext.Attach(table);
             efContext.Entry(table).State = EntityState.Modified;
             await efContext.SaveChangesAsync();
         }
 
         public async Task ModifyTableArticles(Table table, List<SoldTableArticleQuantity> soldTableArticleQuantities)
         {
+            using EFContext efContext = new EFContext();
+
             List<TableArticleQuantity> quantitiesToRemove = table.TableArticleQuantities.Where(x => !(x is SoldTableArticleQuantity)).ToList();
 
             foreach (TableArticleQuantity tableArticleQuantity in quantitiesToRemove.ToList())
             {
                 table.TableArticleQuantities.Remove(tableArticleQuantity);
-                _efContext.TableArticleQuantities.Remove(tableArticleQuantity);
+                efContext.TableArticleQuantities.Remove(tableArticleQuantity);
             }
 
-            _efContext.Entry(table).State = EntityState.Modified;
+            efContext.Entry(table).State = EntityState.Modified;
 
             table.TableArticleQuantities.AddRange(soldTableArticleQuantities);
-            await _efContext.SaveChangesAsync();
+            await efContext.SaveChangesAsync();
         }
 
         public async Task<List<Table>> GetAllTables()
         {
             using EFContext efContext = new EFContext();
 
-            List<Table> tables = await efContext.Tables.Select(x => x).ToListAsync();
+            List<Table> tables = await efContext.Tables.ToListAsync();
             return tables;
         }
 
@@ -144,8 +160,10 @@ namespace RestaurantApp.Services
 
         public async Task<int> AddArticleDetails(ArticleDetails articleDetails)
         {
-            _efContext.ArticleDetails.Add(articleDetails);
-            await _efContext.SaveChangesAsync();
+            using EFContext efContext = new EFContext();
+
+            efContext.ArticleDetails.Add(articleDetails);
+            await efContext.SaveChangesAsync();
             return articleDetails.ID;
         }
 
@@ -158,26 +176,33 @@ namespace RestaurantApp.Services
 
         public async Task AddDataEntry(DataEntry dataEntry)
         {
-            _efContext.DataEntries.Add(dataEntry);
-            await _efContext.SaveChangesAsync();
+            using EFContext efContext = new EFContext();
+            efContext.DataEntries.Add(dataEntry);
+            await efContext.SaveChangesAsync();
         }
 
         public async Task<DataEntry> GetDataEntryByNumber(int dataEntryNumber)
         {
-            DataEntry dataEntry = await _efContext.DataEntries.FirstOrDefaultAsync(x => x.DataEntryNumber == dataEntryNumber);
+            using EFContext efContext = new EFContext();
+
+            DataEntry dataEntry = await efContext.DataEntries.FirstOrDefaultAsync(x => x.DataEntryNumber == dataEntryNumber);
             return dataEntry;
         }
 
         public async Task<ArticleDetails> GetArticleDetailsByID(int id)
         {
-            ArticleDetails articleDetails = await _efContext.ArticleDetails.FirstOrDefaultAsync(x => x.ID == id);
+            using EFContext efContext = new EFContext();
+
+            ArticleDetails articleDetails = await efContext.ArticleDetails.FirstOrDefaultAsync(x => x.ID == id);
             return articleDetails;
         }
 
         public async Task DeleteArticleDetails(ArticleDetails articleDetails)
         {
-            _efContext.ArticleDetails.Remove(articleDetails);
-            await _efContext.SaveChangesAsync();
+            using EFContext efContext = new EFContext();
+
+            efContext.ArticleDetails.Remove(articleDetails);
+            await efContext.SaveChangesAsync();
         }
 
         public async Task AddTableArticleQuantity(TableArticleQuantity tableArticleQuantity)
@@ -191,7 +216,9 @@ namespace RestaurantApp.Services
 
         public async Task<List<TableArticleQuantity>> GetTableArticleQuantities(int articleID, int tableID)
         {
-            List<TableArticleQuantity> tableArticleQuantity = await _efContext.TableArticleQuantities.Select(x => x).Where(x => x.TableID == tableID && x.ArticleID == articleID).ToListAsync();
+            using EFContext efContext = new EFContext();
+
+            List<TableArticleQuantity> tableArticleQuantity = await efContext.TableArticleQuantities.Select(x => x).Where(x => x.TableID == tableID && x.ArticleID == articleID).ToListAsync();
             return tableArticleQuantity;
         }
 
@@ -204,8 +231,10 @@ namespace RestaurantApp.Services
 
         public async Task DeleteTableArticleQuantity(TableArticleQuantity tableArticleQuantity)
         {
-            _efContext.TableArticleQuantities.Remove(tableArticleQuantity);
-            await _efContext.SaveChangesAsync();
+            using EFContext efContext = new EFContext();
+
+            efContext.TableArticleQuantities.Remove(tableArticleQuantity);
+            await efContext.SaveChangesAsync();
         }
 
         public async Task<int> GetTableArticleTotalQuantity(int articleID)
@@ -233,40 +262,52 @@ namespace RestaurantApp.Services
 
         public async Task<int> CreateBill(Bill bill)
         {
-            _efContext.Bills.Add(bill);
-            await _efContext.SaveChangesAsync();
+            using EFContext efContext = new EFContext();
+
+            efContext.Bills.Add(bill);
+            await efContext.SaveChangesAsync();
             return bill.ID;
         }
 
         public async Task<int> AddSoldTableArticleQuantity(SoldTableArticleQuantity soldTableArticleQuantity)
         {
-            _efContext.SoldTableArticleQuantities.Add(soldTableArticleQuantity);
-            await _efContext.SaveChangesAsync();
+            using EFContext efContext = new EFContext();
+
+            efContext.SoldTableArticleQuantities.Add(soldTableArticleQuantity);
+            await efContext.SaveChangesAsync();
             return soldTableArticleQuantity.ID;
         }
 
         public async Task<int> CreateConfiguration(Configuration configuration)
         {
-            _efContext.Configurations.Add(configuration);
-            await _efContext.SaveChangesAsync();
+            using EFContext efContext = new EFContext();
+
+            efContext.Configurations.Add(configuration);
+            await efContext.SaveChangesAsync();
             return configuration.ID;
         }
 
         public async Task<Configuration> GetConfiguration()
         {
-            Configuration configuration = await _efContext.Configurations.FirstOrDefaultAsync();
+            using EFContext efContext = new EFContext();
+
+            Configuration configuration = await efContext.Configurations.FirstOrDefaultAsync();
             return configuration;
         }
 
         public async Task EditConfiguration(Configuration configuration)
         {
-            _efContext.Entry(configuration).State = EntityState.Modified;
-            await _efContext.SaveChangesAsync();
+            using EFContext efContext = new EFContext();
+
+            efContext.Entry(configuration).State = EntityState.Modified;
+            await efContext.SaveChangesAsync();
         }
 
         public async Task<List<Bill>> GetAllBills()
         {
-            List<Bill> bills = await _efContext.Bills.Select(x => x)
+            using EFContext efContext = new EFContext();
+
+            List<Bill> bills = await efContext.Bills.Select(x => x)
                 .Include(x => x.Table)
                 .ThenInclude(x => x.TableArticleQuantities)
                 .ThenInclude(x => x.Article)
