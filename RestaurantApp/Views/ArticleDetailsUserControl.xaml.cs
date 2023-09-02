@@ -18,9 +18,9 @@ namespace RestaurantApp.Views
     /// <summary>
     /// Interaction logic for ArticleDetails.xaml
     /// </summary>
-    public partial class ArticleDetails : UserControl
+    public partial class ArticleDetailsUserControl : UserControl
     {
-        public ArticleDetails()
+        public ArticleDetailsUserControl()
         {
             InitializeComponent();
         }

@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="RestaurantApp.Views.ArticleDetails"
+﻿<UserControl x:Class="RestaurantApp.Views.ArticleDetailsUserControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -29,7 +29,7 @@
                 <DataGridTemplateColumn Header="Edit">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="Edit" Command="{Binding DataContext.ShowEditArticleDetailCommand,RelativeSource={RelativeSource AncestorType={x:Type local:ArticleDetails}}}" CommandParameter="{Binding}"/>
+                            <Button Content="Edit" Command="{Binding DataContext.ShowEditArticleDetailCommand,RelativeSource={RelativeSource AncestorType={x:Type local:ArticleDetailsUserControl}}}" CommandParameter="{Binding}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -37,7 +37,7 @@
                 <DataGridTemplateColumn Header="Delete">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="Delete" Command="{Binding DataContext.DeleteArticleDetailsCommand,RelativeSource={RelativeSource AncestorType={x:Type local:ArticleDetails}}}" CommandParameter="{Binding}"/>
+                            <Button Content="Delete" Command="{Binding DataContext.DeleteArticleDetailsCommand,RelativeSource={RelativeSource AncestorType={x:Type local:ArticleDetailsUserControl}}}" CommandParameter="{Binding}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

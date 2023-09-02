@@ -1,6 +1,8 @@
 ﻿using EntityFramework.Models;
+
 using Microsoft.EntityFrameworkCore;
 using RestaurantApp.Services.Interface;
+using RestaurantApp.Views;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -97,8 +99,9 @@ namespace RestaurantApp.Services
 
         public async Task EditTable(Table table)
         {
-            _efContext.Entry(table).State = EntityState.Modified;
-            await _efContext.SaveChangesAsync();
+            using EFContext efContext = new EFContext();
+            efContext.Entry(table).State = EntityState.Modified;
+            await efContext.SaveChangesAsync();
         }
 
         public async Task ModifyTableArticles(Table table, List<SoldTableArticleQuantity> soldTableArticleQuantities)
@@ -127,13 +130,15 @@ namespace RestaurantApp.Services
 
         public async Task<ArticleDetails> GetArticleDetailByArticleID(int id)
         {
-            ArticleDetails articleDetails = await _efContext.ArticleDetails.FirstOrDefaultAsync(x => x.Article.ID == id);
+            using EFContext efContext = new EFContext();
+            ArticleDetails articleDetails = await efContext.ArticleDetails.Include(x => x.Article).FirstOrDefaultAsync(x => x.Article.ID == id);
             return articleDetails;
         }
 
         public async Task<List<ArticleDetails>> GetArticleDetailsByArticleID(int articleId)
         {
-            List<ArticleDetails> articleDetails = await _efContext.ArticleDetails.Where(x => x.Article.ID == articleId).ToListAsync();
+            using EFContext efContext = new EFContext();
+            List<ArticleDetails> articleDetails = await efContext.ArticleDetails.Include(x => x.Article).Where(x => x.Article.ID == articleId).ToListAsync();
             return articleDetails;
         }
 
@@ -146,8 +151,9 @@ namespace RestaurantApp.Services
 
         public async Task EditArticleDetails(ArticleDetails articleDetails)
         {
-            _efContext.Entry(articleDetails).State = EntityState.Modified;
-            await _efContext.SaveChangesAsync();
+            using EFContext efContext = new EFContext();
+            efContext.Entry(articleDetails).State = EntityState.Modified;
+            await efContext.SaveChangesAsync();
         }
 
         public async Task AddDataEntry(DataEntry dataEntry)
@@ -176,10 +182,11 @@ namespace RestaurantApp.Services
 
         public async Task AddTableArticleQuantity(TableArticleQuantity tableArticleQuantity)
         {
-            _efContext.ChangeTracker.AutoDetectChangesEnabled = false;
-            _efContext.TableArticleQuantities.Add(tableArticleQuantity);
-            await _efContext.SaveChangesAsync();
-            _efContext.ChangeTracker.AutoDetectChangesEnabled = true;
+            //_efContext.ChangeTracker.AutoDetectChangesEnabled = false;
+            using EFContext efContext = new EFContext();
+            efContext.TableArticleQuantities.Add(tableArticleQuantity);
+            await efContext.SaveChangesAsync();
+            //_efContext.ChangeTracker.AutoDetectChangesEnabled = true;
         }
 
         public async Task<List<TableArticleQuantity>> GetTableArticleQuantities(int articleID, int tableID)
@@ -190,8 +197,9 @@ namespace RestaurantApp.Services
 
         public async Task EditTableArticleQuantity(TableArticleQuantity tableArticleQuantity)
         {
-            _efContext.Entry(tableArticleQuantity).State = EntityState.Modified;
-            await _efContext.SaveChangesAsync();
+            using EFContext efContext = new EFContext();
+            efContext.Entry(tableArticleQuantity).State = EntityState.Modified;
+            await efContext.SaveChangesAsync();
         }
 
         public async Task DeleteTableArticleQuantity(TableArticleQuantity tableArticleQuantity)

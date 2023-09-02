@@ -216,7 +216,9 @@ namespace RestaurantApp.ViewModels
                 TableArticleQuantity tableArticleQuantity = new TableArticleQuantity
                 {
                     ArticleID = article.ID,
+                    Article = article,
                     TableID = Table.ID,
+                    Table = Table,
                     Quantity = 1,
                     ArticleDetails = articleDetails
                 };
