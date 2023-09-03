@@ -177,7 +177,7 @@ namespace RestaurantApp.Services
         public async Task AddDataEntry(DataEntry dataEntry)
         {
             using EFContext efContext = new EFContext();
-            efContext.Attach(dataEntry);
+            //efContext.Attach(dataEntry);
             efContext.DataEntries.Add(dataEntry);
             await efContext.SaveChangesAsync();
         }
