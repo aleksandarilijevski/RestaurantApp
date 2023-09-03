@@ -38,8 +38,7 @@ namespace RestaurantApp.Services
         {
             using EFContext efContext = new EFContext();
 
-            //AsNoTracking() is added.
-            Article article = await efContext.Articles.AsNoTracking().Include(x => x.ArticleDetails).FirstOrDefaultAsync(x => x.Barcode == barcode && x.IsDeleted == false);
+            Article article = await efContext.Articles.Include(x => x.ArticleDetails).FirstOrDefaultAsync(x => x.Barcode == barcode && x.IsDeleted == false);
             return article;
         }
 
@@ -178,6 +177,7 @@ namespace RestaurantApp.Services
         public async Task AddDataEntry(DataEntry dataEntry)
         {
             using EFContext efContext = new EFContext();
+            efContext.Attach(dataEntry);
             efContext.DataEntries.Add(dataEntry);
             await efContext.SaveChangesAsync();
         }

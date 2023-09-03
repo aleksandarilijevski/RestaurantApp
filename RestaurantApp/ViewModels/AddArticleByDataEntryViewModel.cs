@@ -5,6 +5,7 @@ using RestaurantApp.Services.Interface;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace RestaurantApp.ViewModels
@@ -176,6 +177,7 @@ namespace RestaurantApp.ViewModels
 
                 if (article != null)
                 {
+                    articleDetails.ArticleID = article.ID;
                     articleDetails.Article = article;
                     DataEntryArticles.Add(articleDetails);
                 }
@@ -243,10 +245,12 @@ namespace RestaurantApp.ViewModels
                     return;
                 }
 
+                articleDetails.Article = null;
+
                 await _databaseService.AddArticleDetails(articleDetails);
             }
 
-            List<Article> articles = CreateArticleListFromArticleDetails(DataEntryArticles);
+            List<Article> articles = await CreateArticleListFromArticleDetails(DataEntryArticles);
             totalAmount = CalculateTotalAmount(DataEntryArticles);
 
             dataEntry.DataEntryNumber = int.Parse(DataEntryNumber);
@@ -260,13 +264,14 @@ namespace RestaurantApp.ViewModels
             RaisePropertyChanged(nameof(DataEntryArticles));
         }
 
-        private List<Article> CreateArticleListFromArticleDetails(List<ArticleDetails> articleDetails)
+        private async Task<List<Article>> CreateArticleListFromArticleDetails(List<ArticleDetails> articleDetails)
         {
             List<Article> articles = new List<Article>();
 
             foreach (ArticleDetails articleDetail in articleDetails)
             {
-                articles.Add(articleDetail.Article);
+                Article article = await _databaseService.GetArticleByID(articleDetail.ArticleID);
+                articles.Add(article);
             }
 
             return articles;
@@ -275,7 +280,7 @@ namespace RestaurantApp.ViewModels
         private decimal CalculateTotalAmount(List<ArticleDetails> articleDetails)
         {
             decimal totalAmount = 0;
-            totalAmount += articleDetails.Sum(x => x.EntryPrice * x.ReservedQuantity);
+            totalAmount += articleDetails.Sum(x => x.EntryPrice * x.OriginalQuantity);
 
             return totalAmount;
         }
