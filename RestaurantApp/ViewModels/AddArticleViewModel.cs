@@ -14,7 +14,7 @@ namespace RestaurantApp.ViewModels
         private IDatabaseService _databaseService;
         private string _title = "Add new article";
         private DelegateCommand<Article> _addArticleCommand;
-        private Article _article;
+        private Article _article = new Article();
         private ArticleDetails _articleDetails = new ArticleDetails();
 
         public event Action<IDialogResult> RequestClose;
@@ -41,7 +41,6 @@ namespace RestaurantApp.ViewModels
         public AddArticleViewModel(IDatabaseService databaseService)
         {
             _databaseService = databaseService;
-            _article = new Article();
         }
 
         public DelegateCommand<Article> AddArticleCommand

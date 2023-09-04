@@ -451,6 +451,8 @@ namespace RestaurantApp.ViewModels
                 return;
             }
 
+           
+
             NavigationParameters navigationParameters = new NavigationParameters
             {
                 { "table",  Table},

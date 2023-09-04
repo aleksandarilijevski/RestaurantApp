@@ -1,6 +1,8 @@
 ﻿using EntityFramework.Models;
+using ImTools;
 using Prism.Commands;
 using Prism.Mvvm;
+using Prism.Regions;
 using RestaurantApp.Services.Interface;
 using System;
 using System.Collections.Generic;
@@ -15,16 +17,20 @@ namespace RestaurantApp.ViewModels
     public class OnlineOrderingViewModel : BindableBase
     {
         private IDatabaseService _databaseService;
+        private IRegionManager _regionManager;
         private string _barcode;
         private TableArticleQuantity _tableArticleQuantity;
         private ObservableCollection<TableArticleQuantity> _tableArticleQuantities = new ObservableCollection<TableArticleQuantity>();
         private DelegateCommand<string> _addArticleToOnlineOrderCommand;
         private DelegateCommand<TableArticleQuantity> _deleteTableArticleQuantityCommand;
+        private DelegateCommand _goToPaymentCommand;
+        private OnlineOrder _onlineOrder = new OnlineOrder();
         private int _quantityValueBeforeChange = 0;
 
-        public OnlineOrderingViewModel(IDatabaseService databaseService)
+        public OnlineOrderingViewModel(IDatabaseService databaseService, IRegionManager regionManager)
         {
             _databaseService = databaseService;
+            _regionManager = regionManager;
         }
 
         public string Barcode
@@ -69,12 +75,34 @@ namespace RestaurantApp.ViewModels
             }
         }
 
+        public OnlineOrder OnlineOrder
+        {
+            get
+            {
+                return _onlineOrder;
+            }
+
+            set
+            {
+                _onlineOrder = value;
+            }
+        }
+
         public DelegateCommand<TableArticleQuantity> DeleteTableArticleQuantityCommand
         {
             get
             {
                 _deleteTableArticleQuantityCommand = new DelegateCommand<TableArticleQuantity>(DeleteTableArticleQuantity);
                 return _deleteTableArticleQuantityCommand;
+            }
+        }
+
+        public DelegateCommand GoToPaymentCommand
+        {
+            get
+            {
+                _goToPaymentCommand = new DelegateCommand(GoToPayment);
+                return _goToPaymentCommand;
             }
         }
 
@@ -99,6 +127,46 @@ namespace RestaurantApp.ViewModels
                 _addArticleToOnlineOrderCommand = new DelegateCommand<string>(AddArticleToOnlineOrder);
                 return _addArticleToOnlineOrderCommand;
             }
+        }
+
+        private void GoToPayment()
+        {
+            if (TableArticleQuantities.Count == 0)
+            {
+                MessageBox.Show("There are no articles to be paid!", "Online Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (OnlineOrder.Firstname is null || OnlineOrder.Firstname == string.Empty)
+            {
+                MessageBox.Show("Firstname field can not be empty!", "Online Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (OnlineOrder.Lastname is null || OnlineOrder.Lastname == string.Empty)
+            {
+                MessageBox.Show("Lastname field can not be empty!", "Online Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (OnlineOrder.Address is null || OnlineOrder.Address == string.Empty)
+            {
+                MessageBox.Show("Address field can not be empty!", "Online Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (OnlineOrder.PhoneNumber.ToString().Length != 8)
+            {
+                MessageBox.Show("Phone number field is not valid!", "Online Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            NavigationParameters navigationParameters = new NavigationParameters()
+            {
+                {"tableArticleQuantities",TableArticleQuantities.ToList() }
+            };
+
+            _regionManager.RequestNavigate("MainRegion", "Payment", navigationParameters);
         }
 
         private async void AddArticleToOnlineOrder(string barcode)
