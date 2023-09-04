@@ -28,28 +28,36 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!--<Button
-            Height="50"
-            Grid.Column="0"
-            Margin="2"
-            Content="&lt;" 
-            FontSize="20"
-            Command="{Binding NavigateToTablesCommand}" />-->
-        
-        
-        
         <TextBox FontSize="20" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" TextAlignment="Center" x:Name="searchBox" Text="{Binding Barcode}" Margin="3">
             <TextBox.InputBindings>
                 <KeyBinding Command="{Binding AddArticleToTableCommand}" CommandParameter="{Binding Text,ElementName=searchBox}" Key="Enter" />
             </TextBox.InputBindings>
 
             <TextBox.Style>
-                <Style TargetType="TextBox">
+                <Style TargetType="TextBox" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+                    <Style.Resources>
+                            <VisualBrush x:Key="CueBannerBrush" AlignmentX="Center" Stretch="None">
+                                <VisualBrush.Visual>
+                                    <Label Content="Article barcode" Foreground="LightGray" FontSize="20"/>
+                                </VisualBrush.Visual>
+                            </VisualBrush>
+                        </Style.Resources>
+                    
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Barcode, UpdateSourceTrigger=PropertyChanged}"
                              Value="{x:Null}">
                             <Setter Property="FocusManager.FocusedElement" Value="{Binding RelativeSource={RelativeSource Self}}"/>
                         </DataTrigger>
+
+                        <Trigger Property="Text" Value="{x:Static sys:String.Empty}">
+                            <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
+                        </Trigger>
+                        <Trigger Property="Text" Value="{x:Null}">
+                            <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Setter Property="Background" Value="White" />
+                        </Trigger>
                     </Style.Triggers>
 
                 </Style>

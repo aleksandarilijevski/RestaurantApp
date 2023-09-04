@@ -22,6 +22,7 @@
             <RowDefinition Height="45"/>
             <RowDefinition Height="40"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
 
         <TextBlock Text="Firstname :" FontSize="20" Margin="10,10,0,0"/>
@@ -89,12 +90,14 @@
                 <DataGridTemplateColumn Header="Delete">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="Delete" Command="{Binding DataContext.DeleteArticleFromTableCommand,RelativeSource={RelativeSource AncestorType={x:Type local:Ordering}}}" CommandParameter="{Binding}"/>
+                            <Button Content="Delete" Command="{Binding DataContext.DeleteTableArticleQuantityCommand,RelativeSource={RelativeSource AncestorType={x:Type local:OnlineOrdering}}}" CommandParameter="{Binding}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
+
+        <Button Content="Go to payment" Grid.Column="0" Grid.ColumnSpan="5" Grid.Row="6" FontSize="15" />
 
     </Grid>
 </UserControl>

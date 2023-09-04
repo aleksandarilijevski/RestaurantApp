@@ -19,6 +19,7 @@ namespace RestaurantApp.ViewModels
         private TableArticleQuantity _tableArticleQuantity;
         private ObservableCollection<TableArticleQuantity> _tableArticleQuantities = new ObservableCollection<TableArticleQuantity>();
         private DelegateCommand<string> _addArticleToOnlineOrderCommand;
+        private DelegateCommand<TableArticleQuantity> _deleteTableArticleQuantityCommand;
         private int _quantityValueBeforeChange = 0;
 
         public OnlineOrderingViewModel(IDatabaseService databaseService)
@@ -65,6 +66,15 @@ namespace RestaurantApp.ViewModels
 
                     _tableArticleQuantity.PropertyChanged += OnQuantityPropertyChanged;
                 }
+            }
+        }
+
+        public DelegateCommand<TableArticleQuantity> DeleteTableArticleQuantityCommand
+        {
+            get
+            {
+                _deleteTableArticleQuantityCommand = new DelegateCommand<TableArticleQuantity>(DeleteTableArticleQuantity);
+                return _deleteTableArticleQuantityCommand;
             }
         }
 
@@ -239,6 +249,11 @@ namespace RestaurantApp.ViewModels
                 int availableQuantity = articleDetail.OriginalQuantity - articleDetail.ReservedQuantity;
                 int quantityToReserve = Math.Min(availableQuantity, quantityToBeReserved);
 
+                if (articleDetail.OriginalQuantity == articleDetail.ReservedQuantity)
+                {
+                    quantityToReserve = articleDetail.ReservedQuantity;
+                }
+
                 // Reserve quantityToReserve for the current articleDetail
                 articleDetail.ReservedQuantity += quantityToReserve;
 
@@ -247,6 +262,11 @@ namespace RestaurantApp.ViewModels
 
                 await _databaseService.EditArticleDetails(articleDetail);
             }
+        }
+
+        private void DeleteTableArticleQuantity(TableArticleQuantity tableArticleQuantity)
+        {
+            TableArticleQuantities.Remove(tableArticleQuantity);
         }
 
     }
