@@ -1,5 +1,4 @@
 ﻿using EntityFramework.Models;
-using ImTools;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
@@ -155,7 +154,7 @@ namespace RestaurantApp.ViewModels
                 return;
             }
 
-            if (OnlineOrder.PhoneNumber.ToString().Length != 8)
+            if (OnlineOrder.PhoneNumber.ToString().Length < 8)
             {
                 MessageBox.Show("Phone number field is not valid!", "Online Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -163,7 +162,8 @@ namespace RestaurantApp.ViewModels
 
             NavigationParameters navigationParameters = new NavigationParameters()
             {
-                {"tableArticleQuantities",TableArticleQuantities.ToList() }
+                {"tableArticleQuantities",TableArticleQuantities.ToList() },
+                {"onlineOrder",OnlineOrder }
             };
 
             _regionManager.RequestNavigate("MainRegion", "Payment", navigationParameters);
@@ -197,6 +197,7 @@ namespace RestaurantApp.ViewModels
 
                 await IncreaseReservedQuantity(articleDetails, tableArticleQuantity.Quantity);
                 TableArticleQuantities.Add(tableArticleQuantity);
+                OnlineOrder.TableArticleQuantities.Add(tableArticleQuantity);
             }
 
             Barcode = string.Empty;
@@ -332,8 +333,48 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        private void DeleteTableArticleQuantity(TableArticleQuantity tableArticleQuantity)
+        private async void DeleteTableArticleQuantity(TableArticleQuantity tableArticleQuantity)
         {
+            List<ArticleDetails>? articleDetails = await _databaseService.GetArticleDetailsByArticleID(tableArticleQuantity.ArticleID);
+
+            int quantityToRemove = TableArticleQuantity.Quantity;
+
+            foreach (ArticleDetails articleDetail in articleDetails.OrderBy(x => x.CreatedDateTime))
+            {
+                if (articleDetail.Article.IsDeleted == false && articleDetail.Article.ID == tableArticleQuantity.Article.ID)
+                {
+
+                    if (articleDetail.ReservedQuantity != 0)
+                    {
+                        if (articleDetail.ReservedQuantity < TableArticleQuantity.Quantity)
+                        {
+                            int reservedDelete = Math.Min(articleDetail.ReservedQuantity, quantityToRemove);
+                            articleDetail.ReservedQuantity -= reservedDelete;
+                            quantityToRemove -= reservedDelete;
+
+                            if (quantityToRemove != 0)
+                            {
+                                continue;
+                            }
+
+                        }
+                        else
+                        {
+                            articleDetail.ReservedQuantity -= TableArticleQuantity.Quantity;
+
+                        }
+                    }
+                    else
+                    {
+                        continue;
+                    }
+
+                    await _databaseService.EditArticleDetails(articleDetail);
+                    break;
+                }
+            }
+
+            //Table.TableArticleQuantities.Remove(tableArticleQuantity);
             TableArticleQuantities.Remove(tableArticleQuantity);
         }
 

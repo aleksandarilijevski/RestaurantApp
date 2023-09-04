@@ -12,6 +12,7 @@ namespace RestaurantApp.Converters
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             int billId = (int)values[0];
+
             List<TableArticleQuantity> tableArticleQuantities = (List<TableArticleQuantity>)values[1];
             decimal totalPrice = (decimal)values[2];
 

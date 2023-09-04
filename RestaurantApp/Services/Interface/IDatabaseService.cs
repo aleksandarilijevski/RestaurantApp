@@ -33,7 +33,10 @@ namespace RestaurantApp.Services.Interface
 
         public Task ModifyTableArticles(Table table, List<SoldTableArticleQuantity> soldTableArticleQuantities);
 
+        public Task ModifyTableArticlesOnlineOrder(OnlineOrder onlineOrder, List<SoldTableArticleQuantity> soldTableArticleQuantities);
+
         public Task EditTable(Table table);
+        public Task EditOnlineOrder(OnlineOrder onlineOrder);
 
         public Task<List<Table>> GetAllTables();
 

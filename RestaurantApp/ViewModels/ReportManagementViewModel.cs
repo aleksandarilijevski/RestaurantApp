@@ -402,14 +402,17 @@ namespace RestaurantApp.ViewModels
 
             foreach (Bill bill in Bills)
             {
-                List<TableArticleQuantity> filteredSoldTableArticleQuantity = bill.Table.TableArticleQuantities.Where(x => x.BillID == bill.ID).ToList();
-                totalPrice += bill.TotalPrice;
-
-                foreach (SoldTableArticleQuantity soldTableArticleQuantity in filteredSoldTableArticleQuantity)
+                if (bill.Table is not null)
                 {
-                    foreach (ArticleDetails articleDetail in soldTableArticleQuantity.ArticleDetails)
+                    List<TableArticleQuantity> filteredSoldTableArticleQuantity = bill.Table.TableArticleQuantities.Where(x => x.BillID == bill.ID).ToList();
+                    totalPrice += bill.TotalPrice;
+
+                    foreach (SoldTableArticleQuantity soldTableArticleQuantity in filteredSoldTableArticleQuantity)
                     {
-                        totalProfit += articleDetail.EntryPrice * soldTableArticleQuantity.Quantity;
+                        foreach (ArticleDetails articleDetail in soldTableArticleQuantity.ArticleDetails)
+                        {
+                            totalProfit += articleDetail.EntryPrice * soldTableArticleQuantity.Quantity;
+                        }
                     }
                 }
             }

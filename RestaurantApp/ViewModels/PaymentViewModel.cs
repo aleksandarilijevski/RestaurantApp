@@ -21,6 +21,7 @@ namespace RestaurantApp.ViewModels
         private IDialogService _dialogService;
         private decimal _totalPrice;
         private Table _table;
+        private OnlineOrder _onlineOrder;
         private List<TableArticleQuantity> _tableArticleQuantities;
         private DelegateCommand _issueFakeBillCommand;
         private DelegateCommand _issueBillCommand;
@@ -74,6 +75,19 @@ namespace RestaurantApp.ViewModels
             }
         }
 
+        public OnlineOrder OnlineOrder
+        {
+            get
+            {
+                return _onlineOrder;
+            }
+
+            set
+            {
+                _onlineOrder = value;
+            }
+        }
+
         public DelegateCommand GetTotalPriceCommand
         {
             get
@@ -99,6 +113,54 @@ namespace RestaurantApp.ViewModels
                 _issueBillCommand = new DelegateCommand(IssueBill);
                 return _issueBillCommand;
             }
+        }
+
+        private async Task<Bill> AddBillOnlineOrder(decimal cash, decimal change)
+        {
+            decimal totalPrice = CalculateTotalPrice();
+            Configuration configuration = await _databaseService.GetConfiguration();
+
+            int billCounter = await IncreaseBillCounter();
+            string registrationNumber = billCounter.ToString() + "/" + DateTime.Now.ToString("ddMMyyyy");
+
+            Bill bill = new Bill
+            {
+                TotalPrice = totalPrice,
+                Cash = cash,
+                Change = change,
+                PaymentType = PaymentType,
+                RegistrationNumber = registrationNumber
+            };
+
+            foreach (TableArticleQuantity tableArticleQuantity in TableArticleQuantities)
+            {
+                await DecreaseReservedQuantity(tableArticleQuantity.ArticleDetails, tableArticleQuantity.Quantity);
+                await DecreaseOriginalQuantity(tableArticleQuantity.ArticleDetails, tableArticleQuantity.Quantity);
+            }
+
+            await CreateBill(bill);
+
+
+            List<SoldTableArticleQuantity> soldTableArticleQuantities = new List<SoldTableArticleQuantity>();
+
+            foreach (TableArticleQuantity tableArticleQuantity in OnlineOrder.TableArticleQuantities)
+            {
+                SoldTableArticleQuantity soldTableArticleQuantity = new SoldTableArticleQuantity
+                {
+                    ArticleID = tableArticleQuantity.ArticleID,
+                    Article = tableArticleQuantity.Article,
+                    ArticleDetails = tableArticleQuantity.ArticleDetails,
+                    Quantity = tableArticleQuantity.Quantity,
+                    Bill = bill
+                };
+
+                soldTableArticleQuantities.Add(soldTableArticleQuantity);
+            }
+
+            OnlineOrder.TableArticleQuantities.AddRange(soldTableArticleQuantities);
+
+            await _databaseService.EditOnlineOrder(OnlineOrder);
+            return bill;
         }
 
         private async Task<Bill> AddBill(decimal cash, decimal change)
@@ -222,7 +284,18 @@ namespace RestaurantApp.ViewModels
                     {
                         change = result.Parameters.GetValue<decimal>("change");
                         cash = result.Parameters.GetValue<decimal>("cash");
-                        Bill bill = await AddBill(cash, change);
+
+                        Bill bill = null;
+
+                        if (_table is null)
+                        {
+                            bill = await AddBillOnlineOrder(cash, change);
+                        }
+                        else
+                        {
+                            bill = await AddBill(cash, change);
+                        }
+
                         DrawningHelper.DrawBill(bill, _tableArticleQuantities);
                         _regionManager.RequestNavigate("MainRegion", "TableOrder");
                     }
@@ -231,7 +304,18 @@ namespace RestaurantApp.ViewModels
 
             if (PaymentType == PaymentType.Card)
             {
-                Bill bill = await AddBill(0, 0);
+                Bill bill = null;
+
+                if (_table is null)
+                {
+                    bill = await AddBillOnlineOrder(0, 0);
+                }
+                else
+                {
+                    bill = await AddBill(0, 0);
+                }
+
+
                 DrawningHelper.DrawBill(bill, _tableArticleQuantities);
                 _regionManager.RequestNavigate("MainRegion", "TableOrder");
             }
@@ -289,6 +373,7 @@ namespace RestaurantApp.ViewModels
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
             _table = (Table)navigationContext.Parameters["table"];
+            _onlineOrder = (OnlineOrder)navigationContext.Parameters["onlineOrder"];
             TableArticleQuantities = (List<TableArticleQuantity>)navigationContext.Parameters["tableArticleQuantities"];
         }
 
