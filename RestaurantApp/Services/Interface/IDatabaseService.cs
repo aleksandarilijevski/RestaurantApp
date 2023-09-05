@@ -7,6 +7,12 @@ namespace RestaurantApp.Services.Interface
 {
     public interface IDatabaseService
     {
+        public Task EditTableContext(Table table,EFContext efContext);
+
+        public Task AddDataEntryContext(DataEntry dataEntry, EFContext efContext);
+
+        public Task<Article> GetArticleByIDContext(int id, EFContext efContext);
+
         public Task<ObservableCollection<Article>> GetAllArticles();
 
         public Task<Article> GetArticleByID(int id);
@@ -31,11 +37,15 @@ namespace RestaurantApp.Services.Interface
 
         public Task<int> AddTable(Table table);
 
-        public Task ModifyTableArticles(Table table, List<SoldTableArticleQuantity> soldTableArticleQuantities);
+        //Table table
+        public Task ModifyTableArticles(List<TableArticleQuantity> tableArticleQuantities, List<SoldTableArticleQuantity> soldTableArticleQuantities);
 
         public Task ModifyTableArticlesOnlineOrder(OnlineOrder onlineOrder, List<SoldTableArticleQuantity> soldTableArticleQuantities);
 
         public Task EditTable(Table table);
+
+        public Task<Article> GetArticleByBarcodeContext(long barcode, EFContext efContext);
+
         public Task EditOnlineOrder(OnlineOrder onlineOrder);
 
         public Task<List<Table>> GetAllTables();
@@ -43,6 +53,10 @@ namespace RestaurantApp.Services.Interface
         public Task<ArticleDetails> GetArticleDetailByArticleID(int id);
 
         public Task<List<ArticleDetails>> GetArticleDetailsByArticleID(int articleId);
+
+        public Task AddTableArticleQuantityContext(TableArticleQuantity tableArticleQuantity, EFContext efContext);
+
+        public Task<List<ArticleDetails>> GetArticleDetailsByArticleIDContext(int articleId, EFContext efContext);
 
         public Task<List<TableArticleQuantity>> GetTableArticleQuantitiesExceptProvidedID(Table table);
 

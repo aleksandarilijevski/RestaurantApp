@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace EntityFramework.Migrations
 {
     /// <inheritdoc />
-    public partial class OrderOnlineModelCreated : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -44,6 +44,27 @@ namespace EntityFramework.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_DataEntries", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OnlineOrders",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Firstname = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Lastname = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<long>(type: "bigint", nullable: false),
+                    Floor = table.Column<int>(type: "int", nullable: false),
+                    ApartmentNumber = table.Column<int>(type: "int", nullable: false),
+                    Comment = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OnlineOrders", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -182,7 +203,8 @@ namespace EntityFramework.Migrations
                     TableID = table.Column<int>(type: "int", nullable: false),
                     ArticleID = table.Column<int>(type: "int", nullable: false),
                     BillID = table.Column<int>(type: "int", nullable: true),
-                    Quantity = table.Column<int>(type: "int", nullable: false)
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    OnlineOrderID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -197,6 +219,11 @@ namespace EntityFramework.Migrations
                         name: "FK_SoldTableArticleQuantity_Bills_BillID",
                         column: x => x.BillID,
                         principalTable: "Bills",
+                        principalColumn: "ID");
+                    table.ForeignKey(
+                        name: "FK_SoldTableArticleQuantity_OnlineOrders_OnlineOrderID",
+                        column: x => x.OnlineOrderID,
+                        principalTable: "OnlineOrders",
                         principalColumn: "ID");
                     table.ForeignKey(
                         name: "FK_SoldTableArticleQuantity_Tables_TableID",
@@ -214,7 +241,8 @@ namespace EntityFramework.Migrations
                     TableID = table.Column<int>(type: "int", nullable: false),
                     ArticleID = table.Column<int>(type: "int", nullable: false),
                     BillID = table.Column<int>(type: "int", nullable: true),
-                    Quantity = table.Column<int>(type: "int", nullable: false)
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    OnlineOrderID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -229,6 +257,11 @@ namespace EntityFramework.Migrations
                         name: "FK_TableArticleQuantity_Bills_BillID",
                         column: x => x.BillID,
                         principalTable: "Bills",
+                        principalColumn: "ID");
+                    table.ForeignKey(
+                        name: "FK_TableArticleQuantity_OnlineOrders_OnlineOrderID",
+                        column: x => x.OnlineOrderID,
+                        principalTable: "OnlineOrders",
                         principalColumn: "ID");
                     table.ForeignKey(
                         name: "FK_TableArticleQuantity_Tables_TableID",
@@ -269,6 +302,11 @@ namespace EntityFramework.Migrations
                 column: "BillID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_SoldTableArticleQuantity_OnlineOrderID",
+                table: "SoldTableArticleQuantity",
+                column: "OnlineOrderID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_SoldTableArticleQuantity_TableID",
                 table: "SoldTableArticleQuantity",
                 column: "TableID");
@@ -282,6 +320,11 @@ namespace EntityFramework.Migrations
                 name: "IX_TableArticleQuantity_BillID",
                 table: "TableArticleQuantity",
                 column: "BillID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TableArticleQuantity_OnlineOrderID",
+                table: "TableArticleQuantity",
+                column: "OnlineOrderID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TableArticleQuantity_TableID",
@@ -317,6 +360,9 @@ namespace EntityFramework.Migrations
 
             migrationBuilder.DropTable(
                 name: "Bills");
+
+            migrationBuilder.DropTable(
+                name: "OnlineOrders");
 
             migrationBuilder.DropTable(
                 name: "Tables");

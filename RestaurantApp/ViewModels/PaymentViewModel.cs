@@ -16,6 +16,7 @@ namespace RestaurantApp.ViewModels
 {
     public class PaymentViewModel : BindableBase, INavigationAware
     {
+        //Private fields
         private IDatabaseService _databaseService;
         private IRegionManager _regionManager;
         private IDialogService _dialogService;
@@ -35,6 +36,7 @@ namespace RestaurantApp.ViewModels
             _dialogService = dialogService;
         }
 
+        //Public properties
         public List<TableArticleQuantity> TableArticleQuantities
         {
             get
@@ -88,6 +90,7 @@ namespace RestaurantApp.ViewModels
             }
         }
 
+        //DelegateCommands
         public DelegateCommand GetTotalPriceCommand
         {
             get
@@ -115,51 +118,53 @@ namespace RestaurantApp.ViewModels
             }
         }
 
+       
         private async Task<Bill> AddBillOnlineOrder(decimal cash, decimal change)
         {
-            decimal totalPrice = CalculateTotalPrice();
-            Configuration configuration = await _databaseService.GetConfiguration();
+            //decimal totalPrice = CalculateTotalPrice();
+            //Configuration configuration = await _databaseService.GetConfiguration();
 
-            int billCounter = await IncreaseBillCounter();
-            string registrationNumber = billCounter.ToString() + "/" + DateTime.Now.ToString("ddMMyyyy");
+            //int billCounter = await IncreaseBillCounter();
+            //string registrationNumber = billCounter.ToString() + "/" + DateTime.Now.ToString("ddMMyyyy");
 
-            Bill bill = new Bill
-            {
-                TotalPrice = totalPrice,
-                Cash = cash,
-                Change = change,
-                PaymentType = PaymentType,
-                RegistrationNumber = registrationNumber
-            };
+            //Bill bill = new Bill
+            //{
+            //    TotalPrice = totalPrice,
+            //    Cash = cash,
+            //    Change = change,
+            //    PaymentType = PaymentType,
+            //    RegistrationNumber = registrationNumber
+            //};
 
-            foreach (TableArticleQuantity tableArticleQuantity in TableArticleQuantities)
-            {
-                await DecreaseReservedQuantity(tableArticleQuantity.ArticleDetails, tableArticleQuantity.Quantity);
-                await DecreaseOriginalQuantity(tableArticleQuantity.ArticleDetails, tableArticleQuantity.Quantity);
-            }
+            //foreach (TableArticleQuantity tableArticleQuantity in TableArticleQuantities)
+            //{
+            //    await DecreaseReservedQuantity(tableArticleQuantity.ArticleDetails, tableArticleQuantity.Quantity);
+            //    await DecreaseOriginalQuantity(tableArticleQuantity.ArticleDetails, tableArticleQuantity.Quantity);
+            //}
 
-            await CreateBill(bill);
+            //await CreateBill(bill);
 
 
-            List<SoldTableArticleQuantity> soldTableArticleQuantities = new List<SoldTableArticleQuantity>();
+            //List<SoldTableArticleQuantity> soldTableArticleQuantities = new List<SoldTableArticleQuantity>();
 
-            foreach (TableArticleQuantity tableArticleQuantity in OnlineOrder.TableArticleQuantities)
-            {
-                SoldTableArticleQuantity soldTableArticleQuantity = new SoldTableArticleQuantity
-                {
-                    ArticleID = tableArticleQuantity.ArticleID,
-                    Article = tableArticleQuantity.Article,
-                    ArticleDetails = tableArticleQuantity.ArticleDetails,
-                    Quantity = tableArticleQuantity.Quantity,
-                    Bill = bill
-                };
+            //foreach (TableArticleQuantity tableArticleQuantity in OnlineOrder.TableArticleQuantities)
+            //{
+            //    SoldTableArticleQuantity soldTableArticleQuantity = new SoldTableArticleQuantity
+            //    {
+            //        ArticleID = tableArticleQuantity.ArticleID,
+            //        Article = tableArticleQuantity.Article,
+            //        ArticleDetails = tableArticleQuantity.ArticleDetails,
+            //        Quantity = tableArticleQuantity.Quantity,
+            //        Bill = bill
+            //    };
 
-                soldTableArticleQuantities.Add(soldTableArticleQuantity);
-            }
+            //    soldTableArticleQuantities.Add(soldTableArticleQuantity);
+            //}
 
-            OnlineOrder.TableArticleQuantities.AddRange(soldTableArticleQuantities);
+            //OnlineOrder.TableArticleQuantities.AddRange(soldTableArticleQuantities);
 
-            await _databaseService.EditOnlineOrder(OnlineOrder);
+            //await _databaseService.EditOnlineOrder(OnlineOrder);
+            Bill bill = null;
             return bill;
         }
 
@@ -204,13 +209,15 @@ namespace RestaurantApp.ViewModels
                     ArticleDetails = tableArticleQuantity.ArticleDetails,
                     TableID = tableArticleQuantity.TableID,
                     Quantity = tableArticleQuantity.Quantity,
-                    Bill = bill
+                    BillID = bill.ID
                 };
 
                 soldTableArticleQuantities.Add(soldTableArticleQuantity);
             }
 
-            await _databaseService.ModifyTableArticles(_table, soldTableArticleQuantities);
+            //await _databaseService.ModifyTableArticles(_table, soldTableArticleQuantities);
+
+            await _databaseService.ModifyTableArticles(TableArticleQuantities, soldTableArticleQuantities);
             return bill;
         }
 

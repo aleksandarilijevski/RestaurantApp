@@ -15,6 +15,7 @@ namespace RestaurantApp.ViewModels
 {
     public class OrderingViewModel : BindableBase, INavigationAware
     {
+        //Private fields
         private IDatabaseService _databaseService;
         private IRegionManager _regionManager;
         private DelegateCommand<string> _addArticleToTableCommand;
@@ -29,12 +30,14 @@ namespace RestaurantApp.ViewModels
         private ObservableCollection<TableArticleQuantity> _tableArticleQuantities;
         private int _quantityValueBeforeChange = 0;
 
+        //Constructor
         public OrderingViewModel(IDatabaseService databaseService, IRegionManager regionManager)
         {
             _databaseService = databaseService;
             _regionManager = regionManager;
         }
 
+        //Public properties
         public int TableID
         {
             get { return _tableId; }
@@ -110,6 +113,7 @@ namespace RestaurantApp.ViewModels
             }
         }
 
+        //Delegate commands
         public DelegateCommand<Table> GetTableCommand
         {
             get
@@ -173,6 +177,7 @@ namespace RestaurantApp.ViewModels
         {
             Table = await _databaseService.GetTableByID(id);
 
+
             if (Table is null)
             {
                 Table table = new Table { ID = id, InUse = false, TableArticleQuantities = new List<TableArticleQuantity>() };
@@ -195,9 +200,12 @@ namespace RestaurantApp.ViewModels
         /// </summary>
         private async void AddArticleToTable(string barcode)
         {
+            using EFContext efContext = new EFContext();
+            //Gets article from database by barcode.
             long.TryParse(barcode, out long barcodeLong);
-            Article article = await _databaseService.GetArticleByBarcode(barcodeLong);
+            Article article = await _databaseService.GetArticleByBarcodeContext(barcodeLong,efContext);
 
+            //If article is null display error message.
             if (article is null)
             {
                 MessageBox.Show("Article with entered barcode doesn't exist in the system!", "Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -205,30 +213,47 @@ namespace RestaurantApp.ViewModels
                 return;
             }
 
+            //Check if quantity is available.
             bool isQuantityAvailable = await IfQuantityIsAvailable(article);
 
             if (isQuantityAvailable)
             {
+                //Table property InUse is changed to true, table is becoming active.
                 Table.InUse = true;
 
-                List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleID(article.ID);
+                //Gets all articleDetails by articleId
+                List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleIDContext(article.ID,efContext);
 
+                //Creating tableArticleQuantity object and providing required data.
                 TableArticleQuantity tableArticleQuantity = new TableArticleQuantity
                 {
-                    ArticleID = article.ID,
+                    //There was ArticleID = article.ID, before disposing EFContext
+                    Article = article,
                     TableID = Table.ID,
                     Quantity = 1,
                     ArticleDetails = articleDetails
                 };
 
+                //We are increasing reserved quantity of articleDetails
                 await IncreaseReservedQuantity(articleDetails, tableArticleQuantity.Quantity);
 
+                //Adds tableArticleQuantity to table.
                 Table.TableArticleQuantities.Add(tableArticleQuantity);
+                //This is removed due tests with disposing EFContexts
+
+                //Adds tableArticleQuantity to observableCollection
                 TableArticleQuantities.Add(tableArticleQuantity);
 
-                await EditTable(Table);
+                //Edits table
+                //await _databaseService.EditTableContext(Table,efContext);
+                //This is removed due tests with disposing EFContexts
+
+                //Added due tests.
+                //It says articleDetails is already being tracked.
+                await _databaseService.AddTableArticleQuantityContext(tableArticleQuantity,efContext);
             }
 
+            //Clearing barcode textBox and updating Table.
             Barcode = string.Empty;
             RaisePropertyChanged(nameof(Table));
         }
@@ -246,15 +271,13 @@ namespace RestaurantApp.ViewModels
             foreach (ArticleDetails articleDetail in articleDetails)
             {
                 if (quantityToBeReserved <= 0)
-                    break; // No more quantity to sell, exit the loop
+                    break;
 
                 int availableQuantity = articleDetail.OriginalQuantity - articleDetail.ReservedQuantity;
                 int quantityToReserve = Math.Min(availableQuantity, quantityToBeReserved);
 
-                // Reserve quantityToReserve for the current articleDetail
                 articleDetail.ReservedQuantity += quantityToReserve;
 
-                // Reduce remainingQuantityToSell
                 quantityToBeReserved -= quantityToReserve;
 
                 await _databaseService.EditArticleDetails(articleDetail);
@@ -267,6 +290,7 @@ namespace RestaurantApp.ViewModels
         public int GetReservedQuantity(List<ArticleDetails> articleDetails)
         {
             int reservedQuantity = 0;
+            //Sums all reservedQuantity from provided articleDetails
             reservedQuantity += articleDetails.Sum(x => x.ReservedQuantity);
             return reservedQuantity;
         }
@@ -311,7 +335,7 @@ namespace RestaurantApp.ViewModels
             foreach (ArticleDetails articleDetail in articleDetails)
             {
                 if (reservedQuantityToBeDecreased <= 0)
-                    break; // No more quantity to sell, exit the loop
+                    break;
 
                 int availableQuantity = articleDetail.OriginalQuantity - articleDetail.ReservedQuantity;
                 int quantityToReserve = Math.Min(availableQuantity, reservedQuantityToBeDecreased);
@@ -321,10 +345,8 @@ namespace RestaurantApp.ViewModels
                     quantityToReserve = reservedQuantityToBeDecreased;
                 }
 
-                // Reserve quantityToReserve for the current articleDetail
                 articleDetail.ReservedQuantity -= quantityToReserve;
 
-                // Reduce remainingQuantityToSell
                 reservedQuantityToBeDecreased += quantityToReserve;
 
                 await _databaseService.EditArticleDetails(articleDetail);
@@ -336,7 +358,11 @@ namespace RestaurantApp.ViewModels
         /// </summary>
         private async Task<bool> IfQuantityIsAvailable(Article article)
         {
-            int quantity = GetAvailableQuantity(article.ArticleDetails);
+            //Added due tests and tracking
+            List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleID(article.ID);
+
+            //article.ArticleDetails was parametar before change
+            int quantity = GetAvailableQuantity(articleDetails);
 
             if (quantity != 0)
             {
@@ -375,6 +401,7 @@ namespace RestaurantApp.ViewModels
 
             foreach (ArticleDetails articleDetail in articleDetails.OrderBy(x => x.CreatedDateTime))
             {
+                
                 if (articleDetail.Article.IsDeleted == false && articleDetail.Article.ID == tableArticleQuantity.Article.ID)
                 {
 
@@ -408,7 +435,6 @@ namespace RestaurantApp.ViewModels
                 }
             }
 
-            //Table.TableArticleQuantities.Remove(tableArticleQuantity);
             TableArticleQuantities.Remove(tableArticleQuantity);
             await _databaseService.DeleteTableArticleQuantity(tableArticleQuantity);
 
@@ -450,8 +476,6 @@ namespace RestaurantApp.ViewModels
                 MessageBox.Show("There are no articles to be paid!", "Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-
-           
 
             NavigationParameters navigationParameters = new NavigationParameters
             {

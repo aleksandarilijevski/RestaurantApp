@@ -214,6 +214,8 @@ namespace RestaurantApp.ViewModels
 
         private async void Save()
         {
+            using EFContext efContext = new EFContext();
+
             if (!int.TryParse(DataEntryNumber, out int dataEntryNumber))
             {
                 MessageBox.Show("Data entry number is not valid!", "Data entry", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -250,13 +252,14 @@ namespace RestaurantApp.ViewModels
                 await _databaseService.AddArticleDetails(articleDetails);
             }
 
-            List<Article> articles = await CreateArticleListFromArticleDetails(DataEntryArticles);
+            List<Article> articles = await CreateArticleListFromArticleDetails(DataEntryArticles,efContext);
             totalAmount = CalculateTotalAmount(DataEntryArticles);
 
             dataEntry.DataEntryNumber = int.Parse(DataEntryNumber);
             dataEntry.TotalAmount = totalAmount;
             dataEntry.Articles = articles;
-            await _databaseService.AddDataEntry(dataEntry);
+
+            await _databaseService.AddDataEntryContext(dataEntry, efContext);
 
             MessageBox.Show("Data entry is saved!", "Data entry", MessageBoxButton.OK, MessageBoxImage.Information);
             DataEntryNumber = string.Empty;
@@ -264,13 +267,13 @@ namespace RestaurantApp.ViewModels
             RaisePropertyChanged(nameof(DataEntryArticles));
         }
 
-        private async Task<List<Article>> CreateArticleListFromArticleDetails(List<ArticleDetails> articleDetails)
+        private async Task<List<Article>> CreateArticleListFromArticleDetails(List<ArticleDetails> articleDetails,EFContext efContext)
         {
             List<Article> articles = new List<Article>();
 
             foreach (ArticleDetails articleDetail in articleDetails)
             {
-                Article article = await _databaseService.GetArticleByID(articleDetail.ArticleID);
+                Article article = await _databaseService.GetArticleByIDContext(articleDetail.ArticleID,efContext);
                 articles.Add(article);
             }
 
