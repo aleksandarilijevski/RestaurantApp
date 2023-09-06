@@ -242,6 +242,12 @@ namespace RestaurantApp.Services
             await efContext.SaveChangesAsync();
         }
 
+        public async Task EditArticleDetailsContext(ArticleDetails articleDetails,EFContext efContext)
+        {
+            efContext.Entry(articleDetails).State = EntityState.Modified;
+            await efContext.SaveChangesAsync();
+        }
+
         public async Task AddDataEntry(DataEntry dataEntry)
         {
             using EFContext efContext = new EFContext();
@@ -291,6 +297,7 @@ namespace RestaurantApp.Services
             efContext.TableArticleQuantities.Add(tableArticleQuantity);
             await efContext.SaveChangesAsync();
         }
+
 
         public async Task<List<TableArticleQuantity>> GetTableArticleQuantities(int articleID, int tableID)
         {

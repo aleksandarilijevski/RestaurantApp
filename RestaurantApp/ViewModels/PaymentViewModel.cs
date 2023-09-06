@@ -188,10 +188,12 @@ namespace RestaurantApp.ViewModels
                 RegistrationNumber = registrationNumber
             };
 
+
             foreach (TableArticleQuantity tableArticleQuantity in TableArticleQuantities)
             {
-                await DecreaseReservedQuantity(tableArticleQuantity.ArticleDetails, tableArticleQuantity.Quantity);
-                await DecreaseOriginalQuantity(tableArticleQuantity.ArticleDetails, tableArticleQuantity.Quantity);
+                List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleIDContext(tableArticleQuantity.ArticleID, efContext);
+                await DecreaseReservedQuantity(articleDetails, tableArticleQuantity.Quantity,efContext);
+                await DecreaseOriginalQuantity(articleDetails, tableArticleQuantity.Quantity,efContext);
             }
 
             await _databaseService.CreateBillContext(bill,efContext);
@@ -204,29 +206,29 @@ namespace RestaurantApp.ViewModels
 
             foreach (TableArticleQuantity tableArticleQuantity in tableArticleQuantities)
             {
-                foreach (ArticleDetails articleDetails in tableArticleQuantity.ArticleDetails)
-                {
-                    articleDetails.Article = null;
-                }
+                Article article = await _databaseService.GetArticleByIDContext(tableArticleQuantity.ArticleID,efContext);
+                List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleIDContext(tableArticleQuantity.ArticleID,efContext);
 
                 SoldTableArticleQuantity soldTableArticleQuantity = new SoldTableArticleQuantity
                 {
-                    ArticleID = tableArticleQuantity.ArticleID,
-                    ArticleDetails = tableArticleQuantity.ArticleDetails,
+                    //ArticleID = tableArticleQuantity.ArticleID,
+                    Article = article,
+                    ArticleDetails = articleDetails,
                     TableID = tableArticleQuantity.TableID,
                     Quantity = tableArticleQuantity.Quantity,
                     BillID = bill.ID
                 };
 
-                soldTableArticleQuantities.Add(soldTableArticleQuantity);
+                //soldTableArticleQuantities.Add(soldTableArticleQuantity);
+                await _databaseService.DeleteTableArticleQuantity(tableArticleQuantity);
+                await _databaseService.AddTableArticleQuantityContext(soldTableArticleQuantity,efContext);
             }
 
-
-            await _databaseService.ModifyTableArticlesContext(TableArticleQuantities, soldTableArticleQuantities,efContext);
+            //await _databaseService.ModifyTableArticlesContext(TableArticleQuantities, soldTableArticleQuantities,efContext);
             return bill;
         }
 
-        private async Task DecreaseOriginalQuantity(List<ArticleDetails> articleDetails, int originalQuantityToDecrease)
+        private async Task DecreaseOriginalQuantity(List<ArticleDetails> articleDetails, int originalQuantityToDecrease, EFContext efContext)
         {
             foreach (ArticleDetails articleDetail in articleDetails)
             {
@@ -248,6 +250,37 @@ namespace RestaurantApp.ViewModels
                 await _databaseService.EditArticleDetails(articleDetail);
             }
         }
+
+        private async Task DecreaseReservedQuantity(List<ArticleDetails> articleDetails, int reservedQuantityToBeDecreased, EFContext efContext)
+        {
+            foreach (ArticleDetails articleDetail in articleDetails)
+            {
+                if (reservedQuantityToBeDecreased <= 0)
+                    break; // No more quantity to sell, exit the loop
+
+                int availableQuantity = articleDetail.OriginalQuantity - articleDetail.ReservedQuantity;
+                int quantityToReserve = Math.Min(availableQuantity, reservedQuantityToBeDecreased);
+
+                if (articleDetail.OriginalQuantity == articleDetail.ReservedQuantity)
+                {
+                    quantityToReserve = articleDetail.ReservedQuantity;
+                }
+
+                if (availableQuantity == 0)
+                {
+                    quantityToReserve = reservedQuantityToBeDecreased;
+                }
+
+                // Reserve quantityToReserve for the current articleDetail
+                articleDetail.ReservedQuantity -= quantityToReserve;
+
+                // Reduce remainingQuantityToSell
+                reservedQuantityToBeDecreased -= quantityToReserve;
+
+                await _databaseService.EditArticleDetailsContext(articleDetail,efContext);
+            }
+        }
+
         private void IssueFakeBill()
         {
             decimal change = 0;
@@ -330,31 +363,6 @@ namespace RestaurantApp.ViewModels
 
                 DrawningHelper.DrawBill(bill, _tableArticleQuantities);
                 _regionManager.RequestNavigate("MainRegion", "TableOrder");
-            }
-        }
-
-        private async Task DecreaseReservedQuantity(List<ArticleDetails> articleDetails, int reservedQuantityToBeDecreased)
-        {
-            foreach (ArticleDetails articleDetail in articleDetails)
-            {
-                if (reservedQuantityToBeDecreased <= 0)
-                    break; // No more quantity to sell, exit the loop
-
-                int availableQuantity = articleDetail.OriginalQuantity - articleDetail.ReservedQuantity;
-                int quantityToReserve = Math.Min(availableQuantity, reservedQuantityToBeDecreased);
-
-                if (articleDetail.OriginalQuantity == articleDetail.ReservedQuantity)
-                {
-                    quantityToReserve = articleDetail.ReservedQuantity;
-                }
-
-                // Reserve quantityToReserve for the current articleDetail
-                articleDetail.ReservedQuantity -= quantityToReserve;
-
-                // Reduce remainingQuantityToSell
-                reservedQuantityToBeDecreased -= quantityToReserve;
-
-                await _databaseService.EditArticleDetails(articleDetail);
             }
         }
 
