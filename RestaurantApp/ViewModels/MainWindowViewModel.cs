@@ -14,6 +14,7 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand _navigateToArticleManagementCommand;
         private DelegateCommand _navigateToWaiterManagementCommand;
         private DelegateCommand _navigateToMenuCommand;
+        private DelegateCommand _navigateToOnlineOrderingCommand;
         private DelegateCommand _loadConfigurationCommand;
         private DelegateCommand _showTableOverviewCommand;
 
@@ -68,6 +69,14 @@ namespace RestaurantApp.ViewModels
             }
         }
 
+        public DelegateCommand NavigateToOnlineOrderingCommand
+        {
+            get
+            {
+                _navigateToOnlineOrderingCommand = new DelegateCommand(() => Navigate("MainRegion", "OnlineOrdering"));
+                return _navigateToOnlineOrderingCommand;
+            }
+        }
 
         private void Navigate(string regionName, string viewName)
         {

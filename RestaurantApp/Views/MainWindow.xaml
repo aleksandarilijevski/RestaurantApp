@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         xmlns:prism="http://prismlibrary.com/"
         prism:ViewModelLocator.AutoWireViewModel="True"
-        Title="Restaurant Application" Height="420" Width="900">
+        Title="Restaurant Application" Height="420" Width="1200">
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
@@ -23,6 +23,7 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
@@ -31,7 +32,7 @@
             <RowDefinition Height="10"/>
         </Grid.RowDefinitions>
 
-        <ContentControl prism:RegionManager.RegionName="MainRegion" Grid.ColumnSpan="4" Grid.Row="0"/>
+        <ContentControl prism:RegionManager.RegionName="MainRegion" Grid.ColumnSpan="5" Grid.Row="0"/>
 
         <Button
             Style="{StaticResource MaterialDesignFlatSecondaryDarkBgButton}"
@@ -72,6 +73,16 @@
             Grid.Row="1" 
             FontSize="20"
             Command="{Binding NavigateToWaiterManagementCommand}" Margin="3,5,2,0"/>
+
+        <Button 
+            Style="{StaticResource MaterialDesignFlatSecondaryDarkBgButton}"
+            Height="40"
+            Width="auto"
+            Content="Online ordering"
+            Grid.Column="4"
+            Grid.Row="1" 
+            FontSize="20"
+            Command="{Binding NavigateToOnlineOrderingCommand}" Margin="3,5,2,0" />
     </Grid>
 
 </Window>

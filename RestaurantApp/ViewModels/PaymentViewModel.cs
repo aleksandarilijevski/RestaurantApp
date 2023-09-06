@@ -271,6 +271,11 @@ namespace RestaurantApp.ViewModels
                     quantityToReserve = reservedQuantityToBeDecreased;
                 }
 
+                if (articleDetail.OriginalQuantity >= articleDetail.ReservedQuantity)
+                {
+                    quantityToReserve = reservedQuantityToBeDecreased;
+                }
+
                 // Reserve quantityToReserve for the current articleDetail
                 articleDetail.ReservedQuantity -= quantityToReserve;
 
