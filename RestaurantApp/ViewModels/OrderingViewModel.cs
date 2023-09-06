@@ -203,6 +203,9 @@ namespace RestaurantApp.ViewModels
             using EFContext efContext = new EFContext();
             //Gets article from database by barcode.
             long.TryParse(barcode, out long barcodeLong);
+
+
+            //It's adding articleDetails too! because efContext instance remains same.
             Article article = await _databaseService.GetArticleByBarcodeContext(barcodeLong,efContext);
 
             //If article is null display error message.
@@ -222,7 +225,7 @@ namespace RestaurantApp.ViewModels
                 Table.InUse = true;
 
                 //Gets all articleDetails by articleId
-                List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleIDContext(article.ID,efContext);
+                List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleIDContext(article.ID, efContext);
 
                 //Creating tableArticleQuantity object and providing required data.
                 TableArticleQuantity tableArticleQuantity = new TableArticleQuantity

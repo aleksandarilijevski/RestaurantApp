@@ -152,6 +152,29 @@ namespace RestaurantApp.Services
             await efContext.SaveChangesAsync();
         }
 
+        //Table table
+        public async Task ModifyTableArticlesContext(List<TableArticleQuantity> tableArticleQuantities, List<SoldTableArticleQuantity> soldTableArticleQuantities,EFContext efContext)
+        {
+            List<TableArticleQuantity> quantitiesToRemove = tableArticleQuantities.Where(x => !(x is SoldTableArticleQuantity)).ToList();
+
+            foreach (var taq in tableArticleQuantities)
+            {
+                efContext.Entry(taq).State = EntityState.Detached;
+            }
+
+            foreach (TableArticleQuantity tableArticleQuantity in quantitiesToRemove.ToList())
+            {
+                tableArticleQuantities.Remove(tableArticleQuantity);
+                efContext.TableArticleQuantities.Remove(tableArticleQuantity);
+            }
+
+            // efContext.Entry(table).State = EntityState.Modified;
+
+            efContext.TableArticleQuantities.AddRange(soldTableArticleQuantities);
+            await efContext.SaveChangesAsync();
+        }
+
+
         public async Task ModifyTableArticlesOnlineOrder(OnlineOrder onlineOrder, List<SoldTableArticleQuantity> soldTableArticleQuantities)
         {
             using EFContext efContext = new EFContext();
@@ -193,7 +216,7 @@ namespace RestaurantApp.Services
         public async Task<List<ArticleDetails>> GetArticleDetailsByArticleIDContext(int articleId,EFContext efContext)
         {
             //.Include(x => x.Article) not including article due tests and tracking.
-            List<ArticleDetails> articleDetails = await efContext.ArticleDetails.Include(x => x.Article).Where(x => x.Article.ID == articleId).ToListAsync();
+            List<ArticleDetails> articleDetails = await efContext.ArticleDetails.Where(x => x.ArticleID == articleId).ToListAsync();
             return articleDetails;
         }
 
@@ -319,6 +342,13 @@ namespace RestaurantApp.Services
         {
 
             using EFContext efContext = new EFContext();
+            efContext.Bills.Add(bill);
+            await efContext.SaveChangesAsync();
+            return bill.ID;
+        }
+
+        public async Task<int> CreateBillContext(Bill bill,EFContext efContext)
+        {
             efContext.Bills.Add(bill);
             await efContext.SaveChangesAsync();
             return bill.ID;

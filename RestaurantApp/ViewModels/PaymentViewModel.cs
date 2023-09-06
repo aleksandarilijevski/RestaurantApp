@@ -170,6 +170,8 @@ namespace RestaurantApp.ViewModels
 
         private async Task<Bill> AddBill(decimal cash, decimal change)
         {
+            using EFContext efContext = new EFContext();
+
             decimal totalPrice = CalculateTotalPrice();
             Configuration configuration = await _databaseService.GetConfiguration();
 
@@ -192,20 +194,24 @@ namespace RestaurantApp.ViewModels
                 await DecreaseOriginalQuantity(tableArticleQuantity.ArticleDetails, tableArticleQuantity.Quantity);
             }
 
-            await CreateBill(bill);
+            await _databaseService.CreateBillContext(bill,efContext);
 
             _table.InUse = false;
             await _databaseService.EditTable(_table);
 
             List<SoldTableArticleQuantity> soldTableArticleQuantities = new List<SoldTableArticleQuantity>();
-            List<TableArticleQuantity> tableArticleQuantities = _table.TableArticleQuantities.Select(x => x).Where(x => !(x is SoldTableArticleQuantity)).ToList();
+            List<TableArticleQuantity> tableArticleQuantities = TableArticleQuantities.Select(x => x).Where(x => !(x is SoldTableArticleQuantity)).ToList();
 
             foreach (TableArticleQuantity tableArticleQuantity in tableArticleQuantities)
             {
+                foreach (ArticleDetails articleDetails in tableArticleQuantity.ArticleDetails)
+                {
+                    articleDetails.Article = null;
+                }
+
                 SoldTableArticleQuantity soldTableArticleQuantity = new SoldTableArticleQuantity
                 {
                     ArticleID = tableArticleQuantity.ArticleID,
-                    Article = tableArticleQuantity.Article,
                     ArticleDetails = tableArticleQuantity.ArticleDetails,
                     TableID = tableArticleQuantity.TableID,
                     Quantity = tableArticleQuantity.Quantity,
@@ -215,9 +221,8 @@ namespace RestaurantApp.ViewModels
                 soldTableArticleQuantities.Add(soldTableArticleQuantity);
             }
 
-            //await _databaseService.ModifyTableArticles(_table, soldTableArticleQuantities);
 
-            await _databaseService.ModifyTableArticles(TableArticleQuantities, soldTableArticleQuantities);
+            await _databaseService.ModifyTableArticlesContext(TableArticleQuantities, soldTableArticleQuantities,efContext);
             return bill;
         }
 

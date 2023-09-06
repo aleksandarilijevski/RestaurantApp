@@ -7,6 +7,9 @@ namespace RestaurantApp.Services.Interface
 {
     public interface IDatabaseService
     {
+        public Task<int> CreateBillContext(Bill bill, EFContext efContext);
+
+        public Task ModifyTableArticlesContext(List<TableArticleQuantity> tableArticleQuantities, List<SoldTableArticleQuantity> soldTableArticleQuantities, EFContext efContext);
         public Task EditTableContext(Table table,EFContext efContext);
 
         public Task AddDataEntryContext(DataEntry dataEntry, EFContext efContext);
