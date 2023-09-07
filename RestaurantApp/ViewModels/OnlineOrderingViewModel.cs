@@ -171,8 +171,10 @@ namespace RestaurantApp.ViewModels
 
         private async void AddArticleToOnlineOrder(string barcode)
         {
+            using EFContext efContext = new EFContext();
             long.TryParse(barcode, out long barcodeLong);
-            Article article = await _databaseService.GetArticleByBarcode(barcodeLong);
+            Article article = await _databaseService.GetArticleByBarcodeContext(barcodeLong, efContext);
+            //Article article = await _databaseService.GetArticleByBarcode(barcodeLong);
 
             if (article is null)
             {
@@ -185,7 +187,7 @@ namespace RestaurantApp.ViewModels
 
             if (isQuantityAvailable)
             {
-                List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleID(article.ID);
+                List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleIDContext(article.ID,efContext);
 
                 TableArticleQuantity tableArticleQuantity = new TableArticleQuantity
                 {
@@ -198,6 +200,8 @@ namespace RestaurantApp.ViewModels
                 await IncreaseReservedQuantity(articleDetails, tableArticleQuantity.Quantity);
                 TableArticleQuantities.Add(tableArticleQuantity);
                 OnlineOrder.TableArticleQuantities.Add(tableArticleQuantity);
+
+                await _databaseService.AddTableArticleQuantityContext(tableArticleQuantity, efContext);
             }
 
             Barcode = string.Empty;
@@ -208,7 +212,8 @@ namespace RestaurantApp.ViewModels
         /// </summary>
         private async Task<bool> IfQuantityIsAvailable(Article article)
         {
-            int quantity = GetAvailableQuantity(article.ArticleDetails);
+            List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleID(article.ID);
+            int quantity = GetAvailableQuantity(articleDetails);
 
             if (quantity != 0)
             {
@@ -376,6 +381,7 @@ namespace RestaurantApp.ViewModels
 
             //Table.TableArticleQuantities.Remove(tableArticleQuantity);
             TableArticleQuantities.Remove(tableArticleQuantity);
+            await _databaseService.DeleteTableArticleQuantity(tableArticleQuantity);
         }
 
     }
