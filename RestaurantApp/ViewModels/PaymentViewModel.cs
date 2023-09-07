@@ -121,50 +121,52 @@ namespace RestaurantApp.ViewModels
        
         private async Task<Bill> AddBillOnlineOrder(decimal cash, decimal change)
         {
-            //decimal totalPrice = CalculateTotalPrice();
-            //Configuration configuration = await _databaseService.GetConfiguration();
+            using EFContext efContext = new EFContext();
 
-            //int billCounter = await IncreaseBillCounter();
-            //string registrationNumber = billCounter.ToString() + "/" + DateTime.Now.ToString("ddMMyyyy");
+            decimal totalPrice = CalculateTotalPrice();
+            Configuration configuration = await _databaseService.GetConfiguration();
 
-            //Bill bill = new Bill
-            //{
-            //    TotalPrice = totalPrice,
-            //    Cash = cash,
-            //    Change = change,
-            //    PaymentType = PaymentType,
-            //    RegistrationNumber = registrationNumber
-            //};
+            int billCounter = await IncreaseBillCounter();
+            string registrationNumber = billCounter.ToString() + "/" + DateTime.Now.ToString("ddMMyyyy");
 
-            //foreach (TableArticleQuantity tableArticleQuantity in TableArticleQuantities)
-            //{
-            //    await DecreaseReservedQuantity(tableArticleQuantity.ArticleDetails, tableArticleQuantity.Quantity);
-            //    await DecreaseOriginalQuantity(tableArticleQuantity.ArticleDetails, tableArticleQuantity.Quantity);
-            //}
+            Bill bill = new Bill
+            {
+                TotalPrice = totalPrice,
+                Cash = cash,
+                Change = change,
+                PaymentType = PaymentType,
+                RegistrationNumber = registrationNumber
+            };
 
-            //await CreateBill(bill);
+            foreach (TableArticleQuantity tableArticleQuantity in TableArticleQuantities)
+            {
+                List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleIDContext(tableArticleQuantity.ArticleID,efContext);
+                await DecreaseReservedQuantity(articleDetails, tableArticleQuantity.Quantity, efContext);
+                await DecreaseOriginalQuantity(articleDetails, tableArticleQuantity.Quantity, efContext);
+            }
+
+            await CreateBill(bill);
 
 
-            //List<SoldTableArticleQuantity> soldTableArticleQuantities = new List<SoldTableArticleQuantity>();
+            List<SoldTableArticleQuantity> soldTableArticleQuantities = new List<SoldTableArticleQuantity>();
 
-            //foreach (TableArticleQuantity tableArticleQuantity in OnlineOrder.TableArticleQuantities)
-            //{
-            //    SoldTableArticleQuantity soldTableArticleQuantity = new SoldTableArticleQuantity
-            //    {
-            //        ArticleID = tableArticleQuantity.ArticleID,
-            //        Article = tableArticleQuantity.Article,
-            //        ArticleDetails = tableArticleQuantity.ArticleDetails,
-            //        Quantity = tableArticleQuantity.Quantity,
-            //        Bill = bill
-            //    };
+            foreach (TableArticleQuantity tableArticleQuantity in OnlineOrder.TableArticleQuantities)
+            {
+                SoldTableArticleQuantity soldTableArticleQuantity = new SoldTableArticleQuantity
+                {
+                    ArticleID = tableArticleQuantity.ArticleID,
+                    Article = tableArticleQuantity.Article,
+                    ArticleDetails = tableArticleQuantity.ArticleDetails,
+                    Quantity = tableArticleQuantity.Quantity,
+                    Bill = bill
+                };
 
-            //    soldTableArticleQuantities.Add(soldTableArticleQuantity);
-            //}
-
-            //OnlineOrder.TableArticleQuantities.AddRange(soldTableArticleQuantities);
+                //soldTableArticleQuantities.Add(soldTableArticleQuantity);
+                await _databaseService.DeleteTableArticleQuantity(tableArticleQuantity);
+                await _databaseService.AddTableArticleQuantityContext(soldTableArticleQuantity, efContext);
+            }
 
             //await _databaseService.EditOnlineOrder(OnlineOrder);
-            Bill bill = null;
             return bill;
         }
 

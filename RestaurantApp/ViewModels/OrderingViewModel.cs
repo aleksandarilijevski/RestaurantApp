@@ -439,6 +439,8 @@ namespace RestaurantApp.ViewModels
             }
 
             TableArticleQuantities.Remove(tableArticleQuantity);
+
+            //Should be deleted from same instance
             await _databaseService.DeleteTableArticleQuantity(tableArticleQuantity);
 
             List<TableArticleQuantity> tableArticleQuantities = Table.TableArticleQuantities.Where(x => !(x is SoldTableArticleQuantity)).ToList();

@@ -247,21 +247,8 @@ namespace RestaurantApp.Services
         {
             //.Include(x => x.Article) not including article due tests and tracking.
             List<ArticleDetails> articleDetails = await efContext.ArticleDetails.Where(x => x.ArticleID == articleId).ToListAsync();
-
-            //Added for refresh
-            foreach (ArticleDetails articleDetail in articleDetails)
-            {
-                efContext.Entry(articleDetail).Reload();
-            }
-
             return articleDetails;
         }
-
-
-        //public async Task<Article> GetArticleByArticleDetailsID()
-        //{
-
-        //}
 
         public async Task<int> AddArticleDetails(ArticleDetails articleDetails)
         {

@@ -147,29 +147,29 @@ namespace RestaurantApp.ViewModels
                 return;
             }
 
-            if (OnlineOrder.Firstname is null || OnlineOrder.Firstname == string.Empty)
-            {
-                MessageBox.Show("Firstname field can not be empty!", "Online Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
+            //if (OnlineOrder.Firstname is null || OnlineOrder.Firstname == string.Empty)
+            //{
+            //    MessageBox.Show("Firstname field can not be empty!", "Online Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
+            //    return;
+            //}
 
-            if (OnlineOrder.Lastname is null || OnlineOrder.Lastname == string.Empty)
-            {
-                MessageBox.Show("Lastname field can not be empty!", "Online Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
+            //if (OnlineOrder.Lastname is null || OnlineOrder.Lastname == string.Empty)
+            //{
+            //    MessageBox.Show("Lastname field can not be empty!", "Online Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
+            //    return;
+            //}
 
-            if (OnlineOrder.Address is null || OnlineOrder.Address == string.Empty)
-            {
-                MessageBox.Show("Address field can not be empty!", "Online Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
+            //if (OnlineOrder.Address is null || OnlineOrder.Address == string.Empty)
+            //{
+            //    MessageBox.Show("Address field can not be empty!", "Online Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
+            //    return;
+            //}
 
-            if (OnlineOrder.PhoneNumber.ToString().Length < 8)
-            {
-                MessageBox.Show("Phone number field is not valid!", "Online Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
+            //if (OnlineOrder.PhoneNumber.ToString().Length < 8)
+            //{
+            //    MessageBox.Show("Phone number field is not valid!", "Online Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
+            //    return;
+            //}
 
             NavigationParameters navigationParameters = new NavigationParameters()
             {
@@ -182,13 +182,14 @@ namespace RestaurantApp.ViewModels
 
         private async void CheckIfOnlineOrderExists()
         {
+            using EFContext efContext = new EFContext();
             OnlineOrder onlineOrder = await _databaseService.GetLastOnlineOrder();
 
             if (onlineOrder == null)
             {
                 onlineOrder = new OnlineOrder();
-                //await _databaseService.AddOnlineOrderContext(onlineOrder, _efContext);
-                await _databaseService.AddOnlineOrder(onlineOrder);
+                await _databaseService.AddOnlineOrderContext(onlineOrder, efContext);
+                //await _databaseService.AddOnlineOrder(onlineOrder);
             }
 
             if (onlineOrder is not null)
@@ -202,8 +203,9 @@ namespace RestaurantApp.ViewModels
         private async void AddArticleToOnlineOrder(string barcode)
         {
             using EFContext efContext = new EFContext();
+
             long.TryParse(barcode, out long barcodeLong);
-            Article article = await _databaseService.GetArticleByBarcodeContext(barcodeLong, _efContext);
+            Article article = await _databaseService.GetArticleByBarcodeContext(barcodeLong, efContext);
             //Article article = await _databaseService.GetArticleByBarcode(barcodeLong);
 
             if (article is null)
@@ -217,7 +219,7 @@ namespace RestaurantApp.ViewModels
 
             if (isQuantityAvailable)
             {
-                List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleIDContext(article.ID, _efContext);
+                List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleIDContext(article.ID, efContext);
 
                 TableArticleQuantity tableArticleQuantity = new TableArticleQuantity
                 {
@@ -231,7 +233,7 @@ namespace RestaurantApp.ViewModels
                 TableArticleQuantities.Add(tableArticleQuantity);
                 //OnlineOrder.TableArticleQuantities.Add(tableArticleQuantity);
 
-                await _databaseService.AddTableArticleQuantityContext(tableArticleQuantity, _efContext);
+                await _databaseService.AddTableArticleQuantityContext(tableArticleQuantity, efContext);
             }
 
             Barcode = string.Empty;
@@ -411,7 +413,11 @@ namespace RestaurantApp.ViewModels
 
             //Table.TableArticleQuantities.Remove(tableArticleQuantity);
             TableArticleQuantities.Remove(tableArticleQuantity);
-            await _databaseService.DeleteTableArticleQuantityContext(tableArticleQuantity,_efContext);
+            //await _databaseService.DeleteTableArticleQuantityContext(tableArticleQuantity,_efContext);
+
+
+            //Should be deleted from same EFCOntext
+            await _databaseService.DeleteTableArticleQuantity(tableArticleQuantity);
         }
 
     }
