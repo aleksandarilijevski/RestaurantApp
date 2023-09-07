@@ -32,6 +32,21 @@ namespace RestaurantApp.Services
             return article;
         }
 
+        public async Task<OnlineOrder> GetLastOnlineOrder()
+        {
+            using EFContext efContext = new EFContext();
+
+            OnlineOrder onlineOrder = null;
+
+            if (efContext.OnlineOrders.Any())
+            {
+                int id = efContext.OnlineOrders.Max(x => x.ID);
+                onlineOrder = await efContext.OnlineOrders.Include(x => x.TableArticleQuantities).ThenInclude(x => x.Article).FirstOrDefaultAsync(x => x.ID == id);
+            }
+
+            return onlineOrder;
+        }
+
         public async Task<Article> GetArticleByBarcode(long barcode)
         {
 
@@ -40,6 +55,21 @@ namespace RestaurantApp.Services
             //.Include(x => x.ArticleDetails) Removed due tests and tracking.
             Article article = await efContext.Articles.FirstOrDefaultAsync(x => x.Barcode == barcode && x.IsDeleted == false);
             return article;
+        }
+
+        public async Task<int> AddOnlineOrderContext(OnlineOrder onlineOrder, EFContext efContext)
+        {
+            efContext.OnlineOrders.Add(onlineOrder);
+            await efContext.SaveChangesAsync();
+            return onlineOrder.ID;
+        }
+
+        public async Task<int> AddOnlineOrder(OnlineOrder onlineOrder)
+        {
+            using EFContext efContext = new EFContext();
+            efContext.OnlineOrders.Add(onlineOrder);
+            await efContext.SaveChangesAsync();
+            return onlineOrder.ID;
         }
 
         public async Task<Article> GetArticleByBarcodeContext(long barcode,EFContext efContext)
@@ -217,6 +247,13 @@ namespace RestaurantApp.Services
         {
             //.Include(x => x.Article) not including article due tests and tracking.
             List<ArticleDetails> articleDetails = await efContext.ArticleDetails.Where(x => x.ArticleID == articleId).ToListAsync();
+
+            //Added for refresh
+            foreach (ArticleDetails articleDetail in articleDetails)
+            {
+                efContext.Entry(articleDetail).Reload();
+            }
+
             return articleDetails;
         }
 
@@ -321,6 +358,13 @@ namespace RestaurantApp.Services
             efContext.TableArticleQuantities.Remove(tableArticleQuantity);
             await efContext.SaveChangesAsync();
         }
+
+        public async Task DeleteTableArticleQuantityContext(TableArticleQuantity tableArticleQuantity,EFContext efContext)
+        {
+            efContext.TableArticleQuantities.Remove(tableArticleQuantity);
+            await efContext.SaveChangesAsync();
+        }
+
 
         public async Task<int> GetTableArticleTotalQuantity(int articleID)
         {

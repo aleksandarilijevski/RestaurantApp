@@ -23,8 +23,10 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand<string> _addArticleToOnlineOrderCommand;
         private DelegateCommand<TableArticleQuantity> _deleteTableArticleQuantityCommand;
         private DelegateCommand _goToPaymentCommand;
+        private DelegateCommand _checkIfOnlineOrderExistsCommand;
         private OnlineOrder _onlineOrder = new OnlineOrder();
         private int _quantityValueBeforeChange = 0;
+        private EFContext _efContext = new EFContext();
 
         public OnlineOrderingViewModel(IDatabaseService databaseService, IRegionManager regionManager)
         {
@@ -128,6 +130,15 @@ namespace RestaurantApp.ViewModels
             }
         }
 
+        public DelegateCommand CheckIfOnlineOrderExistsCommand
+        {
+            get
+            {
+                _checkIfOnlineOrderExistsCommand = new DelegateCommand(CheckIfOnlineOrderExists);
+                return _checkIfOnlineOrderExistsCommand;
+            }
+        }
+
         private void GoToPayment()
         {
             if (TableArticleQuantities.Count == 0)
@@ -169,11 +180,30 @@ namespace RestaurantApp.ViewModels
             _regionManager.RequestNavigate("MainRegion", "Payment", navigationParameters);
         }
 
+        private async void CheckIfOnlineOrderExists()
+        {
+            OnlineOrder onlineOrder = await _databaseService.GetLastOnlineOrder();
+
+            if (onlineOrder == null)
+            {
+                onlineOrder = new OnlineOrder();
+                //await _databaseService.AddOnlineOrderContext(onlineOrder, _efContext);
+                await _databaseService.AddOnlineOrder(onlineOrder);
+            }
+
+            if (onlineOrder is not null)
+            {
+                OnlineOrder = onlineOrder;
+                TableArticleQuantities = new ObservableCollection<TableArticleQuantity>(OnlineOrder.TableArticleQuantities);
+            }
+
+        }
+
         private async void AddArticleToOnlineOrder(string barcode)
         {
             using EFContext efContext = new EFContext();
             long.TryParse(barcode, out long barcodeLong);
-            Article article = await _databaseService.GetArticleByBarcodeContext(barcodeLong, efContext);
+            Article article = await _databaseService.GetArticleByBarcodeContext(barcodeLong, _efContext);
             //Article article = await _databaseService.GetArticleByBarcode(barcodeLong);
 
             if (article is null)
@@ -187,21 +217,21 @@ namespace RestaurantApp.ViewModels
 
             if (isQuantityAvailable)
             {
-                List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleIDContext(article.ID,efContext);
+                List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleIDContext(article.ID, _efContext);
 
                 TableArticleQuantity tableArticleQuantity = new TableArticleQuantity
                 {
                     ArticleID = article.ID,
-                    Article = article,
+                    OnlineOrderID = OnlineOrder.ID,
                     Quantity = 1,
                     ArticleDetails = articleDetails
                 };
 
                 await IncreaseReservedQuantity(articleDetails, tableArticleQuantity.Quantity);
                 TableArticleQuantities.Add(tableArticleQuantity);
-                OnlineOrder.TableArticleQuantities.Add(tableArticleQuantity);
+                //OnlineOrder.TableArticleQuantities.Add(tableArticleQuantity);
 
-                await _databaseService.AddTableArticleQuantityContext(tableArticleQuantity, efContext);
+                await _databaseService.AddTableArticleQuantityContext(tableArticleQuantity, _efContext);
             }
 
             Barcode = string.Empty;
@@ -381,7 +411,7 @@ namespace RestaurantApp.ViewModels
 
             //Table.TableArticleQuantities.Remove(tableArticleQuantity);
             TableArticleQuantities.Remove(tableArticleQuantity);
-            await _databaseService.DeleteTableArticleQuantity(tableArticleQuantity);
+            await _databaseService.DeleteTableArticleQuantityContext(tableArticleQuantity,_efContext);
         }
 
     }
