@@ -26,7 +26,6 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand _checkIfOnlineOrderExistsCommand;
         private OnlineOrder _onlineOrder = new OnlineOrder();
         private int _quantityValueBeforeChange = 0;
-        private EFContext _efContext = new EFContext();
 
         public OnlineOrderingViewModel(IDatabaseService databaseService, IRegionManager regionManager)
         {
@@ -378,7 +377,9 @@ namespace RestaurantApp.ViewModels
 
             foreach (ArticleDetails articleDetail in articleDetails.OrderBy(x => x.CreatedDateTime))
             {
-                if (articleDetail.Article.IsDeleted == false && articleDetail.Article.ID == tableArticleQuantity.Article.ID)
+                Article article = await _databaseService.GetArticleByID(articleDetail.ArticleID);
+
+                if (article.IsDeleted == false && article.ID == tableArticleQuantity.Article.ID)
                 {
 
                     if (articleDetail.ReservedQuantity != 0)

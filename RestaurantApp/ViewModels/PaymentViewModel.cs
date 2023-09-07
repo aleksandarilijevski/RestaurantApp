@@ -145,18 +145,22 @@ namespace RestaurantApp.ViewModels
                 await DecreaseOriginalQuantity(articleDetails, tableArticleQuantity.Quantity, efContext);
             }
 
-            await CreateBill(bill);
+            await _databaseService.CreateBillContext(bill,efContext);
 
 
             List<SoldTableArticleQuantity> soldTableArticleQuantities = new List<SoldTableArticleQuantity>();
 
-            foreach (TableArticleQuantity tableArticleQuantity in OnlineOrder.TableArticleQuantities)
+            //OnlineOrder.TableArticleQuantities
+            foreach (TableArticleQuantity tableArticleQuantity in TableArticleQuantities)
             {
+                Article article = await _databaseService.GetArticleByIDContext(tableArticleQuantity.ArticleID, efContext);
+                List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleIDContext(tableArticleQuantity.ArticleID, efContext);
+
                 SoldTableArticleQuantity soldTableArticleQuantity = new SoldTableArticleQuantity
                 {
-                    ArticleID = tableArticleQuantity.ArticleID,
-                    Article = tableArticleQuantity.Article,
-                    ArticleDetails = tableArticleQuantity.ArticleDetails,
+                    //ArticleID = tableArticleQuantity.ArticleID,
+                    Article = article,
+                    ArticleDetails = articleDetails,
                     Quantity = tableArticleQuantity.Quantity,
                     Bill = bill
                 };
