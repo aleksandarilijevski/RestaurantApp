@@ -162,6 +162,7 @@ namespace RestaurantApp.ViewModels
                     Article = article,
                     ArticleDetails = articleDetails,
                     Quantity = tableArticleQuantity.Quantity,
+                    OnlineOrderID = OnlineOrder.ID,
                     Bill = bill
                 };
 
@@ -170,7 +171,8 @@ namespace RestaurantApp.ViewModels
                 await _databaseService.AddTableArticleQuantityContext(soldTableArticleQuantity, efContext);
             }
 
-            //await _databaseService.EditOnlineOrder(OnlineOrder);
+            OnlineOrder.IsPayed = true;
+            await _databaseService.EditOnlineOrderContext(OnlineOrder,efContext);
             return bill;
         }
 

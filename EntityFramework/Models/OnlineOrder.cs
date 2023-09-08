@@ -16,6 +16,8 @@
 
         public string Comment { get; set; }
 
+        public bool IsPayed { get; set; }
+
         public List<TableArticleQuantity> TableArticleQuantities { get;set; } = new List<TableArticleQuantity>();
     }
 }

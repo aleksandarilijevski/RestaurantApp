@@ -213,9 +213,8 @@ namespace RestaurantApp.Services
             await efContext.SaveChangesAsync();
         }
 
-        public async Task EditOnlineOrder(OnlineOrder onlineOrder)
+        public async Task EditOnlineOrderContext(OnlineOrder onlineOrder,EFContext efContext)
         {
-            using EFContext efContext = new EFContext();
             efContext.Entry(onlineOrder).State = EntityState.Modified;
             await efContext.SaveChangesAsync();
         }
@@ -441,6 +440,8 @@ namespace RestaurantApp.Services
                 .Include(x => x.Table)
                 .ThenInclude(x => x.TableArticleQuantities)
                 .ThenInclude(x => x.ArticleDetails)
+                .Include(x => x.OnlineOrder)
+                .ThenInclude(x => x.TableArticleQuantities)
                 .ToListAsync();
             return bills;
         }

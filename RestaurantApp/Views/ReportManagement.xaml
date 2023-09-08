@@ -110,6 +110,7 @@
                         <MultiBinding Converter="{StaticResource TotalProfitConverter}">
                             <Binding Path="ID"/>
                             <Binding Path="Table.TableArticleQuantities"/>
+                            <Binding Path="OnlineOrder.TableArticleQuantities"/>
                             <Binding Path="TotalPrice"/>
                         </MultiBinding>
                     </DataGridTextColumn.Binding>

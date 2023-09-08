@@ -1,4 +1,5 @@
 ﻿using EntityFramework.Models;
+using Microsoft.EntityFrameworkCore;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
@@ -26,11 +27,13 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand _checkIfOnlineOrderExistsCommand;
         private OnlineOrder _onlineOrder = new OnlineOrder();
         private int _quantityValueBeforeChange = 0;
+        private EFContext _efContext;
 
-        public OnlineOrderingViewModel(IDatabaseService databaseService, IRegionManager regionManager)
+        public OnlineOrderingViewModel(IDatabaseService databaseService, IRegionManager regionManager, EFContext efContext)
         {
             _databaseService = databaseService;
             _regionManager = regionManager;
+            _efContext = efContext;
         }
 
         public string Barcode
@@ -181,22 +184,26 @@ namespace RestaurantApp.ViewModels
 
         private async void CheckIfOnlineOrderExists()
         {
+            TableArticleQuantities.Clear();
             using EFContext efContext = new EFContext();
             OnlineOrder onlineOrder = await _databaseService.GetLastOnlineOrder();
 
-            if (onlineOrder == null)
+            if (onlineOrder is null)
             {
                 onlineOrder = new OnlineOrder();
-                await _databaseService.AddOnlineOrderContext(onlineOrder, efContext);
-                //await _databaseService.AddOnlineOrder(onlineOrder);
+                await _databaseService.AddOnlineOrder(onlineOrder);
             }
 
-            if (onlineOrder is not null)
+            if (onlineOrder is not null && onlineOrder.IsPayed == false)
             {
                 OnlineOrder = onlineOrder;
                 TableArticleQuantities = new ObservableCollection<TableArticleQuantity>(OnlineOrder.TableArticleQuantities);
             }
-
+            else if (onlineOrder.IsPayed == true)
+            {
+                onlineOrder = new OnlineOrder();
+                await _databaseService.AddOnlineOrder(onlineOrder);
+            }
         }
 
         private async void AddArticleToOnlineOrder(string barcode)
@@ -205,7 +212,6 @@ namespace RestaurantApp.ViewModels
 
             long.TryParse(barcode, out long barcodeLong);
             Article article = await _databaseService.GetArticleByBarcodeContext(barcodeLong, efContext);
-            //Article article = await _databaseService.GetArticleByBarcode(barcodeLong);
 
             if (article is null)
             {
@@ -218,6 +224,20 @@ namespace RestaurantApp.ViewModels
 
             if (isQuantityAvailable)
             {
+                if (OnlineOrder.ID == 0)
+                {
+                    await _databaseService.AddOnlineOrderContext(OnlineOrder, efContext);
+                }
+                else
+                {
+                    List<TableArticleQuantity> filter = OnlineOrder.TableArticleQuantities.Where(x => (x is SoldTableArticleQuantity)).ToList();
+
+                    if (filter.Count != 0)
+                    {
+                        await _databaseService.AddOnlineOrderContext(OnlineOrder, efContext);
+                    }
+                }
+
                 List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleIDContext(article.ID, efContext);
 
                 TableArticleQuantity tableArticleQuantity = new TableArticleQuantity
@@ -227,6 +247,7 @@ namespace RestaurantApp.ViewModels
                     Quantity = 1,
                     ArticleDetails = articleDetails
                 };
+
 
                 await IncreaseReservedQuantity(articleDetails, tableArticleQuantity.Quantity);
                 TableArticleQuantities.Add(tableArticleQuantity);
