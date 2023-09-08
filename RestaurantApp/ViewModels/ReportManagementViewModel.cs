@@ -318,89 +318,9 @@ namespace RestaurantApp.ViewModels
                 return;
             }
 
-            //Excel.Application excel = new Excel.Application();
-            //Excel.Workbook workbook = (Excel.Workbook)(excel.Workbooks.Add(Missing.Value));
-            //Excel.Worksheet worksheet = (Excel.Worksheet)workbook.ActiveSheet;
-
-            //worksheet.Columns[1].ColumnWidth = 20;
-            //worksheet.Columns[2].ColumnWidth = 15;
-            //worksheet.Columns[3].ColumnWidth = 15;
-            //worksheet.Columns[4].ColumnWidth = 15;
-            //worksheet.Columns[5].ColumnWidth = 20;
-
-            //int cellIndex = 1;
-
-            //foreach (Bill bill in Bills)
-            //{
-            //    List<TableArticleQuantity> soldTableArticleQuantities = bill.Table.TableArticleQuantities.Where(x => (x is SoldTableArticleQuantity)).ToList();
-
-            //    worksheet.Cells[cellIndex, 1] = "Table ID";
-            //    worksheet.Cells[cellIndex, 2] = "Payment type";
-            //    worksheet.Cells[cellIndex, 3] = "Total price";
-            //    worksheet.Cells[cellIndex, 4] = "Total profit";
-            //    worksheet.Cells[cellIndex, 5] = "Created date";
-
-            //    worksheet.Cells[cellIndex, 1].EntireRow.Font.Bold = true;
-
-            //    cellIndex++;
-
-            //    worksheet.Cells[cellIndex, 1] = bill.TableID;
-            //    worksheet.Cells[cellIndex, 2] = bill.PaymentType;
-            //    worksheet.Cells[cellIndex, 3] = bill.TotalPrice;
-
-            //    decimal profit = 0;
-
-            //    List<TableArticleQuantity> filteredSoldTableArticleQuantities = soldTableArticleQuantities.Where(x => x.BillID == bill.ID).ToList();
-
-            //    foreach (SoldTableArticleQuantity soldTableArticleQuantity in filteredSoldTableArticleQuantities)
-            //    {
-            //        int quantity = filteredSoldTableArticleQuantities.Sum(x => x.Quantity);
-
-            //        foreach (ArticleDetails articleDetail in soldTableArticleQuantity.ArticleDetails)
-            //        {
-            //            profit = bill.TotalPrice - (quantity * articleDetail.EntryPrice);
-            //        }
-            //    }
-
-            //    worksheet.Cells[cellIndex, 4] = profit;
-            //    worksheet.Cells[cellIndex, 5] = bill.CreatedDateTime;
-
-            //    cellIndex++;
-            //    worksheet.Cells[cellIndex, 1] = "Article name";
-            //    worksheet.Cells[cellIndex, 2] = "Article price";
-            //    worksheet.Cells[cellIndex, 3] = "Sold quantity";
-            //    worksheet.Cells[cellIndex, 4] = "Total price";
-            //    worksheet.Cells[cellIndex, 1].EntireRow.Font.Bold = true;
-
-            //    cellIndex++;
-
-            //    foreach (SoldTableArticleQuantity soldTableArticleQuantity in soldTableArticleQuantities)
-            //    {
-            //        if (soldTableArticleQuantity.BillID == bill.ID)
-            //        {
-            //            worksheet.Cells[cellIndex, 1] = soldTableArticleQuantity.Article.Name;
-            //            worksheet.Cells[cellIndex, 2] = soldTableArticleQuantity.Article.Price;
-            //            worksheet.Cells[cellIndex, 3] = soldTableArticleQuantity.Quantity;
-            //            worksheet.Cells[cellIndex, 4] = soldTableArticleQuantity.Quantity * soldTableArticleQuantity.Article.Price;
-            //            cellIndex++;
-            //        }
-            //    }
-
-            //    cellIndex += 3;
-            //    worksheet.Cells[cellIndex] = string.Empty;
-            //}
-
-            //decimal totalProfit = CalculateTotalProfit();
-            //worksheet.Cells[cellIndex, 1].EntireRow.Font.Bold = true;
-            //worksheet.Cells[cellIndex, 1] = "Total profit";
-            //worksheet.Cells[cellIndex, 2] = totalProfit;
-
-            //workbook.SaveAs(fileLocation, Excel.XlFileFormat.xlWorkbookNormal);
-
             var workbook = new XLWorkbook();
             var worksheet = workbook.Worksheets.Add("Sheet1");
 
-            // Set column widths
             worksheet.Column(1).Width = 20;
             worksheet.Column(2).Width = 15;
             worksheet.Column(3).Width = 15;
@@ -409,11 +329,8 @@ namespace RestaurantApp.ViewModels
 
             int cellIndex = 1;
 
-            // Loop through your bills (assuming you have a List<Bill> named Bills)
             foreach (Bill bill in Bills)
             {
-                // Assuming List<TableArticleQuantity> soldTableArticleQuantities = bill.Table.TableArticleQuantities.ToList();
-
                 List<SoldTableArticleQuantity> soldTableArticleQuantities = null;
 
                 if (bill.Table is not null)
@@ -426,7 +343,6 @@ namespace RestaurantApp.ViewModels
                     soldTableArticleQuantities = bill.OnlineOrder.TableArticleQuantities.OfType<SoldTableArticleQuantity>().ToList();
                 }
 
-                // Headers
                 worksheet.Cell(cellIndex, 1).Value = "Table ID";
                 worksheet.Cell(cellIndex, 2).Value = "Payment type";
                 worksheet.Cell(cellIndex, 3).Value = "Total price";
@@ -435,7 +351,6 @@ namespace RestaurantApp.ViewModels
                 worksheet.Row(cellIndex).Style.Font.Bold = true;
                 cellIndex++;
 
-                // Bill details
                 worksheet.Cell(cellIndex, 1).Value = bill.TableID;
                 worksheet.Cell(cellIndex, 2).Value = bill.PaymentType.ToString();
                 worksheet.Cell(cellIndex, 3).Value = bill.TotalPrice;
@@ -458,7 +373,6 @@ namespace RestaurantApp.ViewModels
                 worksheet.Cell(cellIndex, 5).Value = bill.CreatedDateTime;
                 cellIndex++;
 
-                // Article details
                 worksheet.Cell(cellIndex, 1).Value = "Article name";
                 worksheet.Cell(cellIndex, 2).Value = "Article price";
                 worksheet.Cell(cellIndex, 3).Value = "Sold quantity";
@@ -487,7 +401,6 @@ namespace RestaurantApp.ViewModels
             worksheet.Cell(cellIndex, 1).Value = "Total profit";
             worksheet.Cell(cellIndex, 2).Value = totalProfit;
 
-            // Save the workbook to a file location
             workbook.SaveAs(fileLocation);
         }
 
