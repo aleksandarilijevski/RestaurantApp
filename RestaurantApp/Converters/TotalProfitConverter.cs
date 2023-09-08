@@ -1,8 +1,10 @@
 ﻿using EntityFramework.Models;
+using Example;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Windows;
 using System.Windows.Data;
 
 namespace RestaurantApp.Converters
@@ -13,8 +15,22 @@ namespace RestaurantApp.Converters
         {
             int billId = (int)values[0];
 
-            List<TableArticleQuantity> tableArticleQuantities = (List<TableArticleQuantity>)values[1];
-            decimal totalPrice = (decimal)values[2];
+            List<TableArticleQuantity> tableArticleQuantities = new List<TableArticleQuantity>();
+
+
+            if (values[1] != DependencyProperty.UnsetValue)
+            {
+                List<TableArticleQuantity> tables = (List<TableArticleQuantity>)values[1];
+                tableArticleQuantities.AddRange(tables);
+            }
+
+            if (values[2] != DependencyProperty.UnsetValue)
+            {
+                List<TableArticleQuantity> onlineOrders = (List<TableArticleQuantity>)values[2];
+                tableArticleQuantities.AddRange(onlineOrders);
+            }
+
+            decimal totalPrice = (decimal)values[3];
 
             List<TableArticleQuantity> filtered = tableArticleQuantities.Where(x => x.BillID == billId).ToList();
 

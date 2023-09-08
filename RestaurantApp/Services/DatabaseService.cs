@@ -442,6 +442,7 @@ namespace RestaurantApp.Services
                 .ThenInclude(x => x.ArticleDetails)
                 .Include(x => x.OnlineOrder)
                 .ThenInclude(x => x.TableArticleQuantities)
+                .ThenInclude(x => x.ArticleDetails)
                 .ToListAsync();
             return bills;
         }
