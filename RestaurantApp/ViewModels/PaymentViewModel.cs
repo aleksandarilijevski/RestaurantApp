@@ -135,6 +135,7 @@ namespace RestaurantApp.ViewModels
                 Cash = cash,
                 Change = change,
                 PaymentType = PaymentType,
+                OnlineOrderID = OnlineOrder.ID,
                 RegistrationNumber = registrationNumber
             };
 

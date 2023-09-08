@@ -224,20 +224,6 @@ namespace RestaurantApp.ViewModels
 
             if (isQuantityAvailable)
             {
-                if (OnlineOrder.ID == 0)
-                {
-                    await _databaseService.AddOnlineOrderContext(OnlineOrder, efContext);
-                }
-                else
-                {
-                    List<TableArticleQuantity> filter = OnlineOrder.TableArticleQuantities.Where(x => (x is SoldTableArticleQuantity)).ToList();
-
-                    if (filter.Count != 0)
-                    {
-                        await _databaseService.AddOnlineOrderContext(OnlineOrder, efContext);
-                    }
-                }
-
                 List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleIDContext(article.ID, efContext);
 
                 TableArticleQuantity tableArticleQuantity = new TableArticleQuantity
