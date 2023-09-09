@@ -7,6 +7,8 @@ namespace RestaurantApp.Services.Interface
 {
     public interface IDatabaseService
     {
+        public  Task<TableArticleQuantity> GetTableArticleQuantityByID(int id);
+
         public Task DeleteTableArticleQuantityContext(TableArticleQuantity tableArticleQuantity, EFContext efContext);
 
         public Task<int> AddOnlineOrder(OnlineOrder onlineOrder);

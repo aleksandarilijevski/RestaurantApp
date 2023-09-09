@@ -323,6 +323,16 @@ namespace RestaurantApp.ViewModels
                     await _databaseService.EditTableArticleQuantity(selectedTableArticleQuantity);
                     SelectedTableArticleQuantity.PropertyChanged += OnQuantityPropertyChanged;
                 }
+                else if (_quantityValueBeforeChange == selectedTableArticleQuantity.Quantity)
+                {
+                    TableArticleQuantity tableArticleQuantity = await _databaseService.GetTableArticleQuantityByID(selectedTableArticleQuantity.ID);
+
+                    int quantityToAdd = Math.Abs(selectedTableArticleQuantity.Quantity - tableArticleQuantity.Quantity);
+
+                    await IncreaseReservedQuantity(articleDetails, quantityToAdd);
+                    await _databaseService.EditTableArticleQuantity(selectedTableArticleQuantity);
+                    SelectedTableArticleQuantity.PropertyChanged += OnQuantityPropertyChanged;
+                }
                 else
                 {
                     selectedTableArticleQuantity.Quantity = _quantityValueBeforeChange;

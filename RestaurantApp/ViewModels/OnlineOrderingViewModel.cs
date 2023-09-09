@@ -1,5 +1,4 @@
 ﻿using EntityFramework.Models;
-using Microsoft.EntityFrameworkCore;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
@@ -62,7 +61,6 @@ namespace RestaurantApp.ViewModels
                 if (_selectedTableArticleQuantity != null)
                 {
                     _quantityValueBeforeChange = _selectedTableArticleQuantity.Quantity;
-
                     _selectedTableArticleQuantity.PropertyChanged -= OnQuantityPropertyChanged;
                 }
 
@@ -289,6 +287,8 @@ namespace RestaurantApp.ViewModels
             List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleIDContext(selectedTableArticleQuantity.ArticleID, efContext);
             int availableQuantity = GetAvailableQuantity(articleDetails);
 
+            //Operator was < before changes, now it will be <=
+
             if (_quantityValueBeforeChange < selectedTableArticleQuantity.Quantity)
             {
                 if (availableQuantity >= selectedTableArticleQuantity.Quantity - _quantityValueBeforeChange)
@@ -303,10 +303,21 @@ namespace RestaurantApp.ViewModels
                     MessageBox.Show("Article is not in stock!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
+            else if (_quantityValueBeforeChange == selectedTableArticleQuantity.Quantity)
+            {
+                TableArticleQuantity tableArticleQuantity = await _databaseService.GetTableArticleQuantityByID(selectedTableArticleQuantity.ID);
+
+                int quantityToAdd = Math.Abs(selectedTableArticleQuantity.Quantity - tableArticleQuantity.Quantity);
+
+                await IncreaseReservedQuantity(articleDetails, quantityToAdd);
+                await _databaseService.EditTableArticleQuantity(selectedTableArticleQuantity);
+                SelectedTableArticleQuantity.PropertyChanged += OnQuantityPropertyChanged;
+            }
             else
             {
                 int quantityToRemove = Math.Abs(selectedTableArticleQuantity.Quantity - _quantityValueBeforeChange);
                 await DecreaseReservedQuantity(articleDetails, quantityToRemove);
+                await _databaseService.EditTableArticleQuantity(selectedTableArticleQuantity);
             }
 
             RaisePropertyChanged(nameof(TableArticleQuantities));

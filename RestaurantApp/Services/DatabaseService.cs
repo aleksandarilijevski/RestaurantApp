@@ -72,6 +72,14 @@ namespace RestaurantApp.Services
             return onlineOrder.ID;
         }
 
+        //Added due quantity issue
+        public async Task<TableArticleQuantity> GetTableArticleQuantityByID(int id)
+        {
+            using EFContext efContext = new EFContext();
+            TableArticleQuantity tableArticleQuantity = await efContext.TableArticleQuantities.FirstOrDefaultAsync(x => x.ID == id);
+            return tableArticleQuantity;
+        }
+
         public async Task<Article> GetArticleByBarcodeContext(long barcode,EFContext efContext)
         {
             Article article = await efContext.Articles.FirstOrDefaultAsync(x => x.Barcode == barcode && x.IsDeleted == false);
