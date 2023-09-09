@@ -281,6 +281,11 @@ namespace RestaurantApp.ViewModels
                 int availableQuantity = articleDetail.OriginalQuantity - articleDetail.ReservedQuantity;
                 int quantityToReserve = Math.Min(availableQuantity, quantityToBeReserved);
 
+                if (articleDetail.OriginalQuantity == articleDetail.ReservedQuantity)
+                {
+                    quantityToReserve = articleDetail.ReservedQuantity;
+                }
+
                 articleDetail.ReservedQuantity += quantityToReserve;
 
                 quantityToBeReserved -= quantityToReserve;
@@ -422,39 +427,46 @@ namespace RestaurantApp.ViewModels
 
             foreach (ArticleDetails articleDetail in articleDetails.OrderBy(x => x.CreatedDateTime))
             {
-                
-                if (articleDetail.Article.IsDeleted == false && articleDetail.Article.ID == tableArticleQuantity.Article.ID)
-                {
-
-                    if (articleDetail.ReservedQuantity != 0)
-                    {
-                        if (articleDetail.ReservedQuantity < SelectedTableArticleQuantity.Quantity)
-                        {
-                            int reservedDelete = Math.Min(articleDetail.ReservedQuantity, quantityToRemove);
-                            articleDetail.ReservedQuantity -= reservedDelete;
-                            quantityToRemove -= reservedDelete;
-
-                            if (quantityToRemove != 0)
-                            {
-                                continue;
-                            }
-
-                        }
-                        else
-                        {
-                            articleDetail.ReservedQuantity -= SelectedTableArticleQuantity.Quantity;
-
-                        }
-                    }
-                    else
-                    {
-                        continue;
-                    }
-
-                    await _databaseService.EditArticleDetails(articleDetail);
-                    break;
-                }
+                int reservedDelete = Math.Min(articleDetail.ReservedQuantity, quantityToRemove);
+                await DecreaseReservedQuantity(articleDetails, reservedDelete);
             }
+
+
+            //foreach (ArticleDetails articleDetail in articleDetails.OrderBy(x => x.CreatedDateTime))
+            //{
+
+            //    if (articleDetail.Article.IsDeleted == false && articleDetail.Article.ID == tableArticleQuantity.Article.ID)
+            //    {
+
+            //        if (articleDetail.ReservedQuantity != 0)
+            //        {
+            //            if (articleDetail.ReservedQuantity < SelectedTableArticleQuantity.Quantity)
+            //            {
+            //                int reservedDelete = Math.Min(articleDetail.ReservedQuantity, quantityToRemove);
+            //                articleDetail.ReservedQuantity -= reservedDelete;
+            //                quantityToRemove -= reservedDelete;
+
+            //                if (quantityToRemove != 0)
+            //                {
+            //                    continue;
+            //                }
+
+            //            }
+            //            else
+            //            {
+            //                articleDetail.ReservedQuantity -= SelectedTableArticleQuantity.Quantity;
+
+            //            }
+            //        }
+            //        else
+            //        {
+            //            continue;
+            //        }
+
+            //        await _databaseService.EditArticleDetails(articleDetail);
+            //        break;
+            //    }
+            //}
 
             TableArticleQuantities.Remove(tableArticleQuantity);
 
