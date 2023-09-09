@@ -337,6 +337,11 @@ namespace RestaurantApp.ViewModels
                 int availableQuantity = articleDetail.OriginalQuantity - articleDetail.ReservedQuantity;
                 int quantityToReserve = Math.Min(availableQuantity, reservedQuantityToBeDecreased);
 
+                if (articleDetail.OriginalQuantity == articleDetail.ReservedQuantity)
+                {
+                    quantityToReserve = reservedQuantityToBeDecreased;
+                }
+
                 // Reserve quantityToReserve for the current articleDetail
                 articleDetail.ReservedQuantity -= quantityToReserve;
 
