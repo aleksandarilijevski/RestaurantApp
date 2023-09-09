@@ -238,10 +238,10 @@ namespace RestaurantApp.ViewModels
 
                 await IncreaseReservedQuantity(articleDetails, tableArticleQuantity.Quantity);
                 TableArticleQuantities.Add(tableArticleQuantity);
-                OnlineOrder.TableArticleQuantities.Add(tableArticleQuantity);
+                //OnlineOrder.TableArticleQuantities.Add(tableArticleQuantity);
 
                 await _databaseService.AddTableArticleQuantityContext(tableArticleQuantity, efContext);
-                await _databaseService.EditOnlineOrderContext(OnlineOrder, efContext);
+                //await _databaseService.EditOnlineOrderContext(OnlineOrder, efContext);
             }
 
             Barcode = string.Empty;
