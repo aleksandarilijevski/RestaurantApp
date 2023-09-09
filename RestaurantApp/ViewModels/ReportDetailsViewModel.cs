@@ -131,7 +131,15 @@ namespace RestaurantApp.ViewModels
 
         private void GetSoldArticles()
         {
-            SoldTableArticleQuantities = new ObservableCollection<TableArticleQuantity>(_bill.Table.TableArticleQuantities.Select(x => x).Where(x => x.BillID == Bill.ID && (x is SoldTableArticleQuantity)).OfType<SoldTableArticleQuantity>().ToList());
+            if (_bill.Table is not null)
+            {
+                SoldTableArticleQuantities = new ObservableCollection<TableArticleQuantity>(_bill.Table.TableArticleQuantities.Select(x => x).Where(x => x.BillID == Bill.ID && (x is SoldTableArticleQuantity)).OfType<SoldTableArticleQuantity>().ToList());
+            }
+
+            if (_bill.OnlineOrder is not null)
+            {
+                SoldTableArticleQuantities = new ObservableCollection<TableArticleQuantity>(_bill.OnlineOrder.TableArticleQuantities.Select(x => x).Where(x => x.BillID == Bill.ID && (x is SoldTableArticleQuantity)).OfType<SoldTableArticleQuantity>().ToList());
+            }
         }
 
         private async Task<XImage> GetCustomQRCode(string text)
