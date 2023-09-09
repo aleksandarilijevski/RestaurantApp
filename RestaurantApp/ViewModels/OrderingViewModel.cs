@@ -304,14 +304,20 @@ namespace RestaurantApp.ViewModels
         /// </summary>
         private async Task IsQuantityAvailableForArticleOnTable(Article article)
         {
+            using EFContext efContext = new EFContext();
             TableArticleQuantity.PropertyChanged -= OnQuantityPropertyChanged;
-            int availableQuantity = GetAvailableQuantity(article.ArticleDetails);
+
+            //- _quantityValueBeforeChange added due tests.
+            //article.ArticleDetails is not updated on each call of this function.
+            List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleIDContext(article.ID, efContext);
+            int availableQuantity = GetAvailableQuantity(articleDetails);
 
             if (_quantityValueBeforeChange < TableArticleQuantity.Quantity)
             {
                 if (availableQuantity >= TableArticleQuantity.Quantity - _quantityValueBeforeChange)
                 {
-                    await IncreaseReservedQuantity(article.ArticleDetails, TableArticleQuantity.Quantity);
+                    //article.ArticleDetails was parametar before change.
+                    await IncreaseReservedQuantity(articleDetails, TableArticleQuantity.Quantity);
                     await _databaseService.EditTableArticleQuantity(TableArticleQuantity);
                     TableArticleQuantity.PropertyChanged += OnQuantityPropertyChanged;
                 }
@@ -324,7 +330,7 @@ namespace RestaurantApp.ViewModels
             else
             {
                 int quantityToRemove = Math.Abs(TableArticleQuantity.Quantity - _quantityValueBeforeChange);
-                await DecreaseReservedQuantity(article.ArticleDetails, quantityToRemove);
+                await DecreaseReservedQuantity(articleDetails, quantityToRemove);
             }
 
             RaisePropertyChanged(nameof(TableArticleQuantities));

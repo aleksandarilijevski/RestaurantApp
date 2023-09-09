@@ -203,6 +203,7 @@ namespace RestaurantApp.ViewModels
             {
                 onlineOrder = new OnlineOrder();
                 await _databaseService.AddOnlineOrder(onlineOrder);
+                OnlineOrder = onlineOrder;
             }
         }
 
@@ -237,9 +238,10 @@ namespace RestaurantApp.ViewModels
 
                 await IncreaseReservedQuantity(articleDetails, tableArticleQuantity.Quantity);
                 TableArticleQuantities.Add(tableArticleQuantity);
-                //OnlineOrder.TableArticleQuantities.Add(tableArticleQuantity);
+                OnlineOrder.TableArticleQuantities.Add(tableArticleQuantity);
 
                 await _databaseService.AddTableArticleQuantityContext(tableArticleQuantity, efContext);
+                await _databaseService.EditOnlineOrderContext(OnlineOrder, efContext);
             }
 
             Barcode = string.Empty;
@@ -281,14 +283,17 @@ namespace RestaurantApp.ViewModels
         /// </summary>
         private async Task IsQuantityAvailableForArticleOnTable(Article article)
         {
+            using EFContext efContext = new EFContext();
             TableArticleQuantity.PropertyChanged -= OnQuantityPropertyChanged;
-            int availableQuantity = GetAvailableQuantity(article.ArticleDetails);
+
+            List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleIDContext(article.ID, efContext);
+            int availableQuantity = GetAvailableQuantity(articleDetails);
 
             if (_quantityValueBeforeChange < TableArticleQuantity.Quantity)
             {
                 if (availableQuantity >= TableArticleQuantity.Quantity - _quantityValueBeforeChange)
                 {
-                    await IncreaseReservedQuantity(article.ArticleDetails, TableArticleQuantity.Quantity);
+                    await IncreaseReservedQuantity(articleDetails, TableArticleQuantity.Quantity);
                     await _databaseService.EditTableArticleQuantity(TableArticleQuantity);
                     TableArticleQuantity.PropertyChanged += OnQuantityPropertyChanged;
                 }
@@ -301,7 +306,7 @@ namespace RestaurantApp.ViewModels
             else
             {
                 int quantityToRemove = Math.Abs(TableArticleQuantity.Quantity - _quantityValueBeforeChange);
-                await DecreaseReservedQuantity(article.ArticleDetails, quantityToRemove);
+                await DecreaseReservedQuantity(articleDetails, quantityToRemove);
             }
 
             RaisePropertyChanged(nameof(TableArticleQuantities));
