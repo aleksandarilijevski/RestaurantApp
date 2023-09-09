@@ -21,7 +21,7 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand<string> _addArticleToTableCommand;
         private int _tableId;
         private Table _table;
-        private TableArticleQuantity _tableArticleQuantity;
+        private TableArticleQuantity _selectedTableArticleQuantity;
         private string _barcode;
         private DelegateCommand<Table> _getTableCommand;
         private DelegateCommand _showPaymentUserControlCommand;
@@ -71,30 +71,30 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public TableArticleQuantity TableArticleQuantity
+        public TableArticleQuantity SelectedTableArticleQuantity
         {
             get
             {
-                return _tableArticleQuantity;
+                return _selectedTableArticleQuantity;
             }
 
             set
             {
-                if (_tableArticleQuantity != null)
+                if (_selectedTableArticleQuantity != null)
                 {
-                    _quantityValueBeforeChange = _tableArticleQuantity.Quantity;
+                    _quantityValueBeforeChange = _selectedTableArticleQuantity.Quantity;
 
-                    _tableArticleQuantity.PropertyChanged -= OnQuantityPropertyChanged;
+                    _selectedTableArticleQuantity.PropertyChanged -= OnQuantityPropertyChanged;
                 }
 
-                _tableArticleQuantity = value;
+                _selectedTableArticleQuantity = value;
                 RaisePropertyChanged();
 
-                if (_tableArticleQuantity != null)
+                if (_selectedTableArticleQuantity != null)
                 {
-                    _quantityValueBeforeChange = _tableArticleQuantity.Quantity;
+                    _quantityValueBeforeChange = _selectedTableArticleQuantity.Quantity;
 
-                    _tableArticleQuantity.PropertyChanged += OnQuantityPropertyChanged;
+                    _selectedTableArticleQuantity.PropertyChanged += OnQuantityPropertyChanged;
                 }
             }
         }
@@ -166,7 +166,9 @@ namespace RestaurantApp.ViewModels
         {
             if (e.PropertyName == nameof(TableArticleQuantity.Quantity))
             {
-                Task isQuantityAvailableForArticleOnTable = Task.Run(() => IsQuantityAvailableForArticleOnTable(TableArticleQuantity.Article));
+                //In this method SelectedTableArticleQuantity is already changed,while in IsQuantityAvailableForArticleOnTable is not.
+                //I was sending SelectedTableArticleQuantity.Article before this issue, I will pass SelectedTableArticleQuantity now.
+                Task isQuantityAvailableForArticleOnTable = Task.Run(() => IsQuantityAvailableForArticleOnTable(SelectedTableArticleQuantity));
             }
         }
 
@@ -302,34 +304,34 @@ namespace RestaurantApp.ViewModels
         /// Checking if quantity is available for article on table.
         /// This function is called when quantity is changed from dataGrid cell.
         /// </summary>
-        private async Task IsQuantityAvailableForArticleOnTable(Article article)
+        private async Task IsQuantityAvailableForArticleOnTable(TableArticleQuantity selectedTableArticleQuantity)
         {
             using EFContext efContext = new EFContext();
-            TableArticleQuantity.PropertyChanged -= OnQuantityPropertyChanged;
+            SelectedTableArticleQuantity.PropertyChanged -= OnQuantityPropertyChanged;
 
             //- _quantityValueBeforeChange added due tests.
             //article.ArticleDetails is not updated on each call of this function.
-            List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleIDContext(article.ID, efContext);
+            List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleIDContext(selectedTableArticleQuantity.ArticleID, efContext);
             int availableQuantity = GetAvailableQuantity(articleDetails);
 
-            if (_quantityValueBeforeChange < TableArticleQuantity.Quantity)
+            if (_quantityValueBeforeChange < selectedTableArticleQuantity.Quantity)
             {
-                if (availableQuantity >= TableArticleQuantity.Quantity - _quantityValueBeforeChange)
+                if (availableQuantity >= selectedTableArticleQuantity.Quantity - _quantityValueBeforeChange)
                 {
                     //article.ArticleDetails was parametar before change.
-                    await IncreaseReservedQuantity(articleDetails, TableArticleQuantity.Quantity);
-                    await _databaseService.EditTableArticleQuantity(TableArticleQuantity);
-                    TableArticleQuantity.PropertyChanged += OnQuantityPropertyChanged;
+                    await IncreaseReservedQuantity(articleDetails, selectedTableArticleQuantity.Quantity);
+                    await _databaseService.EditTableArticleQuantity(selectedTableArticleQuantity);
+                    SelectedTableArticleQuantity.PropertyChanged += OnQuantityPropertyChanged;
                 }
                 else
                 {
-                    TableArticleQuantity.Quantity = _quantityValueBeforeChange;
+                    selectedTableArticleQuantity.Quantity = _quantityValueBeforeChange;
                     MessageBox.Show("Article is not in stock!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             else
             {
-                int quantityToRemove = Math.Abs(TableArticleQuantity.Quantity - _quantityValueBeforeChange);
+                int quantityToRemove = Math.Abs(selectedTableArticleQuantity.Quantity - _quantityValueBeforeChange);
                 await DecreaseReservedQuantity(articleDetails, quantityToRemove);
             }
 
@@ -406,7 +408,7 @@ namespace RestaurantApp.ViewModels
         {
             List<ArticleDetails>? articleDetails = await _databaseService.GetArticleDetailsByArticleID(tableArticleQuantity.ArticleID);
 
-            int quantityToRemove = TableArticleQuantity.Quantity;
+            int quantityToRemove = SelectedTableArticleQuantity.Quantity;
 
             foreach (ArticleDetails articleDetail in articleDetails.OrderBy(x => x.CreatedDateTime))
             {
@@ -416,7 +418,7 @@ namespace RestaurantApp.ViewModels
 
                     if (articleDetail.ReservedQuantity != 0)
                     {
-                        if (articleDetail.ReservedQuantity < TableArticleQuantity.Quantity)
+                        if (articleDetail.ReservedQuantity < SelectedTableArticleQuantity.Quantity)
                         {
                             int reservedDelete = Math.Min(articleDetail.ReservedQuantity, quantityToRemove);
                             articleDetail.ReservedQuantity -= reservedDelete;
@@ -430,7 +432,7 @@ namespace RestaurantApp.ViewModels
                         }
                         else
                         {
-                            articleDetail.ReservedQuantity -= TableArticleQuantity.Quantity;
+                            articleDetail.ReservedQuantity -= SelectedTableArticleQuantity.Quantity;
 
                         }
                     }

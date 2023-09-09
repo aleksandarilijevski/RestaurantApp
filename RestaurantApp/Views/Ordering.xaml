@@ -66,7 +66,7 @@
 
         <TextBlock Text="{Binding TableID, StringFormat='Order for table ID : {0}'}" Grid.Row="1" Grid.RowSpan="2" TextAlignment="Center" FontSize="17" Background="White" Grid.ColumnSpan="2"/>
 
-        <DataGrid Grid.Row="2" CanUserAddRows="False" AutoGenerateColumns="False" FontSize="20" Grid.ColumnSpan="2" ItemsSource="{Binding TableArticleQuantities,Mode=TwoWay, IsAsync=True}" SelectedItem="{Binding TableArticleQuantity}" EnableColumnVirtualization="true" EnableRowVirtualization="true">
+        <DataGrid Grid.Row="2" CanUserAddRows="False" AutoGenerateColumns="False" FontSize="20" Grid.ColumnSpan="2" ItemsSource="{Binding TableArticleQuantities,Mode=TwoWay, IsAsync=True}" SelectedItem="{Binding SelectedTableArticleQuantity}" EnableColumnVirtualization="true" EnableRowVirtualization="true">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding Article.ID}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Barcode" Binding="{Binding Article.Barcode}" IsReadOnly="True" />

@@ -85,7 +85,7 @@
         </TextBox>
 
 
-        <DataGrid Grid.Row="5" CanUserAddRows="False" AutoGenerateColumns="False" FontSize="20" Grid.Column="0" Grid.ColumnSpan="5" ItemsSource="{Binding TableArticleQuantities,Mode=TwoWay, IsAsync=True}" SelectedItem="{Binding TableArticleQuantity}" EnableColumnVirtualization="true" EnableRowVirtualization="true">
+        <DataGrid Grid.Row="5" CanUserAddRows="False" AutoGenerateColumns="False" FontSize="20" Grid.Column="0" Grid.ColumnSpan="5" ItemsSource="{Binding TableArticleQuantities,Mode=TwoWay, IsAsync=True}" SelectedItem="{Binding SelectedTableArticleQuantity}" EnableColumnVirtualization="true" EnableRowVirtualization="true">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding Article.ID}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Barcode" Binding="{Binding Article.Barcode}" IsReadOnly="True" />
