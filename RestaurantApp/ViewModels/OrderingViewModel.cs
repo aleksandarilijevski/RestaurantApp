@@ -168,7 +168,7 @@ namespace RestaurantApp.ViewModels
             {
                 //In this method SelectedTableArticleQuantity is already changed,while in IsQuantityAvailableForArticleOnTable is not.
                 //I was sending SelectedTableArticleQuantity.Article before this issue, I will pass SelectedTableArticleQuantity now.
-                Task isQuantityAvailableForArticleOnTable = Task.Run(() => IsQuantityAvailableForArticleOnTable(SelectedTableArticleQuantity));
+                _ = IsQuantityAvailableForArticleOnTable(SelectedTableArticleQuantity);
             }
         }
 
