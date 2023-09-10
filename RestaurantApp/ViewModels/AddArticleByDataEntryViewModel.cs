@@ -1,6 +1,7 @@
 ﻿using EntityFramework.Models;
 using Prism.Commands;
 using Prism.Mvvm;
+using Prism.Regions;
 using RestaurantApp.Services.Interface;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,10 +14,12 @@ namespace RestaurantApp.ViewModels
     public class AddArticleByDataEntryViewModel : BindableBase
     {
         private IDatabaseService _databaseService;
+        private IRegionManager _regionManager;
         private DelegateCommand _loadAllArticlesCommand;
         private DelegateCommand<string> _addArticleByBarcodeCommand;
         private DelegateCommand<string> _addArticleByNameCommand;
         private DelegateCommand _saveCommand;
+        private DelegateCommand _navigateToDataEntryManagementCommand;
         private DelegateCommand<ArticleDetails> _deleteArticleDetailsFromDataEntryCommand;
         private ObservableCollection<Article> _articles;
         private List<ArticleDetails> _dataEntryArticles = new List<ArticleDetails>();
@@ -25,9 +28,10 @@ namespace RestaurantApp.ViewModels
         private string _dataEntryNumber;
         private string _barcode;
 
-        public AddArticleByDataEntryViewModel(IDatabaseService databaseService)
+        public AddArticleByDataEntryViewModel(IDatabaseService databaseService,IRegionManager regionManager)
         {
             _databaseService = databaseService;
+            _regionManager = regionManager;
         }
 
         public List<ArticleDetails> DataEntryArticles
@@ -130,6 +134,15 @@ namespace RestaurantApp.ViewModels
             }
         }
 
+        public DelegateCommand NavigateToDataEntryManagementCommand
+        {
+            get
+            {
+                _navigateToDataEntryManagementCommand = new DelegateCommand(NavigateToDataEntryManagement);
+                return _navigateToDataEntryManagementCommand;
+            }
+        }
+
         public string Barcode
         {
             get
@@ -189,6 +202,11 @@ namespace RestaurantApp.ViewModels
 
             Barcode = string.Empty;
             RaisePropertyChanged(nameof(DataEntryArticles));
+        }
+
+        private void NavigateToDataEntryManagement()
+        {
+            _regionManager.RequestNavigate("MainRegion", "DataEntryManagement");
         }
 
         private void GetArticleByName(string articleName)
