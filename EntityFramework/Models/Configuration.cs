@@ -1,6 +1,6 @@
 ﻿namespace EntityFramework.Models
 {
-    public class Configuration:BaseEntity
+    public class Configuration : BaseEntity
     {
         public int BillCounter { get; set; }
 

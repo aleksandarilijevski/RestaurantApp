@@ -1,5 +1,4 @@
 ﻿using EntityFramework.Models;
-using Example;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -14,9 +13,10 @@ namespace RestaurantApp.Converters
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             int billId = (int)values[0];
+            decimal totalPrice = (decimal)values[3];
+            decimal profit = 0;
 
             List<TableArticleQuantity> tableArticleQuantities = new List<TableArticleQuantity>();
-
 
             if (values[1] != DependencyProperty.UnsetValue)
             {
@@ -30,11 +30,7 @@ namespace RestaurantApp.Converters
                 tableArticleQuantities.AddRange(onlineOrders);
             }
 
-            decimal totalPrice = (decimal)values[3];
-
             List<TableArticleQuantity> filtered = tableArticleQuantities.Where(x => x.BillID == billId).ToList();
-
-            decimal profit = 0;
 
             foreach (TableArticleQuantity tableArticleQuantity in filtered)
             {

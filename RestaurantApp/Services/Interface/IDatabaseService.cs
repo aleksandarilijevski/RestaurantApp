@@ -7,106 +7,67 @@ namespace RestaurantApp.Services.Interface
 {
     public interface IDatabaseService
     {
-        public  Task<TableArticleQuantity> GetTableArticleQuantityByID(int id);
+        public Task<TableArticleQuantity> GetTableArticleQuantityByID(int id, EFContext efContext);
 
-        public Task DeleteTableArticleQuantityContext(TableArticleQuantity tableArticleQuantity, EFContext efContext);
+        public Task DeleteTableArticleQuantity(TableArticleQuantity tableArticleQuantity, EFContext efContext);
 
-        public Task<int> AddOnlineOrder(OnlineOrder onlineOrder);
+        public Task<int> AddOnlineOrder(OnlineOrder onlineOrder, EFContext efContext);
 
-        public Task<int> AddOnlineOrderContext(OnlineOrder onlineOrder, EFContext efContext);
+        public Task<List<TableArticleQuantity>> GetTableArticleQuantityByArticleID(int articleId, EFContext efContext);
 
-        public Task<OnlineOrder> GetLastOnlineOrder();
+        public Task<OnlineOrder> GetLastOnlineOrder(EFContext efContext);
 
-        public  Task EditArticleDetailsContext(ArticleDetails articleDetails, EFContext efContext);
+        public Task EditArticleDetails(ArticleDetails articleDetails, EFContext efContext);
 
-        public Task<int> CreateBillContext(Bill bill, EFContext efContext);
+        public Task<int> CreateBill(Bill bill, EFContext efContext);
 
-        public Task ModifyTableArticlesContext(List<TableArticleQuantity> tableArticleQuantities, List<SoldTableArticleQuantity> soldTableArticleQuantities, EFContext efContext);
-        
-        public Task EditTableContext(Table table,EFContext efContext);
+        public Task AddDataEntry(DataEntry dataEntry, EFContext efContext);
 
-        public Task AddDataEntryContext(DataEntry dataEntry, EFContext efContext);
-
-        public Task<Article> GetArticleByIDContext(int id, EFContext efContext);
+        public Task<Article> GetArticleByID(int id, EFContext efContext);
 
         public Task<ObservableCollection<Article>> GetAllArticles();
 
-        public Task<Article> GetArticleByID(int id);
+        public Task<int> AddArticle(Article article, EFContext efContext);
 
-        public Task<Article> GetArticleByBarcode(long barcode);
-
-        public Task<int> AddArticle(Article Article);
-
-        public Task EditArticle(Article Article);
-
-        public Task DeleteArticle(Article Article);
+        public Task EditArticle(Article article, EFContext efContext);
 
         public Task<ObservableCollection<Waiter>> GetAllWaiters();
 
-        public Task<int> AddWaiter(Waiter waiter);
+        public Task<int> AddWaiter(Waiter waiter, EFContext efContext);
 
-        public Task EditWaiter(Waiter waiter);
+        public Task EditWaiter(Waiter waiter, EFContext efContext);
 
-        public Task DeleteWaiter(Waiter waiter);
+        public Task DeleteWaiter(Waiter waiter, EFContext efContext);
 
-        public Task<Table> GetTableByID(int id);
+        public Task<Table> GetTableByID(int id, EFContext efContext);
 
-        public Task<int> AddTable(Table table);
+        public Task<int> AddTable(Table table, EFContext efContext);
 
-        //Table table
-        public Task ModifyTableArticles(List<TableArticleQuantity> tableArticleQuantities, List<SoldTableArticleQuantity> soldTableArticleQuantities);
-
-        public Task ModifyTableArticlesOnlineOrder(OnlineOrder onlineOrder, List<SoldTableArticleQuantity> soldTableArticleQuantities);
-
-        public Task EditTable(Table table);
+        public Task EditTable(Table table, EFContext efContext);
 
         public Task<Article> GetArticleByBarcodeContext(long barcode, EFContext efContext);
 
-        public Task EditOnlineOrderContext(OnlineOrder onlineOrder,EFContext efContext);
+        public Task EditOnlineOrderContext(OnlineOrder onlineOrder, EFContext efContext);
 
         public Task<List<Table>> GetAllTables();
 
-        public Task<ArticleDetails> GetArticleDetailByArticleID(int id);
+        public Task AddTableArticleQuantity(TableArticleQuantity tableArticleQuantity, EFContext efContext);
 
-        public Task<List<ArticleDetails>> GetArticleDetailsByArticleID(int articleId);
+        public Task<List<ArticleDetails>> GetArticleDetailsByArticleID(int articleId, EFContext efContext);
 
-        public Task AddTableArticleQuantityContext(TableArticleQuantity tableArticleQuantity, EFContext efContext);
-
-        public Task<List<ArticleDetails>> GetArticleDetailsByArticleIDContext(int articleId, EFContext efContext);
-
-        public Task<List<TableArticleQuantity>> GetTableArticleQuantitiesExceptProvidedID(Table table);
-
-        public Task<int> AddArticleDetails(ArticleDetails articleDetails);
-
-        public Task EditArticleDetails(ArticleDetails articleDetails);
-
-        public Task DeleteTableArticleQuantity(TableArticleQuantity tableArticleQuantity);
-
-        public Task AddDataEntry(DataEntry dataEntry);
+        public Task<int> AddArticleDetails(ArticleDetails articleDetails, EFContext efContext);
 
         public Task<DataEntry> GetDataEntryByNumber(int dataEntryNumber);
 
-        public Task<ArticleDetails> GetArticleDetailsByID(int id);
+        public Task DeleteArticleDetails(ArticleDetails articleDetails, EFContext efContext);
 
-        public Task DeleteArticleDetails(ArticleDetails articleDetails);
+        public Task EditTableArticleQuantity(TableArticleQuantity tableArticleQuantity, EFContext efContext);
 
-        public Task AddTableArticleQuantity(TableArticleQuantity tableArticleQuantity);
-
-        public Task<List<TableArticleQuantity>> GetTableArticleQuantities(int articleID, int tableID);
-
-        public Task EditTableArticleQuantity(TableArticleQuantity tableArticleQuantity);
-
-        public Task<int> GetTableArticleTotalQuantity(int articleID);
-
-        public Task<int> CreateBill(Bill bill);
-
-        public Task<int> AddSoldTableArticleQuantity(SoldTableArticleQuantity soldTableArticleQuantity);
-
-        public Task<int> CreateConfiguration(Configuration configuration);
+        public Task<int> CreateConfiguration(Configuration configuration, EFContext efContext);
 
         public Task<Configuration> GetConfiguration();
 
-        public Task EditConfiguration(Configuration configuration);
+        public Task EditConfiguration(Configuration configuration, EFContext eFContext);
 
         public Task<List<Bill>> GetAllBills();
     }

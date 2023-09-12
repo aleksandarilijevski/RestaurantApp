@@ -1,60 +1,25 @@
 ﻿using EntityFramework.Models;
-using PdfSharp.Drawing;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
-using RestaurantApp.Services.Interface;
 using RestaurantApp.Utilities.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Windows.Documents;
 
 namespace RestaurantApp.ViewModels
 {
     class ReportDetailsViewModel : BindableBase, IDialogAware
     {
-        private IDatabaseService _databaseService;
-        private string _title = "Report details";
         private string _totalPrice = "Total price : ";
         private Bill _bill;
         private DelegateCommand _printBillCommand;
         private ObservableCollection<TableArticleQuantity> _soldTableArticleQuantities;
 
-        public ReportDetailsViewModel(IDatabaseService databaseService)
-        {
-            _databaseService = databaseService;
-        }
+        public string Title { get; set; } = "Report details";
 
-        public string Title
-        {
-            get
-            {
-                return _title;
-            }
-
-            set
-            {
-                _title = value;
-            }
-        }
-
-        public Bill Bill
-        {
-            get
-            {
-                return _bill;
-            }
-
-            set
-            {
-                _bill = value;
-            }
-        }
+        public Bill Bill { get; set; }
 
         public ObservableCollection<TableArticleQuantity> SoldTableArticleQuantities
         {
@@ -142,20 +107,8 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        private async Task<XImage> GetCustomQRCode(string text)
+        private void PrintBill()
         {
-            string url = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + text;
-
-            HttpClient client = new HttpClient();
-            Stream stream = await client.GetStreamAsync(url);
-
-            XImage image = XImage.FromStream(stream);
-            return image;
-        }
-
-        private async void PrintBill()
-        {
-            XImage qrCode = await GetCustomQRCode("test");
             List<TableArticleQuantity> soldTableArticleQuantities = _bill.Table.TableArticleQuantities.OfType<SoldTableArticleQuantity>().Select(sold => (TableArticleQuantity)sold).ToList();
             DrawningHelper.RedrawBill(Bill, soldTableArticleQuantities);
         }

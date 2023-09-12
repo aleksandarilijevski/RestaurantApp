@@ -9,25 +9,20 @@ using RestaurantApp.Utilities.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace RestaurantApp.ViewModels
 {
     public class PaymentViewModel : BindableBase, INavigationAware
     {
-        //Private fields
         private IDatabaseService _databaseService;
         private IRegionManager _regionManager;
         private IDialogService _dialogService;
         private decimal _totalPrice;
-        private Table _table;
-        private OnlineOrder _onlineOrder;
         private List<TableArticleQuantity> _tableArticleQuantities;
         private DelegateCommand _issueFakeBillCommand;
         private DelegateCommand _issueBillCommand;
         private DelegateCommand _getTotalPriceCommand;
-        private PaymentType _paymentType;
 
         public PaymentViewModel(IDatabaseService databaseService, IRegionManager regionManager, IDialogService dialogService)
         {
@@ -36,19 +31,9 @@ namespace RestaurantApp.ViewModels
             _dialogService = dialogService;
         }
 
-        //Public properties
-        public List<TableArticleQuantity> TableArticleQuantities
-        {
-            get
-            {
-                return _tableArticleQuantities;
-            }
+        public List<TableArticleQuantity> TableArticleQuantities { get; set; }
 
-            set
-            {
-                _tableArticleQuantities = value;
-            }
-        }
+        public Table Table { get; set; }
 
         public decimal TotalPrice
         {
@@ -64,33 +49,10 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public PaymentType PaymentType
-        {
-            get
-            {
-                return _paymentType;
-            }
+        public PaymentType PaymentType { get; set; }
 
-            set
-            {
-                _paymentType = value;
-            }
-        }
+        public OnlineOrder OnlineOrder { get; set; }
 
-        public OnlineOrder OnlineOrder
-        {
-            get
-            {
-                return _onlineOrder;
-            }
-
-            set
-            {
-                _onlineOrder = value;
-            }
-        }
-
-        //DelegateCommands
         public DelegateCommand GetTotalPriceCommand
         {
             get
@@ -118,7 +80,23 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-       
+        public void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            Table = (Table)navigationContext.Parameters["table"];
+            OnlineOrder = (OnlineOrder)navigationContext.Parameters["onlineOrder"];
+            TableArticleQuantities = (List<TableArticleQuantity>)navigationContext.Parameters["tableArticleQuantities"];
+        }
+
+        public bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return false;
+        }
+
+        public void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+
+        }
+
         private async Task<Bill> AddBillOnlineOrder(decimal cash, decimal change)
         {
             using EFContext efContext = new EFContext();
@@ -141,21 +119,20 @@ namespace RestaurantApp.ViewModels
 
             foreach (TableArticleQuantity tableArticleQuantity in TableArticleQuantities)
             {
-                List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleIDContext(tableArticleQuantity.ArticleID,efContext);
+                List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleID(tableArticleQuantity.ArticleID, efContext);
                 await DecreaseReservedQuantity(articleDetails, tableArticleQuantity.Quantity, efContext);
                 await DecreaseOriginalQuantity(articleDetails, tableArticleQuantity.Quantity, efContext);
             }
 
-            await _databaseService.CreateBillContext(bill,efContext);
+            await _databaseService.CreateBill(bill, efContext);
 
 
             List<SoldTableArticleQuantity> soldTableArticleQuantities = new List<SoldTableArticleQuantity>();
 
-            //OnlineOrder.TableArticleQuantities
             foreach (TableArticleQuantity tableArticleQuantity in TableArticleQuantities)
             {
-                Article article = await _databaseService.GetArticleByIDContext(tableArticleQuantity.ArticleID, efContext);
-                List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleIDContext(tableArticleQuantity.ArticleID, efContext);
+                Article article = await _databaseService.GetArticleByID(tableArticleQuantity.ArticleID, efContext);
+                List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleID(tableArticleQuantity.ArticleID, efContext);
 
                 SoldTableArticleQuantity soldTableArticleQuantity = new SoldTableArticleQuantity
                 {
@@ -167,13 +144,12 @@ namespace RestaurantApp.ViewModels
                     Bill = bill
                 };
 
-                //soldTableArticleQuantities.Add(soldTableArticleQuantity);
-                await _databaseService.DeleteTableArticleQuantity(tableArticleQuantity);
-                await _databaseService.AddTableArticleQuantityContext(soldTableArticleQuantity, efContext);
+                await _databaseService.DeleteTableArticleQuantity(tableArticleQuantity, efContext);
+                await _databaseService.AddTableArticleQuantity(soldTableArticleQuantity, efContext);
             }
 
             OnlineOrder.IsPayed = true;
-            await _databaseService.EditOnlineOrderContext(OnlineOrder,efContext);
+            await _databaseService.EditOnlineOrderContext(OnlineOrder, efContext);
             return bill;
         }
 
@@ -189,7 +165,7 @@ namespace RestaurantApp.ViewModels
 
             Bill bill = new Bill
             {
-                TableID = _table.ID,
+                TableID = Table.ID,
                 TotalPrice = totalPrice,
                 Cash = cash,
                 Change = change,
@@ -200,23 +176,23 @@ namespace RestaurantApp.ViewModels
 
             foreach (TableArticleQuantity tableArticleQuantity in TableArticleQuantities)
             {
-                List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleIDContext(tableArticleQuantity.ArticleID, efContext);
-                await DecreaseReservedQuantity(articleDetails, tableArticleQuantity.Quantity,efContext);
-                await DecreaseOriginalQuantity(articleDetails, tableArticleQuantity.Quantity,efContext);
+                List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleID(tableArticleQuantity.ArticleID, efContext);
+                await DecreaseReservedQuantity(articleDetails, tableArticleQuantity.Quantity, efContext);
+                await DecreaseOriginalQuantity(articleDetails, tableArticleQuantity.Quantity, efContext);
             }
 
-            await _databaseService.CreateBillContext(bill,efContext);
+            await _databaseService.CreateBill(bill, efContext);
 
-            _table.InUse = false;
-            await _databaseService.EditTable(_table);
+            Table.InUse = false;
+            await _databaseService.EditTable(Table, efContext);
 
             List<SoldTableArticleQuantity> soldTableArticleQuantities = new List<SoldTableArticleQuantity>();
             List<TableArticleQuantity> tableArticleQuantities = TableArticleQuantities.Select(x => x).Where(x => !(x is SoldTableArticleQuantity)).ToList();
 
             foreach (TableArticleQuantity tableArticleQuantity in tableArticleQuantities)
             {
-                Article article = await _databaseService.GetArticleByIDContext(tableArticleQuantity.ArticleID,efContext);
-                List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleIDContext(tableArticleQuantity.ArticleID,efContext);
+                Article article = await _databaseService.GetArticleByID(tableArticleQuantity.ArticleID, efContext);
+                List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleID(tableArticleQuantity.ArticleID, efContext);
 
                 SoldTableArticleQuantity soldTableArticleQuantity = new SoldTableArticleQuantity
                 {
@@ -228,12 +204,10 @@ namespace RestaurantApp.ViewModels
                     BillID = bill.ID
                 };
 
-                //soldTableArticleQuantities.Add(soldTableArticleQuantity);
-                await _databaseService.DeleteTableArticleQuantity(tableArticleQuantity);
-                await _databaseService.AddTableArticleQuantityContext(soldTableArticleQuantity,efContext);
+                await _databaseService.DeleteTableArticleQuantity(tableArticleQuantity, efContext);
+                await _databaseService.AddTableArticleQuantity(soldTableArticleQuantity, efContext);
             }
 
-            //await _databaseService.ModifyTableArticlesContext(TableArticleQuantities, soldTableArticleQuantities,efContext);
             return bill;
         }
 
@@ -242,7 +216,9 @@ namespace RestaurantApp.ViewModels
             foreach (ArticleDetails articleDetail in articleDetails)
             {
                 if (originalQuantityToDecrease <= 0)
+                {
                     break;
+                }
 
                 int availableQuantity = articleDetail.OriginalQuantity - articleDetail.ReservedQuantity;
                 int quantityToReserve = Math.Min(availableQuantity, originalQuantityToDecrease);
@@ -256,7 +232,7 @@ namespace RestaurantApp.ViewModels
 
                 originalQuantityToDecrease -= quantityToReserve;
 
-                await _databaseService.EditArticleDetails(articleDetail);
+                await _databaseService.EditArticleDetails(articleDetail, efContext);
             }
         }
 
@@ -265,7 +241,7 @@ namespace RestaurantApp.ViewModels
             foreach (ArticleDetails articleDetail in articleDetails)
             {
                 if (reservedQuantityToBeDecreased <= 0)
-                    break; // No more quantity to sell, exit the loop
+                    break;
 
                 int availableQuantity = articleDetail.OriginalQuantity - articleDetail.ReservedQuantity;
                 int quantityToReserve = Math.Min(availableQuantity, reservedQuantityToBeDecreased);
@@ -285,13 +261,10 @@ namespace RestaurantApp.ViewModels
                     quantityToReserve = reservedQuantityToBeDecreased;
                 }
 
-                // Reserve quantityToReserve for the current articleDetail
                 articleDetail.ReservedQuantity -= quantityToReserve;
-
-                // Reduce remainingQuantityToSell
                 reservedQuantityToBeDecreased -= quantityToReserve;
 
-                await _databaseService.EditArticleDetailsContext(articleDetail,efContext);
+                await _databaseService.EditArticleDetails(articleDetail, efContext);
             }
         }
 
@@ -318,9 +291,10 @@ namespace RestaurantApp.ViewModels
 
         private async Task<int> IncreaseBillCounter()
         {
+            using EFContext efContext = new EFContext();
             Configuration configuration = await _databaseService.GetConfiguration();
             configuration.BillCounter += 1;
-            await _databaseService.EditConfiguration(configuration);
+            await _databaseService.EditConfiguration(configuration, efContext);
             return configuration.BillCounter;
         }
 
@@ -346,7 +320,7 @@ namespace RestaurantApp.ViewModels
 
                         Bill bill = null;
 
-                        if (_table is null)
+                        if (Table is null)
                         {
                             bill = await AddBillOnlineOrder(cash, change);
                         }
@@ -365,7 +339,7 @@ namespace RestaurantApp.ViewModels
             {
                 Bill bill = null;
 
-                if (_table is null)
+                if (Table is null)
                 {
                     bill = await AddBillOnlineOrder(0, 0);
                 }
@@ -396,28 +370,6 @@ namespace RestaurantApp.ViewModels
             }
 
             return totalPrice;
-        }
-
-        private async Task<Bill> CreateBill(Bill bill)
-        {
-            await _databaseService.CreateBill(bill);
-            return bill;
-        }
-
-        public void OnNavigatedTo(NavigationContext navigationContext)
-        {
-            _table = (Table)navigationContext.Parameters["table"];
-            _onlineOrder = (OnlineOrder)navigationContext.Parameters["onlineOrder"];
-            TableArticleQuantities = (List<TableArticleQuantity>)navigationContext.Parameters["tableArticleQuantities"];
-        }
-
-        public bool IsNavigationTarget(NavigationContext navigationContext)
-        {
-            return false;
-        }
-
-        public void OnNavigatedFrom(NavigationContext navigationContext)
-        {
         }
     }
 }

@@ -25,7 +25,10 @@ namespace RestaurantApp.ViewModels
 
         public ObservableCollection<Waiter> Waiters
         {
-            get => _waiters;
+            get
+            {
+                return _waiters;
+            }
 
             set
             {
@@ -77,7 +80,8 @@ namespace RestaurantApp.ViewModels
 
         private async void DeleteWaiter(Waiter waiter)
         {
-            await _databaseService.DeleteWaiter(waiter);
+            using EFContext efContext = new EFContext();
+            await _databaseService.DeleteWaiter(waiter, efContext);
             Waiters.Remove(waiter);
         }
 

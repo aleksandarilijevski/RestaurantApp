@@ -11,7 +11,6 @@ namespace RestaurantApp.ViewModels
     {
         private IDatabaseService _databaseService;
         private DelegateCommand<ArticleDetails> _editArticleDetailsCommand;
-        private string _title = "Edit article detail";
         private ArticleDetails _articleDetails;
 
         public EditArticleDetailViewModel(IDatabaseService databaseService)
@@ -19,18 +18,9 @@ namespace RestaurantApp.ViewModels
             _databaseService = databaseService;
         }
 
-        public string Title
-        {
-            get
-            {
-                return _title;
-            }
+        public event Action<IDialogResult> RequestClose;
 
-            set
-            {
-                _title = value;
-            }
-        }
+        public string Title { get; set; } = "Edit article detail";
 
         public ArticleDetails ArticleDetails
         {
@@ -54,8 +44,6 @@ namespace RestaurantApp.ViewModels
                 return _editArticleDetailsCommand;
             }
         }
-
-        public event Action<IDialogResult> RequestClose;
 
         protected virtual void CloseDialog(string parameter)
         {
@@ -91,7 +79,8 @@ namespace RestaurantApp.ViewModels
 
         private async void EditArticleDetails(ArticleDetails articleDetails)
         {
-            await _databaseService.EditArticleDetails(articleDetails);
+            using EFContext efContext = new EFContext();
+            await _databaseService.EditArticleDetails(articleDetails, efContext);
             CloseDialog("true");
         }
     }

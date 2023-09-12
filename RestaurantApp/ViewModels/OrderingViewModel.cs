@@ -15,11 +15,9 @@ namespace RestaurantApp.ViewModels
 {
     public class OrderingViewModel : BindableBase, INavigationAware
     {
-        //Private fields
         private IDatabaseService _databaseService;
         private IRegionManager _regionManager;
         private DelegateCommand<string> _addArticleToTableCommand;
-        private int _tableId;
         private Table _table;
         private TableArticleQuantity _selectedTableArticleQuantity;
         private string _barcode;
@@ -30,18 +28,13 @@ namespace RestaurantApp.ViewModels
         private ObservableCollection<TableArticleQuantity> _tableArticleQuantities;
         private int _quantityValueBeforeChange = 0;
 
-        //Constructor
         public OrderingViewModel(IDatabaseService databaseService, IRegionManager regionManager)
         {
             _databaseService = databaseService;
             _regionManager = regionManager;
         }
 
-        //Public properties
-        public int TableID
-        {
-            get { return _tableId; }
-        }
+        public int TableID { get; set; }
 
         public Table Table
         {
@@ -83,7 +76,6 @@ namespace RestaurantApp.ViewModels
                 if (_selectedTableArticleQuantity != null)
                 {
                     _quantityValueBeforeChange = _selectedTableArticleQuantity.Quantity;
-
                     _selectedTableArticleQuantity.PropertyChanged -= OnQuantityPropertyChanged;
                 }
 
@@ -92,9 +84,8 @@ namespace RestaurantApp.ViewModels
 
                 if (_selectedTableArticleQuantity != null)
                 {
-                    _quantityValueBeforeChange = _selectedTableArticleQuantity.Quantity;
-
                     _selectedTableArticleQuantity.PropertyChanged += OnQuantityPropertyChanged;
+                    _quantityValueBeforeChange = _selectedTableArticleQuantity.Quantity;
                 }
             }
         }
@@ -113,12 +104,11 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        //Delegate commands
         public DelegateCommand<Table> GetTableCommand
         {
             get
             {
-                _getTableCommand = new DelegateCommand<Table>(async x => await GetTable(_tableId));
+                _getTableCommand = new DelegateCommand<Table>(async x => await GetTable(TableID));
                 return _getTableCommand;
             }
         }
@@ -159,32 +149,40 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        /// <summary>
-        /// This functions is triggers every time Quantity cell in dataGrid is changed.
-        /// </summary>
+        public void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            TableID = int.Parse(navigationContext.Parameters["id"].ToString());
+        }
+
+        public bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return false;
+        }
+
+        public void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+
+        }
+
         private void OnQuantityPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(TableArticleQuantity.Quantity))
             {
-                //In this method SelectedTableArticleQuantity is already changed,while in IsQuantityAvailableForArticleOnTable is not.
-                //I was sending SelectedTableArticleQuantity.Article before this issue, I will pass SelectedTableArticleQuantity now.
                 _ = IsQuantityAvailableForArticleOnTable(SelectedTableArticleQuantity);
             }
         }
 
-        /// <summary>
-        /// While loading usercontrol it's getting table by id from the database
-        /// </summary>
         private async Task GetTable(int id)
         {
-            Table = await _databaseService.GetTableByID(id);
+            using EFContext efContext = new EFContext();
 
+            Table = await _databaseService.GetTableByID(id, efContext);
 
             if (Table is null)
             {
                 Table table = new Table { ID = id, InUse = false, TableArticleQuantities = new List<TableArticleQuantity>() };
                 Table = table;
-                await _databaseService.AddTable(table);
+                await _databaseService.AddTable(table, efContext);
             }
 
             if (Table.TableArticleQuantities is null)
@@ -197,20 +195,13 @@ namespace RestaurantApp.ViewModels
             RaisePropertyChanged(nameof(Table));
         }
 
-        /// <summary>
-        /// Adding article to the table
-        /// </summary>
         private async void AddArticleToTable(string barcode)
         {
             using EFContext efContext = new EFContext();
-            //Gets article from database by barcode.
+
             long.TryParse(barcode, out long barcodeLong);
+            Article article = await _databaseService.GetArticleByBarcodeContext(barcodeLong, efContext);
 
-
-            //It's adding articleDetails too! because efContext instance remains same.
-            Article article = await _databaseService.GetArticleByBarcodeContext(barcodeLong,efContext);
-
-            //If article is null display error message.
             if (article is null)
             {
                 MessageBox.Show("Article with entered barcode doesn't exist in the system!", "Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -218,125 +209,56 @@ namespace RestaurantApp.ViewModels
                 return;
             }
 
-            //Check if quantity is available.
             bool isQuantityAvailable = await IfQuantityIsAvailable(article);
 
             if (isQuantityAvailable)
             {
-                //Table property InUse is changed to true, table is becoming active.
                 Table.InUse = true;
 
-                //Gets all articleDetails by articleId
-                List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleIDContext(article.ID, efContext);
+                List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleID(article.ID, efContext);
 
-                //Creating tableArticleQuantity object and providing required data.
                 TableArticleQuantity tableArticleQuantity = new TableArticleQuantity
                 {
-                    //There was ArticleID = article.ID, before disposing EFContext
                     Article = article,
                     TableID = Table.ID,
                     Quantity = 1,
                     ArticleDetails = articleDetails
                 };
 
-                //We are increasing reserved quantity of articleDetails
-                await IncreaseReservedQuantity(articleDetails, tableArticleQuantity.Quantity);
+                await IncreaseReservedQuantity(articleDetails, tableArticleQuantity.Quantity, efContext);
 
-                //Adds tableArticleQuantity to table.
                 Table.TableArticleQuantities.Add(tableArticleQuantity);
-                //This is removed due tests with disposing EFContexts
-
-                //Adds tableArticleQuantity to observableCollection
                 TableArticleQuantities.Add(tableArticleQuantity);
 
-                //Edits table
-                //await _databaseService.EditTableContext(Table,efContext);
-                //This is removed due tests with disposing EFContexts
-
-                //Added due tests.
-                //It says articleDetails is already being tracked.
-                await _databaseService.AddTableArticleQuantityContext(tableArticleQuantity,efContext);
+                await _databaseService.AddTableArticleQuantity(tableArticleQuantity, efContext);
             }
 
-            //Clearing barcode textBox and updating Table.
             Barcode = string.Empty;
             RaisePropertyChanged(nameof(Table));
         }
 
-        /// <summary>
-        /// Increasing reserved quantity
-        /// </summary>
-        private async Task IncreaseReservedQuantity(List<ArticleDetails> articleDetails, int quantityToBeReserved)
-        {
-            if (quantityToBeReserved != 1)
-            {
-                quantityToBeReserved = Math.Abs(_quantityValueBeforeChange - quantityToBeReserved);
-            }
-
-            foreach (ArticleDetails articleDetail in articleDetails)
-            {
-                if (quantityToBeReserved <= 0)
-                    break;
-
-                int availableQuantity = articleDetail.OriginalQuantity - articleDetail.ReservedQuantity;
-                int quantityToReserve = Math.Min(availableQuantity, quantityToBeReserved);
-
-                if (articleDetail.OriginalQuantity == articleDetail.ReservedQuantity)
-                {
-                    quantityToReserve = articleDetail.ReservedQuantity;
-                }
-
-                articleDetail.ReservedQuantity += quantityToReserve;
-
-                quantityToBeReserved -= quantityToReserve;
-
-                await _databaseService.EditArticleDetails(articleDetail);
-            }
-        }
-
-        /// <summary>
-        /// Gets all reserved quantities from each articleDetails.
-        /// </summary>
-        public int GetReservedQuantity(List<ArticleDetails> articleDetails)
-        {
-            int reservedQuantity = 0;
-            //Sums all reservedQuantity from provided articleDetails
-            reservedQuantity += articleDetails.Sum(x => x.ReservedQuantity);
-            return reservedQuantity;
-        }
-
-        /// <summary>
-        /// Checking if quantity is available for article on table.
-        /// This function is called when quantity is changed from dataGrid cell.
-        /// </summary>
         private async Task IsQuantityAvailableForArticleOnTable(TableArticleQuantity selectedTableArticleQuantity)
         {
             using EFContext efContext = new EFContext();
-            SelectedTableArticleQuantity.PropertyChanged -= OnQuantityPropertyChanged;
 
-            //- _quantityValueBeforeChange added due tests.
-            //article.ArticleDetails is not updated on each call of this function.
-            List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleIDContext(selectedTableArticleQuantity.ArticleID, efContext);
+            List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleID(selectedTableArticleQuantity.ArticleID, efContext);
             int availableQuantity = GetAvailableQuantity(articleDetails);
 
             if (_quantityValueBeforeChange < selectedTableArticleQuantity.Quantity)
             {
                 if (availableQuantity >= selectedTableArticleQuantity.Quantity - _quantityValueBeforeChange)
                 {
-                    //article.ArticleDetails was parametar before change.
-                    await IncreaseReservedQuantity(articleDetails, selectedTableArticleQuantity.Quantity);
-                    await _databaseService.EditTableArticleQuantity(selectedTableArticleQuantity);
-                    SelectedTableArticleQuantity.PropertyChanged += OnQuantityPropertyChanged;
+                    await IncreaseReservedQuantity(articleDetails, selectedTableArticleQuantity.Quantity, efContext);
+                    await _databaseService.EditTableArticleQuantity(selectedTableArticleQuantity, efContext);
                 }
                 else if (_quantityValueBeforeChange == selectedTableArticleQuantity.Quantity)
                 {
-                    TableArticleQuantity tableArticleQuantity = await _databaseService.GetTableArticleQuantityByID(selectedTableArticleQuantity.ID);
+                    TableArticleQuantity tableArticleQuantity = await _databaseService.GetTableArticleQuantityByID(selectedTableArticleQuantity.ID, efContext);
 
                     int quantityToAdd = Math.Abs(selectedTableArticleQuantity.Quantity - tableArticleQuantity.Quantity);
 
-                    await IncreaseReservedQuantity(articleDetails, quantityToAdd);
-                    await _databaseService.EditTableArticleQuantity(selectedTableArticleQuantity);
-                    SelectedTableArticleQuantity.PropertyChanged += OnQuantityPropertyChanged;
+                    await IncreaseReservedQuantity(articleDetails, quantityToAdd, efContext);
+                    await _databaseService.EditTableArticleQuantity(selectedTableArticleQuantity, efContext);
                 }
                 else
                 {
@@ -347,47 +269,18 @@ namespace RestaurantApp.ViewModels
             else
             {
                 int quantityToRemove = Math.Abs(selectedTableArticleQuantity.Quantity - _quantityValueBeforeChange);
-                await DecreaseReservedQuantity(articleDetails, quantityToRemove);
+                await DecreaseReservedQuantity(articleDetails, quantityToRemove, efContext);
             }
 
             RaisePropertyChanged(nameof(TableArticleQuantities));
         }
 
-        /// <summary>
-        /// Decreasing reserved quantity.
-        /// </summary>
-        private async Task DecreaseReservedQuantity(List<ArticleDetails> articleDetails, int reservedQuantityToBeDecreased)
-        {
-            foreach (ArticleDetails articleDetail in articleDetails)
-            {
-                if (reservedQuantityToBeDecreased <= 0)
-                    break;
-
-                int availableQuantity = articleDetail.OriginalQuantity - articleDetail.ReservedQuantity;
-                int quantityToReserve = Math.Min(availableQuantity, reservedQuantityToBeDecreased);
-
-                if (articleDetail.OriginalQuantity == articleDetail.ReservedQuantity)
-                {
-                    quantityToReserve = reservedQuantityToBeDecreased;
-                }
-
-                articleDetail.ReservedQuantity -= quantityToReserve;
-
-                reservedQuantityToBeDecreased += quantityToReserve;
-
-                await _databaseService.EditArticleDetails(articleDetail);
-            }
-        }
-
-        /// <summary>
-        /// Calculating if quantity is available
-        /// </summary>
         private async Task<bool> IfQuantityIsAvailable(Article article)
         {
-            //Added due tests and tracking
-            List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleID(article.ID);
+            using EFContext efContext = new EFContext();
 
-            //article.ArticleDetails was parametar before change
+            List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleID(article.ID, efContext);
+
             int quantity = GetAvailableQuantity(articleDetails);
 
             if (quantity != 0)
@@ -401,9 +294,59 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        /// <summary>
-        /// Calculating available quantity of the article
-        /// </summary>
+        private async Task IncreaseReservedQuantity(List<ArticleDetails> articleDetails, int quantityToBeReserved, EFContext efContext)
+        {
+            if (quantityToBeReserved != 1)
+            {
+                quantityToBeReserved = Math.Abs(_quantityValueBeforeChange - quantityToBeReserved);
+            }
+
+            foreach (ArticleDetails articleDetail in articleDetails)
+            {
+                if (quantityToBeReserved <= 0)
+                {
+                    break;
+                }
+
+                int availableQuantity = articleDetail.OriginalQuantity - articleDetail.ReservedQuantity;
+                int quantityToReserve = Math.Min(availableQuantity, quantityToBeReserved);
+
+                if (articleDetail.OriginalQuantity == articleDetail.ReservedQuantity)
+                {
+                    quantityToReserve = articleDetail.ReservedQuantity;
+                }
+
+                articleDetail.ReservedQuantity += quantityToReserve;
+                quantityToBeReserved -= quantityToReserve;
+
+                await _databaseService.EditArticleDetails(articleDetail, efContext);
+            }
+        }
+
+        private async Task DecreaseReservedQuantity(List<ArticleDetails> articleDetails, int reservedQuantityToBeDecreased, EFContext efContext)
+        {
+            foreach (ArticleDetails articleDetail in articleDetails)
+            {
+                if (reservedQuantityToBeDecreased <= 0)
+                {
+                    break;
+                }
+
+                int availableQuantity = articleDetail.OriginalQuantity - articleDetail.ReservedQuantity;
+                int quantityToReserve = Math.Min(availableQuantity, reservedQuantityToBeDecreased);
+
+                if (articleDetail.OriginalQuantity == articleDetail.ReservedQuantity)
+                {
+                    quantityToReserve = reservedQuantityToBeDecreased;
+                }
+
+                articleDetail.ReservedQuantity -= quantityToReserve;
+                reservedQuantityToBeDecreased += quantityToReserve;
+
+                await _databaseService.EditArticleDetails(articleDetail, efContext);
+            }
+        }
+
         private int GetAvailableQuantity(List<ArticleDetails> articleDetails)
         {
             int quantity = 0;
@@ -416,94 +359,30 @@ namespace RestaurantApp.ViewModels
             return quantity;
         }
 
-        /// <summary>
-        /// Deleting articles from table and restoring reserved quantity
-        /// </summary>
         private async void DeleteArticleFromTable(TableArticleQuantity tableArticleQuantity)
         {
-            List<ArticleDetails>? articleDetails = await _databaseService.GetArticleDetailsByArticleID(tableArticleQuantity.ArticleID);
+            using EFContext efContext = new EFContext();
 
             int quantityToRemove = SelectedTableArticleQuantity.Quantity;
 
-            foreach (ArticleDetails articleDetail in articleDetails.OrderBy(x => x.CreatedDateTime))
-            {
-                int reservedDelete = Math.Min(articleDetail.ReservedQuantity, quantityToRemove);
-                await DecreaseReservedQuantity(articleDetails, reservedDelete);
-            }
-
-
-            //foreach (ArticleDetails articleDetail in articleDetails.OrderBy(x => x.CreatedDateTime))
-            //{
-
-            //    if (articleDetail.Article.IsDeleted == false && articleDetail.Article.ID == tableArticleQuantity.Article.ID)
-            //    {
-
-            //        if (articleDetail.ReservedQuantity != 0)
-            //        {
-            //            if (articleDetail.ReservedQuantity < SelectedTableArticleQuantity.Quantity)
-            //            {
-            //                int reservedDelete = Math.Min(articleDetail.ReservedQuantity, quantityToRemove);
-            //                articleDetail.ReservedQuantity -= reservedDelete;
-            //                quantityToRemove -= reservedDelete;
-
-            //                if (quantityToRemove != 0)
-            //                {
-            //                    continue;
-            //                }
-
-            //            }
-            //            else
-            //            {
-            //                articleDetail.ReservedQuantity -= SelectedTableArticleQuantity.Quantity;
-
-            //            }
-            //        }
-            //        else
-            //        {
-            //            continue;
-            //        }
-
-            //        await _databaseService.EditArticleDetails(articleDetail);
-            //        break;
-            //    }
-            //}
+            efContext.Attach(tableArticleQuantity);
+            List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleID(tableArticleQuantity.ArticleID, efContext);
+            await DecreaseReservedQuantity(articleDetails, quantityToRemove,efContext);
 
             TableArticleQuantities.Remove(tableArticleQuantity);
-
-            //Should be deleted from same instance
-            await _databaseService.DeleteTableArticleQuantity(tableArticleQuantity);
+            await _databaseService.DeleteTableArticleQuantity(tableArticleQuantity, efContext);
 
             List<TableArticleQuantity> tableArticleQuantities = Table.TableArticleQuantities.Where(x => !(x is SoldTableArticleQuantity)).ToList();
 
             if (tableArticleQuantities.Count == 0)
             {
                 Table.InUse = false;
-                await EditTable(Table);
+                await _databaseService.EditTable(Table, efContext);
             }
 
             RaisePropertyChanged(nameof(Table));
         }
 
-        /// <summary>
-        /// Function for adding table model
-        /// </summary>
-        private async Task EditTable(Table table)
-        {
-            await _databaseService.EditTable(table);
-        }
-
-        /// <summary>
-        /// Function for navigating to tables
-        /// </summary>
-        private void NavigateToTables()
-        {
-            _regionManager.RequestNavigate("MainRegion", "TableOrder");
-        }
-
-        /// <summary>
-        /// Showing payment usercontrol
-        /// If there are no articles on table we will get error message
-        /// </summary>
         private void ShowPaymentUserControl()
         {
             if (TableArticleQuantities.Count == 0)
@@ -521,19 +400,9 @@ namespace RestaurantApp.ViewModels
             _regionManager.RequestNavigate("MainRegion", "Payment", navigationParameters);
         }
 
-        public void OnNavigatedTo(NavigationContext navigationContext)
+        private void NavigateToTables()
         {
-            _tableId = int.Parse(navigationContext.Parameters["id"].ToString());
-        }
-
-        public bool IsNavigationTarget(NavigationContext navigationContext)
-        {
-            return false;
-        }
-
-        public void OnNavigatedFrom(NavigationContext navigationContext)
-        {
-
+            _regionManager.RequestNavigate("MainRegion", "TableOrder");
         }
     }
 }

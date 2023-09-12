@@ -68,12 +68,6 @@ namespace RestaurantApp.ViewModels
             Article = (Article)navigationContext.Parameters["article"];
         }
 
-        private async void DeleteArticleDetail(ArticleDetails articleDetails)
-        {
-            await _databaseService.DeleteArticleDetails(articleDetails);
-            RaisePropertyChanged(nameof(Article));
-        }
-
         public void ShowEditArticleDetail(ArticleDetails articleDetails)
         {
             DialogParameters dialogParameters = new DialogParameters
@@ -82,6 +76,13 @@ namespace RestaurantApp.ViewModels
             };
 
             _dialogService.ShowDialog("editArticleDetailDialog", dialogParameters, r => { });
+        }
+
+        private async void DeleteArticleDetail(ArticleDetails articleDetails)
+        {
+            using EFContext efContext = new EFContext();
+            await _databaseService.DeleteArticleDetails(articleDetails, efContext);
+            RaisePropertyChanged(nameof(Article));
         }
     }
 }

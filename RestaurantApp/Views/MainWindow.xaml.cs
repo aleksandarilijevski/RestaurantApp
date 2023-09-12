@@ -1,7 +1,4 @@
-﻿using Prism.Regions;
-using RestaurantApp.Views;
-using System;
-using System.Windows;
+﻿using System.Windows;
 
 namespace RestaurantApp
 {
@@ -14,5 +11,5 @@ namespace RestaurantApp
         {
             InitializeComponent();
         }
-    } 
+    }
 }

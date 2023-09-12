@@ -1,12 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EntityFramework.Models
 {
-    public class Article: BaseEntity
+    public class Article : BaseEntity
     {
-        public long Barcode { get;set; }
+        public long Barcode { get; set; }
 
         public string Name { get; set; }
 

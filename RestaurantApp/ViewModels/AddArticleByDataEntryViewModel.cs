@@ -23,12 +23,11 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand<ArticleDetails> _deleteArticleDetailsFromDataEntryCommand;
         private ObservableCollection<Article> _articles;
         private List<ArticleDetails> _dataEntryArticles = new List<ArticleDetails>();
-        private List<string> _articleNames = new List<string>();
         private string _articleName;
         private string _dataEntryNumber;
         private string _barcode;
 
-        public AddArticleByDataEntryViewModel(IDatabaseService databaseService,IRegionManager regionManager)
+        public AddArticleByDataEntryViewModel(IDatabaseService databaseService, IRegionManager regionManager)
         {
             _databaseService = databaseService;
             _regionManager = regionManager;
@@ -62,18 +61,7 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public List<string> ArticleNames
-        {
-            get
-            {
-                return _articleNames;
-            }
-
-            set
-            {
-                _articleNames = value;
-            }
-        }
+        public List<string> ArticleNames { get; set; } = new List<string>();
 
         public string DataEntryNumber
         {
@@ -190,7 +178,6 @@ namespace RestaurantApp.ViewModels
 
                 if (article != null)
                 {
-                    articleDetails.ArticleID = article.ID;
                     articleDetails.Article = article;
                     DataEntryArticles.Add(articleDetails);
                 }
@@ -254,7 +241,7 @@ namespace RestaurantApp.ViewModels
                 return;
             }
 
-            DataEntry dataEntry = new DataEntry();
+            DataEntry dataEntry = null;
             decimal totalAmount = 0;
 
             foreach (ArticleDetails articleDetails in DataEntryArticles)
@@ -265,19 +252,20 @@ namespace RestaurantApp.ViewModels
                     return;
                 }
 
-                articleDetails.Article = null;
-
-                await _databaseService.AddArticleDetails(articleDetails);
+                await _databaseService.AddArticleDetails(articleDetails, efContext);
             }
 
-            List<Article> articles = await CreateArticleListFromArticleDetails(DataEntryArticles,efContext);
+            List<Article> articles = await CreateArticleListFromArticleDetails(DataEntryArticles, efContext);
             totalAmount = CalculateTotalAmount(DataEntryArticles);
 
-            dataEntry.DataEntryNumber = int.Parse(DataEntryNumber);
-            dataEntry.TotalAmount = totalAmount;
-            dataEntry.Articles = articles;
+            dataEntry = new DataEntry
+            {
+                DataEntryNumber = int.Parse(DataEntryNumber),
+                TotalAmount = totalAmount,
+                Articles = articles
+            };
 
-            await _databaseService.AddDataEntryContext(dataEntry, efContext);
+            await _databaseService.AddDataEntry(dataEntry, efContext);
 
             MessageBox.Show("Data entry is saved!", "Data entry", MessageBoxButton.OK, MessageBoxImage.Information);
             DataEntryNumber = string.Empty;
@@ -285,13 +273,13 @@ namespace RestaurantApp.ViewModels
             RaisePropertyChanged(nameof(DataEntryArticles));
         }
 
-        private async Task<List<Article>> CreateArticleListFromArticleDetails(List<ArticleDetails> articleDetails,EFContext efContext)
+        private async Task<List<Article>> CreateArticleListFromArticleDetails(List<ArticleDetails> articleDetails, EFContext efContext)
         {
             List<Article> articles = new List<Article>();
 
             foreach (ArticleDetails articleDetail in articleDetails)
             {
-                Article article = await _databaseService.GetArticleByIDContext(articleDetail.ArticleID,efContext);
+                Article article = await _databaseService.GetArticleByID(articleDetail.ArticleID, efContext);
                 articles.Add(article);
             }
 

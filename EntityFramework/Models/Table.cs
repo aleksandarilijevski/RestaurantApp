@@ -11,6 +11,6 @@ namespace EntityFramework.Models
 
         public bool InUse { get; set; }
 
-        public List<TableArticleQuantity> TableArticleQuantities { get; set; }  
+        public List<TableArticleQuantity> TableArticleQuantities { get; set; }
     }
 }

@@ -13,9 +13,6 @@ namespace RestaurantApp.Converters
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            Brush limeGreen = Brushes.LimeGreen;
-            Brush gray = Brushes.Gray;
-
             if (values[0] is ObservableCollection<Table> && values[1] is string)
             {
                 string tableIdString = (string)values[1];
@@ -28,21 +25,21 @@ namespace RestaurantApp.Converters
 
                 if (table is null)
                 {
-                    return gray;
+                    return Brushes.Gray;
                 }
 
                 if (table.InUse)
                 {
-                    return limeGreen;
+                    return Brushes.LimeGreen;
                 }
 
                 if (!table.InUse)
                 {
-                    return gray;
+                    return Brushes.Gray;
                 }
             }
 
-            return gray;
+            return Brushes.Gray;
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

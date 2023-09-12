@@ -4,7 +4,6 @@ using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
 using System;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace RestaurantApp.ViewModels
@@ -14,34 +13,17 @@ namespace RestaurantApp.ViewModels
         private IDatabaseService _databaseService;
         private string _title = "Add new article";
         private DelegateCommand<Article> _addArticleCommand;
-        private Article _article = new Article();
-        private ArticleDetails _articleDetails = new ArticleDetails();
-
-        public event Action<IDialogResult> RequestClose;
-
-        public Article Article
-        {
-            get { return _article; }
-            set { SetProperty(ref _article, value); }
-        }
-
-        public ArticleDetails ArticleDetails
-        {
-            get
-            {
-                return _articleDetails;
-            }
-
-            set
-            {
-                SetProperty(ref _articleDetails, value);
-            }
-        }
 
         public AddArticleViewModel(IDatabaseService databaseService)
         {
             _databaseService = databaseService;
         }
+
+        public event Action<IDialogResult> RequestClose;
+
+        public Article Article { get; set; } = new Article();
+
+        public ArticleDetails ArticleDetails { get; set; } = new ArticleDetails();
 
         public DelegateCommand<Article> AddArticleCommand
         {
@@ -52,11 +34,7 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public string Title
-        {
-            get { return _title; }
-            set { SetProperty(ref _title, value); }
-        }
+        public string Title { get; set; }
 
         protected virtual void CloseDialog(string parameter)
         {
@@ -91,13 +69,10 @@ namespace RestaurantApp.ViewModels
 
         }
 
-        private async Task AddArticleDetails(ArticleDetails articleDetails)
-        {
-            await _databaseService.AddArticleDetails(articleDetails);
-        }
-
         private async void AddArticle(Article article)
         {
+            using EFContext efContext = new EFContext();
+
             if (article.Name is null)
             {
                 MessageBox.Show("Article name can not be empty!", "Add article", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -116,9 +91,9 @@ namespace RestaurantApp.ViewModels
                 return;
             }
 
-            int articleId = await _databaseService.AddArticle(article);
+            int articleId = await _databaseService.AddArticle(article, efContext);
             ArticleDetails.ArticleID = articleId;
-            await AddArticleDetails(ArticleDetails);
+            await _databaseService.AddArticleDetails(ArticleDetails, efContext);
 
             CloseDialog("true");
         }

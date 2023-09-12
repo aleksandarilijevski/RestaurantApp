@@ -11,7 +11,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
-//using Excel = Microsoft.Office.Interop.Excel;
 
 namespace RestaurantApp.ViewModels
 {
@@ -26,12 +25,9 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand _filterCommand;
         private DelegateCommand _clearFiltersCommand;
         private DelegateCommand _exportToExcelCommand;
-        private Bill _selectedBill;
         private decimal _total;
         private string _filterBillCounter;
         private string _filterTableID;
-        private DateTime _filterDateFrom;
-        private DateTime _filterDateTo;
         private string _totalProfit;
 
         public ReportManagementViewModel(IDatabaseService databaseService, IDialogService dialogService)
@@ -96,31 +92,9 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public DateTime FilterDateFrom
-        {
-            get
-            {
-                return _filterDateFrom;
-            }
+        public DateTime FilterDateFrom { get; set; }
 
-            set
-            {
-                _filterDateFrom = value;
-            }
-        }
-
-        public DateTime FilterDateTo
-        {
-            get
-            {
-                return _filterDateTo;
-            }
-
-            set
-            {
-                _filterDateTo = value;
-            }
-        }
+        public DateTime FilterDateTo { get; set; }
 
         public List<Bill> OriginalBills
         {
@@ -149,18 +123,7 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public Bill SelectedBill
-        {
-            get
-            {
-                return _selectedBill;
-            }
-
-            set
-            {
-                _selectedBill = value;
-            }
-        }
+        public Bill SelectedBill { get; set; }
 
         public DelegateCommand ShowReportDetailsCommand
         {
@@ -285,9 +248,6 @@ namespace RestaurantApp.ViewModels
             TotalProfit = "Total profit : " + totalProfit.ToString("0.00");
         }
 
-        /// <summary>
-        /// Problem working on different excel version due to com reference.
-        /// </summary>
         private void ExportToExcel()
         {
             if (Bills.Count == 0)
@@ -430,6 +390,5 @@ namespace RestaurantApp.ViewModels
 
             return totalProfit;
         }
-
     }
 }

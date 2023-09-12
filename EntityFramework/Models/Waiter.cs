@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace EntityFramework.Models
+﻿namespace EntityFramework.Models
 {
     public class Waiter : BaseEntity
     {

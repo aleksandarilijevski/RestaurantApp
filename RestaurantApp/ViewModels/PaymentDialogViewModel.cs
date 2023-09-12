@@ -10,25 +10,12 @@ namespace RestaurantApp.ViewModels
     {
         private DelegateCommand<string> _calculateChangeCommand;
         private DelegateCommand _confirmCommand;
-        private string _title = "Payment Dialog";
         private decimal _totalPrice;
-        private string _cashBox;
         private decimal _change;
 
         public event Action<IDialogResult> RequestClose;
 
-        public string Title
-        {
-            get
-            {
-                return _title;
-            }
-
-            set
-            {
-                _title = value;
-            }
-        }
+        public string Title { get; set; } = "Payment dialog";
 
         public decimal TotalPrice
         {
@@ -44,18 +31,7 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public string CashBox
-        {
-            get
-            {
-                return _cashBox;
-            }
-
-            set
-            {
-                _cashBox = value;
-            }
-        }
+        public string CashBox { get; set; }
 
         public decimal Change
         {
@@ -87,6 +63,26 @@ namespace RestaurantApp.ViewModels
                 _confirmCommand = new DelegateCommand(Confirm);
                 return _confirmCommand;
             }
+        }
+
+        public virtual void RaiseRequestClose(IDialogResult dialogResult)
+        {
+            RequestClose?.Invoke(dialogResult);
+        }
+
+        public virtual bool CanCloseDialog()
+        {
+            return true;
+        }
+
+        public virtual void OnDialogClosed()
+        {
+
+        }
+
+        public virtual void OnDialogOpened(IDialogParameters parameters)
+        {
+            _totalPrice = parameters.GetValue<decimal>("totalPrice");
         }
 
         private void Confirm()
@@ -133,26 +129,6 @@ namespace RestaurantApp.ViewModels
             DialogResult dialogResult = new DialogResult(result, dialogParametars);
 
             RaiseRequestClose(dialogResult);
-        }
-
-        public virtual void RaiseRequestClose(IDialogResult dialogResult)
-        {
-            RequestClose?.Invoke(dialogResult);
-        }
-
-        public virtual bool CanCloseDialog()
-        {
-            return true;
-        }
-
-        public virtual void OnDialogClosed()
-        {
-
-        }
-
-        public virtual void OnDialogOpened(IDialogParameters parameters)
-        {
-            _totalPrice = parameters.GetValue<decimal>("totalPrice");
         }
     }
 }

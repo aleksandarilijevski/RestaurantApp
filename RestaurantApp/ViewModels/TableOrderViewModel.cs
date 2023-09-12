@@ -14,8 +14,6 @@ namespace RestaurantApp.ViewModels
         private IDatabaseService _databaseService;
         private DelegateCommand<string> _orderingCommand;
         private DelegateCommand _loadAllTablesCommand;
-        private int _id;
-        private ObservableCollection<Table> _tables;
 
         public TableOrderViewModel(IRegionManager regionManager, IDatabaseService databaseService)
         {
@@ -23,14 +21,9 @@ namespace RestaurantApp.ViewModels
             _databaseService = databaseService;
         }
 
-        public int ID
-        {
-            get => _id;
-            set
-            {
-                SetProperty(ref _id, value);
-            }
-        }
+        public int ID { get; set; }
+
+        public ObservableCollection<Table> Tables { get; set; }
 
         public DelegateCommand<string> OrderingCommand
         {
@@ -47,19 +40,6 @@ namespace RestaurantApp.ViewModels
             {
                 _loadAllTablesCommand = new DelegateCommand(LoadAllTables);
                 return _loadAllTablesCommand;
-            }
-        }
-
-        public ObservableCollection<Table> Tables
-        {
-            get
-            {
-                return _tables;
-            }
-
-            set
-            {
-                SetProperty(ref _tables, value);
             }
         }
 

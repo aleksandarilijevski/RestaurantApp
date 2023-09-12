@@ -11,7 +11,7 @@ namespace EntityFramework.Models
 
         public int? OnlineOrderID { get; set; }
 
-        public OnlineOrder? OnlineOrder { get; set; }  
+        public OnlineOrder? OnlineOrder { get; set; }
 
 
         [Column(TypeName = "decimal(18,2 )")]

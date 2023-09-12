@@ -10,8 +10,6 @@ namespace RestaurantApp.ViewModels
     public class EditWaiterViewModel : BindableBase, IDialogAware
     {
         private IDatabaseService _databaseService;
-        private string _title = "Edit waiter";
-        private Waiter _waiter;
         private DelegateCommand<Waiter> _editWaiterCommand;
 
         public event Action<IDialogResult> RequestClose;
@@ -21,17 +19,9 @@ namespace RestaurantApp.ViewModels
             _databaseService = databaseService;
         }
 
-        public Waiter Waiter
-        {
-            get { return _waiter; }
-            set { SetProperty(ref _waiter, value); }
-        }
+        public Waiter Waiter { get; set; }
 
-        public string Title
-        {
-            get { return _title; }
-            set { SetProperty(ref _title, value); }
-        }
+        public string Title { get; set; } = "Edit waiter";
 
         public DelegateCommand<Waiter> EditWaiterCommand
         {
@@ -76,7 +66,8 @@ namespace RestaurantApp.ViewModels
 
         private async void EditWaiter(Waiter waiter)
         {
-            await _databaseService.EditWaiter(waiter);
+            using EFContext efContext = new EFContext();
+            await _databaseService.EditWaiter(waiter,efContext);
             CloseDialog("true");
         }
     }

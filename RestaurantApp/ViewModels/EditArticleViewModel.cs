@@ -5,7 +5,6 @@ using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
 using System;
 using System.Reflection;
-using System.Runtime.InteropServices;
 
 namespace RestaurantApp.ViewModels
 {
@@ -13,9 +12,7 @@ namespace RestaurantApp.ViewModels
     {
         private IDatabaseService _databaseService;
         private DelegateCommand _editArticleCommand;
-        private Article _article;
         private Article _deepCopyArticle;
-        private string _title = "Edit article";
 
         public event Action<IDialogResult> RequestClose;
 
@@ -24,17 +21,9 @@ namespace RestaurantApp.ViewModels
             _databaseService = databaseService;
         }
 
-        public Article Article
-        {
-            get { return _article; }
-            set { SetProperty(ref _article, value); }
-        }
+        public Article Article { get; set; }
 
-        public string Title
-        {
-            get { return _title; }
-            set { SetProperty(ref _title, value); }
-        }
+        public string Title { get; set; } = "Edit article";
 
         public DelegateCommand EditArticleCommand
         {
@@ -110,13 +99,13 @@ namespace RestaurantApp.ViewModels
         }
         private async void EditArticle()
         {
-            Article article = await _databaseService.GetArticleByID(DeepCopyArticle.ID);
+            //Article article = await _databaseService.GetArticleByID(DeepCopyArticle.ID);
 
-            article.Name = DeepCopyArticle.Name;
-            article.Barcode = DeepCopyArticle.Barcode;
-            article.Price = DeepCopyArticle.Barcode;
+            //article.Name = DeepCopyArticle.Name;
+            //article.Barcode = DeepCopyArticle.Barcode;
+            //article.Price = DeepCopyArticle.Barcode;
 
-            await _databaseService.EditArticle(DeepCopyArticle);
+            //await _databaseService.EditArticle(DeepCopyArticle);
             CloseDialog("true");
         }
     }

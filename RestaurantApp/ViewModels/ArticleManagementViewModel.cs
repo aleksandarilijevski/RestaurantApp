@@ -21,7 +21,6 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand<Article> _showArticleDetailsCommand;
         private DelegateCommand<Article> _deleteArticleCommand;
         private ObservableCollection<Article> _articles;
-        private List<ArticleDetails> _articleDetailsList;
 
         public ArticleManagementViewModel(IDatabaseService databaseService, IDialogService dialogService, IRegionManager regionManager)
         {
@@ -32,7 +31,11 @@ namespace RestaurantApp.ViewModels
 
         public ObservableCollection<Article> Articles
         {
-            get => _articles;
+            get
+            {
+                return _articles;
+            }
+
             set
             {
                 _articles = value;
@@ -40,18 +43,7 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public List<ArticleDetails> ArticleDetailsList
-        {
-            get
-            {
-                return _articleDetailsList;
-            }
-
-            set
-            {
-                _articleDetailsList = value;
-            }
-        }
+        public List<ArticleDetails> ArticleDetailsList { get; set; }
 
         public DelegateCommand ShowAddArticleDialogCommand
         {
@@ -140,8 +132,10 @@ namespace RestaurantApp.ViewModels
 
         private async void DeleteArticle(Article article)
         {
+            using EFContext efContext = new EFContext();
+
             article.IsDeleted = true;
-            await _databaseService.EditArticle(article);
+            await _databaseService.EditArticle(article, efContext);
             Articles.Remove(article);
         }
 
