@@ -11,7 +11,6 @@ namespace RestaurantApp.ViewModels
     public class AddArticleViewModel : BindableBase, IDialogAware
     {
         private IDatabaseService _databaseService;
-        private string _title = "Add new article";
         private DelegateCommand<Article> _addArticleCommand;
 
         public AddArticleViewModel(IDatabaseService databaseService)
@@ -20,6 +19,8 @@ namespace RestaurantApp.ViewModels
         }
 
         public event Action<IDialogResult> RequestClose;
+
+        public string Title { get; set; } = "Add new article";
 
         public Article Article { get; set; } = new Article();
 
@@ -33,8 +34,6 @@ namespace RestaurantApp.ViewModels
                 return _addArticleCommand;
             }
         }
-
-        public string Title { get; set; }
 
         protected virtual void CloseDialog(string parameter)
         {
