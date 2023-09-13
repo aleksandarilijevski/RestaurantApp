@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -24,7 +25,6 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand<TableArticleQuantity> _deleteTableArticleQuantityCommand;
         private DelegateCommand _goToPaymentCommand;
         private DelegateCommand _checkIfOnlineOrderExistsCommand;
-        private int _quantityValueBeforeChange = 0;
 
         public OnlineOrderingViewModel(IDatabaseService databaseService, IRegionManager regionManager, EFContext efContext)
         {
@@ -55,19 +55,11 @@ namespace RestaurantApp.ViewModels
 
             set
             {
-                if (_selectedTableArticleQuantity != null)
-                {
-                    _quantityValueBeforeChange = _selectedTableArticleQuantity.Quantity;
-                    _selectedTableArticleQuantity.PropertyChanged -= OnQuantityPropertyChanged;
-                }
-
                 _selectedTableArticleQuantity = value;
                 RaisePropertyChanged();
 
                 if (_selectedTableArticleQuantity != null)
                 {
-                    _quantityValueBeforeChange = _selectedTableArticleQuantity.Quantity;
-
                     _selectedTableArticleQuantity.PropertyChanged += OnQuantityPropertyChanged;
                 }
             }
@@ -219,11 +211,9 @@ namespace RestaurantApp.ViewModels
                     ArticleDetails = articleDetails
                 };
 
-
-                await IncreaseReservedQuantity(articleDetails, tableArticleQuantity.Quantity, efContext);
                 TableArticleQuantities.Add(tableArticleQuantity);
-
                 await _databaseService.AddTableArticleQuantity(tableArticleQuantity, efContext);
+                await IncreaseQuantity(tableArticleQuantity, articleDetails, tableArticleQuantity.Quantity, efContext);
             }
 
             Barcode = string.Empty;
@@ -256,31 +246,40 @@ namespace RestaurantApp.ViewModels
 
         private async Task IsQuantityAvailableForArticleOnTable(TableArticleQuantity selectedTableArticleQuantity)
         {
+            _selectedTableArticleQuantity.PropertyChanged -= OnQuantityPropertyChanged;
+
             using EFContext efContext = new EFContext();
-            //SelectedTableArticleQuantity.PropertyChanged -= OnQuantityPropertyChanged;
+
+            Debug.WriteLine("Trigger method");
+
+            TableArticleQuantity tableArticleQuantity = await _databaseService.GetTableArticleQuantityByID(selectedTableArticleQuantity.ID, efContext);
 
             List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleID(selectedTableArticleQuantity.ArticleID, efContext);
-            int availableQuantity = GetAvailableQuantity(articleDetails);
 
-            if (_quantityValueBeforeChange < selectedTableArticleQuantity.Quantity)
+            bool isQuantityAvailable = await IfQuantityIsAvailable(selectedTableArticleQuantity.Article);
+
+            if (isQuantityAvailable)
             {
-                if (availableQuantity >= selectedTableArticleQuantity.Quantity - _quantityValueBeforeChange)
+                int oldQuantity = tableArticleQuantity.Quantity;
+
+                tableArticleQuantity.Quantity = selectedTableArticleQuantity.Quantity;
+                await _databaseService.EditTableArticleQuantity(tableArticleQuantity, efContext);
+
+                if (selectedTableArticleQuantity.Quantity > oldQuantity)
                 {
-                    await IncreaseReservedQuantity(articleDetails, selectedTableArticleQuantity.Quantity, efContext);
-                    await _databaseService.EditTableArticleQuantity(selectedTableArticleQuantity, efContext);
-                    //SelectedTableArticleQuantity.PropertyChanged += OnQuantityPropertyChanged;
+                    int calculateHowMuchToIncrease = selectedTableArticleQuantity.Quantity - oldQuantity;
+                    await IncreaseQuantity(tableArticleQuantity, articleDetails, calculateHowMuchToIncrease, efContext);
                 }
                 else
                 {
-                    selectedTableArticleQuantity.Quantity = _quantityValueBeforeChange;
-                    MessageBox.Show("Article is not in stock!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    int calculateHowMuchToDecrease = Math.Abs(selectedTableArticleQuantity.Quantity - oldQuantity);
+                    await DecreaseQuantityFromCell(selectedTableArticleQuantity, articleDetails, calculateHowMuchToDecrease, efContext);
                 }
             }
             else
             {
-                int quantityToRemove = Math.Abs(selectedTableArticleQuantity.Quantity - _quantityValueBeforeChange);
-                await DecreaseReservedQuantity(articleDetails, quantityToRemove, efContext);
-                await _databaseService.EditTableArticleQuantity(selectedTableArticleQuantity, efContext);
+                SelectedTableArticleQuantity.Quantity = tableArticleQuantity.Quantity;
+                MessageBox.Show("Not in stock!!!!!");
             }
 
             RaisePropertyChanged(nameof(TableArticleQuantities));
@@ -298,96 +297,140 @@ namespace RestaurantApp.ViewModels
             return quantity;
         }
 
-        private async Task DecreaseReservedQuantity(List<ArticleDetails> articleDetails, int reservedQuantityToBeDecreased, EFContext efContext)
+        private async Task IncreaseQuantity(TableArticleQuantity tableArticleQuantity, List<ArticleDetails> articleDetails, int quantity, EFContext efContext)
         {
-            foreach (ArticleDetails articleDetail in articleDetails)
-            {
-                if (reservedQuantityToBeDecreased <= 0)
-                    break;
-
-                int availableQuantity = articleDetail.OriginalQuantity - articleDetail.ReservedQuantity;
-                int quantityToReserve = Math.Min(availableQuantity, reservedQuantityToBeDecreased);
-
-                if (articleDetail.OriginalQuantity == articleDetail.ReservedQuantity)
-                {
-                    quantityToReserve = reservedQuantityToBeDecreased;
-                }
-
-                articleDetail.ReservedQuantity -= quantityToReserve;
-                reservedQuantityToBeDecreased += quantityToReserve;
-
-                await _databaseService.EditArticleDetails(articleDetail, efContext);
-            }
-        }
-
-        private async Task IncreaseReservedQuantity(List<ArticleDetails> articleDetails, int quantityToBeReserved, EFContext efContext)
-        {
-            if (quantityToBeReserved != 1)
-            {
-                quantityToBeReserved = Math.Abs(_quantityValueBeforeChange - quantityToBeReserved);
-            }
-
-            foreach (ArticleDetails articleDetail in articleDetails)
-            {
-                if (quantityToBeReserved <= 0)
-                    break;
-
-                int availableQuantity = articleDetail.OriginalQuantity - articleDetail.ReservedQuantity;
-                int quantityToReserve = Math.Min(availableQuantity, quantityToBeReserved);
-
-                if (articleDetail.OriginalQuantity == articleDetail.ReservedQuantity)
-                {
-                    quantityToReserve = articleDetail.ReservedQuantity;
-                }
-
-                articleDetail.ReservedQuantity += quantityToReserve;
-                quantityToBeReserved -= quantityToReserve;
-
-                await _databaseService.EditArticleDetails(articleDetail, efContext);
-            }
-        }
-
-        private async void DeleteTableArticleQuantity(TableArticleQuantity tableArticleQuantity)
-        {
-            using EFContext efContext = new EFContext();
-            List<ArticleDetails>? articleDetails = await _databaseService.GetArticleDetailsByArticleID(tableArticleQuantity.ArticleID, efContext);
-
-            int quantityToRemove = SelectedTableArticleQuantity.Quantity;
+            List<TableArticleQuantity> tableArticleQuantities = await _databaseService.GetTableArticleQuantityByArticleID(tableArticleQuantity.ArticleID, efContext);
+            int usedQuantity = tableArticleQuantities.Sum(x => x.Quantity);
 
             foreach (ArticleDetails articleDetail in articleDetails.OrderBy(x => x.CreatedDateTime))
             {
-                if (tableArticleQuantity.Article.IsDeleted == false && tableArticleQuantity.Article.ID == tableArticleQuantity.Article.ID)
+                if (quantity <= 0)
                 {
+                    break;
+                }
 
-                    if (articleDetail.ReservedQuantity != 0)
+                int availableQuantity = articleDetail.OriginalQuantity - articleDetail.ReservedQuantity;
+                int quantityToReserve = Math.Min(availableQuantity, quantity);
+
+                articleDetail.ReservedQuantity += quantityToReserve;
+                quantity -= quantityToReserve;
+
+                await _databaseService.EditArticleDetails(articleDetail, efContext);
+            }
+        }
+
+
+        private async Task DecreaseQuantityFromCell(TableArticleQuantity tableArticleQuantity, List<ArticleDetails> articleDetails, int quantityToBeRemoved, EFContext efContext)
+        {
+            List<TableArticleQuantity> tableArticleQuantities = await _databaseService.GetTableArticleQuantityByArticleID(tableArticleQuantity.ArticleID, efContext);
+            int usedQuantity = tableArticleQuantities.Sum(x => x.Quantity);
+
+            foreach (ArticleDetails articleDetail in articleDetails.OrderBy(x => x.CreatedDateTime))
+            {
+                if (articleDetail.ReservedQuantity != 0)
+                {
+                    if (articleDetail.OriginalQuantity > articleDetail.ReservedQuantity)
                     {
-                        if (articleDetail.ReservedQuantity < SelectedTableArticleQuantity.Quantity)
+                        int reservedToBeDeleted = Math.Min(articleDetail.ReservedQuantity, quantityToBeRemoved);
+                        articleDetail.ReservedQuantity -= reservedToBeDeleted;
+                        quantityToBeRemoved -= reservedToBeDeleted;
+
+                        await _databaseService.EditArticleDetails(articleDetail, efContext);
+
+                        if (quantityToBeRemoved != 0)
                         {
-                            int reservedDelete = Math.Min(articleDetail.ReservedQuantity, quantityToRemove);
-                            articleDetail.ReservedQuantity -= reservedDelete;
-                            quantityToRemove -= reservedDelete;
-
-                            if (quantityToRemove != 0)
-                            {
-                                continue;
-                            }
-
+                            continue;
                         }
-                        else
+                    }
+                    else if (articleDetail.ReservedQuantity == articleDetail.OriginalQuantity)
+                    {
+                        int reservedToBeDeleted = Math.Min(articleDetail.ReservedQuantity, quantityToBeRemoved);
+                        articleDetail.ReservedQuantity -= reservedToBeDeleted;
+                        quantityToBeRemoved -= reservedToBeDeleted;
+
+                        await _databaseService.EditArticleDetails(articleDetail, efContext);
+
+                        if (quantityToBeRemoved != 0)
                         {
-                            articleDetail.ReservedQuantity -= SelectedTableArticleQuantity.Quantity;
-
+                            continue;
                         }
+                    }
+                    else if (quantityToBeRemoved == 1)
+                    {
+                        articleDetail.ReservedQuantity--; ;
+                        await _databaseService.EditArticleDetails(articleDetail, efContext);
                     }
                     else
                     {
                         continue;
                     }
 
-                    await _databaseService.EditArticleDetails(articleDetail, efContext);
                     break;
                 }
             }
+        }
+
+        private async Task DecreaseQuantity(TableArticleQuantity tableArticleQuantity, List<ArticleDetails> articleDetails, EFContext efContext)
+        {
+            List<TableArticleQuantity> tableArticleQuantities = await _databaseService.GetTableArticleQuantityByArticleID(tableArticleQuantity.ArticleID, efContext);
+            int usedQuantity = tableArticleQuantities.Sum(x => x.Quantity);
+
+            int quantityToBeRemoved = tableArticleQuantity.Quantity;
+
+            foreach (ArticleDetails articleDetail in articleDetails.OrderBy(x => x.CreatedDateTime))
+            {
+                if (articleDetail.ReservedQuantity != 0)
+                {
+                    //if (articleDetail.ReservedQuantity < tableArticleQuantity.Quantity)
+                    if (articleDetail.OriginalQuantity > articleDetail.ReservedQuantity)
+                    {
+                        int reservedToBeDeleted = Math.Min(articleDetail.ReservedQuantity, quantityToBeRemoved);
+                        articleDetail.ReservedQuantity -= reservedToBeDeleted;
+                        quantityToBeRemoved -= reservedToBeDeleted;
+
+                        await _databaseService.EditArticleDetails(articleDetail, efContext);
+
+                        if (quantityToBeRemoved != 0)
+                        {
+                            continue;
+                        }
+                    }
+                    else if (articleDetail.ReservedQuantity == articleDetail.OriginalQuantity)
+                    {
+                        int reservedToBeDeleted = Math.Min(articleDetail.ReservedQuantity, quantityToBeRemoved);
+                        articleDetail.ReservedQuantity -= reservedToBeDeleted;
+                        quantityToBeRemoved -= reservedToBeDeleted;
+
+                        await _databaseService.EditArticleDetails(articleDetail, efContext);
+
+                        if (quantityToBeRemoved != 0)
+                        {
+                            continue;
+                        }
+                    }
+                    else if (quantityToBeRemoved == 1)
+                    {
+                        articleDetail.ReservedQuantity--; ;
+                        await _databaseService.EditArticleDetails(articleDetail, efContext);
+                    }
+                    else
+                    {
+                        continue;
+                    }
+
+                    break;
+                }
+            }
+        }
+
+        private async void DeleteTableArticleQuantity(TableArticleQuantity tableArticleQuantity)
+        {
+            using EFContext efContext = new EFContext();
+
+            int quantityToRemove = SelectedTableArticleQuantity.Quantity;
+
+            List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleID(tableArticleQuantity.ArticleID, efContext);
+            await DecreaseQuantity(tableArticleQuantity, articleDetails, efContext);
 
             TableArticleQuantities.Remove(tableArticleQuantity);
             await _databaseService.DeleteTableArticleQuantity(tableArticleQuantity, new EFContext());
