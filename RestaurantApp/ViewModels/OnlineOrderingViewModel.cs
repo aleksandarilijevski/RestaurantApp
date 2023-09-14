@@ -253,12 +253,12 @@ namespace RestaurantApp.ViewModels
             Debug.WriteLine("Trigger method");
 
             TableArticleQuantity tableArticleQuantity = await _databaseService.GetTableArticleQuantityByID(selectedTableArticleQuantity.ID, efContext);
-
             List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleID(selectedTableArticleQuantity.ArticleID, efContext);
 
-            bool isQuantityAvailable = await IfQuantityIsAvailable(selectedTableArticleQuantity.Article);
+            List<TableArticleQuantity> tableArticleQuantities = await _databaseService.GetTableArticleQuantityByArticleID(selectedTableArticleQuantity.ArticleID, efContext);
+            int availableReservedQuantity = GetAvailableQuantity(articleDetails) + tableArticleQuantity.Quantity;
 
-            if (isQuantityAvailable)
+            if (availableReservedQuantity >= selectedTableArticleQuantity.Quantity)
             {
                 int oldQuantity = tableArticleQuantity.Quantity;
 

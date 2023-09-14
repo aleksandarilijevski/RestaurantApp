@@ -239,23 +239,13 @@ namespace RestaurantApp.ViewModels
             Debug.WriteLine("Trigger method");
 
             TableArticleQuantity tableArticleQuantity = await _databaseService.GetTableArticleQuantityByID(selectedTableArticleQuantity.ID, efContext);
-
             List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleID(selectedTableArticleQuantity.ArticleID, efContext);
-            //int available = GetAvailableQuantity(articleDetails);
 
-            //List<TableArticleQuantity> tableArticleQuantities = await _databaseService.GetTableArticleQuantityByArticleID(selectedTableArticleQuantity.ArticleID, efContext);
-            //int sumOfUsed = tableArticleQuantities.Sum(x => x.Quantity);
+            List<TableArticleQuantity> tableArticleQuantities = await _databaseService.GetTableArticleQuantityByArticleID(selectedTableArticleQuantity.ArticleID, efContext);
+            int availableReservedQuantity = GetAvailableQuantity(articleDetails) + tableArticleQuantity.Quantity;
 
-            //int used = Math.Abs(selectedTableArticleQuantity.Quantity - sumOfUsed);
-
-
-
-            bool isQuantityAvailable = await IfQuantityIsAvailable(selectedTableArticleQuantity.Article);
-
-            //if (available >= used)
-            if (isQuantityAvailable)
+            if (availableReservedQuantity >= selectedTableArticleQuantity.Quantity)
             {
-                //TableArticleQuantity tableArticleQuantity = await _databaseService.GetTableArticleQuantityByID(selectedTableArticleQuantity.ID, efContext);
                 int oldQuantity = tableArticleQuantity.Quantity;
 
                 tableArticleQuantity.Quantity = selectedTableArticleQuantity.Quantity;
@@ -264,9 +254,7 @@ namespace RestaurantApp.ViewModels
                 if (selectedTableArticleQuantity.Quantity > oldQuantity)
                 {
                     int calculateHowMuchToIncrease = selectedTableArticleQuantity.Quantity - oldQuantity;
-                    int quantityToAdd = calculateHowMuchToIncrease;
-                    //List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleID(selectedTableArticleQuantity.ArticleID, efContext);
-                    await IncreaseQuantity(tableArticleQuantity, articleDetails, quantityToAdd, efContext);
+                    await IncreaseQuantity(tableArticleQuantity, articleDetails, calculateHowMuchToIncrease, efContext);
                 }
                 else
                 {
