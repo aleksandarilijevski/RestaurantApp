@@ -265,7 +265,7 @@ namespace RestaurantApp.ViewModels
             else
             {
                 SelectedTableArticleQuantity.Quantity = tableArticleQuantity.Quantity;
-                MessageBox.Show("Not in stock!!!!!");
+                MessageBox.Show("Article is not in stock!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
             RaisePropertyChanged(nameof(TableArticleQuantities));
@@ -320,7 +320,6 @@ namespace RestaurantApp.ViewModels
             {
                 if (articleDetail.ReservedQuantity != 0)
                 {
-                    //if (articleDetail.ReservedQuantity < tableArticleQuantity.Quantity)
                     if (articleDetail.OriginalQuantity > articleDetail.ReservedQuantity)
                     {
                         int reservedToBeDeleted = Math.Min(articleDetail.ReservedQuantity, quantityToBeRemoved);
@@ -373,7 +372,6 @@ namespace RestaurantApp.ViewModels
             {
                 if (articleDetail.ReservedQuantity != 0)
                 {
-                    //if (articleDetail.ReservedQuantity < tableArticleQuantity.Quantity)
                     if (articleDetail.OriginalQuantity > articleDetail.ReservedQuantity)
                     {
                         int reservedToBeDeleted = Math.Min(articleDetail.ReservedQuantity, quantityToBeRemoved);

@@ -175,7 +175,8 @@ namespace RestaurantApp.ViewModels
                 OnlineOrder = onlineOrder;
                 TableArticleQuantities = new ObservableCollection<TableArticleQuantity>(OnlineOrder.TableArticleQuantities);
             }
-            else if (onlineOrder.IsPayed == true)
+
+            if (onlineOrder.IsPayed == true)
             {
                 onlineOrder = new OnlineOrder();
                 await _databaseService.AddOnlineOrder(onlineOrder, efContext);
@@ -240,11 +241,11 @@ namespace RestaurantApp.ViewModels
         {
             if (e.PropertyName == nameof(SelectedTableArticleQuantity.Quantity))
             {
-                _ = IsQuantityAvailableForArticleOnTable(SelectedTableArticleQuantity);
+                _ = IsQuantityAvailableForArticleOnOnlineOrder(SelectedTableArticleQuantity);
             }
         }
 
-        private async Task IsQuantityAvailableForArticleOnTable(TableArticleQuantity selectedTableArticleQuantity)
+        private async Task IsQuantityAvailableForArticleOnOnlineOrder(TableArticleQuantity selectedTableArticleQuantity)
         {
             _selectedTableArticleQuantity.PropertyChanged -= OnQuantityPropertyChanged;
 
@@ -279,7 +280,7 @@ namespace RestaurantApp.ViewModels
             else
             {
                 SelectedTableArticleQuantity.Quantity = tableArticleQuantity.Quantity;
-                MessageBox.Show("Not in stock!!!!!");
+                MessageBox.Show("Article is not in stock!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
             RaisePropertyChanged(nameof(TableArticleQuantities));
