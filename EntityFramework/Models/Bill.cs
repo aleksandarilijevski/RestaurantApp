@@ -13,7 +13,6 @@ namespace EntityFramework.Models
 
         public OnlineOrder? OnlineOrder { get; set; }
 
-
         [Column(TypeName = "decimal(18,2 )")]
         public decimal TotalPrice { get; set; }
 

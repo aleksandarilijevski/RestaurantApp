@@ -253,6 +253,7 @@ namespace RestaurantApp.ViewModels
                 }
 
                 await _databaseService.AddArticleDetails(articleDetails, efContext);
+                await BindArticleDetailToExistingTableArticleQuantities(articleDetails,efContext);
             }
 
             List<Article> articles = await CreateArticleListFromArticleDetails(DataEntryArticles, efContext);
@@ -271,6 +272,17 @@ namespace RestaurantApp.ViewModels
             DataEntryNumber = string.Empty;
             DataEntryArticles.Clear();
             RaisePropertyChanged(nameof(DataEntryArticles));
+        }
+
+        private async Task BindArticleDetailToExistingTableArticleQuantities(ArticleDetails articleDetail, EFContext efContext)
+        {
+            List<TableArticleQuantity> tableArticleQuantities = await _databaseService.GetTableArticleQuantityByArticleID(articleDetail.ArticleID, efContext);
+
+            foreach (TableArticleQuantity tableArticleQuantity in tableArticleQuantities)
+            {
+                tableArticleQuantity.ArticleDetails.Add(articleDetail);
+            }
+
         }
 
         private async Task<List<Article>> CreateArticleListFromArticleDetails(List<ArticleDetails> articleDetails, EFContext efContext)

@@ -19,7 +19,7 @@ namespace RestaurantApp.Services
 
         public async Task<List<TableArticleQuantity>> GetTableArticleQuantityByArticleID(int articleId, EFContext efContext)
         {
-            List<TableArticleQuantity> tableArticleQuantities = await efContext.TableArticleQuantities.Select(x => x).Where(x => x.ArticleID == articleId).ToListAsync();
+            List<TableArticleQuantity> tableArticleQuantities = await efContext.TableArticleQuantities.Select(x => x).Include(x => x.ArticleDetails).Where(x => x.ArticleID == articleId).ToListAsync();
             return tableArticleQuantities;
         }
 
