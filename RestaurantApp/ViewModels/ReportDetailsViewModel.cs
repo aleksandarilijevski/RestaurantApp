@@ -65,10 +65,13 @@ namespace RestaurantApp.ViewModels
             ButtonResult result = ButtonResult.None;
 
             if (parameter?.ToLower() == "true")
+            {
                 result = ButtonResult.OK;
-
+            }
             else if (parameter?.ToLower() == "false")
+            {
                 result = ButtonResult.Cancel;
+            }
 
             RaiseRequestClose(new DialogResult(result));
         }

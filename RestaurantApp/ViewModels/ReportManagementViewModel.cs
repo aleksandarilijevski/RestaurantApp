@@ -380,13 +380,16 @@ namespace RestaurantApp.ViewModels
                     {
                         foreach (ArticleDetails articleDetail in soldTableArticleQuantity.ArticleDetails)
                         {
-                            totalProfit += articleDetail.EntryPrice * soldTableArticleQuantity.Quantity;
+                            if (articleDetail.ReservedQuantity == 0 && articleDetail.OriginalQuantity == 0)
+                            {
+                                totalProfit += articleDetail.EntryPrice * soldTableArticleQuantity.Quantity;
+                            }
                         }
                     }
                 }
             }
 
-            totalProfit = totalPrice - totalProfit;
+            totalProfit -= totalPrice;
 
             return totalProfit;
         }
