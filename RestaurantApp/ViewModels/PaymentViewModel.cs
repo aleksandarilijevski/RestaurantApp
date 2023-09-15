@@ -9,6 +9,7 @@ using RestaurantApp.Utilities.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace RestaurantApp.ViewModels
@@ -19,7 +20,6 @@ namespace RestaurantApp.ViewModels
         private IRegionManager _regionManager;
         private IDialogService _dialogService;
         private decimal _totalPrice;
-        private List<TableArticleQuantity> _tableArticleQuantities;
         private DelegateCommand _issueFakeBillCommand;
         private DelegateCommand _issueBillCommand;
         private DelegateCommand _getTotalPriceCommand;
@@ -120,8 +120,8 @@ namespace RestaurantApp.ViewModels
             foreach (TableArticleQuantity tableArticleQuantity in TableArticleQuantities)
             {
                 List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleID(tableArticleQuantity.ArticleID, efContext);
-                await DecreaseReservedQuantity(articleDetails, tableArticleQuantity.Quantity, efContext);
-                await DecreaseOriginalQuantity(articleDetails, tableArticleQuantity.Quantity, efContext);
+                await DecreaseReservedQuantity(tableArticleQuantity, articleDetails, efContext);
+                await DecreaseOriginalQuantity(tableArticleQuantity, articleDetails, efContext);
             }
 
             await _databaseService.CreateBill(bill, efContext);
@@ -136,7 +136,6 @@ namespace RestaurantApp.ViewModels
 
                 SoldTableArticleQuantity soldTableArticleQuantity = new SoldTableArticleQuantity
                 {
-                    //ArticleID = tableArticleQuantity.ArticleID,
                     Article = article,
                     ArticleDetails = articleDetails,
                     Quantity = tableArticleQuantity.Quantity,
@@ -144,7 +143,7 @@ namespace RestaurantApp.ViewModels
                     Bill = bill
                 };
 
-                await _databaseService.DeleteTableArticleQuantity(tableArticleQuantity, efContext);
+                await _databaseService.DeleteTableArticleQuantity(tableArticleQuantity, new EFContext());
                 await _databaseService.AddTableArticleQuantity(soldTableArticleQuantity, efContext);
             }
 
@@ -177,8 +176,8 @@ namespace RestaurantApp.ViewModels
             foreach (TableArticleQuantity tableArticleQuantity in TableArticleQuantities)
             {
                 List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleID(tableArticleQuantity.ArticleID, efContext);
-                await DecreaseReservedQuantity(articleDetails, tableArticleQuantity.Quantity, efContext);
-                await DecreaseOriginalQuantity(articleDetails, tableArticleQuantity.Quantity, efContext);
+                await DecreaseReservedQuantity(tableArticleQuantity, articleDetails, efContext);
+                await DecreaseOriginalQuantity(tableArticleQuantity, articleDetails, efContext);
             }
 
             await _databaseService.CreateBill(bill, efContext);
@@ -196,7 +195,6 @@ namespace RestaurantApp.ViewModels
 
                 SoldTableArticleQuantity soldTableArticleQuantity = new SoldTableArticleQuantity
                 {
-                    //ArticleID = tableArticleQuantity.ArticleID,
                     Article = article,
                     ArticleDetails = articleDetails,
                     TableID = tableArticleQuantity.TableID,
@@ -204,67 +202,114 @@ namespace RestaurantApp.ViewModels
                     BillID = bill.ID
                 };
 
-                await _databaseService.DeleteTableArticleQuantity(tableArticleQuantity, efContext);
+                await _databaseService.DeleteTableArticleQuantity(tableArticleQuantity, new EFContext());
                 await _databaseService.AddTableArticleQuantity(soldTableArticleQuantity, efContext);
             }
 
             return bill;
         }
 
-        private async Task DecreaseOriginalQuantity(List<ArticleDetails> articleDetails, int originalQuantityToDecrease, EFContext efContext)
+        private async Task DecreaseOriginalQuantity(TableArticleQuantity tableArticleQuantity, List<ArticleDetails> articleDetails, EFContext efContext)
         {
-            foreach (ArticleDetails articleDetail in articleDetails)
+            List<TableArticleQuantity> tableArticleQuantities = await _databaseService.GetTableArticleQuantityByArticleID(tableArticleQuantity.ArticleID, efContext);
+            int usedQuantity = tableArticleQuantities.Sum(x => x.Quantity);
+
+            int quantityToBeRemoved = tableArticleQuantity.Quantity;
+
+            foreach (ArticleDetails articleDetail in articleDetails.OrderBy(x => x.CreatedDateTime))
             {
-                if (originalQuantityToDecrease <= 0)
+                if (articleDetail.OriginalQuantity != 0)
                 {
+                    if (articleDetail.OriginalQuantity > articleDetail.ReservedQuantity)
+                    {
+                        int reservedToBeDeleted = Math.Min(articleDetail.OriginalQuantity, quantityToBeRemoved);
+                        articleDetail.OriginalQuantity -= reservedToBeDeleted;
+                        quantityToBeRemoved -= reservedToBeDeleted;
+
+                        await _databaseService.EditArticleDetails(articleDetail, efContext);
+
+                        if (quantityToBeRemoved != 0)
+                        {
+                            continue;
+                        }
+                    }
+                    else if (articleDetail.ReservedQuantity == articleDetail.OriginalQuantity)
+                    {
+                        int reservedToBeDeleted = Math.Min(articleDetail.ReservedQuantity, quantityToBeRemoved);
+                        articleDetail.OriginalQuantity -= reservedToBeDeleted;
+                        quantityToBeRemoved -= reservedToBeDeleted;
+
+                        await _databaseService.EditArticleDetails(articleDetail, efContext);
+
+                        if (quantityToBeRemoved != 0)
+                        {
+                            continue;
+                        }
+                    }
+                    else if (quantityToBeRemoved == 1)
+                    {
+                        articleDetail.OriginalQuantity--; ;
+                        await _databaseService.EditArticleDetails(articleDetail, efContext);
+                    }
+                    else
+                    {
+                        continue;
+                    }
+
                     break;
                 }
-
-                int availableQuantity = articleDetail.OriginalQuantity - articleDetail.ReservedQuantity;
-                int quantityToReserve = Math.Min(availableQuantity, originalQuantityToDecrease);
-
-                if (articleDetail.OriginalQuantity == articleDetail.ReservedQuantity)
-                {
-                    quantityToReserve = articleDetail.ReservedQuantity;
-                }
-
-                articleDetail.OriginalQuantity -= quantityToReserve;
-
-                originalQuantityToDecrease -= quantityToReserve;
-
-                await _databaseService.EditArticleDetails(articleDetail, efContext);
             }
         }
 
-        private async Task DecreaseReservedQuantity(List<ArticleDetails> articleDetails, int reservedQuantityToBeDecreased, EFContext efContext)
+        private async Task DecreaseReservedQuantity(TableArticleQuantity tableArticleQuantity, List<ArticleDetails> articleDetails, EFContext efContext)
         {
-            foreach (ArticleDetails articleDetail in articleDetails)
+            List<TableArticleQuantity> tableArticleQuantities = await _databaseService.GetTableArticleQuantityByArticleID(tableArticleQuantity.ArticleID, efContext);
+            int usedQuantity = tableArticleQuantities.Sum(x => x.Quantity);
+
+            int quantityToBeRemoved = tableArticleQuantity.Quantity;
+
+            foreach (ArticleDetails articleDetail in articleDetails.OrderBy(x => x.CreatedDateTime))
             {
-                if (reservedQuantityToBeDecreased <= 0)
+                if (articleDetail.ReservedQuantity != 0)
+                {
+                    if (articleDetail.OriginalQuantity > articleDetail.ReservedQuantity)
+                    {
+                        int reservedToBeDeleted = Math.Min(articleDetail.ReservedQuantity, quantityToBeRemoved);
+                        articleDetail.ReservedQuantity -= reservedToBeDeleted;
+                        quantityToBeRemoved -= reservedToBeDeleted;
+
+                        await _databaseService.EditArticleDetails(articleDetail, efContext);
+
+                        if (quantityToBeRemoved != 0)
+                        {
+                            continue;
+                        }
+                    }
+                    else if (articleDetail.ReservedQuantity == articleDetail.OriginalQuantity)
+                    {
+                        int reservedToBeDeleted = Math.Min(articleDetail.ReservedQuantity, quantityToBeRemoved);
+                        articleDetail.ReservedQuantity -= reservedToBeDeleted;
+                        quantityToBeRemoved -= reservedToBeDeleted;
+
+                        await _databaseService.EditArticleDetails(articleDetail, efContext);
+
+                        if (quantityToBeRemoved != 0)
+                        {
+                            continue;
+                        }
+                    }
+                    else if (quantityToBeRemoved == 1)
+                    {
+                        articleDetail.ReservedQuantity--; ;
+                        await _databaseService.EditArticleDetails(articleDetail, efContext);
+                    }
+                    else
+                    {
+                        continue;
+                    }
+
                     break;
-
-                int availableQuantity = articleDetail.OriginalQuantity - articleDetail.ReservedQuantity;
-                int quantityToReserve = Math.Min(availableQuantity, reservedQuantityToBeDecreased);
-
-                if (articleDetail.OriginalQuantity == articleDetail.ReservedQuantity)
-                {
-                    quantityToReserve = articleDetail.ReservedQuantity;
                 }
-
-                if (availableQuantity == 0)
-                {
-                    quantityToReserve = reservedQuantityToBeDecreased;
-                }
-
-                if (articleDetail.OriginalQuantity >= articleDetail.ReservedQuantity)
-                {
-                    quantityToReserve = reservedQuantityToBeDecreased;
-                }
-
-                articleDetail.ReservedQuantity -= quantityToReserve;
-                reservedQuantityToBeDecreased -= quantityToReserve;
-
-                await _databaseService.EditArticleDetails(articleDetail, efContext);
             }
         }
 
@@ -282,7 +327,7 @@ namespace RestaurantApp.ViewModels
 
                 Table = new Table
                 {
-                    TableArticleQuantities = _tableArticleQuantities
+                    TableArticleQuantities = TableArticleQuantities
                 },
             };
 
@@ -329,7 +374,7 @@ namespace RestaurantApp.ViewModels
                             bill = await AddBill(cash, change);
                         }
 
-                        DrawningHelper.DrawBill(bill, _tableArticleQuantities);
+                        DrawningHelper.DrawBill(bill, TableArticleQuantities);
                         _regionManager.RequestNavigate("MainRegion", "TableOrder");
                     }
                 });
@@ -349,7 +394,7 @@ namespace RestaurantApp.ViewModels
                 }
 
 
-                DrawningHelper.DrawBill(bill, _tableArticleQuantities);
+                DrawningHelper.DrawBill(bill, TableArticleQuantities);
                 _regionManager.RequestNavigate("MainRegion", "TableOrder");
             }
         }
@@ -364,7 +409,7 @@ namespace RestaurantApp.ViewModels
         {
             decimal totalPrice = 0;
 
-            foreach (TableArticleQuantity tableArticleQuantity in _tableArticleQuantities)
+            foreach (TableArticleQuantity tableArticleQuantity in TableArticleQuantities)
             {
                 totalPrice += tableArticleQuantity.Article.Price * tableArticleQuantity.Quantity;
             }
