@@ -212,6 +212,7 @@ namespace RestaurantApp.ViewModels
                     ArticleDetails = articleDetails
                 };
 
+
                 TableArticleQuantities.Add(tableArticleQuantity);
                 await _databaseService.AddTableArticleQuantity(tableArticleQuantity, efContext);
                 await IncreaseQuantity(tableArticleQuantity, articleDetails, tableArticleQuantity.Quantity, efContext);
@@ -433,8 +434,10 @@ namespace RestaurantApp.ViewModels
             List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleID(tableArticleQuantity.ArticleID, efContext);
             await DecreaseQuantity(tableArticleQuantity, articleDetails, efContext);
 
+            TableArticleQuantity tableArticleQuantityLoad = await _databaseService.GetTableArticleQuantityByID(tableArticleQuantity.ID, efContext);
+
             TableArticleQuantities.Remove(tableArticleQuantity);
-            await _databaseService.DeleteTableArticleQuantity(tableArticleQuantity, new EFContext());
+            await _databaseService.DeleteTableArticleQuantity(tableArticleQuantityLoad, new EFContext());
         }
 
     }

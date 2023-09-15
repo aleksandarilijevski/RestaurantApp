@@ -437,7 +437,7 @@ namespace RestaurantApp.ViewModels
             TableArticleQuantity tableArticleQuantityLoad = await _databaseService.GetTableArticleQuantityByID(tableArticleQuantity.ID,efContext);
 
             TableArticleQuantities.Remove(tableArticleQuantity);
-            await _databaseService.DeleteTableArticleQuantity(tableArticleQuantityLoad, new EFContext());
+            await _databaseService.DeleteTableArticleQuantity(tableArticleQuantityLoad, efContext);
 
             List<TableArticleQuantity> tableArticleQuantities = Table.TableArticleQuantities.Where(x => !(x is SoldTableArticleQuantity)).ToList();
 
