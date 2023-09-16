@@ -13,7 +13,6 @@ namespace RestaurantApp.ViewModels
     class ReportDetailsViewModel : BindableBase, IDialogAware
     {
         private string _totalPrice = "Total price : ";
-        private Bill _bill;
         private DelegateCommand _printBillCommand;
         private ObservableCollection<TableArticleQuantity> _soldTableArticleQuantities;
 
@@ -99,20 +98,20 @@ namespace RestaurantApp.ViewModels
 
         private void GetSoldArticles()
         {
-            if (_bill.Table is not null)
+            if (Bill.Table is not null)
             {
-                SoldTableArticleQuantities = new ObservableCollection<TableArticleQuantity>(_bill.Table.TableArticleQuantities.Select(x => x).Where(x => x.BillID == Bill.ID && (x is SoldTableArticleQuantity)).OfType<SoldTableArticleQuantity>().ToList());
+                SoldTableArticleQuantities = new ObservableCollection<TableArticleQuantity>(Bill.Table.TableArticleQuantities.Select(x => x).Where(x => x.BillID == Bill.ID && (x is SoldTableArticleQuantity)).OfType<SoldTableArticleQuantity>().ToList());
             }
 
-            if (_bill.OnlineOrder is not null)
+            if (Bill.OnlineOrder is not null)
             {
-                SoldTableArticleQuantities = new ObservableCollection<TableArticleQuantity>(_bill.OnlineOrder.TableArticleQuantities.Select(x => x).Where(x => x.BillID == Bill.ID && (x is SoldTableArticleQuantity)).OfType<SoldTableArticleQuantity>().ToList());
+                SoldTableArticleQuantities = new ObservableCollection<TableArticleQuantity>(Bill.OnlineOrder.TableArticleQuantities.Select(x => x).Where(x => x.BillID == Bill.ID && (x is SoldTableArticleQuantity)).OfType<SoldTableArticleQuantity>().ToList());
             }
         }
 
         private void PrintBill()
         {
-            List<TableArticleQuantity> soldTableArticleQuantities = _bill.Table.TableArticleQuantities.OfType<SoldTableArticleQuantity>().Select(sold => (TableArticleQuantity)sold).ToList();
+            List<TableArticleQuantity> soldTableArticleQuantities = Bill.Table.TableArticleQuantities.OfType<SoldTableArticleQuantity>().Select(sold => (TableArticleQuantity)sold).ToList();
             DrawningHelper.RedrawBill(Bill, soldTableArticleQuantities);
         }
     }

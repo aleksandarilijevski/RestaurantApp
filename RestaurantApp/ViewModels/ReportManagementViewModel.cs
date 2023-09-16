@@ -389,7 +389,7 @@ namespace RestaurantApp.ViewModels
                 }
             }
 
-            totalProfit -= totalPrice;
+            //totalProfit -= totalPrice;
 
             return totalProfit;
         }
