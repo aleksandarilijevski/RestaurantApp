@@ -70,5 +70,7 @@ namespace RestaurantApp.Services.Interface
         public Task EditConfiguration(Configuration configuration, EFContext eFContext);
 
         public Task<List<Bill>> GetAllBills();
+
+        public Task<List<DataEntry>> GetAllDataEntries();
     }
 }

@@ -237,5 +237,13 @@ namespace RestaurantApp.Services
                 .ToListAsync();
             return bills;
         }
+
+        public async Task<List<DataEntry>> GetAllDataEntries()
+        {
+            using EFContext efContext = new EFContext();
+            List<DataEntry> dataEntries = await efContext.DataEntries.ToListAsync();
+            return dataEntries;
+        }
+
     }
 }
