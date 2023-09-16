@@ -36,6 +36,7 @@ namespace RestaurantApp.Module
             containerRegistry.RegisterDialog<EditArticleDetail, EditArticleDetailViewModel>("editArticleDetailDialog");
             containerRegistry.RegisterDialog<PaymentDialog, PaymentDialogViewModel>("paymentDialog");
             containerRegistry.RegisterDialog<ReportDetails, ReportDetailsViewModel>("reportDetailsDialog");
+            containerRegistry.RegisterDialog<DataEntryDetails, DataEntryDetailsViewModel>("dataEntryDetailsDialog");
         }
     }
 }

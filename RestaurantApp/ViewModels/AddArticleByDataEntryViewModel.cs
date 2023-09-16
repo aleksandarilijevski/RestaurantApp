@@ -263,7 +263,7 @@ namespace RestaurantApp.ViewModels
             {
                 DataEntryNumber = int.Parse(DataEntryNumber),
                 TotalAmount = totalAmount,
-                Articles = articles
+                ArticleDetails = DataEntryArticles
             };
 
             await _databaseService.AddDataEntry(dataEntry, efContext);

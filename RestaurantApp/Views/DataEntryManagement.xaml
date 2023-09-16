@@ -16,7 +16,7 @@
 
 
     <Grid>
-        <DataGrid AutoGenerateColumns="False" FontSize="20" IsReadOnly="True" ItemsSource="{Binding DataEntries}">
+        <DataGrid AutoGenerateColumns="False" FontSize="20" IsReadOnly="True" ItemsSource="{Binding DataEntries}" SelectedItem="{Binding SelectedDataEntry}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding ID}"/>
                 <DataGridTextColumn Header="Data entry number" Binding="{Binding DataEntryNumber}"/>
@@ -26,7 +26,7 @@
                 <DataGridTemplateColumn Header="More details">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="Details"/>
+                            <Button Content="Details" Command="{Binding DataContext.ShowDataEntryDetailsCommand,RelativeSource={RelativeSource AncestorType={x:Type local:DataEntryManagement}}}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

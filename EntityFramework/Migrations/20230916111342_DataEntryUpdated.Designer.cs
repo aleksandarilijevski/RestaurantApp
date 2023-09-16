@@ -4,6 +4,7 @@ using EntityFramework.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EntityFramework.Migrations
 {
     [DbContext(typeof(EFContext))]
-    partial class EFContextModelSnapshot : ModelSnapshot
+    [Migration("20230916111342_DataEntryUpdated")]
+    partial class DataEntryUpdated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,6 +56,9 @@ namespace EntityFramework.Migrations
                     b.Property<DateTime?>("CreatedDateTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("DataEntryID")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -67,6 +73,8 @@ namespace EntityFramework.Migrations
                         .HasColumnType("decimal(18,2 )");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("DataEntryID");
 
                     b.ToTable("Articles");
                 });
@@ -358,6 +366,13 @@ namespace EntityFramework.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("EntityFramework.Models.Article", b =>
+                {
+                    b.HasOne("EntityFramework.Models.DataEntry", null)
+                        .WithMany("Articles")
+                        .HasForeignKey("DataEntryID");
+                });
+
             modelBuilder.Entity("EntityFramework.Models.ArticleDetails", b =>
                 {
                     b.HasOne("EntityFramework.Models.Article", "Article")
@@ -434,6 +449,8 @@ namespace EntityFramework.Migrations
             modelBuilder.Entity("EntityFramework.Models.DataEntry", b =>
                 {
                     b.Navigation("ArticleDetails");
+
+                    b.Navigation("Articles");
                 });
 
             modelBuilder.Entity("EntityFramework.Models.OnlineOrder", b =>

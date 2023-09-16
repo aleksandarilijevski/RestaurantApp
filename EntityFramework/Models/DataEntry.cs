@@ -7,7 +7,7 @@ namespace EntityFramework.Models
     {
         public int DataEntryNumber { get; set; }
 
-        public List<Article> Articles { get; set; }
+        public List<ArticleDetails> ArticleDetails { get; set; }
 
         [Column(TypeName = "decimal(18,2 )")]
         public decimal TotalAmount { get; set; }

@@ -241,9 +241,8 @@ namespace RestaurantApp.Services
         public async Task<List<DataEntry>> GetAllDataEntries()
         {
             using EFContext efContext = new EFContext();
-            List<DataEntry> dataEntries = await efContext.DataEntries.ToListAsync();
+            List<DataEntry> dataEntries = await efContext.DataEntries.Include(x => x.ArticleDetails).ThenInclude(x => x.Article).ToListAsync();
             return dataEntries;
         }
-
     }
 }
