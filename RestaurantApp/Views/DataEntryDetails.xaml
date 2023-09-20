@@ -6,7 +6,7 @@
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:local="clr-namespace:RestaurantApp.Views"
              mc:Ignorable="d" 
-             Height="500" Width="1000">
+             Height="500" Width="1100">
 
     <Grid>
         <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding ArticleDetails}" FontSize="20" IsReadOnly="True">
@@ -15,7 +15,7 @@
                 <DataGridTextColumn Header="Article Barcode" Binding="{Binding Article.Barcode}"/>
                 <DataGridTextColumn Header="Article Name" Binding="{Binding Article.Name}"/>
                 <DataGridTextColumn Header="Article detail entry price" Binding="{Binding EntryPrice}"/>
-                <DataGridTextColumn Header="Article detail original quantity" Binding="{Binding OriginalQuantity}"/>
+                <DataGridTextColumn Header="Article detail data entry quantity" Binding="{Binding DataEntryQuantity}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

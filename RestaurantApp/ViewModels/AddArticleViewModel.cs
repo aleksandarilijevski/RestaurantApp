@@ -92,6 +92,7 @@ namespace RestaurantApp.ViewModels
 
             int articleId = await _databaseService.AddArticle(article, efContext);
             ArticleDetails.ArticleID = articleId;
+            ArticleDetails.DataEntryQuantity = ArticleDetails.OriginalQuantity;
             await _databaseService.AddArticleDetails(ArticleDetails, efContext);
 
             CloseDialog("true");

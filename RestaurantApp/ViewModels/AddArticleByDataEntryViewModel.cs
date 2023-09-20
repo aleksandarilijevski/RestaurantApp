@@ -252,6 +252,8 @@ namespace RestaurantApp.ViewModels
                     return;
                 }
 
+                articleDetails.DataEntryQuantity = articleDetails.OriginalQuantity;
+
                 await _databaseService.AddArticleDetails(articleDetails, efContext);
                 await BindArticleDetailToExistingTableArticleQuantities(articleDetails,efContext);
             }

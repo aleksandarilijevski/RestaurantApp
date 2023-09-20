@@ -13,6 +13,8 @@ namespace EntityFramework.Models
 
         public int ReservedQuantity { get; set; }
 
+        public int DataEntryQuantity { get;set; }
+
         [Column(TypeName = "decimal(18,2 )")]
         public decimal EntryPrice { get; set; }
 
