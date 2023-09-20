@@ -117,6 +117,8 @@ namespace RestaurantApp.ViewModels
                 RegistrationNumber = registrationNumber
             };
 
+            await _databaseService.CreateBill(bill, efContext);
+
             foreach (TableArticleQuantity tableArticleQuantity in TableArticleQuantities)
             {
                 List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleID(tableArticleQuantity.ArticleID, efContext);
@@ -126,14 +128,13 @@ namespace RestaurantApp.ViewModels
                     TableArticleQuantity = tableArticleQuantity,
                     EFContext = efContext,
                     DatabaseService = _databaseService,
-                    ArticleDetails = articleDetails
+                    ArticleDetails = articleDetails,
+                    BillID = bill.ID
                 };
                 
                 await QuantityLogicHelper.DecreaseReservedQuantity(articleHelperDetails);
                 await QuantityLogicHelper.DecreaseOriginalQuantity(articleHelperDetails);
             }
-
-            await _databaseService.CreateBill(bill, efContext);
 
 
             List<SoldTableArticleQuantity> soldTableArticleQuantities = new List<SoldTableArticleQuantity>();
@@ -183,6 +184,7 @@ namespace RestaurantApp.ViewModels
                 RegistrationNumber = registrationNumber
             };
 
+            await _databaseService.CreateBill(bill, efContext);
 
             foreach (TableArticleQuantity tableArticleQuantity in TableArticleQuantities)
             {
@@ -193,14 +195,16 @@ namespace RestaurantApp.ViewModels
                     TableArticleQuantity = tableArticleQuantity,
                     EFContext = efContext,
                     DatabaseService = _databaseService,
-                    ArticleDetails = articleDetails
+                    ArticleDetails = articleDetails,
+                    BillID = bill.ID
                 };
 
                 await QuantityLogicHelper.DecreaseReservedQuantity(articleHelperDetails);
                 await QuantityLogicHelper.DecreaseOriginalQuantity(articleHelperDetails);
             }
 
-            await _databaseService.CreateBill(bill, efContext);
+            //Moved to executed before decreasing original quantity
+            //await _databaseService.CreateBill(bill, efContext);
 
             Table.InUse = false;
             await _databaseService.EditTable(Table, efContext);

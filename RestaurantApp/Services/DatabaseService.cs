@@ -244,5 +244,24 @@ namespace RestaurantApp.Services
             List<DataEntry> dataEntries = await efContext.DataEntries.Include(x => x.ArticleDetails).ThenInclude(x => x.Article).ToListAsync();
             return dataEntries;
         }
+
+        public async Task AddSoldArticleDetails(SoldArticleDetails soldArticleDetails, EFContext efContext)
+        {
+            efContext.SoldArticleDetails.Add(soldArticleDetails);
+            await efContext.SaveChangesAsync();
+        }
+
+        public async Task<List<SoldArticleDetails>> GetSoldArticleDetailsByBillID(int billID, EFContext efContext)
+        {
+            List<SoldArticleDetails> soldArticleDetails = await efContext.SoldArticleDetails.Select(x => x).Where(x => x.BillID == billID).ToListAsync();
+            return soldArticleDetails;
+        }
+
+        public async Task<List<SoldArticleDetails>> GetAllSoldArticleDetails()
+        {
+            using EFContext efContext = new EFContext();
+            List<SoldArticleDetails> soldArticleDetails = await efContext.SoldArticleDetails.ToListAsync();
+            return soldArticleDetails;
+        }
     }
 }

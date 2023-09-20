@@ -12,38 +12,25 @@ namespace RestaurantApp.Converters
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
+            List<SoldArticleDetails> soldArticleDetails = new List<SoldArticleDetails>();
             int billId = (int)values[0];
-            decimal totalPrice = (decimal)values[3];
+            decimal totalPrice = (decimal)values[1];
             decimal profit = 0;
-
-            List<TableArticleQuantity> tableArticleQuantities = new List<TableArticleQuantity>();
-
-            if (values[1] != DependencyProperty.UnsetValue)
-            {
-                List<TableArticleQuantity> tables = (List<TableArticleQuantity>)values[1];
-                tableArticleQuantities.AddRange(tables);
-            }
 
             if (values[2] != DependencyProperty.UnsetValue)
             {
-                List<TableArticleQuantity> onlineOrders = (List<TableArticleQuantity>)values[2];
-                tableArticleQuantities.AddRange(onlineOrders);
+                soldArticleDetails = (List<SoldArticleDetails>)values[2];
             }
 
-            List<TableArticleQuantity> filtered = tableArticleQuantities.Where(x => x.BillID == billId).ToList();
+            List<SoldArticleDetails> filteredSoldArticleDetails = soldArticleDetails.Where(x => x.BillID == billId).ToList();
 
-            foreach (TableArticleQuantity tableArticleQuantity in filtered)
+            foreach (SoldArticleDetails soldArticleDetail in filteredSoldArticleDetails)
             {
-                foreach (ArticleDetails articleDetails in tableArticleQuantity.ArticleDetails)
-                {
-                    int soldQuantity = filtered.Sum(x => x.Quantity);
-                    profit += totalPrice - (articleDetails.EntryPrice * soldQuantity);
-                }
-
+                profit += totalPrice - (soldArticleDetail.EntryPrice * soldArticleDetail.SoldQuantity);
                 return profit.ToString();
             }
 
-            return 0;
+            return "0";
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

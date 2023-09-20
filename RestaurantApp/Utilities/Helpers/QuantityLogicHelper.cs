@@ -148,6 +148,16 @@ namespace RestaurantApp.Utilities.Helpers
                     {
                         int reservedToBeDeleted = Math.Min(articleDetail.OriginalQuantity, quantityToBeRemoved);
                         articleDetail.OriginalQuantity -= reservedToBeDeleted;
+
+                        SoldArticleDetails soldArticleDetails = new SoldArticleDetails
+                        {
+                            SoldQuantity = reservedToBeDeleted,
+                            EntryPrice = articleDetail.EntryPrice,
+                            BillID = articleHelperDetails.BillID
+                        };
+
+                        await articleHelperDetails.DatabaseService.AddSoldArticleDetails(soldArticleDetails,articleHelperDetails.EFContext);
+
                         quantityToBeRemoved -= reservedToBeDeleted;
 
                         await articleHelperDetails.DatabaseService.EditArticleDetails(articleDetail, articleHelperDetails.EFContext);
@@ -161,6 +171,16 @@ namespace RestaurantApp.Utilities.Helpers
                     {
                         int reservedToBeDeleted = Math.Min(articleDetail.ReservedQuantity, quantityToBeRemoved);
                         articleDetail.OriginalQuantity -= reservedToBeDeleted;
+
+                        SoldArticleDetails soldArticleDetails = new SoldArticleDetails
+                        {
+                            SoldQuantity = reservedToBeDeleted,
+                            EntryPrice = articleDetail.EntryPrice,
+                            BillID = articleHelperDetails.BillID
+                        };
+
+                        await articleHelperDetails.DatabaseService.AddSoldArticleDetails(soldArticleDetails, articleHelperDetails.EFContext);
+
                         quantityToBeRemoved -= reservedToBeDeleted;
 
                         await articleHelperDetails.DatabaseService.EditArticleDetails(articleDetail, articleHelperDetails.EFContext);
@@ -172,7 +192,18 @@ namespace RestaurantApp.Utilities.Helpers
                     }
                     else if (quantityToBeRemoved == 1)
                     {
-                        articleDetail.OriginalQuantity--; ;
+                        articleDetail.OriginalQuantity--;
+
+                        SoldArticleDetails soldArticleDetails = new SoldArticleDetails
+                        {
+                            SoldQuantity = articleDetail.OriginalQuantity,
+                            EntryPrice = articleDetail.EntryPrice,
+                            BillID = articleHelperDetails.BillID
+                        };
+
+                        await articleHelperDetails.DatabaseService.AddSoldArticleDetails(soldArticleDetails, articleHelperDetails.EFContext);
+
+
                         await articleHelperDetails.DatabaseService.EditArticleDetails(articleDetail, articleHelperDetails.EFContext);
                     }
                     else

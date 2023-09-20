@@ -109,9 +109,8 @@
                     <DataGridTextColumn.Binding>
                         <MultiBinding Converter="{StaticResource TotalProfitConverter}">
                             <Binding Path="ID"/>
-                            <Binding Path="Table.TableArticleQuantities"/>
-                            <Binding Path="OnlineOrder.TableArticleQuantities"/>
                             <Binding Path="TotalPrice"/>
+                            <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=UserControl}" Path="DataContext.SoldArticleDetails"/>
                         </MultiBinding>
                     </DataGridTextColumn.Binding>
                 </DataGridTextColumn>

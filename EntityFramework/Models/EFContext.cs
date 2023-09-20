@@ -55,5 +55,7 @@ namespace EntityFramework.Models
         public DbSet<Configuration> Configurations { get; set; }
 
         public DbSet<OnlineOrder> OnlineOrders { get; set; }
+
+        public DbSet<SoldArticleDetails> SoldArticleDetails { get; set;}
     }
 }

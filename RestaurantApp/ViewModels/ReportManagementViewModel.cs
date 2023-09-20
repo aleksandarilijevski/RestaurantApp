@@ -123,6 +123,8 @@ namespace RestaurantApp.ViewModels
             }
         }
 
+        public List<SoldArticleDetails> SoldArticleDetails { get; set; }
+
         public Bill SelectedBill { get; set; }
 
         public DelegateCommand ShowReportDetailsCommand
@@ -188,6 +190,8 @@ namespace RestaurantApp.ViewModels
 
             OriginalBills = bills;
             Bills = new ObservableCollection<Bill>(OriginalBills);
+
+            SoldArticleDetails = await _databaseService.GetAllSoldArticleDetails();
 
             decimal totalProfit = CalculateTotalProfit();
             TotalProfit = "Total profit : " + totalProfit.ToString("0.00");
@@ -366,30 +370,22 @@ namespace RestaurantApp.ViewModels
 
         private decimal CalculateTotalProfit()
         {
+            using EFContext efContext = new EFContext();
+
             decimal totalProfit = 0;
             decimal totalPrice = 0;
 
             foreach (Bill bill in Bills)
             {
-                if (bill.Table is not null)
-                {
-                    List<TableArticleQuantity> filteredSoldTableArticleQuantity = bill.Table.TableArticleQuantities.Where(x => x.BillID == bill.ID).ToList();
-                    totalPrice += bill.TotalPrice;
-
-                    foreach (SoldTableArticleQuantity soldTableArticleQuantity in filteredSoldTableArticleQuantity)
-                    {
-                        foreach (ArticleDetails articleDetail in soldTableArticleQuantity.ArticleDetails)
-                        {
-                            if (articleDetail.ReservedQuantity == 0 && articleDetail.OriginalQuantity == 0)
-                            {
-                                totalProfit += articleDetail.EntryPrice * soldTableArticleQuantity.Quantity;
-                            }
-                        }
-                    }
-                }
+                totalPrice += bill.TotalPrice;
             }
 
-            //totalProfit -= totalPrice;
+            foreach (SoldArticleDetails soldArticleDetail in SoldArticleDetails)
+            {
+                totalProfit += soldArticleDetail.EntryPrice * soldArticleDetail.SoldQuantity;
+            }
+
+            totalPrice -= totalProfit;
 
             return totalProfit;
         }
