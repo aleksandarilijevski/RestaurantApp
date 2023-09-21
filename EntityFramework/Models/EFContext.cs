@@ -40,7 +40,7 @@ namespace EntityFramework.Models
 
         public DbSet<Table> Tables { get; set; }
 
-        public DbSet<Waiter> Waiters { get; set; }
+        public DbSet<User> Users { get; set; }
 
         public DbSet<Bill> Bills { get; set; }
 
@@ -56,6 +56,6 @@ namespace EntityFramework.Models
 
         public DbSet<OnlineOrder> OnlineOrders { get; set; }
 
-        public DbSet<SoldArticleDetails> SoldArticleDetails { get; set;}
+        public DbSet<SoldArticleDetails> SoldArticleDetails { get; set; }
     }
 }

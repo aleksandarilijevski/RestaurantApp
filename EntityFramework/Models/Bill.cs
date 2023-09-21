@@ -25,5 +25,9 @@ namespace EntityFramework.Models
         public PaymentType PaymentType { get; set; }
 
         public string RegistrationNumber { get; set; }
+
+        public int UserID { get; set; }
+
+        public User User { get; set; }
     }
 }

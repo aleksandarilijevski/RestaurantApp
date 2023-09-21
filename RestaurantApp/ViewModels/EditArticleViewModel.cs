@@ -4,7 +4,6 @@ using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
 using System;
-using System.Reflection;
 
 namespace RestaurantApp.ViewModels
 {
@@ -12,7 +11,6 @@ namespace RestaurantApp.ViewModels
     {
         private IDatabaseService _databaseService;
         private DelegateCommand _editArticleCommand;
-        private Article _deepCopyArticle;
 
         public event Action<IDialogResult> RequestClose;
 
@@ -46,20 +44,6 @@ namespace RestaurantApp.ViewModels
             RaiseRequestClose(new DialogResult(result));
         }
 
-        public Article DeepCopyArticle
-        {
-            get
-            {
-                return _deepCopyArticle;
-            }
-
-            set
-            {
-                _deepCopyArticle = value;
-                RaisePropertyChanged();
-            }
-        }
-
         public virtual void RaiseRequestClose(IDialogResult dialogResult)
         {
             RequestClose?.Invoke(dialogResult);
@@ -78,34 +62,12 @@ namespace RestaurantApp.ViewModels
         public virtual void OnDialogOpened(IDialogParameters parameters)
         {
             Article = parameters.GetValue<Article>("article");
-            DeepCopyArticle = DeepCopy(Article);
         }
 
-        public T DeepCopy<T>(T source)
-        {
-            Type targetType = source.GetType();
-            object copiedObject = Activator.CreateInstance(targetType);
-
-            foreach (PropertyInfo property in targetType.GetProperties())
-            {
-                if (property.CanWrite)
-                {
-                    object value = property.GetValue(source);
-                    property.SetValue(copiedObject, value);
-                }
-            }
-
-            return (T)copiedObject;
-        }
         private async void EditArticle()
         {
-            //Article article = await _databaseService.GetArticleByID(DeepCopyArticle.ID);
-
-            //article.Name = DeepCopyArticle.Name;
-            //article.Barcode = DeepCopyArticle.Barcode;
-            //article.Price = DeepCopyArticle.Barcode;
-
-            //await _databaseService.EditArticle(DeepCopyArticle);
+            using EFContext efContext = new EFContext();
+            await _databaseService.EditArticle(Article, efContext);
             CloseDialog("true");
         }
     }

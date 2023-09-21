@@ -12,7 +12,7 @@ namespace RestaurantApp.ViewModels
         private IRegionManager _regionManager;
         private IDatabaseService _databaseService;
         private DelegateCommand _navigateToArticleManagementCommand;
-        private DelegateCommand _navigateToWaiterManagementCommand;
+        private DelegateCommand _navigateToUserManagementCommand;
         private DelegateCommand _navigateToMenuCommand;
         private DelegateCommand _navigateToOnlineOrderingCommand;
         private DelegateCommand _loadConfigurationCommand;
@@ -33,12 +33,12 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public DelegateCommand NavigateToWaiterManagementCommand
+        public DelegateCommand NavigateToUserManagementCommand
         {
             get
             {
-                _navigateToWaiterManagementCommand = new DelegateCommand(() => Navigate("MainRegion", "WaiterManagement"));
-                return _navigateToWaiterManagementCommand;
+                _navigateToUserManagementCommand = new DelegateCommand(() => Navigate("MainRegion", "UserManagement"));
+                return _navigateToUserManagementCommand;
             }
         }
 

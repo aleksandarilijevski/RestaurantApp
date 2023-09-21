@@ -31,13 +31,13 @@ namespace RestaurantApp.Services.Interface
 
         public Task EditArticle(Article article, EFContext efContext);
 
-        public Task<ObservableCollection<Waiter>> GetAllWaiters();
+        public Task<ObservableCollection<User>> GetAllUsers();
 
-        public Task<int> AddWaiter(Waiter waiter, EFContext efContext);
+        public Task<int> AddUser(User user, EFContext efContext);
 
-        public Task EditWaiter(Waiter waiter, EFContext efContext);
+        public Task EditUser(User user, EFContext efContext);
 
-        public Task DeleteWaiter(Waiter waiter, EFContext efContext);
+        public Task DeleteUser(User user, EFContext efContext);
 
         public Task<Table> GetTableByID(int id, EFContext efContext);
 

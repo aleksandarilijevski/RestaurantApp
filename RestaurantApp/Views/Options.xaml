@@ -58,11 +58,11 @@
             Width="130"
             Height="130"
             Style="{StaticResource MaterialDesignFlatSecondaryDarkBgButton}"
-            Content="     Waiter&#xa;Management" 
+            Content="       User&#xa;Management" 
             Grid.Row="1" 
             Grid.Column="5" 
             FontSize="15" 
-            Command="{Binding ShowWaiterManagementCommand}"/>
+            Command="{Binding ShowUserManagementCommand}"/>
         
         <Button
             Style="{StaticResource MaterialDesignFlatSecondaryDarkBgButton}"

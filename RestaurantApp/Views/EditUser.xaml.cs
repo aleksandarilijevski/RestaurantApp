@@ -3,11 +3,11 @@
 namespace RestaurantApp.Views
 {
     /// <summary>
-    /// Interaction logic for AddWaiter.xaml
+    /// Interaction logic for EditUser.xaml
     /// </summary>
-    public partial class AddWaiter : UserControl
+    public partial class EditUser : UserControl
     {
-        public AddWaiter()
+        public EditUser()
         {
             InitializeComponent();
         }

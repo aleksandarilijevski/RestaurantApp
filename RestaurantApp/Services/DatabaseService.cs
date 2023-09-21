@@ -74,29 +74,29 @@ namespace RestaurantApp.Services
             await efContext.SaveChangesAsync();
         }
 
-        public async Task<ObservableCollection<Waiter>> GetAllWaiters()
+        public async Task<ObservableCollection<User>> GetAllUsers()
         {
             using EFContext efContext = new EFContext();
-            List<Waiter> waiters = await efContext.Waiters.ToListAsync();
-            return new ObservableCollection<Waiter>(waiters);
+            List<User> users = await efContext.Users.ToListAsync();
+            return new ObservableCollection<User>(users);
         }
 
-        public async Task<int> AddWaiter(Waiter waiter, EFContext efContext)
+        public async Task<int> AddUser(User user, EFContext efContext)
         {
-            efContext.Waiters.Add(waiter);
+            efContext.Users.Add(user);
             await efContext.SaveChangesAsync();
-            return waiter.ID;
+            return user.ID;
         }
 
-        public async Task EditWaiter(Waiter waiter, EFContext efContext)
+        public async Task EditUser(User user, EFContext efContext)
         {
-            efContext.Entry(waiter).State = EntityState.Modified;
+            efContext.Entry(user).State = EntityState.Modified;
             await efContext.SaveChangesAsync();
         }
 
-        public async Task DeleteWaiter(Waiter waiter, EFContext efContext)
+        public async Task DeleteUser(User user, EFContext efContext)
         {
-            efContext.Waiters.Remove(waiter);
+            efContext.Users.Remove(user);
             await efContext.SaveChangesAsync();
         }
 

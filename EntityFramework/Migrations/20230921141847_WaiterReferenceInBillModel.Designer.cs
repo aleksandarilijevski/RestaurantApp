@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EntityFramework.Migrations
 {
     [DbContext(typeof(EFContext))]
-    [Migration("20230907170207_billUpdated")]
-    partial class billUpdated
+    [Migration("20230921141847_WaiterReferenceInBillModel")]
+    partial class WaiterReferenceInBillModel
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -56,9 +56,6 @@ namespace EntityFramework.Migrations
                     b.Property<DateTime?>("CreatedDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("DataEntryID")
-                        .HasColumnType("int");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -66,14 +63,13 @@ namespace EntityFramework.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2 )");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("DataEntryID");
 
                     b.ToTable("Articles");
                 });
@@ -92,6 +88,12 @@ namespace EntityFramework.Migrations
                     b.Property<DateTime?>("CreatedDateTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("DataEntryID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DataEntryQuantity")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("EntryPrice")
                         .HasColumnType("decimal(18,2 )");
 
@@ -107,6 +109,8 @@ namespace EntityFramework.Migrations
                     b.HasKey("ID");
 
                     b.HasIndex("ArticleID");
+
+                    b.HasIndex("DataEntryID");
 
                     b.ToTable("ArticleDetails");
                 });
@@ -138,6 +142,7 @@ namespace EntityFramework.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("RegistrationNumber")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("TableID")
@@ -146,11 +151,16 @@ namespace EntityFramework.Migrations
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,2 )");
 
+                    b.Property<int>("WaiterID")
+                        .HasColumnType("int");
+
                     b.HasKey("ID");
 
                     b.HasIndex("OnlineOrderID");
 
                     b.HasIndex("TableID");
+
+                    b.HasIndex("WaiterID");
 
                     b.ToTable("Bills");
                 });
@@ -216,7 +226,7 @@ namespace EntityFramework.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ApartmentNumber")
+                    b.Property<int?>("ApartmentNumber")
                         .HasColumnType("int");
 
                     b.Property<string>("Comment")
@@ -228,8 +238,11 @@ namespace EntityFramework.Migrations
                     b.Property<string>("Firstname")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Floor")
+                    b.Property<int?>("Floor")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsPayed")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Lastname")
                         .HasColumnType("nvarchar(max)");
@@ -237,12 +250,42 @@ namespace EntityFramework.Migrations
                     b.Property<DateTime?>("ModifiedDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("PhoneNumber")
+                    b.Property<long?>("PhoneNumber")
                         .HasColumnType("bigint");
 
                     b.HasKey("ID");
 
                     b.ToTable("OnlineOrders");
+                });
+
+            modelBuilder.Entity("EntityFramework.Models.SoldArticleDetails", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<int>("BillID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("EntryPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("ModifiedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("SoldQuantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("BillID");
+
+                    b.ToTable("SoldArticleDetails");
                 });
 
             modelBuilder.Entity("EntityFramework.Models.Table", b =>
@@ -320,6 +363,7 @@ namespace EntityFramework.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("FirstAndLastName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("JMBG")
@@ -355,13 +399,6 @@ namespace EntityFramework.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("EntityFramework.Models.Article", b =>
-                {
-                    b.HasOne("EntityFramework.Models.DataEntry", null)
-                        .WithMany("Articles")
-                        .HasForeignKey("DataEntryID");
-                });
-
             modelBuilder.Entity("EntityFramework.Models.ArticleDetails", b =>
                 {
                     b.HasOne("EntityFramework.Models.Article", "Article")
@@ -369,6 +406,10 @@ namespace EntityFramework.Migrations
                         .HasForeignKey("ArticleID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("EntityFramework.Models.DataEntry", null)
+                        .WithMany("ArticleDetails")
+                        .HasForeignKey("DataEntryID");
 
                     b.Navigation("Article");
                 });
@@ -383,9 +424,28 @@ namespace EntityFramework.Migrations
                         .WithMany()
                         .HasForeignKey("TableID");
 
+                    b.HasOne("EntityFramework.Models.Waiter", "Waiter")
+                        .WithMany()
+                        .HasForeignKey("WaiterID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("OnlineOrder");
 
                     b.Navigation("Table");
+
+                    b.Navigation("Waiter");
+                });
+
+            modelBuilder.Entity("EntityFramework.Models.SoldArticleDetails", b =>
+                {
+                    b.HasOne("EntityFramework.Models.Bill", "Bill")
+                        .WithMany()
+                        .HasForeignKey("BillID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Bill");
                 });
 
             modelBuilder.Entity("EntityFramework.Models.Table", b =>
@@ -433,7 +493,7 @@ namespace EntityFramework.Migrations
 
             modelBuilder.Entity("EntityFramework.Models.DataEntry", b =>
                 {
-                    b.Navigation("Articles");
+                    b.Navigation("ArticleDetails");
                 });
 
             modelBuilder.Entity("EntityFramework.Models.OnlineOrder", b =>

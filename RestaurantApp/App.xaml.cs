@@ -31,9 +31,9 @@ namespace RestaurantApp
             ViewModelLocationProvider.Register<ArticleManagement, ArticleManagementViewModel>();
             ViewModelLocationProvider.Register<EditArticle, EditArticleViewModel>();
             ViewModelLocationProvider.Register<AddArticle, AddArticleViewModel>();
-            ViewModelLocationProvider.Register<WaiterManagement, WaiterManagementViewModel>();
-            ViewModelLocationProvider.Register<EditWaiter, EditWaiterViewModel>();
-            ViewModelLocationProvider.Register<AddWaiter, AddWaiterViewModel>();
+            ViewModelLocationProvider.Register<UserManagement, UserManagementViewModel>();
+            ViewModelLocationProvider.Register<EditUser, EditUserViewModel>();
+            ViewModelLocationProvider.Register<AddUser, AddUserViewModel>();
             ViewModelLocationProvider.Register<Ordering, OrderingViewModel>();
             ViewModelLocationProvider.Register<Payment, PaymentViewModel>();
             ViewModelLocationProvider.Register<AddArticleByDataEntry, AddArticleByDataEntryViewModel>();

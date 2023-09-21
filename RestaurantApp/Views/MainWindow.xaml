@@ -68,11 +68,11 @@
             Style="{StaticResource MaterialDesignFlatSecondaryDarkBgButton}"
             Height="40"
             Width="auto"
-            Content="Waiter management"
+            Content="User management"
             Grid.Column="3"
             Grid.Row="1" 
             FontSize="20"
-            Command="{Binding NavigateToWaiterManagementCommand}" Margin="3,5,2,0"/>
+            Command="{Binding NavigateToUserManagementCommand}" Margin="3,5,2,0"/>
 
         <Button 
             Style="{StaticResource MaterialDesignFlatSecondaryDarkBgButton}"

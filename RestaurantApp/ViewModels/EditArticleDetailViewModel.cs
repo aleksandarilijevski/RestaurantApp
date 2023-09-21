@@ -80,6 +80,7 @@ namespace RestaurantApp.ViewModels
         private async void EditArticleDetails(ArticleDetails articleDetails)
         {
             using EFContext efContext = new EFContext();
+            articleDetails.DataEntryQuantity = articleDetails.OriginalQuantity;
             await _databaseService.EditArticleDetails(articleDetails, efContext);
             CloseDialog("true");
         }

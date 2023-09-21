@@ -7,28 +7,28 @@ using System;
 
 namespace RestaurantApp.ViewModels
 {
-    public class AddWaiterViewModel : BindableBase, IDialogAware
+    public class EditUserViewModel : BindableBase, IDialogAware
     {
         private IDatabaseService _databaseService;
-        private DelegateCommand<Waiter> _addWaiterCommand;
+        private DelegateCommand<User> _editUserCommand;
 
-        public AddWaiterViewModel(IDatabaseService databaseService)
+        public event Action<IDialogResult> RequestClose;
+
+        public EditUserViewModel(IDatabaseService databaseService)
         {
             _databaseService = databaseService;
         }
 
-        public event Action<IDialogResult> RequestClose;
+        public User User { get; set; }
 
-        public Waiter Waiter { get; set; } = new Waiter();
+        public string Title { get; set; } = "Edit user";
 
-        public string Title { get; set; } = "Add Waiter";
-
-        public DelegateCommand<Waiter> AddWaiterCommand
+        public DelegateCommand<User> EditUserCommand
         {
             get
             {
-                _addWaiterCommand = new DelegateCommand<Waiter>(AddWaiter);
-                return _addWaiterCommand;
+                _editUserCommand = new DelegateCommand<User>(EditUser);
+                return _editUserCommand;
             }
         }
 
@@ -61,13 +61,13 @@ namespace RestaurantApp.ViewModels
 
         public virtual void OnDialogOpened(IDialogParameters parameters)
         {
-
+            User = parameters.GetValue<User>("User");
         }
 
-        private async void AddWaiter(Waiter waiter)
+        private async void EditUser(User user)
         {
             using EFContext efContext = new EFContext();
-            await _databaseService.AddWaiter(waiter, efContext);
+            await _databaseService.EditUser(user, efContext);
             CloseDialog("true");
         }
     }

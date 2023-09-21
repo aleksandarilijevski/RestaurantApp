@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="RestaurantApp.Views.AddWaiter"
+﻿<UserControl x:Class="RestaurantApp.Views.AddUser"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -27,20 +27,20 @@
         <TextBlock Text="Date of birth : " FontSize="30" Grid.Row="2" Margin="5"/>
         <TextBlock Text="JMBG : " FontSize="30" Grid.Row="3" Margin="5"/>
 
-        <TextBox Grid.Column="1" Grid.Row="0" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding Waiter.Barcode}"/>
-        <TextBox Grid.Column="1" Grid.Row="1" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding Waiter.FirstAndLastName}"/>
-        <TextBox Grid.Column="1" Grid.Row="2" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding Waiter.DateOfBirth}"/>
-        <TextBox Grid.Column="1" Grid.Row="3" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding Waiter.JMBG}"/>
+        <TextBox Grid.Column="1" Grid.Row="0" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding User.Barcode}"/>
+        <TextBox Grid.Column="1" Grid.Row="1" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding User.FirstAndLastName}"/>
+        <TextBox Grid.Column="1" Grid.Row="2" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding User.DateOfBirth}"/>
+        <TextBox Grid.Column="1" Grid.Row="3" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding User.JMBG}"/>
 
         <Button
             Height="40"
             Width="auto"
-            Content="Add new waiter"
+            Content="Add new user"
             Grid.ColumnSpan="2" 
             Grid.Row="4" 
             FontSize="25"
-            Command="{Binding AddWaiterCommand}"
-            CommandParameter="{Binding Waiter}"/>
+            Command="{Binding AddUserCommand}"
+            CommandParameter="{Binding User}"/>
 
     </Grid>
 

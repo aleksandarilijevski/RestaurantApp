@@ -21,7 +21,7 @@ namespace RestaurantApp.Module
             containerRegistry.RegisterForNavigation<Options>();
             containerRegistry.RegisterForNavigation<MainWindow>();
             containerRegistry.RegisterForNavigation<ArticleManagement>();
-            containerRegistry.RegisterForNavigation<WaiterManagement>();
+            containerRegistry.RegisterForNavigation<UserManagement>();
             containerRegistry.RegisterForNavigation<Ordering>();
             containerRegistry.RegisterForNavigation<Payment>();
             containerRegistry.RegisterForNavigation<AddArticleByDataEntry>();
@@ -31,8 +31,8 @@ namespace RestaurantApp.Module
             containerRegistry.RegisterForNavigation<DataEntryManagement>();
             containerRegistry.RegisterDialog<EditArticle, EditArticleViewModel>("editArticleDialog");
             containerRegistry.RegisterDialog<AddArticle, AddArticleViewModel>("addArticleDialog");
-            containerRegistry.RegisterDialog<EditWaiter, EditWaiterViewModel>("editWaiterDialog");
-            containerRegistry.RegisterDialog<AddWaiter, AddWaiterViewModel>("addWaiterDialog");
+            containerRegistry.RegisterDialog<EditUser, EditUserViewModel>("editUserDialog");
+            containerRegistry.RegisterDialog<AddUser, AddUserViewModel>("addUserDialog");
             containerRegistry.RegisterDialog<EditArticleDetail, EditArticleDetailViewModel>("editArticleDetailDialog");
             containerRegistry.RegisterDialog<PaymentDialog, PaymentDialogViewModel>("paymentDialog");
             containerRegistry.RegisterDialog<ReportDetails, ReportDetailsViewModel>("reportDetailsDialog");

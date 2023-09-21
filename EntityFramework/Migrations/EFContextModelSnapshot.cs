@@ -148,11 +148,16 @@ namespace EntityFramework.Migrations
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,2 )");
 
+                    b.Property<int>("WaiterID")
+                        .HasColumnType("int");
+
                     b.HasKey("ID");
 
                     b.HasIndex("OnlineOrderID");
 
                     b.HasIndex("TableID");
+
+                    b.HasIndex("WaiterID");
 
                     b.ToTable("Bills");
                 });
@@ -416,9 +421,17 @@ namespace EntityFramework.Migrations
                         .WithMany()
                         .HasForeignKey("TableID");
 
+                    b.HasOne("EntityFramework.Models.Waiter", "Waiter")
+                        .WithMany()
+                        .HasForeignKey("WaiterID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("OnlineOrder");
 
                     b.Navigation("Table");
+
+                    b.Navigation("Waiter");
                 });
 
             modelBuilder.Entity("EntityFramework.Models.SoldArticleDetails", b =>
