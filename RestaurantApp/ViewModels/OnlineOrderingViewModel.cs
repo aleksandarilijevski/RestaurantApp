@@ -132,29 +132,29 @@ namespace RestaurantApp.ViewModels
                 return;
             }
 
-            //if (OnlineOrder.Firstname is null || OnlineOrder.Firstname == string.Empty)
-            //{
-            //    MessageBox.Show("Firstname field can not be empty!", "Online Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
-            //    return;
-            //}
+            if (OnlineOrder.Firstname is null || OnlineOrder.Firstname == string.Empty)
+            {
+                MessageBox.Show("Firstname field can not be empty!", "Online Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
-            //if (OnlineOrder.Lastname is null || OnlineOrder.Lastname == string.Empty)
-            //{
-            //    MessageBox.Show("Lastname field can not be empty!", "Online Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
-            //    return;
-            //}
+            if (OnlineOrder.Lastname is null || OnlineOrder.Lastname == string.Empty)
+            {
+                MessageBox.Show("Lastname field can not be empty!", "Online Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
-            //if (OnlineOrder.Address is null || OnlineOrder.Address == string.Empty)
-            //{
-            //    MessageBox.Show("Address field can not be empty!", "Online Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
-            //    return;
-            //}
+            if (OnlineOrder.Address is null || OnlineOrder.Address == string.Empty)
+            {
+                MessageBox.Show("Address field can not be empty!", "Online Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
-            //if (OnlineOrder.PhoneNumber.ToString().Length < 8)
-            //{
-            //    MessageBox.Show("Phone number field is not valid!", "Online Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
-            //    return;
-            //}
+            if (OnlineOrder.PhoneNumber.ToString().Length < 8)
+            {
+                MessageBox.Show("Phone number field is not valid!", "Online Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
             NavigationParameters navigationParameters = new NavigationParameters()
             {

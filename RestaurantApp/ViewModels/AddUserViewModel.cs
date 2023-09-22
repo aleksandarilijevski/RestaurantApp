@@ -74,25 +74,25 @@ namespace RestaurantApp.ViewModels
 
             if (user.Barcode == 0)
             {
-                MessageBox.Show("Barcode field can not be 0!");
+                MessageBox.Show("Barcode field can not be 0!", "Add user", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (user.FirstAndLastName == null || user.FirstAndLastName == string.Empty)
             {
-                MessageBox.Show("First and last name can not be empty!");
+                MessageBox.Show("First and last name can not be empty!", "Add user", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (user.DateOfBirth == DateTime.MinValue)
             {
-                MessageBox.Show("Please enter the date of birth!");
+                MessageBox.Show("Please enter the date of birth!", "Add user", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (user.JMBG.ToString().Length != 13)
             {
-                MessageBox.Show("JMBG field should have 13 numbers!");
+                MessageBox.Show("JMBG field should have 13 numbers!", "Add user", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
