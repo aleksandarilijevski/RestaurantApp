@@ -207,7 +207,7 @@ namespace RestaurantApp.ViewModels
                 await _databaseService.AddTable(table, efContext);
             }
 
-            if (Table.UserID is null)
+            if (Table.UserID is null || Table.TableArticleQuantities.Count == 0)
             {
                 bool dialogResult = UserLogin();
 
