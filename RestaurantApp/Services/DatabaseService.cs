@@ -119,7 +119,7 @@ namespace RestaurantApp.Services
             await efContext.SaveChangesAsync();
         }
 
-        public async Task EditOnlineOrderContext(OnlineOrder onlineOrder, EFContext efContext)
+        public async Task EditOnlineOrder(OnlineOrder onlineOrder, EFContext efContext)
         {
             efContext.Entry(onlineOrder).State = EntityState.Modified;
             await efContext.SaveChangesAsync();

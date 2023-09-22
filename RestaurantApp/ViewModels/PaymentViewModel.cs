@@ -114,6 +114,7 @@ namespace RestaurantApp.ViewModels
                 Change = change,
                 PaymentType = PaymentType,
                 OnlineOrderID = OnlineOrder.ID,
+                UserID = (int)OnlineOrder.UserID,
                 RegistrationNumber = registrationNumber
             };
 
@@ -160,7 +161,8 @@ namespace RestaurantApp.ViewModels
             }
 
             OnlineOrder.IsPayed = true;
-            await _databaseService.EditOnlineOrderContext(OnlineOrder, efContext);
+            OnlineOrder.UserID = null;
+            await _databaseService.EditOnlineOrder(OnlineOrder, efContext);
             return bill;
         }
 
@@ -265,6 +267,18 @@ namespace RestaurantApp.ViewModels
             return configuration.BillCounter;
         }
 
+        private async Task RemoveUserFromTable()
+        {
+            Table.UserID = null;
+            await _databaseService.EditTable(Table, new EFContext());
+        }
+
+        private async Task RemoveUserFromOnlineOrder()
+        {
+            OnlineOrder.UserID = null;
+            await _databaseService.EditOnlineOrder(OnlineOrder, new EFContext());
+        }
+
         private async void IssueBill()
         {
             decimal change = 0;
@@ -286,22 +300,22 @@ namespace RestaurantApp.ViewModels
                         cash = result.Parameters.GetValue<decimal>("cash");
 
                         Bill bill = null;
+                        User user = null;
 
                         if (Table is null)
                         {
+                            user = await _databaseService.GetUserByID((int)OnlineOrder.UserID, new EFContext());
                             bill = await AddBillOnlineOrder(cash, change);
+                            await RemoveUserFromTable();
                         }
                         else
                         {
+                            user = await _databaseService.GetUserByID((int)Table.UserID, new EFContext());
                             bill = await AddBill(cash, change);
+                            await RemoveUserFromOnlineOrder();
                         }
 
-                        User user = await _databaseService.GetUserByID((int)Table.UserID, new EFContext());
                         DrawningHelper.DrawBill(bill, TableArticleQuantities, user);
-
-                        Table.UserID = null;
-                        await _databaseService.EditTable(Table, new EFContext());
-
                         _regionManager.RequestNavigate("MainRegion", "TableOrder");
                     }
                 });
@@ -310,22 +324,22 @@ namespace RestaurantApp.ViewModels
             if (PaymentType == PaymentType.Card)
             {
                 Bill bill = null;
+                User user = null;
 
                 if (Table is null)
                 {
+                    user = await _databaseService.GetUserByID((int)OnlineOrder.UserID, new EFContext());
                     bill = await AddBillOnlineOrder(0, 0);
+                    await RemoveUserFromOnlineOrder();
                 }
                 else
                 {
+                    user = await _databaseService.GetUserByID((int)Table.UserID, new EFContext());
                     bill = await AddBill(0, 0);
+                    await RemoveUserFromTable();
                 }
 
-                User user = await _databaseService.GetUserByID((int)Table.UserID, new EFContext());
                 DrawningHelper.DrawBill(bill, TableArticleQuantities, user);
-
-                Table.UserID = null;
-                await _databaseService.EditTable(Table, new EFContext());
-
                 _regionManager.RequestNavigate("MainRegion", "TableOrder");
             }
         }

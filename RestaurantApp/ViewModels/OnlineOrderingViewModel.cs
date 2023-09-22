@@ -2,6 +2,7 @@
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
+using Prism.Services.Dialogs;
 using RestaurantApp.Models;
 using RestaurantApp.Services.Interface;
 using RestaurantApp.Utilities.Helpers;
@@ -20,6 +21,7 @@ namespace RestaurantApp.ViewModels
     {
         private IDatabaseService _databaseService;
         private IRegionManager _regionManager;
+        private IDialogService _dialogService;
         private string _barcode;
         private TableArticleQuantity _selectedTableArticleQuantity;
         private ObservableCollection<TableArticleQuantity> _tableArticleQuantities = new ObservableCollection<TableArticleQuantity>();
@@ -28,10 +30,11 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand _goToPaymentCommand;
         private DelegateCommand _checkIfOnlineOrderExistsCommand;
 
-        public OnlineOrderingViewModel(IDatabaseService databaseService, IRegionManager regionManager, EFContext efContext)
+        public OnlineOrderingViewModel(IDatabaseService databaseService, IRegionManager regionManager, IDialogService dialogService, EFContext efContext)
         {
             _databaseService = databaseService;
             _regionManager = regionManager;
+            _dialogService = dialogService;
         }
 
         public string Barcode
@@ -66,6 +69,8 @@ namespace RestaurantApp.ViewModels
                 }
             }
         }
+
+        public User User { get; set; }
 
         public OnlineOrder OnlineOrder { get; set; } = new OnlineOrder();
 
@@ -160,16 +165,53 @@ namespace RestaurantApp.ViewModels
             _regionManager.RequestNavigate("MainRegion", "Payment", navigationParameters);
         }
 
+        private bool UserLogin()
+        {
+            bool isResultGood = false;
+
+            _dialogService.ShowDialog("userLoginDialog", r =>
+            {
+                if (r.Result == ButtonResult.OK)
+                {
+                    isResultGood = true;
+                    User = r.Parameters.GetValue<User>("user");
+                }
+                else
+                {
+                    isResultGood = false;
+                }
+            });
+
+            return isResultGood;
+        }
+
         private async void CheckIfOnlineOrderExists()
         {
             TableArticleQuantities.Clear();
             using EFContext efContext = new EFContext();
+
             OnlineOrder onlineOrder = await _databaseService.GetLastOnlineOrder(efContext);
 
             if (onlineOrder is null)
             {
                 onlineOrder = new OnlineOrder();
                 await _databaseService.AddOnlineOrder(onlineOrder, efContext);
+
+                bool dialogResult = UserLogin();
+
+                if (dialogResult)
+                {
+                    OnlineOrder.UserID = User.ID;
+                    await _databaseService.EditOnlineOrder(OnlineOrder, efContext);
+                }
+
+                if (!dialogResult)
+                {
+                    _regionManager.RequestNavigate("MainRegion", "Options");
+                    return;
+                }
+
+
             }
 
             if (onlineOrder is not null && onlineOrder.IsPayed == false)
@@ -178,11 +220,43 @@ namespace RestaurantApp.ViewModels
                 TableArticleQuantities = new ObservableCollection<TableArticleQuantity>(OnlineOrder.TableArticleQuantities);
             }
 
+            if (onlineOrder.TableArticleQuantities.Count == 0)
+            {
+                bool dialogResult = UserLogin();
+
+                if (dialogResult)
+                {
+                    OnlineOrder.UserID = User.ID;
+                    await _databaseService.EditOnlineOrder(OnlineOrder, efContext);
+                }
+
+                if (!dialogResult)
+                {
+                    _regionManager.RequestNavigate("MainRegion", "Options");
+                    return;
+                }
+
+            }
+
             if (onlineOrder.IsPayed == true)
             {
                 onlineOrder = new OnlineOrder();
                 await _databaseService.AddOnlineOrder(onlineOrder, efContext);
                 OnlineOrder = onlineOrder;
+
+                bool dialogResult = UserLogin();
+
+                if (dialogResult)
+                {
+                    OnlineOrder.UserID = User.ID;
+                    await _databaseService.EditOnlineOrder(OnlineOrder, efContext);
+                }
+
+                if (!dialogResult)
+                {
+                    _regionManager.RequestNavigate("MainRegion", "Options");
+                    return;
+                }
             }
         }
 
@@ -341,6 +415,15 @@ namespace RestaurantApp.ViewModels
 
             TableArticleQuantities.Remove(tableArticleQuantity);
             await _databaseService.DeleteTableArticleQuantity(tableArticleQuantityLoad, new EFContext());
+
+            if (TableArticleQuantities.Count == 0)
+            {
+                OnlineOrder.UserID = null;
+                //new context should be here
+                await _databaseService.EditOnlineOrder(OnlineOrder, new EFContext());
+                _regionManager.RequestNavigate("MainRegion", "Options");
+            }
+
         }
 
     }

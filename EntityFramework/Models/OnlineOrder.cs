@@ -19,5 +19,9 @@
         public bool IsPayed { get; set; }
 
         public List<TableArticleQuantity> TableArticleQuantities { get; set; } = new List<TableArticleQuantity>();
+
+        public int? UserID { get; set; }
+
+        public User? User { get; set; }
     }
 }
