@@ -2,6 +2,7 @@
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
+using Prism.Services.Dialogs;
 using RestaurantApp.Models;
 using RestaurantApp.Services.Interface;
 using RestaurantApp.Utilities.Helpers;
@@ -11,6 +12,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -20,6 +22,7 @@ namespace RestaurantApp.ViewModels
     {
         private IDatabaseService _databaseService;
         private IRegionManager _regionManager;
+        private IDialogService _dialogService;
         private DelegateCommand<string> _addArticleToTableCommand;
         private Table _table;
         private TableArticleQuantity _selectedTableArticleQuantity;
@@ -30,10 +33,11 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand _navigateToTablesCommand;
         private ObservableCollection<TableArticleQuantity> _tableArticleQuantities;
 
-        public OrderingViewModel(IDatabaseService databaseService, IRegionManager regionManager)
+        public OrderingViewModel(IDatabaseService databaseService, IRegionManager regionManager, IDialogService dialogService)
         {
             _databaseService = databaseService;
             _regionManager = regionManager;
+            _dialogService = dialogService;
         }
 
         public int TableID { get; set; }
@@ -51,6 +55,8 @@ namespace RestaurantApp.ViewModels
                 RaisePropertyChanged();
             }
         }
+
+        public User User { get; set; }
 
         public string Barcode
         {
@@ -167,6 +173,27 @@ namespace RestaurantApp.ViewModels
             }
         }
 
+
+        private bool UserLogin()
+        {
+            bool isResultGood = false;
+
+            _dialogService.ShowDialog("userLoginDialog", r =>
+            {
+                if (r.Result == ButtonResult.OK)
+                {
+                    isResultGood = true;
+                    User = r.Parameters.GetValue<User>("user");
+                }
+                else
+                {
+                    isResultGood = false;
+                }
+            });
+
+            return isResultGood;
+        }
+
         private async Task GetTable(int id)
         {
             using EFContext efContext = new EFContext();
@@ -180,9 +207,28 @@ namespace RestaurantApp.ViewModels
                 await _databaseService.AddTable(table, efContext);
             }
 
+            if (Table.UserID is null)
+            {
+                bool dialogResult = UserLogin();
+
+                if (dialogResult)
+                {
+                    Table.UserID = User.ID;
+                    await _databaseService.EditTable(Table, efContext);
+                }
+
+                if (!dialogResult)
+                {
+                    _regionManager.RequestNavigate("MainRegion", "TableOrder");
+                    return;
+                }
+            }
+
             if (Table.TableArticleQuantities is null)
             {
+                Table.UserID = User.ID;
                 Table.TableArticleQuantities = new List<TableArticleQuantity>();
+                await _databaseService.EditTable(Table, efContext);
             }
 
             TableArticleQuantities = new ObservableCollection<TableArticleQuantity>(_table.TableArticleQuantities.Where(x => !(x is SoldTableArticleQuantity)));
@@ -203,7 +249,6 @@ namespace RestaurantApp.ViewModels
                 Barcode = string.Empty;
                 return;
             }
-
 
             bool isQuantityAvailable = await IfQuantityIsAvailable(article);
 
@@ -345,12 +390,15 @@ namespace RestaurantApp.ViewModels
             TableArticleQuantities.Remove(tableArticleQuantity);
             await _databaseService.DeleteTableArticleQuantity(tableArticleQuantityLoad, efContext);
 
-            List<TableArticleQuantity> tableArticleQuantities = Table.TableArticleQuantities.Where(x => !(x is SoldTableArticleQuantity)).ToList();
+            //List<TableArticleQuantity> tableArticleQuantities = Table.TableArticleQuantities.Where(x => !(x is SoldTableArticleQuantity)).ToList();
 
-            if (tableArticleQuantities.Count == 0)
+            //if (tableArticleQuantities.Count == 0)
+            if (TableArticleQuantities.Count == 0)
             {
                 Table.InUse = false;
+                Table.UserID = null;
                 await _databaseService.EditTable(Table, efContext);
+                _regionManager.RequestNavigate("MainRegion", "TableOrder");
             }
 
             RaisePropertyChanged(nameof(Table));

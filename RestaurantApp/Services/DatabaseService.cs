@@ -277,5 +277,12 @@ namespace RestaurantApp.Services
                 return false;
             }
         }
+
+        public async Task<User> GetUserByBarcode(long barcode,EFContext efContext)
+        {
+            User user = await efContext.Users.FirstOrDefaultAsync(x => x.Barcode == barcode);
+            return user;
+        }
+
     }
 }
