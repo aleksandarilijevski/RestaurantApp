@@ -82,5 +82,7 @@ namespace RestaurantApp.Services.Interface
         public Task<bool> CheckIfAnyUserExists();
 
         public Task<User> GetUserByBarcode(long barcode, EFContext efContext);
+
+        public Task<User> GetUserByID(int id, EFContext efContext);
     }
 }

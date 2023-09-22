@@ -228,7 +228,7 @@ namespace RestaurantApp.Utilities.Helpers
             document.Close();
         }
 
-        public static async void DrawBill(Bill bill, List<TableArticleQuantity> tableArticleQuantities)
+        public static async void DrawBill(Bill bill, List<TableArticleQuantity> tableArticleQuantities,User user)
         {
             PdfDocument document = new PdfDocument();
             PdfPage page = document.AddPage();
@@ -253,6 +253,7 @@ namespace RestaurantApp.Utilities.Helpers
             gfx.DrawString("Mije Todorovica 76", font, XBrushes.Black, new XRect(0, offset, page.Width, 0), XStringFormats.TopCenter);
             offset += 50;
             gfx.DrawString("Kasir :", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+            gfx.DrawString(user.FirstAndLastName.PadLeft(80), font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
             offset += 20;
             gfx.DrawString($"ESIR Broj : {bill.RegistrationNumber.PadLeft(65)}", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
             offset += 20;

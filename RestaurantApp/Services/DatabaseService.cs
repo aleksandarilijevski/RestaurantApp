@@ -102,7 +102,7 @@ namespace RestaurantApp.Services
 
         public async Task<Table> GetTableByID(int id, EFContext efContext)
         {
-            Table table = await efContext.Tables.Include(x => x.TableArticleQuantities).ThenInclude(x => x.ArticleDetails).ThenInclude(x => x.Article).FirstOrDefaultAsync(x => x.ID == id);
+            Table table = await efContext.Tables.Include(x => x.TableArticleQuantities).ThenInclude(x => x.ArticleDetails).ThenInclude(x => x.Article).Include(x => x.User).FirstOrDefaultAsync(x => x.ID == id);
             return table;
         }
 
@@ -278,9 +278,15 @@ namespace RestaurantApp.Services
             }
         }
 
-        public async Task<User> GetUserByBarcode(long barcode,EFContext efContext)
+        public async Task<User> GetUserByBarcode(long barcode, EFContext efContext)
         {
             User user = await efContext.Users.FirstOrDefaultAsync(x => x.Barcode == barcode);
+            return user;
+        }
+
+        public async Task<User> GetUserByID(int id, EFContext efContext)
+        {
+            User user = await efContext.Users.FirstOrDefaultAsync(x => x.ID == id);
             return user;
         }
 

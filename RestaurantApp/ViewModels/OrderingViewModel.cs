@@ -207,7 +207,9 @@ namespace RestaurantApp.ViewModels
                 await _databaseService.AddTable(table, efContext);
             }
 
-            if (Table.UserID is null || Table.TableArticleQuantities.Count == 0)
+            List<TableArticleQuantity> filtered = Table.TableArticleQuantities.Where(x => x is not (SoldTableArticleQuantity)).ToList();
+
+            if (Table.UserID is null || filtered.Count == 0)
             {
                 bool dialogResult = UserLogin();
 

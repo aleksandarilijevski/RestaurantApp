@@ -131,7 +131,7 @@ namespace RestaurantApp.ViewModels
                     ArticleDetails = articleDetails,
                     BillID = bill.ID
                 };
-                
+
                 await QuantityLogicHelper.DecreaseReservedQuantity(articleHelperDetails);
                 await QuantityLogicHelper.DecreaseOriginalQuantity(articleHelperDetails);
             }
@@ -153,7 +153,7 @@ namespace RestaurantApp.ViewModels
                     Bill = bill
                 };
 
-                TableArticleQuantity tableArticleQuantityLoad = await _databaseService.GetTableArticleQuantityByID(tableArticleQuantity.ID,efContext);
+                TableArticleQuantity tableArticleQuantityLoad = await _databaseService.GetTableArticleQuantityByID(tableArticleQuantity.ID, efContext);
 
                 await _databaseService.DeleteTableArticleQuantity(tableArticleQuantityLoad, efContext);
                 await _databaseService.AddTableArticleQuantity(soldTableArticleQuantity, efContext);
@@ -181,6 +181,7 @@ namespace RestaurantApp.ViewModels
                 Cash = cash,
                 Change = change,
                 PaymentType = PaymentType,
+                UserID = (int)Table.UserID,
                 RegistrationNumber = registrationNumber
             };
 
@@ -295,7 +296,12 @@ namespace RestaurantApp.ViewModels
                             bill = await AddBill(cash, change);
                         }
 
-                        DrawningHelper.DrawBill(bill, TableArticleQuantities);
+                        User user = await _databaseService.GetUserByID((int)Table.UserID, new EFContext());
+                        DrawningHelper.DrawBill(bill, TableArticleQuantities, user);
+
+                        Table.UserID = null;
+                        await _databaseService.EditTable(Table, new EFContext());
+
                         _regionManager.RequestNavigate("MainRegion", "TableOrder");
                     }
                 });
@@ -314,8 +320,12 @@ namespace RestaurantApp.ViewModels
                     bill = await AddBill(0, 0);
                 }
 
+                User user = await _databaseService.GetUserByID((int)Table.UserID, new EFContext());
+                DrawningHelper.DrawBill(bill, TableArticleQuantities, user);
 
-                DrawningHelper.DrawBill(bill, TableArticleQuantities);
+                Table.UserID = null;
+                await _databaseService.EditTable(Table, new EFContext());
+
                 _regionManager.RequestNavigate("MainRegion", "TableOrder");
             }
         }
