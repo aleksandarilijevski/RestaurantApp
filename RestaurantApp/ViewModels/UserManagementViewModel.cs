@@ -3,6 +3,7 @@ using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
+using System;
 using System.Collections.ObjectModel;
 
 namespace RestaurantApp.ViewModels
@@ -83,6 +84,11 @@ namespace RestaurantApp.ViewModels
             using EFContext efContext = new EFContext();
             await _databaseService.DeleteUser(user, efContext);
             Users.Remove(user);
+
+            if (Users.Count == 0)
+            {
+                Environment.Exit(0);
+            }
         }
 
         private void ShowEditUserDialog(User user)

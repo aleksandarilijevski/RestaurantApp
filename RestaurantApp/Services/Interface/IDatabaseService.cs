@@ -78,5 +78,7 @@ namespace RestaurantApp.Services.Interface
         public Task<List<SoldArticleDetails>> GetAllSoldArticleDetails();
 
         public Task<List<SoldArticleDetails>> GetSoldArticleDetailsByBillID(int billID, EFContext efContext);
+
+        public Task<bool> CheckIfAnyUserExists();
     }
 }

@@ -263,5 +263,19 @@ namespace RestaurantApp.Services
             List<SoldArticleDetails> soldArticleDetails = await efContext.SoldArticleDetails.ToListAsync();
             return soldArticleDetails;
         }
+
+        public async Task<bool> CheckIfAnyUserExists()
+        {
+            using EFContext efContext = new EFContext();
+
+            if (efContext.Users.Any())
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }

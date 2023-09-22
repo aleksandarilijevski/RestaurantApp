@@ -1,7 +1,9 @@
-﻿using EntityFramework.Models;
+﻿using EntityFramework.Enums;
+using EntityFramework.Models;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
+using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
 using System;
 
@@ -11,17 +13,20 @@ namespace RestaurantApp.ViewModels
     {
         private IRegionManager _regionManager;
         private IDatabaseService _databaseService;
+        private IDialogService _dialogService;
         private DelegateCommand _navigateToArticleManagementCommand;
         private DelegateCommand _navigateToUserManagementCommand;
         private DelegateCommand _navigateToMenuCommand;
         private DelegateCommand _navigateToOnlineOrderingCommand;
         private DelegateCommand _loadConfigurationCommand;
         private DelegateCommand _showTableOverviewCommand;
+        private DelegateCommand _checkIfAnyUserExistsCommand;
 
-        public MainWindowViewModel(IRegionManager regionManager, IDatabaseService databaseService)
+        public MainWindowViewModel(IRegionManager regionManager, IDatabaseService databaseService, IDialogService dialogService)
         {
             _regionManager = regionManager;
             _databaseService = databaseService;
+            _dialogService = dialogService;
         }
 
         public DelegateCommand NavigateToArticleManagementCommand
@@ -78,6 +83,15 @@ namespace RestaurantApp.ViewModels
             }
         }
 
+        public DelegateCommand CheckIfAnyUserExistsCommand
+        {
+            get
+            {
+                _checkIfAnyUserExistsCommand = new DelegateCommand(CheckIfAnyUserExists);
+                return _checkIfAnyUserExistsCommand;
+            }
+        }
+
         private void Navigate(string regionName, string viewName)
         {
             _regionManager.RequestNavigate(regionName, viewName);
@@ -103,6 +117,22 @@ namespace RestaurantApp.ViewModels
                 configuration.BillCounter = 0;
                 await _databaseService.EditConfiguration(configuration, efContext);
             }
+        }
+
+        private async void CheckIfAnyUserExists()
+        {
+            bool exist = false;
+
+            do
+            {
+                exist = await _databaseService.CheckIfAnyUserExists();
+                
+                if (!exist)
+                {
+                    _dialogService.ShowDialog("addUserDialog");
+                }
+
+            } while (!exist);
         }
     }
 }
