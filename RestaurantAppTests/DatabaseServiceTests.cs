@@ -595,5 +595,28 @@ namespace RestaurantAppTests
             Assert.That(tableArticleQuantityFind, Is.Null);
             await _databaseService.DeleteArticle(article, _efContext);
         }
+
+
+        [Test]
+        public async Task DeleteUser()
+        {
+            //Arrange
+            User user = new User
+            {
+                FirstAndLastName = "UnitTest",
+                Barcode = 123,
+                DateOfBirth = DateTime.UtcNow,
+                JMBG = 1,
+                UserRole = UserRole.Waiter
+            };
+
+            //Act
+            int userId = await _databaseService.AddUser(user, _efContext);
+            await _databaseService.DeleteUser(user, _efContext);
+            User userFind = await _databaseService.GetUserByID(userId, _efContext);
+
+            //Assert
+            Assert.That(userFind, Is.Null);
+        }
     }
 }
