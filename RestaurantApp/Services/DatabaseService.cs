@@ -246,10 +246,11 @@ namespace RestaurantApp.Services
             return dataEntries;
         }
 
-        public async Task AddSoldArticleDetails(SoldArticleDetails soldArticleDetails, EFContext efContext)
+        public async Task<int> AddSoldArticleDetails(SoldArticleDetails soldArticleDetails, EFContext efContext)
         {
             efContext.SoldArticleDetails.Add(soldArticleDetails);
             await efContext.SaveChangesAsync();
+            return soldArticleDetails.ID;
         }
 
         public async Task<List<SoldArticleDetails>> GetSoldArticleDetailsByBillID(int billID, EFContext efContext)
@@ -342,6 +343,18 @@ namespace RestaurantApp.Services
         public async Task DeleteOnlineOrder(OnlineOrder onlineOrder,EFContext efContext)
         {
             efContext.OnlineOrders.Remove(onlineOrder);
+            await efContext.SaveChangesAsync();
+        }
+
+        public async Task<SoldArticleDetails> GetSoldArticleDetailsByID(int id,EFContext efContext)
+        {
+            SoldArticleDetails soldArticleDetails = await efContext.SoldArticleDetails.FirstOrDefaultAsync(x => x.ID == id);
+            return soldArticleDetails;
+        }
+
+        public async Task DeleteSoldArticleDetails(SoldArticleDetails soldArticleDetails, EFContext efContext)
+        {
+            efContext.SoldArticleDetails.Remove(soldArticleDetails);
             await efContext.SaveChangesAsync();
         }
     }
