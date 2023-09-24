@@ -90,21 +90,21 @@ namespace RestaurantAppTests
         public async Task AddTable()
         {
             //Arrange
-            List<Table> tables = await _databaseService.GetAllTables();
+            List<Table> tables = new List<Table>();
             int tableId = 1;
 
+            Table table = new Table
+            {
+                InUse = false
+            };
+
+            //Act
             if (tables.Count != 0)
             {
                 tableId = tables.Max(x => x.ID + 1);
             }
 
-            Table table = new Table
-            {
-                ID = tableId,
-                InUse = false
-            };
-
-            //Act
+            table.ID = tableId;
             await _databaseService.AddTable(table, _efContext);
             Table tableFind = await _databaseService.GetTableByID(tableId, _efContext);
 
@@ -150,9 +150,57 @@ namespace RestaurantAppTests
             tableArticleQuantity.ArticleID = articleId;
             tableArticleQuantity.ArticleDetails = articleDetails;
 
-            //Arrange
+            //Assert
             Assert.That(tableArticleQuantity, Is.Not.Null);
             await _databaseService.DeleteArticle(article, _efContext);
+        }
+
+        public async Task AddBillFromTable()
+        {
+            //Arrange
+            Article article = new Article
+            {
+                Barcode = 123,
+                IsDeleted = false,
+                Name = "UnitTestArticle",
+                Price = 10
+            };
+
+            ArticleDetails articleDetail = new ArticleDetails
+            {
+                OriginalQuantity = 10,
+                ReservedQuantity = 0,
+            };
+
+            List<ArticleDetails> articleDetails = new List<ArticleDetails>
+            {
+                articleDetail
+            };
+
+            TableArticleQuantity tableArticleQuantity = new TableArticleQuantity
+            {
+                Quantity = 1
+            };
+
+            Table table = new Table
+            {
+                
+            };
+
+            Bill bill = new Bill
+            {
+                
+            };
+
+            //Act
+            int articleId = await _databaseService.AddArticle(article, _efContext);
+            articleDetail.ArticleID = articleId;
+
+            int articleDetailsId = await _databaseService.AddArticleDetails(articleDetail, _efContext);
+
+            tableArticleQuantity.ArticleID = articleId;
+            tableArticleQuantity.ArticleDetails = articleDetails;
+
         }
 
     }
