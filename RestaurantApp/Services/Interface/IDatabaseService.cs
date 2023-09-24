@@ -98,5 +98,9 @@ namespace RestaurantApp.Services.Interface
         public Task<DataEntry> GetDataEntryByID(int id, EFContext efContext);
 
         public Task DeleteDataEntry(DataEntry dataEntry, EFContext efContext);
+
+        public Task<OnlineOrder> GetOnlineOrderByID(int id, EFContext efContext);
+
+        public Task DeleteOnlineOrder(OnlineOrder onlineOrder, EFContext efContext);
     }
 }

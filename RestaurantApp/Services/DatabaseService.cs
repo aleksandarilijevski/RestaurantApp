@@ -332,5 +332,17 @@ namespace RestaurantApp.Services
             efContext.DataEntries.Remove(dataEntry);
             await efContext.SaveChangesAsync();
         }
+
+        public async Task<OnlineOrder> GetOnlineOrderByID(int id, EFContext efContext)
+        {
+            OnlineOrder onlineOrder = await efContext.OnlineOrders.FirstOrDefaultAsync(x => x.ID == id);
+            return onlineOrder;
+        }
+
+        public async Task DeleteOnlineOrder(OnlineOrder onlineOrder,EFContext efContext)
+        {
+            efContext.OnlineOrders.Remove(onlineOrder);
+            await efContext.SaveChangesAsync();
+        }
     }
 }

@@ -191,6 +191,7 @@ namespace RestaurantAppTests
             //Assert
             Assert.That(billFind, Is.Not.Null);
             await _databaseService.DeleteBill(bill, _efContext);
+            await _databaseService.DeleteUser(user, _efContext);
         }
 
         [Test]
@@ -235,6 +236,39 @@ namespace RestaurantAppTests
             //Assert
             Assert.That(dataEntryFind, Is.Not.Null);
             await _databaseService.DeleteDataEntry(dataEntryFind, _efContext);
+        }
+
+        [Test]
+        public async Task AddOnlineOrder()
+        {
+            //Arrange
+            User user = new User
+            {
+                FirstAndLastName = "Test",
+                Barcode = 123,
+                DateOfBirth = DateTime.Now,
+                JMBG = 1,
+                UserRole = UserRole.Waiter,
+            };
+
+            OnlineOrder onlineOrder = new OnlineOrder
+            {
+                Firstname = "Test",
+                IsPayed = false
+            };
+
+            //Act
+            int userId = await _databaseService.AddUser(user, _efContext);
+            onlineOrder.UserID = userId;
+
+            int onlineOrderId = await _databaseService.AddOnlineOrder(onlineOrder, _efContext);
+
+            OnlineOrder onlineOrderFind = await _databaseService.GetOnlineOrderByID(onlineOrderId, _efContext);
+
+            //Assert
+            Assert.That(onlineOrderFind, Is.Not.Null);
+            await _databaseService.DeleteOnlineOrder(onlineOrderFind, _efContext);
+            await _databaseService.DeleteUser(user, _efContext);
         }
     }
 }
