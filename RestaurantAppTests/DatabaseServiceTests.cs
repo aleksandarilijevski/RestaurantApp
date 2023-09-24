@@ -334,5 +334,71 @@ namespace RestaurantAppTests
             //Assert
             Assert.That(articleFind, Is.Null);
         }
+
+        [Test]
+        public async Task DeleteArticleDetails()
+        {
+            //Arrange
+            Article article = new Article
+            {
+                Barcode = 123,
+                IsDeleted = false,
+                Name = "UnitTestArticle",
+                Price = 10
+            };
+
+            ArticleDetails articleDetails = new ArticleDetails
+            {
+                OriginalQuantity = 10,
+                ReservedQuantity = 0,
+            };
+
+            //Act
+            int articleId = await _databaseService.AddArticle(article, _efContext);
+            articleDetails.ArticleID = articleId;
+            int articleDetailsId = await _databaseService.AddArticleDetails(articleDetails, _efContext);
+            await _databaseService.DeleteArticleDetails(articleDetails, _efContext);
+            ArticleDetails articleDetailsFind = await _databaseService.GetArticleDetailsByID(articleDetailsId, _efContext);
+
+            //Assert
+            Assert.That(articleDetailsFind, Is.Null);
+            await _databaseService.DeleteArticle(article, _efContext);
+        }
+
+        [Test]
+        public async Task DeleteBill()
+        {
+            //Arrange
+            User user = new User
+            {
+                FirstAndLastName = "Test",
+                Barcode = 123,
+                DateOfBirth = DateTime.Now,
+                JMBG = 1,
+                UserRole = UserRole.Waiter,
+            };
+
+            Bill bill = new Bill
+            {
+                TotalPrice = 100,
+                Cash = 85,
+                Change = 15,
+                RegistrationNumber = "unitTest",
+                PaymentType = PaymentType.Cash
+            };
+
+            //Act
+            int userId = await _databaseService.AddUser(user, _efContext);
+            bill.UserID = userId;
+
+            int billId = await _databaseService.CreateBill(bill, _efContext);
+            await _databaseService.DeleteBill(bill, _efContext);
+            Bill billFind = await _databaseService.GetBillByID(billId, _efContext);
+
+            //Assert
+            Assert.That(billFind, Is.Null);
+            await _databaseService.DeleteUser(user, _efContext);
+        }
+
     }
 }
