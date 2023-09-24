@@ -443,5 +443,37 @@ namespace RestaurantAppTests
             //Assert
             Assert.That(dataEntryFind, Is.Null);
         }
+
+        [Test]
+        public async Task DeleteOnlineOrder()
+        {
+            //Arrange
+            User user = new User
+            {
+                FirstAndLastName = "Test",
+                Barcode = 123,
+                DateOfBirth = DateTime.Now,
+                JMBG = 1,
+                UserRole = UserRole.Waiter,
+            };
+
+            OnlineOrder onlineOrder = new OnlineOrder
+            {
+                Firstname = "Test",
+                IsPayed = false
+            };
+
+            //Act
+            int userId = await _databaseService.AddUser(user, _efContext);
+            onlineOrder.UserID = userId;
+
+            int onlineOrderId = await _databaseService.AddOnlineOrder(onlineOrder, _efContext);
+            await _databaseService.DeleteOnlineOrder(onlineOrder, _efContext);
+            OnlineOrder onlineOrderFind = await _databaseService.GetOnlineOrderByID(onlineOrderId, _efContext);
+
+            //Assert
+            Assert.That(onlineOrderFind, Is.Null);
+            await _databaseService.DeleteUser(user, _efContext);
+        }
     }
 }
