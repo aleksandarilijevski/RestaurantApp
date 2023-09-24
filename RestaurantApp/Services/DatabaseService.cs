@@ -153,10 +153,11 @@ namespace RestaurantApp.Services
             await efContext.SaveChangesAsync();
         }
 
-        public async Task AddDataEntry(DataEntry dataEntry, EFContext efContext)
+        public async Task<int> AddDataEntry(DataEntry dataEntry, EFContext efContext)
         {
             efContext.DataEntries.Add(dataEntry);
             await efContext.SaveChangesAsync();
+            return dataEntry.ID;
         }
 
         public async Task<DataEntry> GetDataEntryByNumber(int dataEntryNumber)
@@ -302,7 +303,7 @@ namespace RestaurantApp.Services
             return articleDetails;
         }
 
-        public async Task DeleteTable(Table table,EFContext efContext)
+        public async Task DeleteTable(Table table, EFContext efContext)
         {
             efContext.Tables.Remove(table);
             await efContext.SaveChangesAsync();
@@ -314,9 +315,21 @@ namespace RestaurantApp.Services
             return bill;
         }
 
-        public async Task DeleteBill(Bill bill,EFContext efContext)
+        public async Task DeleteBill(Bill bill, EFContext efContext)
         {
             efContext.Bills.Remove(bill);
+            await efContext.SaveChangesAsync();
+        }
+
+        public async Task<DataEntry> GetDataEntryByID(int id, EFContext efContext)
+        {
+            DataEntry dataEntry = await efContext.DataEntries.FirstOrDefaultAsync(x => x.ID == id);
+            return dataEntry;
+        }
+
+        public async Task DeleteDataEntry(DataEntry dataEntry, EFContext efContext)
+        {
+            efContext.DataEntries.Remove(dataEntry);
             await efContext.SaveChangesAsync();
         }
     }

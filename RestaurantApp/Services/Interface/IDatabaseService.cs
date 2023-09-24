@@ -21,7 +21,7 @@ namespace RestaurantApp.Services.Interface
 
         public Task<int> CreateBill(Bill bill, EFContext efContext);
 
-        public Task AddDataEntry(DataEntry dataEntry, EFContext efContext);
+        public Task<int> AddDataEntry(DataEntry dataEntry, EFContext efContext);
 
         public Task<Article> GetArticleByID(int id, EFContext efContext);
 
@@ -94,5 +94,9 @@ namespace RestaurantApp.Services.Interface
         public Task<Bill> GetBillByID(int id, EFContext efContext);
 
         public Task DeleteBill(Bill bill, EFContext efContext);
+
+        public Task<DataEntry> GetDataEntryByID(int id, EFContext efContext);
+
+        public Task DeleteDataEntry(DataEntry dataEntry, EFContext efContext);
     }
 }

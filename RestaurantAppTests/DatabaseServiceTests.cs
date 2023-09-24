@@ -182,7 +182,6 @@ namespace RestaurantAppTests
             };
 
             //Act
-
             int userId = await _databaseService.AddUser(user, _efContext);
             bill.UserID = userId;
 
@@ -192,6 +191,50 @@ namespace RestaurantAppTests
             //Assert
             Assert.That(billFind, Is.Not.Null);
             await _databaseService.DeleteBill(bill, _efContext);
+        }
+
+        [Test]
+        public async Task AddDataEntry()
+        {
+            //Arrange
+            Article article = new Article
+            {
+                Barcode = 123,
+                IsDeleted = false,
+                Name = "UnitTestArticle",
+                Price = 10
+            };
+
+            ArticleDetails articleDetail = new ArticleDetails
+            {
+                OriginalQuantity = 10,
+                ReservedQuantity = 0,
+            };
+
+            List<ArticleDetails> articleDetails = new List<ArticleDetails>
+            {
+                articleDetail
+            };
+
+            DataEntry dataEntry = new DataEntry
+            {
+                DataEntryNumber = 1,
+                TotalAmount = 100
+            };
+
+            //Act
+            int articleId = await _databaseService.AddArticle(article, _efContext);
+            articleDetail.ArticleID = articleId;
+            await _databaseService.AddArticleDetails(articleDetail, _efContext);
+
+            dataEntry.ArticleDetails = articleDetails;
+            int dataEntryId = await _databaseService.AddDataEntry(dataEntry, _efContext);
+
+            DataEntry dataEntryFind = await _databaseService.GetDataEntryByID(dataEntryId, _efContext);
+
+            //Assert
+            Assert.That(dataEntryFind, Is.Not.Null);
+            await _databaseService.DeleteDataEntry(dataEntryFind, _efContext);
         }
     }
 }
