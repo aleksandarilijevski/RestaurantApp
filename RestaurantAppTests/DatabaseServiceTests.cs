@@ -1,4 +1,6 @@
+using EntityFramework.Enums;
 using EntityFramework.Models;
+using RestaurantApp.Enums;
 using RestaurantApp.Services;
 using RestaurantApp.Services.Interface;
 using Table = EntityFramework.Models.Table;
@@ -46,6 +48,8 @@ namespace RestaurantAppTests
                 FirstAndLastName = "UnitTest",
                 Barcode = 123,
                 DateOfBirth = DateTime.UtcNow,
+                JMBG = 1,
+                UserRole = UserRole.Waiter
             };
 
             //Act
@@ -155,53 +159,39 @@ namespace RestaurantAppTests
             await _databaseService.DeleteArticle(article, _efContext);
         }
 
-        public async Task AddBillFromTable()
+        [Test]
+        public async Task AddBill()
         {
             //Arrange
-            Article article = new Article
+            User user = new User
             {
+                FirstAndLastName = "Test",
                 Barcode = 123,
-                IsDeleted = false,
-                Name = "UnitTestArticle",
-                Price = 10
-            };
-
-            ArticleDetails articleDetail = new ArticleDetails
-            {
-                OriginalQuantity = 10,
-                ReservedQuantity = 0,
-            };
-
-            List<ArticleDetails> articleDetails = new List<ArticleDetails>
-            {
-                articleDetail
-            };
-
-            TableArticleQuantity tableArticleQuantity = new TableArticleQuantity
-            {
-                Quantity = 1
-            };
-
-            Table table = new Table
-            {
-                
+                DateOfBirth = DateTime.Now,
+                JMBG = 1,
+                UserRole = UserRole.Waiter,
             };
 
             Bill bill = new Bill
             {
-                
+                TotalPrice = 100,
+                Cash = 85,
+                Change = 15,
+                RegistrationNumber = "unitTest",
+                PaymentType = PaymentType.Cash
             };
 
             //Act
-            int articleId = await _databaseService.AddArticle(article, _efContext);
-            articleDetail.ArticleID = articleId;
 
-            int articleDetailsId = await _databaseService.AddArticleDetails(articleDetail, _efContext);
+            int userId = await _databaseService.AddUser(user, _efContext);
+            bill.UserID = userId;
 
-            tableArticleQuantity.ArticleID = articleId;
-            tableArticleQuantity.ArticleDetails = articleDetails;
+            int billId = await _databaseService.CreateBill(bill, _efContext);
+            Bill billFind = await _databaseService.GetBillByID(billId, _efContext);
 
+            //Assert
+            Assert.That(billFind, Is.Not.Null);
+            await _databaseService.DeleteBill(bill, _efContext);
         }
-
     }
 }

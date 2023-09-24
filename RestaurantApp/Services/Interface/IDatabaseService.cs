@@ -90,5 +90,9 @@ namespace RestaurantApp.Services.Interface
         public Task<ArticleDetails> GetArticleDetailsByID(int id, EFContext efContext);
 
         public Task DeleteTable(Table table, EFContext efContext);
+
+        public Task<Bill> GetBillByID(int id, EFContext efContext);
+
+        public Task DeleteBill(Bill bill, EFContext efContext);
     }
 }

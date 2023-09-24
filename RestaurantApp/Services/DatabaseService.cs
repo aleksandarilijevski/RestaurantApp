@@ -307,5 +307,17 @@ namespace RestaurantApp.Services
             efContext.Tables.Remove(table);
             await efContext.SaveChangesAsync();
         }
+
+        public async Task<Bill> GetBillByID(int id, EFContext efContext)
+        {
+            Bill bill = await efContext.Bills.FirstOrDefaultAsync(x => x.ID == id);
+            return bill;
+        }
+
+        public async Task DeleteBill(Bill bill,EFContext efContext)
+        {
+            efContext.Bills.Remove(bill);
+            await efContext.SaveChangesAsync();
+        }
     }
 }
