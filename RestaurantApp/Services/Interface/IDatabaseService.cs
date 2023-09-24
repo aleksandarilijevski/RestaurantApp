@@ -84,5 +84,7 @@ namespace RestaurantApp.Services.Interface
         public Task<User> GetUserByBarcode(long barcode, EFContext efContext);
 
         public Task<User> GetUserByID(int id, EFContext efContext);
+
+        public Task DeleteArticle(Article article, EFContext efContext);
     }
 }

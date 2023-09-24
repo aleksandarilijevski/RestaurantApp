@@ -290,5 +290,11 @@ namespace RestaurantApp.Services
             return user;
         }
 
+        public async Task DeleteArticle(Article article, EFContext efContext)
+        {
+            efContext.Articles.Remove(article);
+            await efContext.SaveChangesAsync();
+        }
+
     }
 }
