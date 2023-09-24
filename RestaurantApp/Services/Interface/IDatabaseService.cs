@@ -86,5 +86,7 @@ namespace RestaurantApp.Services.Interface
         public Task<User> GetUserByID(int id, EFContext efContext);
 
         public Task DeleteArticle(Article article, EFContext efContext);
+
+        public Task<ArticleDetails> GetArticleDetailsByID(int id, EFContext efContext);
     }
 }

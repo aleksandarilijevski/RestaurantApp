@@ -296,5 +296,11 @@ namespace RestaurantApp.Services
             await efContext.SaveChangesAsync();
         }
 
+        public async Task<ArticleDetails> GetArticleDetailsByID(int id, EFContext efContext)
+        {
+            ArticleDetails articleDetails = await efContext.ArticleDetails.FirstOrDefaultAsync(x => x.ID == id);
+            return articleDetails;
+        }
+
     }
 }
