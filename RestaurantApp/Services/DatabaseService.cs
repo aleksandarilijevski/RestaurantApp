@@ -302,5 +302,10 @@ namespace RestaurantApp.Services
             return articleDetails;
         }
 
+        public async Task DeleteTable(Table table,EFContext efContext)
+        {
+            efContext.Tables.Remove(table);
+            await efContext.SaveChangesAsync();
+        }
     }
 }

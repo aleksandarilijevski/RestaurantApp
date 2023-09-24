@@ -1,7 +1,7 @@
-
 using EntityFramework.Models;
 using RestaurantApp.Services;
 using RestaurantApp.Services.Interface;
+using Table = EntityFramework.Models.Table;
 
 namespace RestaurantAppTests
 {
@@ -84,6 +84,33 @@ namespace RestaurantAppTests
             //Assert
             Assert.That(articleDetailsFind, Is.Not.Null);
             await _databaseService.DeleteArticle(article, _efContext);
+        }
+
+        [Test]
+        public async Task AddTable()
+        {
+            //Arrange
+            List<Table> tables = await _databaseService.GetAllTables();
+            int tableId = 1;
+
+            if (tables.Count != 0)
+            {
+                tableId = tables.Max(x => x.ID + 1);
+            }
+
+            Table table = new Table
+            {
+                ID = tableId,
+                InUse = false
+            };
+
+            //Act
+            await _databaseService.AddTable(table, _efContext);
+            Table tableFind = await _databaseService.GetTableByID(tableId, _efContext);
+
+            //Assert
+            Assert.That(tableFind, Is.Not.Null);
+            await _databaseService.DeleteTable(table, _efContext);
         }
 
     }
