@@ -173,10 +173,11 @@ namespace RestaurantApp.Services
             await efContext.SaveChangesAsync();
         }
 
-        public async Task AddTableArticleQuantity(TableArticleQuantity tableArticleQuantity, EFContext efContext)
+        public async Task<int> AddTableArticleQuantity(TableArticleQuantity tableArticleQuantity, EFContext efContext)
         {
             efContext.TableArticleQuantities.Add(tableArticleQuantity);
             await efContext.SaveChangesAsync();
+            return tableArticleQuantity.ID;
         }
 
         public async Task EditTableArticleQuantity(TableArticleQuantity tableArticleQuantity, EFContext efContext)

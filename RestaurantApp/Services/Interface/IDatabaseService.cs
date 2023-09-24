@@ -51,7 +51,7 @@ namespace RestaurantApp.Services.Interface
 
         public Task<List<Table>> GetAllTables();
 
-        public Task AddTableArticleQuantity(TableArticleQuantity tableArticleQuantity, EFContext efContext);
+        public Task<int> AddTableArticleQuantity(TableArticleQuantity tableArticleQuantity, EFContext efContext);
 
         public Task<List<ArticleDetails>> GetArticleDetailsByArticleID(int articleId, EFContext efContext);
 

@@ -154,8 +154,11 @@ namespace RestaurantAppTests
             tableArticleQuantity.ArticleID = articleId;
             tableArticleQuantity.ArticleDetails = articleDetails;
 
+            int tableArticleQuantityId = await _databaseService.AddTableArticleQuantity(tableArticleQuantity, _efContext);
+            TableArticleQuantity tableArticleQuantityFind = await _databaseService.GetTableArticleQuantityByID(tableArticleQuantityId, _efContext);
+
             //Assert
-            Assert.That(tableArticleQuantity, Is.Not.Null);
+            Assert.That(tableArticleQuantityFind, Is.Not.Null);
             await _databaseService.DeleteArticle(article, _efContext);
         }
 
@@ -545,6 +548,52 @@ namespace RestaurantAppTests
 
             //Assert
             Assert.That(tableFind, Is.Null);
+        }
+
+        [Test]
+        public async Task DeleteTableArticleQuantity()
+        {
+            //Arrange
+            Article article = new Article
+            {
+                Barcode = 123,
+                IsDeleted = false,
+                Name = "UnitTestArticle",
+                Price = 10
+            };
+
+            ArticleDetails articleDetail = new ArticleDetails
+            {
+                OriginalQuantity = 10,
+                ReservedQuantity = 0,
+            };
+
+            List<ArticleDetails> articleDetails = new List<ArticleDetails>
+            {
+                articleDetail
+            };
+
+            TableArticleQuantity tableArticleQuantity = new TableArticleQuantity
+            {
+                Quantity = 1
+            };
+
+            //Act
+            int articleId = await _databaseService.AddArticle(article, _efContext);
+            articleDetail.ArticleID = articleId;
+
+            await _databaseService.AddArticleDetails(articleDetail, _efContext);
+
+            tableArticleQuantity.ArticleID = articleId;
+            tableArticleQuantity.ArticleDetails = articleDetails;
+
+            int tableArticleQuantityId = await _databaseService.AddTableArticleQuantity(tableArticleQuantity, _efContext);
+            await _databaseService.DeleteTableArticleQuantity(tableArticleQuantity, _efContext);
+            TableArticleQuantity tableArticleQuantityFind = await _databaseService.GetTableArticleQuantityByID(tableArticleQuantityId, _efContext);
+
+            //Assert
+            Assert.That(tableArticleQuantityFind, Is.Null);
+            await _databaseService.DeleteArticle(article, _efContext);
         }
     }
 }
