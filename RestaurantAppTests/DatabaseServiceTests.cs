@@ -113,5 +113,47 @@ namespace RestaurantAppTests
             await _databaseService.DeleteTable(table, _efContext);
         }
 
+        [Test]
+        public async Task AddTableArticleQuantity()
+        {
+            //Arrange
+            Article article = new Article
+            {
+                Barcode = 123,
+                IsDeleted = false,
+                Name = "UnitTestArticle",
+                Price = 10
+            };
+
+            ArticleDetails articleDetail = new ArticleDetails
+            {
+                OriginalQuantity = 10,
+                ReservedQuantity = 0,
+            };
+
+            List<ArticleDetails> articleDetails = new List<ArticleDetails>
+            {
+                articleDetail
+            };
+
+            TableArticleQuantity tableArticleQuantity = new TableArticleQuantity
+            {
+                Quantity = 1
+            };
+
+            //Act
+            int articleId = await _databaseService.AddArticle(article, _efContext);
+            articleDetail.ArticleID = articleId;
+
+            int articleDetailsId = await _databaseService.AddArticleDetails(articleDetail, _efContext);
+
+            tableArticleQuantity.ArticleID = articleId;
+            tableArticleQuantity.ArticleDetails = articleDetails;
+
+            //Arrange
+            Assert.That(tableArticleQuantity, Is.Not.Null);
+            await _databaseService.DeleteArticle(article, _efContext);
+        }
+
     }
 }
