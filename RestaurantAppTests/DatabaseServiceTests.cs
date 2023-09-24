@@ -475,5 +475,49 @@ namespace RestaurantAppTests
             Assert.That(onlineOrderFind, Is.Null);
             await _databaseService.DeleteUser(user, _efContext);
         }
+
+        [Test]
+        public async Task DeleteSoldArticleDetails()
+        {
+            //Arrange
+            User user = new User
+            {
+                FirstAndLastName = "Test",
+                Barcode = 123,
+                DateOfBirth = DateTime.Now,
+                JMBG = 1,
+                UserRole = UserRole.Waiter,
+            };
+
+            Bill bill = new Bill
+            {
+                TotalPrice = 100,
+                Cash = 85,
+                Change = 15,
+                RegistrationNumber = "unitTest",
+                PaymentType = PaymentType.Cash
+            };
+
+            SoldArticleDetails soldArticleDetails = new SoldArticleDetails
+            {
+                EntryPrice = 10,
+                SoldQuantity = 5,
+            };
+
+            //Act
+            int userId = await _databaseService.AddUser(user, _efContext);
+            bill.UserID = userId;
+
+            int billId = await _databaseService.CreateBill(bill, _efContext);
+            soldArticleDetails.BillID = billId;
+            int soldArticleDetailsId = await _databaseService.AddSoldArticleDetails(soldArticleDetails, _efContext);
+
+            await _databaseService.DeleteSoldArticleDetails(soldArticleDetails, _efContext);
+            SoldArticleDetails soldArticleDetailsFind = await _databaseService.GetSoldArticleDetailsByID(soldArticleDetailsId, _efContext);
+
+            //Assert
+            Assert.That(soldArticleDetailsFind, Is.Null);
+            await _databaseService.DeleteUser(user, _efContext);
+        }
     }
 }
