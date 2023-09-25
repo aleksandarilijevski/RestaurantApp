@@ -761,5 +761,39 @@ namespace RestaurantAppTests
             await _databaseService.DeleteDataEntry(dataEntry, _efContext);
         }
 
+        [Test]
+        public async Task EditOnlineOrder()
+        {
+            //Arrange
+            string firstName = "unitTest";
+
+            User user = new User
+            {
+                FirstAndLastName = "Test",
+                Barcode = 123,
+                DateOfBirth = DateTime.Now,
+                JMBG = 1,
+                UserRole = UserRole.Waiter,
+            };
+
+            OnlineOrder onlineOrder = new OnlineOrder
+            {
+                Firstname = firstName,
+                IsPayed = false
+            };
+
+            //Act
+            int userId = await _databaseService.AddUser(user, _efContext);
+            onlineOrder.UserID = userId;
+
+            await _databaseService.AddOnlineOrder(onlineOrder, _efContext);
+            onlineOrder.Firstname = "unitTestEdited";
+            await _databaseService.EditOnlineOrder(onlineOrder, _efContext);
+
+            //Assert
+            Assert.That(onlineOrder.Firstname, Is.Not.EqualTo(firstName));
+            await _databaseService.DeleteOnlineOrder(onlineOrder, _efContext);
+            await _databaseService.DeleteUser(user, _efContext);
+        }
     }
 }
