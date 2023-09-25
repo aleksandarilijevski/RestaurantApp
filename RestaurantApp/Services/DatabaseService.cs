@@ -358,5 +358,11 @@ namespace RestaurantApp.Services
             efContext.SoldArticleDetails.Remove(soldArticleDetails);
             await efContext.SaveChangesAsync();
         }
+
+        public async Task EditBill(Bill bill,EFContext efContext)
+        {
+            efContext.Entry(bill).State = EntityState.Modified;
+            await efContext.SaveChangesAsync();
+        }
     }
 }

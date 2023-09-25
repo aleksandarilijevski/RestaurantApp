@@ -677,5 +677,43 @@ namespace RestaurantAppTests
             await _databaseService.DeleteArticle(article, _efContext);
         }
 
+        [Test]
+        public async Task EditBill()
+        {
+            //Arrange
+            string registrationNumber = "unitTest";
+
+            User user = new User
+            {
+                FirstAndLastName = "Test",
+                Barcode = 123,
+                DateOfBirth = DateTime.Now,
+                JMBG = 1,
+                UserRole = UserRole.Waiter,
+            };
+
+            Bill bill = new Bill
+            {
+                TotalPrice = 100,
+                Cash = 85,
+                Change = 15,
+                RegistrationNumber = registrationNumber,
+                PaymentType = PaymentType.Cash
+            };
+
+            //Act
+            int userId = await _databaseService.AddUser(user, _efContext);
+            bill.UserID = userId;
+
+            await _databaseService.CreateBill(bill, _efContext);
+            bill.RegistrationNumber = "unitTestEdited";
+            await _databaseService.EditBill(bill, _efContext);
+
+            //Assert
+            Assert.That(bill.RegistrationNumber, Is.Not.EqualTo(registrationNumber));
+            await _databaseService.DeleteBill(bill, _efContext);
+            await _databaseService.DeleteUser(user, _efContext);
+        }
+
     }
 }
