@@ -110,5 +110,7 @@ namespace RestaurantApp.Services.Interface
         public Task EditBill(Bill bill, EFContext efContext);
 
         public Task EditDataEntry(DataEntry dataEntry, EFContext efContext);
+
+        public Task EditSoldArticleDetails(SoldArticleDetails soldArticleDetails, EFContext efContext);
     }
 }

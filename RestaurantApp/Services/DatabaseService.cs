@@ -370,5 +370,11 @@ namespace RestaurantApp.Services
             efContext.Entry(dataEntry).State = EntityState.Modified;
             await efContext.SaveChangesAsync();
         }
+
+        public async Task EditSoldArticleDetails(SoldArticleDetails soldArticleDetails, EFContext efContext)
+        {
+            efContext.Entry(soldArticleDetails).State = EntityState.Modified;
+            await efContext.SaveChangesAsync();
+        }
     }
 }
