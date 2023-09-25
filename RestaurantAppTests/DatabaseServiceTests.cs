@@ -918,5 +918,30 @@ namespace RestaurantAppTests
             Assert.That(tableArticleQuantity.Quantity, Is.Not.EqualTo(quantity));
             await _databaseService.DeleteArticle(article, _efContext);
         }
+
+        [Test]
+        public async Task EditUser()
+        {
+            //Arrange
+            string firstAndLastname = "UnitTest";
+
+            User user = new User
+            {
+                FirstAndLastName = firstAndLastname,
+                Barcode = 123,
+                DateOfBirth = DateTime.UtcNow,
+                JMBG = 1,
+                UserRole = UserRole.Waiter
+            };
+
+            //Act
+            await _databaseService.AddUser(user, _efContext);
+            user.FirstAndLastName = "UnitTestEdited";
+            await _databaseService.EditUser(user, _efContext);
+
+            //Assert
+            Assert.That(user.FirstAndLastName, Is.Not.EqualTo(firstAndLastname));
+            await _databaseService.DeleteUser(user, _efContext);
+        }
     }
 }
