@@ -841,5 +841,34 @@ namespace RestaurantAppTests
             Assert.That(soldArticleDetails.EntryPrice, Is.Not.EqualTo(entryPrice));
             await _databaseService.DeleteUser(user, _efContext);
         }
+
+        [Test]
+        public async Task EditTable()
+        {
+            //Arrange
+            List<Table> tables = new List<Table>();
+            int tableId = 1;
+
+            Table table = new Table
+            {
+                InUse = false
+            };
+
+            //Act
+            if (tables.Count != 0)
+            {
+                tableId = tables.Max(x => x.ID + 1);
+            }
+
+            table.ID = tableId;
+            await _databaseService.AddTable(table, _efContext);
+
+            table.InUse = true;
+            await _databaseService.EditTable(table, _efContext);
+
+            //Assert
+            Assert.That(table.InUse, Is.Not.False);
+            await _databaseService.DeleteTable(table, _efContext);
+        }
     }
 }
