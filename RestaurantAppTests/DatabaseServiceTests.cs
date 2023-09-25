@@ -636,11 +636,46 @@ namespace RestaurantAppTests
             //Act
             await _databaseService.AddArticle(article, _efContext);
             article.Name = "UnitTestArticleEdited";
-            await _databaseService.EditArticle(article,_efContext);
+            await _databaseService.EditArticle(article, _efContext);
 
             //Assert
-            Assert.That(article.Name, Is.Not.SameAs(articleName));
-            await _databaseService.DeleteArticle(article,_efContext);
+            Assert.That(article.Name, Is.Not.EqualTo(articleName));
+            await _databaseService.DeleteArticle(article, _efContext);
         }
+
+        [Test]
+        public async Task EditArticleDetails()
+        {
+            //Arrange
+            int originalQuantity = 10;
+
+            Article article = new Article
+            {
+                Barcode = 123,
+                IsDeleted = false,
+                Name = "UnitTestArticle",
+                Price = 10
+            };
+
+            ArticleDetails articleDetails = new ArticleDetails
+            {
+                OriginalQuantity = originalQuantity,
+                ReservedQuantity = 0,
+            };
+
+            //Act
+            int articleId = await _databaseService.AddArticle(article, _efContext);
+
+            articleDetails.ArticleID = articleId;
+            await _databaseService.AddArticleDetails(articleDetails, _efContext);
+
+            articleDetails.OriginalQuantity = 15;
+            await _databaseService.EditArticleDetails(articleDetails, _efContext);
+
+            //Assert
+            Assert.That(articleDetails.OriginalQuantity, Is.Not.EqualTo(originalQuantity));
+            await _databaseService.DeleteArticle(article, _efContext);
+        }
+
     }
 }
