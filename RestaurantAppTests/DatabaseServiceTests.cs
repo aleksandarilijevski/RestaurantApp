@@ -870,5 +870,53 @@ namespace RestaurantAppTests
             Assert.That(table.InUse, Is.Not.False);
             await _databaseService.DeleteTable(table, _efContext);
         }
+
+        [Test]
+        public async Task EditTableArticleQuantity()
+        {
+            //Arrange
+            int quantity = 1;
+
+            Article article = new Article
+            {
+                Barcode = 123,
+                IsDeleted = false,
+                Name = "UnitTestArticle",
+                Price = 10
+            };
+
+            ArticleDetails articleDetail = new ArticleDetails
+            {
+                OriginalQuantity = 10,
+                ReservedQuantity = 0,
+            };
+
+            List<ArticleDetails> articleDetails = new List<ArticleDetails>
+            {
+                articleDetail
+            };
+
+            TableArticleQuantity tableArticleQuantity = new TableArticleQuantity
+            {
+                Quantity = quantity
+            };
+
+            //Act
+            int articleId = await _databaseService.AddArticle(article, _efContext);
+            articleDetail.ArticleID = articleId;
+
+            int articleDetailsId = await _databaseService.AddArticleDetails(articleDetail, _efContext);
+
+            tableArticleQuantity.ArticleID = articleId;
+            tableArticleQuantity.ArticleDetails = articleDetails;
+
+            await _databaseService.AddTableArticleQuantity(tableArticleQuantity, _efContext);
+            tableArticleQuantity.Quantity = 50;
+            await _databaseService.EditTableArticleQuantity(tableArticleQuantity, _efContext);
+
+            //Assert
+            Assert.That(tableArticleQuantity.Quantity, Is.Not.EqualTo(quantity));
+            await _databaseService.DeleteArticle(article, _efContext);
+        }
     }
 }
