@@ -618,5 +618,29 @@ namespace RestaurantAppTests
             //Assert
             Assert.That(userFind, Is.Null);
         }
+
+        [Test]
+        public async Task EditArticle()
+        {
+            //Arrange
+            string articleName = "UnitTestArticle";
+
+            Article article = new Article
+            {
+                Barcode = 123,
+                IsDeleted = false,
+                Name = articleName,
+                Price = 10
+            };
+
+            //Act
+            await _databaseService.AddArticle(article, _efContext);
+            article.Name = "UnitTestArticleEdited";
+            await _databaseService.EditArticle(article,_efContext);
+
+            //Assert
+            Assert.That(article.Name, Is.Not.SameAs(articleName));
+            await _databaseService.DeleteArticle(article,_efContext);
+        }
     }
 }
