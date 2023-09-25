@@ -715,5 +715,51 @@ namespace RestaurantAppTests
             await _databaseService.DeleteUser(user, _efContext);
         }
 
+        [Test]
+        public async Task EditDataEntry()
+        {
+            //Arrange
+            int dataEntryNumber = 1;
+
+            Article article = new Article
+            {
+                Barcode = 123,
+                IsDeleted = false,
+                Name = "UnitTestArticle",
+                Price = 10
+            };
+
+            ArticleDetails articleDetail = new ArticleDetails
+            {
+                OriginalQuantity = 10,
+                ReservedQuantity = 0,
+            };
+
+            List<ArticleDetails> articleDetails = new List<ArticleDetails>
+            {
+                articleDetail
+            };
+
+            DataEntry dataEntry = new DataEntry
+            {
+                DataEntryNumber = dataEntryNumber,
+                TotalAmount = 100
+            };
+
+            //Act
+            int articleId = await _databaseService.AddArticle(article, _efContext);
+            articleDetail.ArticleID = articleId;
+            await _databaseService.AddArticleDetails(articleDetail, _efContext);
+
+            dataEntry.ArticleDetails = articleDetails;
+            await _databaseService.AddDataEntry(dataEntry, _efContext);
+            dataEntry.DataEntryNumber = 5;
+            await _databaseService.EditDataEntry(dataEntry, _efContext);
+
+            //Assert
+            Assert.That(dataEntry.DataEntryNumber, Is.Not.EqualTo(dataEntryNumber));
+            await _databaseService.DeleteDataEntry(dataEntry, _efContext);
+        }
+
     }
 }

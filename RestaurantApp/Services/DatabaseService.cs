@@ -341,13 +341,13 @@ namespace RestaurantApp.Services
             return onlineOrder;
         }
 
-        public async Task DeleteOnlineOrder(OnlineOrder onlineOrder,EFContext efContext)
+        public async Task DeleteOnlineOrder(OnlineOrder onlineOrder, EFContext efContext)
         {
             efContext.OnlineOrders.Remove(onlineOrder);
             await efContext.SaveChangesAsync();
         }
 
-        public async Task<SoldArticleDetails> GetSoldArticleDetailsByID(int id,EFContext efContext)
+        public async Task<SoldArticleDetails> GetSoldArticleDetailsByID(int id, EFContext efContext)
         {
             SoldArticleDetails soldArticleDetails = await efContext.SoldArticleDetails.FirstOrDefaultAsync(x => x.ID == id);
             return soldArticleDetails;
@@ -359,9 +359,15 @@ namespace RestaurantApp.Services
             await efContext.SaveChangesAsync();
         }
 
-        public async Task EditBill(Bill bill,EFContext efContext)
+        public async Task EditBill(Bill bill, EFContext efContext)
         {
             efContext.Entry(bill).State = EntityState.Modified;
+            await efContext.SaveChangesAsync();
+        }
+
+        public async Task EditDataEntry(DataEntry dataEntry, EFContext efContext)
+        {
+            efContext.Entry(dataEntry).State = EntityState.Modified;
             await efContext.SaveChangesAsync();
         }
     }
