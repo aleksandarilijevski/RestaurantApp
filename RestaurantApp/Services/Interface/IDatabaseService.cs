@@ -106,11 +106,5 @@ namespace RestaurantApp.Services.Interface
         public Task<SoldArticleDetails> GetSoldArticleDetailsByID(int id, EFContext efContext);
 
         public Task DeleteSoldArticleDetails(SoldArticleDetails soldArticleDetails, EFContext efContext);
-
-        public Task EditBill(Bill bill, EFContext efContext);
-
-        public Task EditDataEntry(DataEntry dataEntry, EFContext efContext);
-
-        public Task EditSoldArticleDetails(SoldArticleDetails soldArticleDetails, EFContext efContext);
     }
 }

@@ -137,7 +137,6 @@ namespace RestaurantApp.ViewModels
                 await QuantityLogicHelper.DecreaseOriginalQuantity(articleHelperDetails);
             }
 
-
             List<SoldTableArticleQuantity> soldTableArticleQuantities = new List<SoldTableArticleQuantity>();
 
             foreach (TableArticleQuantity tableArticleQuantity in TableArticleQuantities)
