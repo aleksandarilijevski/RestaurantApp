@@ -186,7 +186,8 @@ namespace RestaurantApp.ViewModels
                 RegistrationNumber = registrationNumber
             };
 
-            await _databaseService.CreateBill(bill, efContext);
+            //await _databaseService.CreateBill(bill, efContext);
+            List<SoldArticleDetails> soldArticleDetails = null;
 
             foreach (TableArticleQuantity tableArticleQuantity in TableArticleQuantities)
             {
@@ -198,15 +199,21 @@ namespace RestaurantApp.ViewModels
                     EFContext = efContext,
                     DatabaseService = _databaseService,
                     ArticleDetails = articleDetails,
-                    BillID = bill.ID
+                    //BillID = bill.ID
                 };
 
                 await QuantityLogicHelper.DecreaseReservedQuantity(articleHelperDetails);
-                await QuantityLogicHelper.DecreaseOriginalQuantity(articleHelperDetails);
+                soldArticleDetails = await QuantityLogicHelper.DecreaseOriginalQuantity(articleHelperDetails);
             }
 
-            //Moved to executed before decreasing original quantity
-            //await _databaseService.CreateBill(bill, efContext);
+            await _databaseService.CreateBill(bill, efContext);
+
+            foreach (SoldArticleDetails soldArticleDetail in soldArticleDetails)
+            {
+                soldArticleDetail.BillID = bill.ID;
+                await _databaseService.AddSoldArticleDetails(soldArticleDetail, efContext);
+            }
+
 
             Table.InUse = false;
             await _databaseService.EditTable(Table, efContext);
