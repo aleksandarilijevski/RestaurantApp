@@ -196,6 +196,7 @@ namespace RestaurantApp.ViewModels
             {
                 onlineOrder = new OnlineOrder();
                 await _databaseService.AddOnlineOrder(onlineOrder, efContext);
+                OnlineOrder = onlineOrder;
 
                 bool dialogResult = UserLogin();
 
@@ -210,8 +211,6 @@ namespace RestaurantApp.ViewModels
                     _regionManager.RequestNavigate("MainRegion", "Options");
                     return;
                 }
-
-
             }
 
             if (onlineOrder is not null && onlineOrder.IsPayed == false)
@@ -220,7 +219,7 @@ namespace RestaurantApp.ViewModels
                 TableArticleQuantities = new ObservableCollection<TableArticleQuantity>(OnlineOrder.TableArticleQuantities);
             }
 
-            if (onlineOrder.TableArticleQuantities.Count == 0)
+            if (onlineOrder.TableArticleQuantities.Count == 0 && onlineOrder.ID != 1)
             {
                 bool dialogResult = UserLogin();
 
@@ -418,7 +417,7 @@ namespace RestaurantApp.ViewModels
 
             if (TableArticleQuantities.Count == 0)
             {
-                OnlineOrder.UserID = null;
+                //OnlineOrder.UserID = null;
                 //new context should be here
                 await _databaseService.EditOnlineOrder(OnlineOrder, new EFContext());
                 _regionManager.RequestNavigate("MainRegion", "Options");

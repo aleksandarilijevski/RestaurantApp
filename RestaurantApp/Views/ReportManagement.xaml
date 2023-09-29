@@ -17,6 +17,7 @@
 
     <UserControl.Resources>
         <converters:TotalProfitConverter x:Key="TotalProfitConverter" />
+        <converters:OrderTypeConverter x:Key="OrderTypeConverter" />
     </UserControl.Resources>
     
     <Grid>
@@ -101,7 +102,14 @@
 
         <DataGrid Grid.Row="2" Grid.RowSpan="2" Grid.ColumnSpan="7" FontSize="20" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding Bills,IsAsync=True}" SelectedItem="{Binding SelectedBill}" IsReadOnly="True">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Table ID" Binding="{Binding Table.ID}"/>
+                <DataGridTextColumn Header="ID" Binding="{Binding Table.ID}"/>
+
+                <DataGridTextColumn Header="Order Type">
+                    <DataGridTextColumn.Binding>
+                        <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=UserControl}" Path="DataContext.Bills" Converter="{StaticResource OrderTypeConverter}"/>
+                    </DataGridTextColumn.Binding>
+                </DataGridTextColumn>
+
                 <DataGridTextColumn Header="Payment Type" Binding="{Binding PaymentType}"/>
                 <DataGridTextColumn Header="Total price" Binding="{Binding TotalPrice}"/>
 

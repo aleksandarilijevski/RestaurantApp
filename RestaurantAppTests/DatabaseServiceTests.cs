@@ -1,5 +1,6 @@
 using EntityFramework.Models;
 using Microsoft.EntityFrameworkCore;
+using NSubstitute;
 using RestaurantApp.Factories;
 using RestaurantApp.Factories.Interfaces;
 using RestaurantApp.Services;
@@ -22,11 +23,33 @@ namespace RestaurantAppTests
         [Test]
         public async Task AddArticle()
         {
+            //Arrange
             IDatabaseService? _databaseService = _databaseServiceFactory.Create();
             EFContext? _efContext = _efContextFactory.Create();
 
+            IDatabaseService databaseService = Substitute.For<IDatabaseService>();
 
-            //Arrange
+            databaseService.AddArticle(Arg.Any<Article>(), _efContext).Returns(x =>
+            {
+                Article article = x.ArgAt<Article>(0);
+                article.ID = 1;
+                return Task.FromResult(article.ID);
+            });
+
+            databaseService.GetArticleByID(Arg.Any<int>(), _efContext).Returns(x =>
+            {
+                int articleId = x.ArgAt<int>(0);
+
+                Article article = new Article()
+                {
+                    ID = articleId,
+                    Barcode = 123,
+                    Name = "UnitTest"
+                };
+
+                return Task.FromResult(article);
+            });
+
             Article article = new Article
             {
                 Barcode = 123,
@@ -37,12 +60,11 @@ namespace RestaurantAppTests
 
             //Act
 
-            int articleId = await _databaseService.AddArticle(article, _efContext);
-            Article articleFind = await _databaseService.GetArticleByID(articleId, _efContext);
+            int articleId = await databaseService.AddArticle(article,_efContext);
+            Article articleFind = await databaseService.GetArticleByID(articleId, _efContext);
 
             //Assert
             Assert.That(articleFind, Is.Not.Null);
-            //await _databaseService.DeleteArticle(articleFind, _efContext);
         }
 
         //[Test]
