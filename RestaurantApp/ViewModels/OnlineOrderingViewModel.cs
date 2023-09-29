@@ -30,6 +30,14 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand _goToPaymentCommand;
         private DelegateCommand _checkIfOnlineOrderExistsCommand;
 
+        private string _firstname;
+        private string _lastname;
+        private string _address;
+        private string _comment;
+        private long _phoneNumber;
+        private int _apartmentNumber;
+        private int _floor;
+
         public OnlineOrderingViewModel(IDatabaseService databaseService, IRegionManager regionManager, IDialogService dialogService, EFContext efContext)
         {
             _databaseService = databaseService;
@@ -73,6 +81,104 @@ namespace RestaurantApp.ViewModels
         public User User { get; set; }
 
         public OnlineOrder OnlineOrder { get; set; } = new OnlineOrder();
+
+        public string Firstname
+        {
+            get
+            {
+                return _firstname;
+            }
+
+            set
+            {
+                _firstname = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public string Lastname
+        {
+            get
+            {
+                return _lastname;
+            }
+
+            set
+            {
+                _lastname = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public string Address
+        {
+            get
+            {
+                return _address;
+            }
+
+            set
+            {
+                _address = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public int Floor
+        {
+            get
+            {
+                return _floor;
+            }
+
+            set
+            {
+                _floor = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public long PhoneNumber
+        {
+            get
+            {
+                return _phoneNumber;
+            }
+
+            set
+            {
+                _phoneNumber = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public int ApartmentNumber
+        {
+            get
+            {
+                return _apartmentNumber;
+            }
+
+            set
+            {
+                _apartmentNumber = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public string Comment
+        {
+            get
+            {
+                return _comment;
+            }
+
+            set
+            {
+                _comment = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public DelegateCommand<TableArticleQuantity> DeleteTableArticleQuantityCommand
         {
@@ -124,6 +230,17 @@ namespace RestaurantApp.ViewModels
             }
         }
 
+        private void ClearProperties()
+        {
+            Firstname = string.Empty;
+            Lastname = string.Empty;
+            Address = string.Empty;
+            Comment = string.Empty;
+            ApartmentNumber = 0;
+            PhoneNumber = 0;
+            Floor = 0;
+        }
+
         private void GoToPayment()
         {
             if (TableArticleQuantities.Count == 0)
@@ -132,25 +249,25 @@ namespace RestaurantApp.ViewModels
                 return;
             }
 
-            if (OnlineOrder.Firstname is null || OnlineOrder.Firstname == string.Empty)
+            if (Firstname is null || Firstname == string.Empty)
             {
                 MessageBox.Show("Firstname field can not be empty!", "Online Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            if (OnlineOrder.Lastname is null || OnlineOrder.Lastname == string.Empty)
+            if (Lastname is null || Lastname == string.Empty)
             {
                 MessageBox.Show("Lastname field can not be empty!", "Online Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            if (OnlineOrder.Address is null || OnlineOrder.Address == string.Empty)
+            if (Address is null || Address == string.Empty)
             {
                 MessageBox.Show("Address field can not be empty!", "Online Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            if (OnlineOrder.PhoneNumber.ToString().Length < 8)
+            if (PhoneNumber.ToString().Length < 8)
             {
                 MessageBox.Show("Phone number field is not valid!", "Online Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -161,6 +278,8 @@ namespace RestaurantApp.ViewModels
                 {"tableArticleQuantities",TableArticleQuantities.ToList() },
                 {"onlineOrder",OnlineOrder }
             };
+
+            ClearProperties();
 
             _regionManager.RequestNavigate("MainRegion", "Payment", navigationParameters);
         }
@@ -234,7 +353,6 @@ namespace RestaurantApp.ViewModels
                     _regionManager.RequestNavigate("MainRegion", "Options");
                     return;
                 }
-
             }
 
             if (onlineOrder.IsPayed == true)
@@ -420,10 +538,9 @@ namespace RestaurantApp.ViewModels
                 //OnlineOrder.UserID = null;
                 //new context should be here
                 await _databaseService.EditOnlineOrder(OnlineOrder, new EFContext());
+                ClearProperties();
                 _regionManager.RequestNavigate("MainRegion", "Options");
             }
-
         }
-
     }
 }

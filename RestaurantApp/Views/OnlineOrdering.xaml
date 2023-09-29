@@ -34,25 +34,25 @@
         </Grid.RowDefinitions>
 
         <TextBlock Text="Firstname :" FontSize="20" Margin="10,10,0,0"/>
-        <TextBox  FontSize="20" Grid.Row="0" Grid.Column="1" TextAlignment="Center" Text="{Binding OnlineOrder.Firstname}"/>
+        <TextBox  FontSize="20" Grid.Row="0" Grid.Column="1" TextAlignment="Center" Text="{Binding Firstname}"/>
 
         <TextBlock Text="Lastname :" FontSize="20" Margin="10,10,0,0" Grid.Row="1" Grid.Column="0"/>
-        <TextBox  FontSize="20" Grid.Row="1" Grid.Column="1" TextAlignment="Center" Text="{Binding OnlineOrder.Lastname}"/>
+        <TextBox  FontSize="20" Grid.Row="1" Grid.Column="1" TextAlignment="Center" Text="{Binding Lastname}"/>
 
         <TextBlock Text="Address :" FontSize="20" Margin="10,10,0,0" Grid.Row="0" Grid.Column="3"/>
-        <TextBox  FontSize="20" Grid.Row="0" Grid.Column="4" TextAlignment="Center" Text="{Binding OnlineOrder.Address}"/>
+        <TextBox  FontSize="20" Grid.Row="0" Grid.Column="4" TextAlignment="Center" Text="{Binding Address}"/>
 
         <TextBlock Text="Floor :" FontSize="20" Margin="10,10,0,0" Grid.Row="1" Grid.Column="3"/>
-        <TextBox  FontSize="20" Grid.Row="1" Grid.Column="4" TextAlignment="Center" Text="{Binding OnlineOrder.Floor}"/>
+        <TextBox  FontSize="20" Grid.Row="1" Grid.Column="4" TextAlignment="Center" Text="{Binding Floor}"/>
 
         <TextBlock Text="Phone number :" FontSize="20" Margin="10,10,0,0" Grid.Row="2" Grid.Column="0"/>
-        <TextBox  FontSize="20" Grid.Row="2" Grid.Column="1" TextAlignment="Center" Text="{Binding OnlineOrder.PhoneNumber}"/>
+        <TextBox  FontSize="20" Grid.Row="2" Grid.Column="1" TextAlignment="Center" Text="{Binding PhoneNumber}"/>
 
         <TextBlock Text="Apartment number :" FontSize="20" Margin="10,10,0,0" Grid.Row="2" Grid.Column="3"/>
-        <TextBox  FontSize="20" Grid.Row="2" Grid.Column="4" TextAlignment="Center" Text="{Binding OnlineOrder.ApartmentNumber}"/>
+        <TextBox  FontSize="20" Grid.Row="2" Grid.Column="4" TextAlignment="Center" Text="{Binding ApartmentNumber}"/>
 
         <TextBlock Text="Comment :" FontSize="20" Margin="10,10,0,0" Grid.Row="3" Grid.Column="0"/>
-        <TextBox  FontSize="20" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="4" TextAlignment="Left" Width="auto" Height="auto" Text="{Binding OnlineOrder.Comment}"/>
+        <TextBox  FontSize="20" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="4" TextAlignment="Left" Width="auto" Height="auto" Text="{Binding Comment}"/>
 
         <TextBox  FontSize="20" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="5" x:Name="articleSearch" TextAlignment="Center" Margin="0,10,0,0" Text="{Binding Barcode}">
             <TextBox.Style>
