@@ -4,6 +4,8 @@ using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows;
 
 namespace RestaurantApp.ViewModels
@@ -88,6 +90,17 @@ namespace RestaurantApp.ViewModels
             {
                 MessageBox.Show("Article detail entry price can not be zero or less!", "Add article", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
+            }
+
+            ObservableCollection<Article> articles = await _databaseService.GetAllArticles();
+
+            foreach (Article articleMatch in articles)
+            {
+                if (articleMatch.Barcode == article.Barcode)
+                {
+                    MessageBox.Show("Article with that barcode already exists!", "Add article", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
             }
 
             int articleId = await _databaseService.AddArticle(article, efContext);

@@ -5,6 +5,16 @@ namespace EntityFramework.Models
 {
     public class EFContext : DbContext
     {
+        public EFContext()
+        {
+            
+        }
+
+        public EFContext(DbContextOptions options) : base(options)
+        {
+
+        }
+
         public override async Task<int> SaveChangesAsync(CancellationToken cancellation = default)
         {
             IEnumerable<EntityEntry> entries = ChangeTracker.Entries().Where(x => x.Entity is BaseEntity && (x.State == EntityState.Added || x.State == EntityState.Modified));
@@ -27,8 +37,11 @@ namespace EntityFramework.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Data Source=(LocalDb)\\MSSQLLocalDB;Initial Catalog=Restaurant;Integrated Security=true");
-            optionsBuilder.EnableSensitiveDataLogging();
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlServer("Data Source=(LocalDb)\\MSSQLLocalDB;Initial Catalog=Restaurant;Integrated Security=true");
+                optionsBuilder.EnableSensitiveDataLogging();
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -1,11 +1,9 @@
-using EntityFramework.Enums;
 using EntityFramework.Models;
-using RestaurantApp.Enums;
+using Microsoft.EntityFrameworkCore;
 using RestaurantApp.Factories;
 using RestaurantApp.Factories.Interfaces;
 using RestaurantApp.Services;
 using RestaurantApp.Services.Interface;
-using Table = EntityFramework.Models.Table;
 
 namespace RestaurantAppTests
 {
@@ -13,11 +11,12 @@ namespace RestaurantAppTests
     {
         private IAbstractFactory<IDatabaseService> _databaseServiceFactory;
         private IAbstractFactory<EFContext> _efContextFactory;
+        private DbContextOptions options = new DbContextOptionsBuilder<EFContext>().UseInMemoryDatabase("TestingDatabase").Options;
 
         public Tests()
         {
             _databaseServiceFactory = new AbstractFactory<IDatabaseService>(() => new DatabaseService());
-            _efContextFactory = new AbstractFactory<EFContext>(() => new EFContext());
+            _efContextFactory = new AbstractFactory<EFContext>(() => new EFContext(options));
         }
 
         [Test]
@@ -25,6 +24,7 @@ namespace RestaurantAppTests
         {
             IDatabaseService? _databaseService = _databaseServiceFactory.Create();
             EFContext? _efContext = _efContextFactory.Create();
+
 
             //Arrange
             Article article = new Article
@@ -36,12 +36,13 @@ namespace RestaurantAppTests
             };
 
             //Act
+
             int articleId = await _databaseService.AddArticle(article, _efContext);
             Article articleFind = await _databaseService.GetArticleByID(articleId, _efContext);
 
             //Assert
             Assert.That(articleFind, Is.Not.Null);
-            await _databaseService.DeleteArticle(articleFind, _efContext);
+            //await _databaseService.DeleteArticle(articleFind, _efContext);
         }
 
         //[Test]
