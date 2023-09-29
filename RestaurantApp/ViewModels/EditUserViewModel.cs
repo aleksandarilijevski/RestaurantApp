@@ -11,6 +11,7 @@ namespace RestaurantApp.ViewModels
     {
         private IDatabaseService _databaseService;
         private DelegateCommand<User> _editUserCommand;
+        private User _user;
 
         public event Action<IDialogResult> RequestClose;
 
@@ -19,7 +20,19 @@ namespace RestaurantApp.ViewModels
             _databaseService = databaseService;
         }
 
-        public User User { get; set; }
+        public User User
+        {
+            get
+            {
+                return _user;
+            }
+
+            set
+            {
+                _user = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public string Title { get; set; } = "Edit user";
 
@@ -61,7 +74,7 @@ namespace RestaurantApp.ViewModels
 
         public virtual void OnDialogOpened(IDialogParameters parameters)
         {
-            User = parameters.GetValue<User>("User");
+            User = parameters.GetValue<User>("user");
         }
 
         private async void EditUser(User user)

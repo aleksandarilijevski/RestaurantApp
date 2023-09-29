@@ -98,10 +98,7 @@ namespace RestaurantApp.ViewModels
                 {"user",user}
             };
 
-            _dialogService.ShowDialog("editUserDialog", dialogParameters, r =>
-            {
-                User resultData = r.Parameters.GetValue<User>("user");
-            });
+            _dialogService.ShowDialog("editUserDialog", dialogParameters, r => { });
         }
 
         private void ShowAddUserDialog()

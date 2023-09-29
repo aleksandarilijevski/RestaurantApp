@@ -81,7 +81,6 @@
             <TextBox.InputBindings>
                 <KeyBinding Command="{Binding AddArticleToOnlineOrderCommand}" CommandParameter="{Binding Text,ElementName=articleSearch}" Key="Enter"/>
             </TextBox.InputBindings>
-            
         </TextBox>
 
 
