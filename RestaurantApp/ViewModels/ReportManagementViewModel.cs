@@ -30,6 +30,8 @@ namespace RestaurantApp.ViewModels
         private string _filterTableID;
         private string _totalProfit;
         private string _filterOnlineOrderID;
+        private DateTime _filterDateFrom;
+        private DateTime _filterDateTo;
 
         public ReportManagementViewModel(IDatabaseService databaseService, IDialogService dialogService)
         {
@@ -107,9 +109,33 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public DateTime FilterDateFrom { get; set; }
+        public DateTime FilterDateFrom
+        {
+            get
+            {
+                return _filterDateFrom;
+            }
 
-        public DateTime FilterDateTo { get; set; }
+            set
+            {
+                _filterDateFrom = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public DateTime FilterDateTo
+        {
+            get
+            {
+                return _filterDateTo;
+            }
+
+            set
+            {
+                _filterDateTo = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public List<Bill> OriginalBills
         {
@@ -210,6 +236,9 @@ namespace RestaurantApp.ViewModels
 
             decimal totalProfit = CalculateTotalProfit();
             TotalProfit = "Total profit : " + totalProfit.ToString("0.00");
+
+            FilterDateFrom = DateTime.Now;
+            FilterDateTo = DateTime.Now;
         }
 
         private void Filter()
@@ -263,7 +292,7 @@ namespace RestaurantApp.ViewModels
         {
             FilterBillCounter = string.Empty;
             FilterTableID = string.Empty;
-            FilterOnlineOrderID = string.Empty; 
+            FilterOnlineOrderID = string.Empty;
             FilterDateFrom = DateTime.MinValue;
             FilterDateTo = DateTime.MinValue;
 
