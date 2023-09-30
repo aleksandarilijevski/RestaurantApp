@@ -255,7 +255,7 @@ namespace RestaurantApp.ViewModels
                 articleDetails.DataEntryQuantity = articleDetails.OriginalQuantity;
 
                 await _databaseService.AddArticleDetails(articleDetails, efContext);
-                await BindArticleDetailToExistingTableArticleQuantities(articleDetails,efContext);
+                await BindArticleDetailToExistingTableArticleQuantities(articleDetails, efContext);
             }
 
             List<Article> articles = await CreateArticleListFromArticleDetails(DataEntryArticles, efContext);

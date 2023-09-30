@@ -1,10 +1,12 @@
 ﻿using EntityFramework.Enums;
 using EntityFramework.Models;
+using Microsoft.EntityFrameworkCore;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
 using System;
+using System.Windows;
 
 namespace RestaurantApp.ViewModels
 {
@@ -83,6 +85,17 @@ namespace RestaurantApp.ViewModels
         private async void EditUser(User user)
         {
             using EFContext efContext = new EFContext();
+
+            User userCheck = await _databaseService.GetUserByBarcode(user.Barcode, efContext);
+
+            efContext.Entry(userCheck).State = EntityState.Detached;
+
+            if (userCheck is not null && userCheck.ID != user.ID)
+            {
+                MessageBox.Show("User with entered barcode already exists!", "Edit user", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             await _databaseService.EditUser(user, efContext);
             CloseDialog("true");
         }

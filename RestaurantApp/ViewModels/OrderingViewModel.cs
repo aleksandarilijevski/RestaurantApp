@@ -243,7 +243,7 @@ namespace RestaurantApp.ViewModels
             using EFContext efContext = new EFContext();
 
             long.TryParse(barcode, out long barcodeLong);
-            Article article = await _databaseService.GetArticleByBarcodeContext(barcodeLong, efContext);
+            Article article = await _databaseService.GetArticleByBarcode(barcodeLong, efContext);
 
             if (article is null)
             {

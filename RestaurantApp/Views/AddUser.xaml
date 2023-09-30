@@ -42,7 +42,7 @@
 
         <TextBox Grid.Column="1" Grid.Row="0" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding User.Barcode}"/>
         <TextBox Grid.Column="1" Grid.Row="1" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding User.FirstAndLastName}"/>
-        <TextBox Grid.Column="1" Grid.Row="2" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding User.DateOfBirth,StringFormat=dd/MM/yyyy}"/>
+        <DatePicker Grid.Column="1" Grid.Row="2" Margin="5" FontSize="25" Text="{Binding User.DateOfBirth}"/>
         <TextBox Grid.Column="1" Grid.Row="3" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding User.JMBG}"/>
         <ComboBox Grid.Column="1" Grid.Row="4" Margin="5" FontSize="25" ItemsSource="{Binding Source={StaticResource userRole}}" SelectedIndex="2" SelectedItem="{Binding UserRole}"/>
 

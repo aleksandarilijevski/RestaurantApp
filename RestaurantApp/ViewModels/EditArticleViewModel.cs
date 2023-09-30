@@ -1,9 +1,11 @@
 ﻿using EntityFramework.Models;
+using Microsoft.EntityFrameworkCore;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
 using System;
+using System.Windows;
 
 namespace RestaurantApp.ViewModels
 {
@@ -80,6 +82,17 @@ namespace RestaurantApp.ViewModels
         private async void EditArticle()
         {
             using EFContext efContext = new EFContext();
+
+            Article articleFind = await _databaseService.GetArticleByBarcode(Article.Barcode, efContext);
+
+            efContext.Entry(articleFind).State = EntityState.Detached;
+
+            if (articleFind is not null && articleFind.ID != Article.ID)
+            {
+                MessageBox.Show("Article with that barcode already exists!", "Edit article", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             await _databaseService.EditArticle(Article, efContext);
             CloseDialog("true");
         }

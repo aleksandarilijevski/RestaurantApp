@@ -5,7 +5,10 @@ using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Documents;
 
 namespace RestaurantApp.ViewModels
 {
@@ -65,7 +68,7 @@ namespace RestaurantApp.ViewModels
 
         public virtual void OnDialogOpened(IDialogParameters parameters)
         {
-
+            User.DateOfBirth = DateTime.Now;
         }
 
         private async void AddUser(User user)
@@ -104,6 +107,17 @@ namespace RestaurantApp.ViewModels
             {
                 MessageBox.Show("First created user should have admin role!", "Add user", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
+            }
+
+            ObservableCollection<User> users = await _databaseService.GetAllUsers();
+
+            foreach (User userCheck in users)
+            {
+                if (userCheck.Barcode == user.Barcode)
+                {
+                    MessageBox.Show("User with entered barcode already exists!", "Add user", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
             }
 
             await _databaseService.AddUser(user, efContext);

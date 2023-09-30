@@ -55,7 +55,7 @@ namespace RestaurantApp.Services
             return tableArticleQuantity;
         }
 
-        public async Task<Article> GetArticleByBarcodeContext(long barcode, EFContext efContext)
+        public async Task<Article> GetArticleByBarcode(long barcode, EFContext efContext)
         {
             Article article = await efContext.Articles.FirstOrDefaultAsync(x => x.Barcode == barcode && x.IsDeleted == false);
             return article;
@@ -77,7 +77,7 @@ namespace RestaurantApp.Services
         public async Task<ObservableCollection<User>> GetAllUsers()
         {
             using EFContext efContext = new EFContext();
-            List<User> users = await efContext.Users.ToListAsync();
+            List<User> users = await efContext.Users.Select(x => x).Where(x => x.IsDeleted == false).ToListAsync();
             return new ObservableCollection<User>(users);
         }
 

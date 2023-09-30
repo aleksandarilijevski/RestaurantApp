@@ -45,7 +45,7 @@ namespace RestaurantApp.Services.Interface
 
         public Task EditTable(Table table, EFContext efContext);
 
-        public Task<Article> GetArticleByBarcodeContext(long barcode, EFContext efContext);
+        public Task<Article> GetArticleByBarcode(long barcode, EFContext efContext);
 
         public Task EditOnlineOrder(OnlineOrder onlineOrder, EFContext efContext);
 

@@ -47,9 +47,9 @@
         <TextBox Grid.Column="1" Grid.Row="0" IsReadOnly="True" FontSize="25" TextAlignment="Center" Text="{Binding User.ID}" Margin="10"/>
         <TextBox Grid.Column="1" Grid.Row="1" FontSize="25" TextAlignment="Center" Text="{Binding User.Barcode}" Margin="10"/>
         <TextBox Grid.Column="1" Grid.Row="2" FontSize="25" TextAlignment="Center" Text="{Binding User.FirstAndLastName}" Margin="10"/>
-        <TextBox Grid.Column="1" Grid.Row="3" FontSize="25" TextAlignment="Center" Text="{Binding User.DateOfBirth,StringFormat=dd/MM/yyyy}" Margin="10"/>
+        <DatePicker Grid.Column="1" Grid.Row="3" FontSize="25" Text="{Binding User.DateOfBirth}" Margin="10" />
         <TextBox Grid.Column="1" Grid.Row="4" FontSize="25" TextAlignment="Center" Text="{Binding User.JMBG}" Margin="10"/>
-        <ComboBox Grid.Column="1" Grid.Row="5" FontSize="25" ItemsSource="{Binding Source={StaticResource userRole}}" Margin="10" SelectedIndex="{Binding CurrentRole}"/>
+        <ComboBox Grid.Column="1" Grid.Row="5" FontSize="25" ItemsSource="{Binding Source={StaticResource userRole}}" Margin="10"/>
 
         <Button Content="Edit user" Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="2" FontSize="20" Command="{Binding EditUserCommand}" CommandParameter="{Binding User}" Height="35"/>
 
