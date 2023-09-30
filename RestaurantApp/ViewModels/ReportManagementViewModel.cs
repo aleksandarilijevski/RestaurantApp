@@ -226,13 +226,13 @@ namespace RestaurantApp.ViewModels
 
         private async void LoadAllBills()
         {
+            SoldArticleDetails = await _databaseService.GetAllSoldArticleDetails();
+
             List<Bill> bills = await _databaseService.GetAllBills();
             bills.OrderBy(x => x.CreatedDateTime);
 
             OriginalBills = bills;
             Bills = new ObservableCollection<Bill>(OriginalBills);
-
-            SoldArticleDetails = await _databaseService.GetAllSoldArticleDetails();
 
             decimal totalProfit = CalculateTotalProfit();
             TotalProfit = "Total profit : " + totalProfit.ToString("0.00");
@@ -303,7 +303,7 @@ namespace RestaurantApp.ViewModels
             TotalProfit = "Total profit : " + totalProfit.ToString("0.00");
         }
 
-        private void ExportToExcel()
+        private async void ExportToExcel()
         {
             if (Bills.Count == 0)
             {
@@ -311,7 +311,7 @@ namespace RestaurantApp.ViewModels
                 return;
             }
 
-            string defaultFileName = DateTime.Now.ToString("dd MM yyyy hh mm ss");
+            string defaultFileName = DateTime.Now.ToString("dd MM yyyy hh mm ss") + " Report";
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.FileName = defaultFileName;
@@ -370,21 +370,17 @@ namespace RestaurantApp.ViewModels
                 worksheet.Cell(cellIndex, 2).Value = bill.PaymentType.ToString();
                 worksheet.Cell(cellIndex, 3).Value = bill.TotalPrice;
 
-                decimal profit = 0;
+                decimal totalProfitForArticle = 0;
 
-                var filteredSoldTableArticleQuantities = soldTableArticleQuantities.Where(x => x.BillID == bill.ID).ToList();
+                List<SoldArticleDetails> filteredSoldArticleDetails = SoldArticleDetails.Where(x => x.BillID == bill.ID).ToList();
 
-                foreach (SoldTableArticleQuantity soldTableArticleQuantity in filteredSoldTableArticleQuantities)
+                foreach (SoldArticleDetails soldArticleDetail in filteredSoldArticleDetails)
                 {
-                    int quantity = filteredSoldTableArticleQuantities.Sum(x => x.Quantity);
-
-                    foreach (ArticleDetails articleDetail in soldTableArticleQuantity.ArticleDetails)
-                    {
-                        profit = bill.TotalPrice - (quantity * articleDetail.EntryPrice);
-                    }
+                    decimal profit = soldArticleDetail.ArticlePrice - soldArticleDetail.EntryPrice;
+                    totalProfitForArticle += soldArticleDetail.SoldQuantity * profit;
                 }
 
-                worksheet.Cell(cellIndex, 4).Value = profit;
+                worksheet.Cell(cellIndex, 4).Value = totalProfitForArticle;
                 worksheet.Cell(cellIndex, 5).Value = bill.CreatedDateTime;
                 cellIndex++;
 

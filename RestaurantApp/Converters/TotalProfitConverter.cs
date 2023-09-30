@@ -1,10 +1,8 @@
-﻿using DocumentFormat.OpenXml.Math;
-using EntityFramework.Models;
+﻿using EntityFramework.Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Threading;
 using System.Windows;
 using System.Windows.Data;
 
