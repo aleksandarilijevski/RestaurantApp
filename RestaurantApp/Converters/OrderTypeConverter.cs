@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Linq;
 using System.Windows.Data;
 
 namespace RestaurantApp.Converters
@@ -27,6 +28,8 @@ namespace RestaurantApp.Converters
                         return "Online order";
                     }
                 }
+
+
             }
 
             return string.Empty;

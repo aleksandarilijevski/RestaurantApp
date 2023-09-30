@@ -29,6 +29,7 @@ namespace RestaurantApp.ViewModels
         private string _filterBillCounter;
         private string _filterTableID;
         private string _totalProfit;
+        private string _filterOnlineOrderID;
 
         public ReportManagementViewModel(IDatabaseService databaseService, IDialogService dialogService)
         {
@@ -88,6 +89,20 @@ namespace RestaurantApp.ViewModels
             set
             {
                 _filterTableID = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public string FilterOnlineOrderID
+        {
+            get
+            {
+                return _filterOnlineOrderID;
+            }
+
+            set
+            {
+                _filterOnlineOrderID = value;
                 RaisePropertyChanged();
             }
         }
@@ -204,6 +219,11 @@ namespace RestaurantApp.ViewModels
             if (int.TryParse(FilterTableID, out int tableId) == true)
             {
                 originalBills = originalBills.Where(x => x.TableID == tableId).ToList();
+            }
+
+            if (int.TryParse(FilterOnlineOrderID, out int onlineOrderId) == true)
+            {
+                originalBills = originalBills.Where(x => x.OnlineOrderID == onlineOrderId).ToList();
             }
 
             if (int.TryParse(FilterBillCounter, out int billCounter) == true)

@@ -38,7 +38,6 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-
         <Border BorderThickness="2" Grid.Column="0" Grid.Row="1" BorderBrush="Black">
             <StackPanel>
                 <Label Content="Bill counter" FontSize="15" HorizontalAlignment="Center"/>
@@ -73,9 +72,20 @@
             </StackPanel>
         </Border>
 
+        <Border BorderThickness="2" Grid.Column="3" Grid.Row="1" BorderBrush="Black">
+            <StackPanel>
+                <Label Content="Online order ID" FontSize="15" HorizontalAlignment="Center"/>
+                <TextBox TextAlignment="Center" FontSize="15" Margin="5,0,5,0" Text="{Binding FilterOnlineOrderID}">
+                    <TextBox.InputBindings>
+                        <KeyBinding Command="{Binding FilterCommand}" Key="Enter" />
+                    </TextBox.InputBindings>
+                </TextBox>
+            </StackPanel>
+        </Border>
+
         <Button
             Content="Clear filters"
-            Grid.Column="3"
+            Grid.Column="4"
             Grid.Row="1"
             FontSize="15"
             Height="30" 
@@ -84,7 +94,7 @@
         
         <Button
             Content="Filter"
-            Grid.Column="3"
+            Grid.Column="4"
             Grid.Row="1"
             FontSize="15"
             Height="30"
@@ -106,7 +116,7 @@
 
                 <DataGridTextColumn Header="Order Type">
                     <DataGridTextColumn.Binding>
-                        <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=UserControl}" Path="DataContext.Bills" Converter="{StaticResource OrderTypeConverter}"/>
+                         <Binding RelativeSource="{RelativeSource Mode=FindAncestor ,AncestorType=UserControl}" Path="DataContext.Bills" Converter="{StaticResource OrderTypeConverter}"/>
                     </DataGridTextColumn.Binding>
                 </DataGridTextColumn>
 
