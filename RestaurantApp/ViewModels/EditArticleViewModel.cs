@@ -11,6 +11,7 @@ namespace RestaurantApp.ViewModels
     {
         private IDatabaseService _databaseService;
         private DelegateCommand _editArticleCommand;
+        private Article _article;
 
         public event Action<IDialogResult> RequestClose;
 
@@ -19,7 +20,19 @@ namespace RestaurantApp.ViewModels
             _databaseService = databaseService;
         }
 
-        public Article Article { get; set; }
+        public Article Article
+        {
+            get
+            {
+                return _article;
+            }
+
+            set
+            {
+                _article = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public string Title { get; set; } = "Edit article";
 
