@@ -82,7 +82,10 @@ namespace RestaurantApp.ViewModels
         private async void DeleteUser(User user)
         {
             using EFContext efContext = new EFContext();
-            await _databaseService.DeleteUser(user, efContext);
+
+            user.IsDeleted = true;
+
+            await _databaseService.EditUser(user, efContext);
             Users.Remove(user);
 
             if (Users.Count == 0)
@@ -95,7 +98,7 @@ namespace RestaurantApp.ViewModels
         {
             DialogParameters dialogParameters = new DialogParameters()
             {
-                {"user",user}
+                {"user", user}
             };
 
             _dialogService.ShowDialog("editUserDialog", dialogParameters, r => { });

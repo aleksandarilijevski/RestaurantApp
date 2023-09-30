@@ -13,5 +13,7 @@ namespace EntityFramework.Models
         public long JMBG { get; set; }
 
         public UserRole UserRole { get; set; }
+
+        public bool IsDeleted { get; set; }
     }
 }

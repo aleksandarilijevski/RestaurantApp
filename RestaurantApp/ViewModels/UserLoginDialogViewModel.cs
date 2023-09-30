@@ -106,6 +106,12 @@ namespace RestaurantApp.ViewModels
                 return;
             }
 
+            if (user.IsDeleted)
+            {
+                MessageBox.Show("User with entered barcode is deleted!", "User login", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             _user = user;
 
             CloseDialog("true");
