@@ -2,6 +2,8 @@
 {
     public class SoldArticleDetails : BaseEntity
     {
+        public decimal ArticlePrice { get; set; }
+
         public decimal EntryPrice { get; set; }
 
         public int SoldQuantity { get; set; }

@@ -1,4 +1,5 @@
-﻿using EntityFramework.Models;
+﻿using DocumentFormat.OpenXml.Math;
+using EntityFramework.Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -16,7 +17,6 @@ namespace RestaurantApp.Converters
             List<SoldArticleDetails> soldArticleDetails = new List<SoldArticleDetails>();
             int billId = (int)values[0];
             decimal totalPrice = (decimal)values[1];
-            decimal profit = 0;
 
             if (values[2] != DependencyProperty.UnsetValue && values[2] != null)
             {
@@ -28,11 +28,15 @@ namespace RestaurantApp.Converters
             //Temporary solution
             if (filteredSoldArticleDetails != null)
             {
+                decimal totalProfit = 0;
+
                 foreach (SoldArticleDetails soldArticleDetail in filteredSoldArticleDetails)
                 {
-                    profit += totalPrice - (soldArticleDetail.EntryPrice * soldArticleDetail.SoldQuantity);
-                    return profit.ToString();
+                    decimal profit = soldArticleDetail.ArticlePrice - soldArticleDetail.EntryPrice;
+                    totalProfit += soldArticleDetail.SoldQuantity * profit;
                 }
+
+                return totalProfit.ToString();
             }
 
             return "0";

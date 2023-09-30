@@ -370,22 +370,13 @@ namespace RestaurantApp.ViewModels
 
         private decimal CalculateTotalProfit()
         {
-            using EFContext efContext = new EFContext();
-
             decimal totalProfit = 0;
-            decimal totalPrice = 0;
-
-            foreach (Bill bill in Bills)
-            {
-                totalPrice += bill.TotalPrice;
-            }
 
             foreach (SoldArticleDetails soldArticleDetail in SoldArticleDetails)
             {
-                totalProfit += soldArticleDetail.EntryPrice * soldArticleDetail.SoldQuantity;
+                decimal profit = soldArticleDetail.ArticlePrice - soldArticleDetail.EntryPrice;
+                totalProfit += soldArticleDetail.SoldQuantity * profit;
             }
-
-            totalPrice -= totalProfit;
 
             return totalProfit;
         }

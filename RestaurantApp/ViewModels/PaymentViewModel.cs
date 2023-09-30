@@ -194,6 +194,7 @@ namespace RestaurantApp.ViewModels
 
             //await _databaseService.CreateBill(bill, efContext);
             List<SoldArticleDetails> soldArticleDetails = null;
+            List<SoldArticleDetails> totalSoldArticleDetails = new List<SoldArticleDetails>();
 
             foreach (TableArticleQuantity tableArticleQuantity in TableArticleQuantities)
             {
@@ -210,11 +211,13 @@ namespace RestaurantApp.ViewModels
 
                 await QuantityLogicHelper.DecreaseReservedQuantity(articleHelperDetails);
                 soldArticleDetails = await QuantityLogicHelper.DecreaseOriginalQuantity(articleHelperDetails);
+
+                totalSoldArticleDetails.AddRange(soldArticleDetails);
             }
 
             await _databaseService.CreateBill(bill, efContext);
 
-            foreach (SoldArticleDetails soldArticleDetail in soldArticleDetails)
+            foreach (SoldArticleDetails soldArticleDetail in totalSoldArticleDetails)
             {
                 soldArticleDetail.BillID = bill.ID;
                 await _databaseService.AddSoldArticleDetails(soldArticleDetail, efContext);
