@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:RestaurantApp.Views"
              mc:Ignorable="d" 
-             Height="250" Width="260">
+             Height="270" Width="260">
     <Grid>
 
         <Grid.ColumnDefinitions>
@@ -39,7 +39,7 @@
         <Label Content="Change : " Grid.ColumnSpan="2" Grid.Row="4" HorizontalAlignment="Center" FontSize="20"/>
         <TextBox Grid.ColumnSpan="2" Grid.Row="5" Margin="3" TextAlignment="Center" FontSize="20" Width="200" IsReadOnly="True" Text="{Binding Change}"/>
 
-        <Button Content="Confirm" Grid.ColumnSpan="2" Grid.Row="6" Margin="3" FontSize="20" Command="{Binding ConfirmCommand}"/>
+        <Button Content="Confirm" Grid.ColumnSpan="2" Grid.Row="6" Margin="3" Height="35" FontSize="20" Command="{Binding ConfirmCommand}" IsEnabled="{Binding IsButtonEnabled}"/>
 
     </Grid>
 </UserControl>

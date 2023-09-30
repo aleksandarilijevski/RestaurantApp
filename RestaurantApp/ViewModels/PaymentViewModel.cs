@@ -321,13 +321,13 @@ namespace RestaurantApp.ViewModels
                         {
                             user = await _databaseService.GetUserByID((int)OnlineOrder.UserID, new EFContext());
                             bill = await AddBillOnlineOrder(cash, change);
-                            await RemoveUserFromTable();
+                            await RemoveUserFromOnlineOrder();
                         }
                         else
                         {
                             user = await _databaseService.GetUserByID((int)Table.UserID, new EFContext());
                             bill = await AddBill(cash, change);
-                            await RemoveUserFromOnlineOrder();
+                            await RemoveUserFromTable();
                         }
 
                         DrawningHelper.DrawBill(bill, TableArticleQuantities, user);

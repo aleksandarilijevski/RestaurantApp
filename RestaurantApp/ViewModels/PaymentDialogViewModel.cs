@@ -12,6 +12,7 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand _confirmCommand;
         private decimal _totalPrice;
         private decimal _change;
+        private bool _buttonVisible;
 
         public event Action<IDialogResult> RequestClose;
 
@@ -85,29 +86,47 @@ namespace RestaurantApp.ViewModels
             _totalPrice = parameters.GetValue<decimal>("totalPrice");
         }
 
-        private void Confirm()
+        public bool IsButtonEnabled
         {
-            if (CashBox == string.Empty || CashBox == "")
+            get
             {
-                MessageBox.Show("Cash property can't be empty!", "Payment confirmation", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
+                return _buttonVisible;
             }
 
-            CloseDialog("true");
+            set
+            {
+                _buttonVisible = value;
+                RaisePropertyChanged();
+            }
         }
 
         private void CalculateChange(string cashBox)
         {
-            if (int.Parse(cashBox) >= TotalPrice)
+            CashBox = cashBox.ToString();
+            decimal cashBoxDecimal = 0;
+
+            if (decimal.TryParse(cashBox, out cashBoxDecimal) == false)
             {
-                decimal change = TotalPrice - int.Parse(cashBox);
-                change = Math.Abs(change);
+                MessageBox.Show("Cash field can not be empty!", "Payment confirmation", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (cashBoxDecimal >= TotalPrice)
+            {
+                decimal change = Math.Abs(TotalPrice - cashBoxDecimal);
                 Change = change;
             }
             else
             {
                 MessageBox.Show("Cash price can't be lower than total price!", "Payment dialog", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+
+            IsButtonEnabled = true;
+        }
+
+        private void Confirm()
+        {
+            CloseDialog("true");
         }
 
         protected virtual void CloseDialog(string parameter)
@@ -122,7 +141,7 @@ namespace RestaurantApp.ViewModels
 
             DialogParameters dialogParametars = new DialogParameters()
             {
-                {"cash", int.Parse(CashBox)},
+                {"cash", decimal.Parse(CashBox)},
                 {"change", Change}
             };
 
