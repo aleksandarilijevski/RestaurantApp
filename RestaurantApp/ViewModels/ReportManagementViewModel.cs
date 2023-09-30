@@ -215,28 +215,29 @@ namespace RestaurantApp.ViewModels
         private void Filter()
         {
             List<Bill> originalBills = OriginalBills;
+            List<Bill> filteredBills = new List<Bill>();
 
             if (int.TryParse(FilterTableID, out int tableId) == true)
             {
-                originalBills = originalBills.Where(x => x.TableID == tableId).ToList();
+                filteredBills.AddRange(originalBills.Where(x => x.TableID == tableId).ToList());
             }
 
             if (int.TryParse(FilterOnlineOrderID, out int onlineOrderId) == true)
             {
-                originalBills = originalBills.Where(x => x.OnlineOrderID == onlineOrderId).ToList();
+                filteredBills.AddRange(originalBills.Where(x => x.OnlineOrderID == onlineOrderId).ToList());
             }
 
             if (int.TryParse(FilterBillCounter, out int billCounter) == true)
             {
-                originalBills = originalBills.Where(x => x.RegistrationNumber.Contains(billCounter.ToString() + "/")).ToList();
+                filteredBills.AddRange(originalBills.Where(x => x.RegistrationNumber.Contains(billCounter.ToString() + "/")).ToList());
             }
 
             if (FilterDateFrom != DateTime.MinValue && FilterDateTo != DateTime.MinValue)
             {
-                originalBills = FilterByDateTime(originalBills);
+                filteredBills.AddRange(FilterByDateTime(originalBills));
             }
 
-            Bills = new ObservableCollection<Bill>(originalBills);
+            Bills = new ObservableCollection<Bill>(filteredBills);
             decimal totalProfit = CalculateTotalProfit();
             TotalProfit = "Total profit : " + totalProfit.ToString("0.00");
         }
@@ -262,6 +263,7 @@ namespace RestaurantApp.ViewModels
         {
             FilterBillCounter = string.Empty;
             FilterTableID = string.Empty;
+            FilterOnlineOrderID = string.Empty; 
             FilterDateFrom = DateTime.MinValue;
             FilterDateTo = DateTime.MinValue;
 
