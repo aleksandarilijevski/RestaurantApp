@@ -1,4 +1,5 @@
-﻿using EntityFramework.Models;
+﻿using EntityFramework.Enums;
+using EntityFramework.Models;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
@@ -33,6 +34,8 @@ namespace RestaurantApp.ViewModels
                 RaisePropertyChanged();
             }
         }
+
+        public UserRole UserRole { get; set; }
 
         public string Title { get; set; } = "Edit user";
 

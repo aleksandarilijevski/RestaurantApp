@@ -6,9 +6,19 @@
              xmlns:local="clr-namespace:RestaurantApp.Views"
              xmlns:prism="http://prismlibrary.com/"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:localEnums="clr-namespace:EntityFramework.Enums;assembly=EntityFramework"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              d:DesignHeight="350" d:DesignWidth="700">
+    
+    <UserControl.Resources>
+        <ObjectDataProvider x:Key="userRole" MethodName="GetValues" ObjectType="{x:Type localEnums:UserRole}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="localEnums:UserRole"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </UserControl.Resources>
+
     <Grid>
 
         <Grid.ColumnDefinitions>
@@ -22,6 +32,8 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
 
@@ -30,14 +42,16 @@
         <TextBlock Text="First and last name : " FontSize="30" Grid.Row="2" Margin="10" />
         <TextBlock Text="Date of birth : " FontSize="30" Grid.Row="3" Margin="10"/>
         <TextBlock Text="JMBG : " FontSize="30" Grid.Row="4" Margin="10"/>
+        <TextBlock Text="User Role : " FontSize="30" Grid.Row="5" Margin="10"/>
 
         <TextBox Grid.Column="1" Grid.Row="0" IsReadOnly="True" FontSize="25" TextAlignment="Center" Text="{Binding User.ID}" Margin="10"/>
-        <TextBox Grid.Column="2" Grid.Row="1" FontSize="25" TextAlignment="Center" Text="{Binding User.Barcode}" Margin="10"/>
-        <TextBox Grid.Column="3" Grid.Row="2" FontSize="25" TextAlignment="Center" Text="{Binding User.FirstAndLastName}" Margin="10"/>
-        <TextBox Grid.Column="4" Grid.Row="3" FontSize="25" TextAlignment="Center" Text="{Binding User.DateOfBirth}" Margin="10"/>
-        <TextBox Grid.Column="5" Grid.Row="4" FontSize="25" TextAlignment="Center" Text="{Binding User.JMBG}" Margin="10"/>
-        
-        <Button Content="Edit user" Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="2" FontSize="20" Command="{Binding EditUserCommand}" CommandParameter="{Binding User}"/>
+        <TextBox Grid.Column="1" Grid.Row="1" FontSize="25" TextAlignment="Center" Text="{Binding User.Barcode}" Margin="10"/>
+        <TextBox Grid.Column="1" Grid.Row="2" FontSize="25" TextAlignment="Center" Text="{Binding User.FirstAndLastName}" Margin="10"/>
+        <TextBox Grid.Column="1" Grid.Row="3" FontSize="25" TextAlignment="Center" Text="{Binding User.DateOfBirth,StringFormat=dd/MM/yyyy}" Margin="10"/>
+        <TextBox Grid.Column="1" Grid.Row="4" FontSize="25" TextAlignment="Center" Text="{Binding User.JMBG}" Margin="10"/>
+        <ComboBox Grid.Column="1" Grid.Row="5" FontSize="25" ItemsSource="{Binding Source={StaticResource userRole}}" Margin="10" SelectedIndex="{Binding CurrentRole}"/>
+
+        <Button Content="Edit user" Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="2" FontSize="20" Command="{Binding EditUserCommand}" CommandParameter="{Binding User}" Height="35"/>
 
     </Grid>
 </UserControl>
