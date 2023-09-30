@@ -5,7 +5,7 @@ using System.Windows.Data;
 
 namespace RestaurantApp.Converters
 {
-    public class OrderTypeConverter : IValueConverter
+    public class IDConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -13,15 +13,15 @@ namespace RestaurantApp.Converters
 
             if (bill.Table is not null)
             {
-                return "Table order";
+                return bill.TableID.ToString();
             }
 
             if (bill.OnlineOrder is not null)
             {
-                return "Online order";
+                return bill.OnlineOrderID.ToString();
             }
 
-            return string.Empty;
+            return "0";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
