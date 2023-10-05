@@ -30,7 +30,11 @@ namespace EntityFramework.Models
 
         public int Quantity
         {
-            get => _quantity;
+            get
+            {
+                return _quantity;
+            }
+
             set
             {
                 if (_quantity != value)

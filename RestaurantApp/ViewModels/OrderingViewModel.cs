@@ -12,7 +12,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -74,19 +73,22 @@ namespace RestaurantApp.ViewModels
 
         public TableArticleQuantity SelectedTableArticleQuantity
         {
-            get
-            {
-                return _selectedTableArticleQuantity;
-            }
-
+            get { return _selectedTableArticleQuantity; }
             set
             {
-                _selectedTableArticleQuantity = value;
-                RaisePropertyChanged();
-
-                if (_selectedTableArticleQuantity != null)
+                if (_selectedTableArticleQuantity != value)
                 {
-                    _selectedTableArticleQuantity.PropertyChanged += OnQuantityPropertyChanged;
+                    if (_selectedTableArticleQuantity != null)
+                    {
+                        _selectedTableArticleQuantity.PropertyChanged -= OnQuantityPropertyChanged;
+                    }
+
+                    _selectedTableArticleQuantity = value;
+
+                    if (_selectedTableArticleQuantity != null)
+                    {
+                        _selectedTableArticleQuantity.PropertyChanged += OnQuantityPropertyChanged;
+                    }
                 }
             }
         }
@@ -165,14 +167,13 @@ namespace RestaurantApp.ViewModels
 
         }
 
-        private void OnQuantityPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnQuantityPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(TableArticleQuantity.Quantity))
             {
-                _ = IsQuantityAvailableForArticleOnTable(SelectedTableArticleQuantity);
+                await IsQuantityAvailableForArticleOnTable(_selectedTableArticleQuantity);
             }
         }
-
 
         private bool UserLogin()
         {
@@ -291,7 +292,7 @@ namespace RestaurantApp.ViewModels
 
         private async Task IsQuantityAvailableForArticleOnTable(TableArticleQuantity selectedTableArticleQuantity)
         {
-            _selectedTableArticleQuantity.PropertyChanged -= OnQuantityPropertyChanged;
+            //SelectedTableArticleQuantity.PropertyChanged -= OnQuantityPropertyChanged;
 
             using EFContext efContext = new EFContext();
 
@@ -302,6 +303,15 @@ namespace RestaurantApp.ViewModels
 
             List<TableArticleQuantity> tableArticleQuantities = await _databaseService.GetTableArticleQuantityByArticleID(selectedTableArticleQuantity.ArticleID, efContext);
             int availableReservedQuantity = QuantityLogicHelper.GetAvailableQuantity(articleDetails) + tableArticleQuantity.Quantity;
+
+
+            if (selectedTableArticleQuantity.Quantity < 1)
+            {
+                SelectedTableArticleQuantity.Quantity = tableArticleQuantity.Quantity;
+                MessageBox.Show("Quantity can't be lower than 1!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                RaisePropertyChanged(nameof(TableArticleQuantities));
+                return;
+            }
 
             if (availableReservedQuantity >= selectedTableArticleQuantity.Quantity)
             {
@@ -343,7 +353,7 @@ namespace RestaurantApp.ViewModels
             }
             else
             {
-                SelectedTableArticleQuantity.Quantity = tableArticleQuantity.Quantity;
+                selectedTableArticleQuantity.Quantity = tableArticleQuantity.Quantity;
                 MessageBox.Show("Article is not in stock!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
@@ -392,9 +402,6 @@ namespace RestaurantApp.ViewModels
             TableArticleQuantities.Remove(tableArticleQuantity);
             await _databaseService.DeleteTableArticleQuantity(tableArticleQuantityLoad, efContext);
 
-            //List<TableArticleQuantity> tableArticleQuantities = Table.TableArticleQuantities.Where(x => !(x is SoldTableArticleQuantity)).ToList();
-
-            //if (tableArticleQuantities.Count == 0)
             if (TableArticleQuantities.Count == 0)
             {
                 Table.InUse = false;

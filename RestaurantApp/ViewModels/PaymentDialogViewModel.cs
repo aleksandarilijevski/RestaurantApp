@@ -107,7 +107,7 @@ namespace RestaurantApp.ViewModels
 
             if (decimal.TryParse(cashBox, out cashBoxDecimal) == false)
             {
-                MessageBox.Show("Cash field can not be empty!", "Payment confirmation", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Cash field is empty or it's not in valid format!", "Payment confirmation", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 

@@ -293,8 +293,8 @@ namespace RestaurantApp.ViewModels
             FilterBillCounter = string.Empty;
             FilterTableID = string.Empty;
             FilterOnlineOrderID = string.Empty;
-            FilterDateFrom = DateTime.MinValue;
-            FilterDateTo = DateTime.MinValue;
+            FilterDateFrom = DateTime.Now;
+            FilterDateTo = DateTime.Now;
 
             List<Bill> bills = await _databaseService.GetAllBills();
             Bills = new ObservableCollection<Bill>(bills);
