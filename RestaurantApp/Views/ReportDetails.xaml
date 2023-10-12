@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:RestaurantApp.Views"
              mc:Ignorable="d" 
              xmlns:converters="clr-namespace:RestaurantApp.Converters"
-             Height="400" Width="600">
+             Height="auto" Width="auto">
 
     <UserControl.Resources>
         <converters:TotalPriceConverter x:Key="TotalPriceConverter"/>

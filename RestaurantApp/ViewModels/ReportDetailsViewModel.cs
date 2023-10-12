@@ -2,6 +2,7 @@
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
+using RestaurantApp.Services.Interface;
 using RestaurantApp.Utilities.Helpers;
 using System;
 using System.Collections.Generic;
@@ -15,10 +16,16 @@ namespace RestaurantApp.ViewModels
         private string _totalPrice = "Total price : ";
         private DelegateCommand _printBillCommand;
         private ObservableCollection<TableArticleQuantity> _soldTableArticleQuantities;
+        private IDatabaseService _databaseService;
 
         public string Title { get; set; } = "Report details";
 
         public Bill Bill { get; set; }
+
+        public ReportDetailsViewModel(IDatabaseService databaseService)
+        {
+            _databaseService = databaseService;
+        }
 
         public ObservableCollection<TableArticleQuantity> SoldTableArticleQuantities
         {
@@ -109,10 +116,12 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        private void PrintBill()
+        private async void PrintBill()
         {
             List<TableArticleQuantity> soldTableArticleQuantities = Bill.Table.TableArticleQuantities.OfType<SoldTableArticleQuantity>().Select(sold => (TableArticleQuantity)sold).ToList();
-            DrawningHelper.RedrawBill(Bill, soldTableArticleQuantities);
+
+            User user = await _databaseService.GetUserByID(Bill.UserID, new EFContext());
+            DrawningHelper.RedrawBill(Bill, soldTableArticleQuantities,user);
         }
     }
 }

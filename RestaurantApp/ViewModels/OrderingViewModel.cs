@@ -70,10 +70,13 @@ namespace RestaurantApp.ViewModels
                 RaisePropertyChanged();
             }
         }
-
         public TableArticleQuantity SelectedTableArticleQuantity
         {
-            get { return _selectedTableArticleQuantity; }
+            get
+            {
+                return _selectedTableArticleQuantity;
+            }
+
             set
             {
                 if (_selectedTableArticleQuantity != value)
@@ -294,8 +297,6 @@ namespace RestaurantApp.ViewModels
 
         private async Task IsQuantityAvailableForArticleOnTable(TableArticleQuantity selectedTableArticleQuantity)
         {
-            //SelectedTableArticleQuantity.PropertyChanged -= OnQuantityPropertyChanged;
-
             using EFContext efContext = new EFContext();
 
             Debug.WriteLine("Trigger method");
@@ -305,7 +306,6 @@ namespace RestaurantApp.ViewModels
 
             List<TableArticleQuantity> tableArticleQuantities = await _databaseService.GetTableArticleQuantityByArticleID(selectedTableArticleQuantity.ArticleID, efContext);
             int availableReservedQuantity = QuantityLogicHelper.GetAvailableQuantity(articleDetails) + tableArticleQuantity.Quantity;
-
 
             if (selectedTableArticleQuantity.Quantity < 1)
             {
