@@ -5,7 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:RestaurantApp.Views"
              mc:Ignorable="d" 
+             FocusManager.FocusedElement="{x:Reference barcodeBox}"
              Height="45" Width="450">
+    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
