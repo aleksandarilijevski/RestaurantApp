@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\cafePlan.jpg" />
+    <None Remove="Resources\cafePlan.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,7 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\cafePlan.jpg" />
+    <Resource Include="Resources\cafePlan.png" />
   </ItemGroup>
 
 </Project>
