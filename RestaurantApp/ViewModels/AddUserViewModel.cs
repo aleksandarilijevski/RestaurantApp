@@ -5,10 +5,8 @@ using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
-using System.Windows.Documents;
 
 namespace RestaurantApp.ViewModels
 {
@@ -108,7 +106,9 @@ namespace RestaurantApp.ViewModels
                 return;
             }
 
-            foreach (User userCheck in users)
+            User userCheck = await _databaseService.GetUserByBarcode(user.Barcode, efContext);
+
+            if (userCheck is not null)
             {
                 if (userCheck.Barcode == user.Barcode)
                 {
