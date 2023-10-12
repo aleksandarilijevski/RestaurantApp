@@ -1,11 +1,11 @@
-﻿using EntityFramework.Enums;
-using EntityFramework.Models;
+﻿using EntityFramework.Models;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
 using System;
+using System.Collections.ObjectModel;
 
 namespace RestaurantApp.ViewModels
 {
@@ -121,18 +121,18 @@ namespace RestaurantApp.ViewModels
 
         private async void CheckIfAnyUserExists()
         {
-            bool exist = false;
+            ObservableCollection<User> users = new ObservableCollection<User>();
 
             do
             {
-                exist = await _databaseService.CheckIfAnyUserExists();
-                
-                if (!exist)
+                users = await _databaseService.GetAllUsers();
+
+                if (users.Count == 0)
                 {
                     _dialogService.ShowDialog("addUserDialog");
                 }
 
-            } while (!exist);
+            } while (users.Count == 0);
         }
     }
 }

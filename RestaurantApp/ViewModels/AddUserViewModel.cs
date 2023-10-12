@@ -100,16 +100,13 @@ namespace RestaurantApp.ViewModels
             }
 
             using EFContext efContext = new EFContext();
+            ObservableCollection<User> users = await _databaseService.GetAllUsers();
 
-            bool exist = await _databaseService.CheckIfAnyUserExists();
-
-            if (!exist && user.UserRole != UserRole.Admin)
+            if (users.Count == 0 && user.UserRole != UserRole.Admin)
             {
                 MessageBox.Show("First created user should have admin role!", "Add user", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-
-            ObservableCollection<User> users = await _databaseService.GetAllUsers();
 
             foreach (User userCheck in users)
             {

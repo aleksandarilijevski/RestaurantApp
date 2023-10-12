@@ -267,20 +267,6 @@ namespace RestaurantApp.Services
             return soldArticleDetails;
         }
 
-        public async Task<bool> CheckIfAnyUserExists()
-        {
-            using EFContext efContext = new EFContext();
-
-            if (efContext.Users.Any())
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
         public async Task<User> GetUserByBarcode(long barcode, EFContext efContext)
         {
             User user = await efContext.Users.FirstOrDefaultAsync(x => x.Barcode == barcode);

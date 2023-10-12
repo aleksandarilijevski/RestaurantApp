@@ -79,8 +79,6 @@ namespace RestaurantApp.Services.Interface
 
         public Task<List<SoldArticleDetails>> GetSoldArticleDetailsByBillID(int billID, EFContext efContext);
 
-        public Task<bool> CheckIfAnyUserExists();
-
         public Task<User> GetUserByBarcode(long barcode, EFContext efContext);
 
         public Task<User> GetUserByID(int id, EFContext efContext);
