@@ -148,10 +148,6 @@
                         <Ellipse Stroke="Black" StrokeThickness="2" Fill="Transparent"/>
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Grid>
-
-                    <ControlTemplate.Triggers>
-                        
-                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Button.Template>
 

@@ -14,6 +14,7 @@ namespace RestaurantApp.ViewModels
         private IDatabaseService _databaseService;
         private DelegateCommand<string> _orderingCommand;
         private DelegateCommand _loadAllTablesCommand;
+        private ObservableCollection<Table> _tables;
 
         public TableOrderViewModel(IRegionManager regionManager, IDatabaseService databaseService)
         {
@@ -23,7 +24,19 @@ namespace RestaurantApp.ViewModels
 
         public int ID { get; set; }
 
-        public ObservableCollection<Table> Tables { get; set; }
+        public ObservableCollection<Table> Tables
+        {
+            get
+            {
+                return _tables;
+            }
+
+            set
+            {
+                _tables = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public DelegateCommand<string> OrderingCommand
         {
@@ -45,8 +58,8 @@ namespace RestaurantApp.ViewModels
 
         private async void LoadAllTables()
         {
-            List<Table> tables = await _databaseService.GetAllTables();
-            Tables = new ObservableCollection<Table>(tables);
+            Tables = new ObservableCollection<Table>(await _databaseService.GetAllTables());
+            //Tables = new ObservableCollection<Table>(tables);
         }
 
         private void ShowOrderingUsercontrol(string id)

@@ -286,6 +286,8 @@ namespace RestaurantApp.ViewModels
                 await QuantityLogicHelper.IncreaseReservedQuantity(articleHelperDetails);
             }
 
+            await _databaseService.EditTable(Table, efContext);
+
             Barcode = string.Empty;
             RaisePropertyChanged(nameof(Table));
         }
