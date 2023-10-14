@@ -93,6 +93,7 @@ namespace RestaurantApp.ViewModels
             if (long.TryParse(barcode, out long barcodeLong) == false)
             {
                 MessageBox.Show("Barcode is not in right format!", "User login", MessageBoxButton.OK, MessageBoxImage.Error);
+                Barcode = string.Empty;
                 return;
             }
 
@@ -103,12 +104,14 @@ namespace RestaurantApp.ViewModels
             if (user is null)
             {
                 MessageBox.Show("User with entered barcode does not exist in system!", "User login", MessageBoxButton.OK, MessageBoxImage.Error);
+                Barcode = string.Empty;
                 return;
             }
 
             if (user.IsDeleted)
             {
                 MessageBox.Show("User with entered barcode is deleted!", "User login", MessageBoxButton.OK, MessageBoxImage.Error);
+                Barcode = string.Empty;
                 return;
             }
 
