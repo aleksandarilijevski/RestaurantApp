@@ -1,12 +1,12 @@
 using EntityFramework.Enums;
 using EntityFramework.Models;
 using Microsoft.EntityFrameworkCore;
-using NSubstitute;
 using RestaurantApp.Enums;
 using RestaurantApp.Factories;
 using RestaurantApp.Factories.Interfaces;
 using RestaurantApp.Services;
 using RestaurantApp.Services.Interface;
+using System.Collections.ObjectModel;
 
 namespace RestaurantAppTests
 {
@@ -20,6 +20,104 @@ namespace RestaurantAppTests
         {
             _databaseServiceFactory = new AbstractFactory<IDatabaseService>(() => new DatabaseService());
             _efContextFactory = new AbstractFactory<EFContext>(() => new EFContext(options));
+        }
+
+        [Test]
+        public async Task GetAllArticles()
+        {
+            //Arrange
+            IDatabaseService? _databaseService = _databaseServiceFactory.Create();
+            EFContext? _efContext = _efContextFactory.Create();
+
+            Article article1 = new Article
+            {
+                Barcode = 123,
+                IsDeleted = false,
+                Name = "UnitTestArticle1",
+                Price = 10
+            };
+
+            Article article2 = new Article
+            {
+                Barcode = 123,
+                IsDeleted = false,
+                Name = "UnitTestArticle2",
+                Price = 10
+            };
+
+            //Act
+            await _databaseService.AddArticle(article1, _efContext);
+            await _databaseService.AddArticle(article2, _efContext);
+
+            ObservableCollection<Article> articles = await _databaseService.GetAllArticles();
+
+
+            //Assert
+            Assert.That(articles, Is.Not.Empty);
+        }
+
+        [Test]
+        public async Task GetAllUsers()
+        {
+            //Arrange
+            IDatabaseService? _databaseService = _databaseServiceFactory.Create();
+            EFContext? _efContext = _efContextFactory.Create();
+
+            User user1 = new User
+            {
+                FirstAndLastName = "UnitTest1",
+                Barcode = 123,
+                DateOfBirth = DateTime.UtcNow,
+                JMBG = 1,
+                UserRole = UserRole.Waiter
+            };
+
+            User user2 = new User
+            {
+                FirstAndLastName = "UnitTest2",
+                Barcode = 123,
+                DateOfBirth = DateTime.UtcNow,
+                JMBG = 1,
+                UserRole = UserRole.Waiter
+            };
+
+            //Act
+            await _databaseService.AddUser(user1, _efContext);
+            await _databaseService.AddUser(user2, _efContext);
+
+            ObservableCollection<User> users = await _databaseService.GetAllUsers();
+
+            //Assert
+            Assert.That(users, Is.Not.Empty);
+        }
+
+        [Test]
+        public async Task GetAllTables()
+        {
+            //Arrange
+            IDatabaseService? _databaseService = _databaseServiceFactory.Create();
+            EFContext? _efContext = _efContextFactory.Create();
+
+            Table table1 = new Table
+            {
+                ID = 1,
+                InUse = false
+            };
+
+            Table table2 = new Table
+            {
+                ID = 2,
+                InUse = false
+            };
+
+            //Act
+            await _databaseService.AddTable(table1, _efContext);
+            await _databaseService.AddTable(table2, _efContext);
+
+            List<Table> tables = await _databaseService.GetAllTables();
+
+            //Assert
+            Assert.That(tables, Is.Not.Empty);
         }
 
         [Test]
@@ -39,7 +137,7 @@ namespace RestaurantAppTests
 
             //Act
 
-            int articleId = await _databaseService.AddArticle(article,_efContext);
+            int articleId = await _databaseService.AddArticle(article, _efContext);
             Article articleFind = await _databaseService.GetArticleByID(articleId, _efContext);
 
             //Assert

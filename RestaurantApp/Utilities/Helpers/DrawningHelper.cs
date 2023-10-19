@@ -286,6 +286,7 @@ namespace RestaurantApp.Utilities.Helpers
 
                 offset += 10;
                 gfx.DrawString($"{tableArticleQuantity.Article.Price}".PadLeft(28) + $"{tableArticleQuantity.Quantity}".PadLeft(18) + $"{tableArticleQuantity.Article.Price * tableArticleQuantity.Quantity}".PadLeft(28), font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
+                offset += 20;
             }
 
             offset += 10;
