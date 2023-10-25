@@ -25,16 +25,43 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="65"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
 
         <ContentControl prism:RegionManager.RegionName="ArticleManagementRegion"/>
-        
-        <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding Articles, IsAsync=True}" FontSize="20" IsReadOnly="true" Grid.Row="0" Grid.ColumnSpan="2" EnableColumnVirtualization="true" EnableRowVirtualization="true">
+
+        <Border BorderThickness="2" BorderBrush="Black" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1">
+            <StackPanel>
+                <TextBlock Text="Name : " FontSize="17" TextAlignment="Center"/>
+                <TextBox FontSize="17" TextAlignment="Center" Margin="50,5,50,0" />
+            </StackPanel>
+        </Border>
+
+        <Button
+            Content="Clear filters"
+            Grid.Column="4"
+            Grid.Row="1"
+            FontSize="15"
+            Height="30" 
+            Margin="5,0,5,35"/>
+
+        <Button
+            Content="Filter"
+            Grid.Column="4"
+            Grid.Row="1"
+            FontSize="15"
+            Height="30"
+            Margin="5,30,5,0"/>
+
+        <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding Articles, IsAsync=True}" FontSize="20" IsReadOnly="true" Grid.Row="2" Grid.ColumnSpan="4" EnableColumnVirtualization="true" EnableRowVirtualization="true">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding ID}"/>
                 <DataGridTextColumn Header="Barcode" Binding="{Binding Barcode}"/>
@@ -80,8 +107,9 @@
             Width="auto"
             Height="45"
             Content="Add Article"
-            Grid.Row="1"
+            Grid.Row="3"
             Grid.Column="0"
+            Grid.ColumnSpan="2"
             FontSize="25"
             Margin="5,0,10,0"
             Command="{Binding ShowAddArticleDialogCommand}"/>
@@ -90,8 +118,9 @@
             Width="auto"
             Height="45"
             Content="Data entry"
-            Grid.Row="1" 
-            Grid.Column="1"
+            Grid.Row="3" 
+            Grid.Column="2"
+            Grid.ColumnSpan="2"
             FontSize="25"
             Margin="5,0,10,0"
             Command="{Binding ShowAddArticleByDataEntryCommand}" />

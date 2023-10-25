@@ -118,6 +118,7 @@ namespace RestaurantAppTests
 
             //Assert
             Assert.That(tables, Is.Not.Empty);
+
         }
 
         [Test]
