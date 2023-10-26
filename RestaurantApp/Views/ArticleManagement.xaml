@@ -41,7 +41,7 @@
         <Border BorderThickness="2" BorderBrush="Black" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1">
             <StackPanel>
                 <TextBlock Text="Name : " FontSize="17" TextAlignment="Center"/>
-                <TextBox FontSize="17" TextAlignment="Center" Margin="50,5,50,0" />
+                <TextBox FontSize="17" TextAlignment="Center" Margin="50,5,50,0" Text="{Binding ArticleName}"/>
             </StackPanel>
         </Border>
 
@@ -51,6 +51,7 @@
             Grid.Row="1"
             FontSize="15"
             Height="30" 
+            Command="{Binding ClearFiltersCommand}"
             Margin="5,0,5,35"/>
 
         <Button
@@ -59,6 +60,7 @@
             Grid.Row="1"
             FontSize="15"
             Height="30"
+            Command="{Binding FilterArticlesCommand}"
             Margin="5,30,5,0"/>
 
         <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding Articles, IsAsync=True}" FontSize="20" IsReadOnly="true" Grid.Row="2" Grid.ColumnSpan="4" EnableColumnVirtualization="true" EnableRowVirtualization="true">

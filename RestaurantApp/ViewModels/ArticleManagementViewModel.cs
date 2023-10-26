@@ -6,6 +6,8 @@ using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace RestaurantApp.ViewModels
 {
@@ -20,13 +22,30 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand _showAddArticleByDataEntryCommand;
         private DelegateCommand<Article> _showArticleDetailsCommand;
         private DelegateCommand<Article> _deleteArticleCommand;
+        private DelegateCommand _clearFiltersCommand;
+        private DelegateCommand _filterArticlesCommand;
         private ObservableCollection<Article> _articles;
+        private string _articleName;
 
         public ArticleManagementViewModel(IDatabaseService databaseService, IDialogService dialogService, IRegionManager regionManager)
         {
             _dialogService = dialogService;
             _databaseService = databaseService;
             _regionManager = regionManager;
+        }
+
+        public string ArticleName
+        {
+            get
+            {
+                return _articleName;
+            }
+
+            set
+            {
+                _articleName = value;
+                RaisePropertyChanged();
+            }
         }
 
         public ObservableCollection<Article> Articles
@@ -54,12 +73,30 @@ namespace RestaurantApp.ViewModels
             }
         }
 
+        public DelegateCommand FilterArticlesCommand
+        {
+            get
+            {
+                _filterArticlesCommand = new DelegateCommand(FilterArticles);
+                return _filterArticlesCommand;
+            }
+        }
+
         public DelegateCommand<Article> DeleteArticleCommand
         {
             get
             {
                 _deleteArticleCommand = new DelegateCommand<Article>(DeleteArticle);
                 return _deleteArticleCommand;
+            }
+        }
+
+        public DelegateCommand ClearFiltersCommand
+        {
+            get
+            {
+                _clearFiltersCommand = new DelegateCommand(ClearFilters);
+                return _clearFiltersCommand;
             }
         }
 
@@ -116,6 +153,29 @@ namespace RestaurantApp.ViewModels
 
         private async void GetAllArticles()
         {
+            Articles = await _databaseService.GetAllArticles();
+        }
+
+        //Every time we press filter or clear filter the sql query will be created.
+        //We do this because meanwhile other user could add new article.
+        //Maybe it's not best approach because of app performance.
+
+        private async void FilterArticles()
+        {
+            ObservableCollection<Article> originalArticles = await _databaseService.GetAllArticles();
+            ObservableCollection<Article> filteredArticles = new ObservableCollection<Article>();
+
+            if (ArticleName != string.Empty)
+            {
+                filteredArticles.AddRange(originalArticles.Where(x => x.Name.ToLower().Contains(ArticleName.ToLower())));
+            }
+
+            Articles = filteredArticles;
+        }
+
+        private async void ClearFilters()
+        {
+            ArticleName = string.Empty;
             Articles = await _databaseService.GetAllArticles();
         }
 
