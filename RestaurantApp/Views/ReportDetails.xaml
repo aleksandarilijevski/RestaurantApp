@@ -6,18 +6,13 @@
              xmlns:local="clr-namespace:RestaurantApp.Views"
              mc:Ignorable="d" 
              xmlns:converters="clr-namespace:RestaurantApp.Converters"
-             Height="auto" Width="auto">
+             Height="500" Width="800">
 
     <UserControl.Resources>
         <converters:TotalPriceConverter x:Key="TotalPriceConverter"/>
     </UserControl.Resources>
 
     <Grid>
-
-        <Grid.ColumnDefinitions>
-            
-        </Grid.ColumnDefinitions>
-
         <Grid.RowDefinitions>
             <RowDefinition Height="40" />
             <RowDefinition Height="*" />

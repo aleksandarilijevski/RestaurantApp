@@ -344,5 +344,11 @@ namespace RestaurantApp.Services
             efContext.SoldArticleDetails.Remove(soldArticleDetails);
             await efContext.SaveChangesAsync();
         }
+
+        public async Task<User> GetUserByJMBG(long jmbg, EFContext efContext)
+        {
+            User user = await efContext.Users.FirstOrDefaultAsync(x => x.JMBG == jmbg && x.IsDeleted == false);
+            return user;
+        }
     }
 }

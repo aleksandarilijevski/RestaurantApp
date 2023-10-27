@@ -34,7 +34,7 @@
         <Border BorderBrush="Black" BorderThickness="2">
             <StackPanel>
                 <TextBlock Text="First or lastname : " FontSize="17" TextAlignment="Center" Margin="0,10,0,0"/>
-                <TextBox FontSize="17" TextAlignment="Center" Margin="50,5,50,0" Text="{Binding ArticleName}"/>
+                <TextBox FontSize="17" TextAlignment="Center" Margin="50,5,50,0" Text="{Binding FirstOrLastname}"/>
             </StackPanel>
         </Border>
 
@@ -42,11 +42,11 @@
 
         <StackPanel Grid.Column="1">
             <TextBlock Text="JMBG : " FontSize="17" TextAlignment="Center" Grid.Column="1" Margin="0,10,0,0"/>
-            <TextBox FontSize="17" TextAlignment="Center" Margin="50,5,50,0" Text="{Binding ArticleName}" Grid.Column="1"/>
+            <TextBox FontSize="17" TextAlignment="Center" Margin="50,5,50,0" Text="{Binding JMBG, StringFormat=.}" Grid.Column="1"/>
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Column="2">
-            <Button Content="Get user by JMBG" Grid.Column="2" Width="150"/>
+            <Button Content="Get user by JMBG" Grid.Column="2" Width="150" Command="{Binding GetUserByJMBGCommand}"/>
         </StackPanel>
 
         <Border BorderBrush="Black" BorderThickness="2" Grid.Column="3" />
@@ -67,7 +67,7 @@
             FontSize="15"
             Height="30"
             Margin="5,30,5,0"
-            Command="{Binding FilterCommand}"/>
+            Command="{Binding FilterUsersCommand}"/>
 
         <DataGrid ItemsSource="{Binding Users}" AutoGenerateColumns="False" IsReadOnly="True" FontSize="20" Grid.Row="1" Grid.ColumnSpan="4">
             <DataGrid.Columns>

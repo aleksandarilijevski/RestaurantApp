@@ -104,5 +104,7 @@ namespace RestaurantApp.Services.Interface
         public Task<SoldArticleDetails> GetSoldArticleDetailsByID(int id, EFContext efContext);
 
         public Task DeleteSoldArticleDetails(SoldArticleDetails soldArticleDetails, EFContext efContext);
+
+        public Task<User> GetUserByJMBG(long jmbg, EFContext efContext);
     }
 }

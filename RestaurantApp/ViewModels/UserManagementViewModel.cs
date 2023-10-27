@@ -5,6 +5,7 @@ using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
 using System;
 using System.Collections.ObjectModel;
+using System.Windows;
 
 namespace RestaurantApp.ViewModels
 {
@@ -17,11 +18,44 @@ namespace RestaurantApp.ViewModels
         private ObservableCollection<User> _users;
         private DelegateCommand<User> _showEditUserDialogCommand;
         private DelegateCommand _showAddUserDialogCommand;
+        private DelegateCommand _clearFiltersCommand;
+        private DelegateCommand _filterUsersCommand;
+        private DelegateCommand _getUserByJMBGCommand;
+        private string _firstOrLastname;
+        private long _jmbg;
 
         public UserManagementViewModel(IDatabaseService databaseService, IDialogService dialogService)
         {
             _dialogService = dialogService;
             _databaseService = databaseService;
+        }
+
+        public string FirstOrLastname
+        {
+            get
+            {
+                return _firstOrLastname;
+            }
+
+            set
+            {
+                _firstOrLastname = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public long JMBG
+        {
+            get
+            {
+                return _jmbg;
+            }
+
+            set
+            {
+                _jmbg = value;
+                RaisePropertyChanged();
+            }
         }
 
         public ObservableCollection<User> Users
@@ -47,12 +81,39 @@ namespace RestaurantApp.ViewModels
             }
         }
 
+        public DelegateCommand GetUserByJMBGCommand
+        {
+            get
+            {
+                _getUserByJMBGCommand = new DelegateCommand(GetUserByJMBG);
+                return _getUserByJMBGCommand;
+            }
+        }
+
         public DelegateCommand<User> ShowEditUserDialogCommand
         {
             get
             {
                 _showEditUserDialogCommand = new DelegateCommand<User>(ShowEditUserDialog);
                 return _showEditUserDialogCommand;
+            }
+        }
+
+        public DelegateCommand FilterUsersCommand
+        {
+            get
+            {
+                _filterUsersCommand = new DelegateCommand(FilterUsers);
+                return _filterUsersCommand;
+            }
+        }
+
+        public DelegateCommand ClearFiltersCommand
+        {
+            get
+            {
+                _clearFiltersCommand = new DelegateCommand(ClearFilters);
+                return _clearFiltersCommand;
             }
         }
 
@@ -72,6 +133,14 @@ namespace RestaurantApp.ViewModels
                 _deleteUserCommand = new DelegateCommand<User>(DeleteUser);
                 return _deleteUserCommand;
             }
+        }
+
+        private async void ClearFilters()
+        {
+            FirstOrLastname = string.Empty;
+            JMBG = 0;
+
+            Users = await _databaseService.GetAllUsers();
         }
 
         private async void GetAllUsers()
@@ -102,6 +171,32 @@ namespace RestaurantApp.ViewModels
             };
 
             _dialogService.ShowDialog("editUserDialog", dialogParameters, r => { });
+        }
+
+        private void FilterUsers()
+        {
+
+
+        }
+
+        private async void GetUserByJMBG()
+        {
+            if (JMBG.ToString().Length == 13)
+            {
+                using EFContext efContext = new EFContext();
+                User user = await _databaseService.GetUserByJMBG(JMBG, efContext);
+
+                Users.Clear();
+
+                if (user is not null)
+                {
+                    Users.Add(user);
+                }
+            }
+            else
+            {
+                MessageBox.Show("JMBG should be 13 digits long!", "User Management", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void ShowAddUserDialog()
