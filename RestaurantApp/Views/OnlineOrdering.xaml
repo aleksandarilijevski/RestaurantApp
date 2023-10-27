@@ -44,13 +44,13 @@
         <TextBox  FontSize="20" Grid.Row="0" Grid.Column="4" TextAlignment="Center" Text="{Binding Address}"/>
 
         <TextBlock Text="Floor :" FontSize="20" Margin="10,10,0,0" Grid.Row="1" Grid.Column="3"/>
-        <TextBox  FontSize="20" Grid.Row="1" Grid.Column="4" TextAlignment="Center" Text="{Binding Floor}"/>
+        <TextBox  FontSize="20" Grid.Row="1" Grid.Column="4" TextAlignment="Center" Text="{Binding Floor, StringFormat=.}"/>
 
         <TextBlock Text="Phone number :" FontSize="20" Margin="10,10,0,0" Grid.Row="2" Grid.Column="0"/>
-        <TextBox  FontSize="20" Grid.Row="2" Grid.Column="1" TextAlignment="Center" Text="{Binding PhoneNumber}"/>
+        <TextBox  FontSize="20" Grid.Row="2" Grid.Column="1" TextAlignment="Center" Text="{Binding PhoneNumber, StringFormat=.}"/>
 
         <TextBlock Text="Apartment number :" FontSize="20" Margin="10,10,0,0" Grid.Row="2" Grid.Column="3"/>
-        <TextBox  FontSize="20" Grid.Row="2" Grid.Column="4" TextAlignment="Center" Text="{Binding ApartmentNumber}"/>
+        <TextBox  FontSize="20" Grid.Row="2" Grid.Column="4" TextAlignment="Center" Text="{Binding ApartmentNumber, StringFormat=.}"/>
 
         <TextBlock Text="Comment :" FontSize="20" Margin="10,10,0,0" Grid.Row="3" Grid.Column="0"/>
         <TextBox  FontSize="20" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="4" TextAlignment="Left" Width="auto" Height="auto" Text="{Binding Comment}"/>
