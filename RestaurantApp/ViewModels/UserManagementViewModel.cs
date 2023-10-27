@@ -5,6 +5,7 @@ using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 
 namespace RestaurantApp.ViewModels
@@ -173,10 +174,17 @@ namespace RestaurantApp.ViewModels
             _dialogService.ShowDialog("editUserDialog", dialogParameters, r => { });
         }
 
-        private void FilterUsers()
+        private async void FilterUsers()
         {
+            ObservableCollection<User> originalUsers = await _databaseService.GetAllUsers();
+            ObservableCollection<User> filteredUsers = new ObservableCollection<User>();
 
+            if (FirstOrLastname != null || FirstOrLastname != string.Empty)
+            {
+                filteredUsers.AddRange(originalUsers.Where(x => x.FirstAndLastName.ToLower().Contains(FirstOrLastname.ToLower())));
+            }
 
+            Users = filteredUsers;
         }
 
         private async void GetUserByJMBG()
