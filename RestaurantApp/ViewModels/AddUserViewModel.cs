@@ -106,13 +106,24 @@ namespace RestaurantApp.ViewModels
                 return;
             }
 
-            User userCheck = await _databaseService.GetUserByBarcode(user.Barcode, efContext);
+            User userBarcodeCheck = await _databaseService.GetUserByBarcode(user.Barcode, efContext);
 
-            if (userCheck is not null)
+            if (userBarcodeCheck is not null)
             {
-                if (userCheck.Barcode == user.Barcode)
+                if (userBarcodeCheck.Barcode == user.Barcode)
                 {
                     MessageBox.Show("User with entered barcode already exists!", "Add user", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+            }
+
+            User userJMBGCheck = await _databaseService.GetUserByJMBG(user.JMBG, efContext);
+
+            if (userJMBGCheck is not null)
+            {
+                if (userJMBGCheck.JMBG == user.JMBG)
+                {
+                    MessageBox.Show("User with entered JMBG already exists!", "Add user", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
             }
