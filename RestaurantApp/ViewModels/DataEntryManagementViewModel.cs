@@ -3,8 +3,9 @@ using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
-using System.Collections.Generic;
+using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace RestaurantApp.ViewModels
 {
@@ -15,11 +16,88 @@ namespace RestaurantApp.ViewModels
         private ObservableCollection<DataEntry> _dataEntries;
         private DelegateCommand _loadDataEntriesCommand;
         private DelegateCommand _showDataEntryDetailsCommand;
+        private DelegateCommand _clearFiltersCommand;
+        private DelegateCommand _filterDataEntriesCommand;
+        private int _dataEntryNumber;
+        private DateTime _dateFrom;
+        private DateTime _dateTo;
+        private decimal _priceFrom;
+        private decimal _priceTo;
 
         public DataEntryManagementViewModel(IDatabaseService databaseService, IDialogService dialogService)
         {
             _databaseService = databaseService;
             _dialogService = dialogService;
+        }
+
+        public int DataEntryNumber
+        {
+            get
+            {
+                return _dataEntryNumber;
+            }
+
+            set
+            {
+                _dataEntryNumber = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public DateTime DateFrom
+        {
+            get
+            {
+                return _dateFrom;
+            }
+
+            set
+            {
+                _dateFrom = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public DateTime DateTo
+        {
+            get
+            {
+                return _dateTo;
+            }
+
+            set
+            {
+                _dateTo = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public decimal PriceFrom
+        {
+            get
+            {
+                return _priceFrom;
+            }
+
+            set
+            {
+                _priceFrom = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public decimal PriceTo
+        {
+            get
+            {
+                return _priceTo;
+            }
+
+            set
+            {
+                _priceTo = value;
+                RaisePropertyChanged();
+            }
         }
 
         public ObservableCollection<DataEntry> DataEntries
@@ -56,10 +134,65 @@ namespace RestaurantApp.ViewModels
             }
         }
 
+        public DelegateCommand ClearFiltersCommand
+        {
+            get
+            {
+                _clearFiltersCommand = new DelegateCommand(ClearFilters);
+                return _clearFiltersCommand;
+            }
+        }
+
+        public DelegateCommand FilterDataEntriesCommand
+        {
+            get
+            {
+                _filterDataEntriesCommand = new DelegateCommand(FilterDataEntries);
+                return _filterDataEntriesCommand;
+            }
+        }
+
+
+        private async void ClearFilters()
+        {
+            DataEntries = await _databaseService.GetAllDataEntries();
+
+            DateFrom = DateTime.Now;
+            DateTo = DateTime.Now;
+            DataEntryNumber = 0;
+            PriceFrom = 0;
+            PriceTo = 0;
+        }
+
+        private async void FilterDataEntries()
+        {
+            ObservableCollection<DataEntry> originalDataEntries = await _databaseService.GetAllDataEntries();
+            ObservableCollection<DataEntry> filteredDataEntries = new ObservableCollection<DataEntry>();
+
+            if (DataEntryNumber != 0)
+            {
+                filteredDataEntries.AddRange(originalDataEntries.Where(x => x.DataEntryNumber == DataEntryNumber));
+            }
+
+            if (DateFrom != DateTime.MinValue && DateTo != DateTime.MinValue)
+            {
+                filteredDataEntries.AddRange(originalDataEntries.Where(x => x.CreatedDateTime >= DateFrom && x.CreatedDateTime <= DateTo));
+            }
+
+            if (PriceFrom > 0 && PriceTo > 0)
+            {
+                filteredDataEntries.AddRange(originalDataEntries.Where(x => x.TotalAmount >= PriceFrom && x.TotalAmount <= PriceTo));
+            }
+
+            DataEntries = filteredDataEntries;
+        }
+
         private async void LoadDataEntries()
         {
-            List<DataEntry> allDataEntries = await _databaseService.GetAllDataEntries();
-            DataEntries = new ObservableCollection<DataEntry>(allDataEntries);
+            DateFrom = DateTime.Now;
+            DateTo = DateTime.Now;
+
+            DataEntries = await _databaseService.GetAllDataEntries();
         }
 
         private void ShowDataEntryDetails()

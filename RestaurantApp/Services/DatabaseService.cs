@@ -240,11 +240,11 @@ namespace RestaurantApp.Services
             return bills;
         }
 
-        public async Task<List<DataEntry>> GetAllDataEntries()
+        public async Task<ObservableCollection<DataEntry>> GetAllDataEntries()
         {
             using EFContext efContext = new EFContext();
             List<DataEntry> dataEntries = await efContext.DataEntries.Include(x => x.ArticleDetails).ThenInclude(x => x.Article).ToListAsync();
-            return dataEntries;
+            return new ObservableCollection<DataEntry>(dataEntries);
         }
 
         public async Task<int> AddSoldArticleDetails(SoldArticleDetails soldArticleDetails, EFContext efContext)

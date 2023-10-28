@@ -30,25 +30,26 @@
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="10"/>
-            <RowDefinition Height="65"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="auto"/>
+            <RowDefinition Height="75" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
         <ContentControl prism:RegionManager.RegionName="ArticleManagementRegion"/>
 
-        <Border BorderThickness="2" BorderBrush="Black" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1">
+        <Border BorderThickness="2" BorderBrush="Black" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0">
             <StackPanel>
-                <TextBlock Text="Name : " FontSize="17" TextAlignment="Center"/>
+                <TextBlock Text="Name : " FontSize="17" Margin="0,5,0,0" TextAlignment="Center"/>
                 <TextBox FontSize="17" TextAlignment="Center" Margin="50,5,50,0" Text="{Binding ArticleName}"/>
             </StackPanel>
         </Border>
 
+        <Border BorderThickness="2" BorderBrush="Black" Grid.Column="3"/>
+
         <Button
             Content="Clear filters"
             Grid.Column="4"
-            Grid.Row="1"
+            Grid.Row="0"
             FontSize="15"
             Height="30" 
             Command="{Binding ClearFiltersCommand}"
@@ -57,13 +58,13 @@
         <Button
             Content="Filter"
             Grid.Column="4"
-            Grid.Row="1"
+            Grid.Row="0"
             FontSize="15"
             Height="30"
             Command="{Binding FilterArticlesCommand}"
-            Margin="5,30,5,0"/>
+            Margin="5,33,5,0"/>
 
-        <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding Articles, IsAsync=True}" FontSize="20" IsReadOnly="true" Grid.Row="2" Grid.ColumnSpan="4" EnableColumnVirtualization="true" EnableRowVirtualization="true">
+        <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding Articles, IsAsync=True}" FontSize="20" IsReadOnly="true" Grid.Row="1" Grid.ColumnSpan="4" EnableColumnVirtualization="true" EnableRowVirtualization="true">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding ID}"/>
                 <DataGridTextColumn Header="Barcode" Binding="{Binding Barcode}"/>
@@ -109,7 +110,7 @@
             Width="auto"
             Height="45"
             Content="Add Article"
-            Grid.Row="3"
+            Grid.Row="4"
             Grid.Column="0"
             Grid.ColumnSpan="2"
             FontSize="25"
@@ -120,7 +121,7 @@
             Width="auto"
             Height="45"
             Content="Data entry"
-            Grid.Row="3" 
+            Grid.Row="2" 
             Grid.Column="2"
             Grid.ColumnSpan="2"
             FontSize="25"

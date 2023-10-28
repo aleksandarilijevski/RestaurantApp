@@ -71,7 +71,7 @@ namespace RestaurantApp.Services.Interface
 
         public Task<List<Bill>> GetAllBills();
 
-        public Task<List<DataEntry>> GetAllDataEntries();
+        public Task<ObservableCollection<DataEntry>> GetAllDataEntries();
 
         public Task<int> AddSoldArticleDetails(SoldArticleDetails soldArticleDetails, EFContext efContext);
 
