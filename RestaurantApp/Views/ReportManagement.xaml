@@ -42,7 +42,7 @@
         <Border BorderThickness="2" Grid.Column="0" Grid.Row="1" BorderBrush="Black">
             <StackPanel>
                 <Label Content="Bill counter" FontSize="15" HorizontalAlignment="Center"/>
-                <TextBox TextAlignment="Center" FontSize="15" Margin="5,0,5,0" Text="{Binding FilterBillCounter}">
+                <TextBox TextAlignment="Center" FontSize="15" Margin="5,0,5,0" Text="{Binding FilterBillCounter, UpdateSourceTrigger=PropertyChanged}">
                     <TextBox.InputBindings>
                         <KeyBinding Command="{Binding FilterCommand}" Key="Enter" />
                     </TextBox.InputBindings>
@@ -65,7 +65,7 @@
         <Border BorderThickness="2" Grid.Column="2" Grid.Row="1" BorderBrush="Black">
             <StackPanel>
                 <Label Content="Table ID" FontSize="15" HorizontalAlignment="Center"/>
-                <TextBox TextAlignment="Center" FontSize="15" Margin="5,0,5,0" Text="{Binding FilterTableID}">
+                <TextBox TextAlignment="Center" FontSize="15" Margin="5,0,5,0" Text="{Binding FilterTableID, UpdateSourceTrigger=PropertyChanged}">
                     <TextBox.InputBindings>
                         <KeyBinding Command="{Binding FilterCommand}" Key="Enter" />
                     </TextBox.InputBindings>
@@ -76,7 +76,7 @@
         <Border BorderThickness="2" Grid.Column="3" Grid.Row="1" BorderBrush="Black">
             <StackPanel>
                 <Label Content="Online order ID" FontSize="15" HorizontalAlignment="Center"/>
-                <TextBox TextAlignment="Center" FontSize="15" Margin="5,0,5,0" Text="{Binding FilterOnlineOrderID}">
+                <TextBox TextAlignment="Center" FontSize="15" Margin="5,0,5,0" Text="{Binding FilterOnlineOrderID, UpdateSourceTrigger=PropertyChanged}">
                     <TextBox.InputBindings>
                         <KeyBinding Command="{Binding FilterCommand}" Key="Enter" />
                     </TextBox.InputBindings>

@@ -165,7 +165,7 @@ namespace RestaurantApp.ViewModels
             ObservableCollection<Article> originalArticles = await _databaseService.GetAllArticles();
             ObservableCollection<Article> filteredArticles = new ObservableCollection<Article>();
 
-            if (ArticleName != string.Empty)
+            if (ArticleName != string.Empty && ArticleName != null)
             {
                 filteredArticles.AddRange(originalArticles.Where(x => x.Name.ToLower().Contains(ArticleName.ToLower())));
             }

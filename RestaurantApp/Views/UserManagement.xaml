@@ -34,7 +34,7 @@
         <Border BorderBrush="Black" BorderThickness="2">
             <StackPanel>
                 <TextBlock Text="First or lastname : " FontSize="17" TextAlignment="Center" Margin="0,10,0,0"/>
-                <TextBox FontSize="17" TextAlignment="Center" Margin="50,5,50,0" Text="{Binding FirstOrLastname}">
+                <TextBox FontSize="17" TextAlignment="Center" Margin="50,5,50,0" Text="{Binding FirstOrLastname, UpdateSourceTrigger=PropertyChanged}">
                     <TextBox.InputBindings>
                         <KeyBinding Command="{Binding FilterUsersCommand}" Key="Enter" />
                     </TextBox.InputBindings>
@@ -46,7 +46,7 @@
 
         <StackPanel Grid.Column="1">
             <TextBlock Text="JMBG : " FontSize="17" TextAlignment="Center" Grid.Column="1" Margin="0,10,0,0"/>
-            <TextBox FontSize="17" TextAlignment="Center" Margin="50,5,50,0" Text="{Binding JMBG, StringFormat=.}" Grid.Column="1">
+            <TextBox FontSize="17" TextAlignment="Center" Margin="50,5,50,0" Text="{Binding JMBG, StringFormat=., UpdateSourceTrigger=PropertyChanged}" Grid.Column="1">
                 <TextBox.InputBindings>
                     <KeyBinding Command="{Binding GetUserByJMBGCommand}" Key="Enter" />        
                 </TextBox.InputBindings>

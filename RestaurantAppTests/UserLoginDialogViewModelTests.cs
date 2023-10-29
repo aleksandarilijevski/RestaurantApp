@@ -42,7 +42,7 @@ namespace RestaurantAppTests
 
             //Act
             await _databaseService.AddUser(user, _efContext);
-            _userLoginDialogViewModel.Logi
+
             //Assert
 
         }

@@ -40,7 +40,7 @@
         <Border BorderThickness="2" BorderBrush="Black" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0">
             <StackPanel>
                 <TextBlock Text="Name : " FontSize="17" Margin="0,5,0,0" TextAlignment="Center"/>
-                <TextBox FontSize="17" TextAlignment="Center" Margin="50,5,50,0" Text="{Binding ArticleName}">
+                <TextBox FontSize="17" TextAlignment="Center" Margin="50,5,50,0" Text="{Binding ArticleName, UpdateSourceTrigger=PropertyChanged}">
                     <TextBox.InputBindings>
                         <KeyBinding Command="{Binding FilterArticlesCommand}" Key="Enter" />
                     </TextBox.InputBindings>
