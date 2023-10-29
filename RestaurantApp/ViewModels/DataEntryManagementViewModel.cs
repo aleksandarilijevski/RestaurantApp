@@ -4,6 +4,7 @@ using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -176,7 +177,7 @@ namespace RestaurantApp.ViewModels
 
             if (DateFrom != DateTime.MinValue && DateTo != DateTime.MinValue)
             {
-                filteredDataEntries.AddRange(originalDataEntries.Where(x => x.CreatedDateTime >= DateFrom && x.CreatedDateTime <= DateTo));
+                filteredDataEntries.AddRange(FilterByDateTime(originalDataEntries));
             }
 
             if (PriceFrom > 0 && PriceTo > 0)
@@ -185,6 +186,23 @@ namespace RestaurantApp.ViewModels
             }
 
             DataEntries = filteredDataEntries;
+        }
+
+        private List<DataEntry> FilterByDateTime(ObservableCollection<DataEntry> dataEntries)
+        {
+            List<DataEntry> filteredDataEntries = new List<DataEntry>();
+
+            foreach (DataEntry dataEntry in dataEntries)
+            {
+                DateTime dataEntryCreatedDateTime = (DateTime)dataEntry.CreatedDateTime;
+
+                if (dataEntryCreatedDateTime.Date >= DateFrom.Date && dataEntryCreatedDateTime.Date <= DateTo.Date)
+                {
+                    filteredDataEntries.Add(dataEntry);
+                }
+            }
+
+            return filteredDataEntries;
         }
 
         private async void LoadDataEntries()
