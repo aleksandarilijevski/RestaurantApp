@@ -338,7 +338,7 @@ namespace RestaurantApp.ViewModels
                 TableArticleQuantities = new ObservableCollection<TableArticleQuantity>(OnlineOrder.TableArticleQuantities);
             }
 
-            if (onlineOrder.TableArticleQuantities.Count == 0 && onlineOrder.ID != 1)
+            if (onlineOrder.TableArticleQuantities.Count == 0 && onlineOrder.User is null)
             {
                 bool dialogResult = UserLogin();
 
