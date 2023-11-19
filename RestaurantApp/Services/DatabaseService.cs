@@ -10,9 +10,8 @@ namespace RestaurantApp.Services
 {
     public class DatabaseService : IDatabaseService
     {
-        public async Task<ObservableCollection<Article>> GetAllArticles()
+        public async Task<ObservableCollection<Article>> GetAllArticles(EFContext efContext)
         {
-            using EFContext efContext = new EFContext();
             List<Article> articles = await efContext.Articles.Include(x => x.ArticleDetails).Where(x => x.IsDeleted == false).ToListAsync();
             return new ObservableCollection<Article>(articles);
         }
@@ -74,9 +73,9 @@ namespace RestaurantApp.Services
             await efContext.SaveChangesAsync();
         }
 
-        public async Task<ObservableCollection<User>> GetAllUsers()
+        public async Task<ObservableCollection<User>> GetAllUsers(EFContext efContext)
         {
-            using EFContext efContext = new EFContext();
+            //using EFContext efContext = new EFContext();
             List<User> users = await efContext.Users.Select(x => x).Where(x => x.IsDeleted == false).ToListAsync();
             return new ObservableCollection<User>(users);
         }

@@ -161,7 +161,9 @@ namespace RestaurantApp.ViewModels
 
         private async void LoadAllArticles()
         {
-            Articles = await _databaseService.GetAllArticles();
+            EFContext efContext = new EFContext();
+
+            Articles = await _databaseService.GetAllArticles(efContext);
 
             foreach (Article article in Articles)
             {

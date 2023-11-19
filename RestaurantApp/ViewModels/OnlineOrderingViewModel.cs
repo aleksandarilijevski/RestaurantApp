@@ -522,6 +522,7 @@ namespace RestaurantApp.ViewModels
             {
                 TableArticleQuantity = tableArticleQuantity,
                 ArticleDetails = articleDetails,
+
                 DatabaseService = _databaseService,
                 EFContext = efContext
             };

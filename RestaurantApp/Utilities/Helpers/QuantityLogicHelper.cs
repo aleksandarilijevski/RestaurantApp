@@ -155,7 +155,6 @@ namespace RestaurantApp.Utilities.Helpers
                             ArticlePrice = articleHelperDetails.TableArticleQuantity.Article.Price,
                             SoldQuantity = reservedToBeDeleted,
                             EntryPrice = articleDetail.EntryPrice,
-                            //BillID = articleHelperDetails.BillID
                         };
 
                         soldArticleDetails.Add(soldArticleDetail);
@@ -179,7 +178,6 @@ namespace RestaurantApp.Utilities.Helpers
                             ArticlePrice = articleHelperDetails.TableArticleQuantity.Article.Price,
                             SoldQuantity = reservedToBeDeleted,
                             EntryPrice = articleDetail.EntryPrice,
-                            //BillID = articleHelperDetails.BillID
                         };
 
                         soldArticleDetails.Add(soldArticleDetail);
@@ -202,7 +200,6 @@ namespace RestaurantApp.Utilities.Helpers
                             ArticlePrice = articleHelperDetails.TableArticleQuantity.Article.Price,
                             SoldQuantity = articleDetail.OriginalQuantity,
                             EntryPrice = articleDetail.EntryPrice,
-                            //BillID = articleHelperDetails.BillID
                         };
 
                         soldArticleDetails.Add(soldArticleDetail);

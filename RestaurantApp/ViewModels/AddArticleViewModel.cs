@@ -92,7 +92,7 @@ namespace RestaurantApp.ViewModels
                 return;
             }
 
-            ObservableCollection<Article> articles = await _databaseService.GetAllArticles();
+            ObservableCollection<Article> articles = await _databaseService.GetAllArticles(efContext);
 
             foreach (Article articleMatch in articles)
             {

@@ -153,7 +153,8 @@ namespace RestaurantApp.ViewModels
 
         private async void GetAllArticles()
         {
-            Articles = await _databaseService.GetAllArticles();
+            EFContext efContext = new EFContext();
+            Articles = await _databaseService.GetAllArticles(efContext);
         }
 
         //Every time we press filter or clear filter the sql query will be created.
@@ -162,7 +163,8 @@ namespace RestaurantApp.ViewModels
 
         private async void FilterArticles()
         {
-            ObservableCollection<Article> originalArticles = await _databaseService.GetAllArticles();
+            EFContext efContext = new EFContext();
+            ObservableCollection<Article> originalArticles = await _databaseService.GetAllArticles(efContext);
             ObservableCollection<Article> filteredArticles = new ObservableCollection<Article>();
 
             if (ArticleName != string.Empty && ArticleName != null)
@@ -176,7 +178,8 @@ namespace RestaurantApp.ViewModels
         private async void ClearFilters()
         {
             ArticleName = string.Empty;
-            Articles = await _databaseService.GetAllArticles();
+            EFContext efContext = new EFContext();
+            Articles = await _databaseService.GetAllArticles(efContext);
         }
 
         private void ShowAddArticleDialog()

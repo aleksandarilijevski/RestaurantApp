@@ -26,8 +26,8 @@ namespace RestaurantAppTests
         public async Task GetAllArticles()
         {
             //Arrange
-            IDatabaseService? _databaseService = _databaseServiceFactory.Create();
-            EFContext? _efContext = _efContextFactory.Create();
+            IDatabaseService? databaseService = _databaseServiceFactory.Create();
+            EFContext? efContext = _efContextFactory.Create();
 
             Article article1 = new Article
             {
@@ -46,11 +46,10 @@ namespace RestaurantAppTests
             };
 
             //Act
-            await _databaseService.AddArticle(article1, _efContext);
-            await _databaseService.AddArticle(article2, _efContext);
+            await databaseService.AddArticle(article1, efContext);
+            await databaseService.AddArticle(article2, efContext);
 
-            ObservableCollection<Article> articles = await _databaseService.GetAllArticles();
-
+            ObservableCollection<Article> articles = new ObservableCollection<Article>(await databaseService.GetAllArticles(efContext));
 
             //Assert
             Assert.That(articles, Is.Not.Empty);
@@ -60,8 +59,8 @@ namespace RestaurantAppTests
         public async Task GetAllUsers()
         {
             //Arrange
-            IDatabaseService? _databaseService = _databaseServiceFactory.Create();
-            EFContext? _efContext = _efContextFactory.Create();
+            IDatabaseService? databaseService = _databaseServiceFactory.Create();
+            EFContext? efContext = _efContextFactory.Create();
 
             User user1 = new User
             {
@@ -82,10 +81,10 @@ namespace RestaurantAppTests
             };
 
             //Act
-            await _databaseService.AddUser(user1, _efContext);
-            await _databaseService.AddUser(user2, _efContext);
+            await databaseService.AddUser(user1, efContext);
+            await databaseService.AddUser(user2, efContext);
 
-            ObservableCollection<User> users = await _databaseService.GetAllUsers();
+            ObservableCollection<User> users = new ObservableCollection<User>(await databaseService.GetAllUsers(efContext));
 
             //Assert
             Assert.That(users, Is.Not.Empty);
@@ -95,8 +94,8 @@ namespace RestaurantAppTests
         public async Task GetAllTables()
         {
             //Arrange
-            IDatabaseService? _databaseService = _databaseServiceFactory.Create();
-            EFContext? _efContext = _efContextFactory.Create();
+            IDatabaseService? databaseService = _databaseServiceFactory.Create();
+            EFContext? efContext = _efContextFactory.Create();
 
             Table table1 = new Table
             {
@@ -111,10 +110,10 @@ namespace RestaurantAppTests
             };
 
             //Act
-            await _databaseService.AddTable(table1, _efContext);
-            await _databaseService.AddTable(table2, _efContext);
+            await databaseService.AddTable(table1, efContext);
+            await databaseService.AddTable(table2, efContext);
 
-            List<Table> tables = await _databaseService.GetAllTables();
+            List<Table> tables = await databaseService.GetAllTables();
 
             //Assert
             Assert.That(tables, Is.Not.Empty);
@@ -125,8 +124,8 @@ namespace RestaurantAppTests
         public async Task AddArticle()
         {
             //Arrange
-            IDatabaseService? _databaseService = _databaseServiceFactory.Create();
-            EFContext? _efContext = _efContextFactory.Create();
+            IDatabaseService? databaseService = _databaseServiceFactory.Create();
+            EFContext? efContext = _efContextFactory.Create();
 
             Article article = new Article
             {
@@ -138,8 +137,8 @@ namespace RestaurantAppTests
 
             //Act
 
-            int articleId = await _databaseService.AddArticle(article, _efContext);
-            Article articleFind = await _databaseService.GetArticleByID(articleId, _efContext);
+            int articleId = await databaseService.AddArticle(article, efContext);
+            Article articleFind = await databaseService.GetArticleByID(articleId, efContext);
 
             //Assert
             Assert.That(articleFind, Is.Not.Null);
@@ -149,8 +148,8 @@ namespace RestaurantAppTests
         public async Task AddUser()
         {
             //Arrange
-            IDatabaseService? _databaseService = _databaseServiceFactory.Create();
-            EFContext? _efContext = _efContextFactory.Create();
+            IDatabaseService? databaseService = _databaseServiceFactory.Create();
+            EFContext? efContext = _efContextFactory.Create();
 
             User user = new User
             {
@@ -162,20 +161,20 @@ namespace RestaurantAppTests
             };
 
             //Act
-            int userId = await _databaseService.AddUser(user, _efContext);
-            User userFind = await _databaseService.GetUserByID(userId, _efContext);
+            int userId = await databaseService.AddUser(user, efContext);
+            User userFind = await databaseService.GetUserByID(userId, efContext);
 
             //Assert
             Assert.That(userFind, Is.Not.Null);
-            await _databaseService.DeleteUser(user, _efContext);
+            await databaseService.DeleteUser(user, efContext);
         }
 
         [Test]
         public async Task AddArticleDetails()
         {
             //Arrange
-            IDatabaseService? _databaseService = _databaseServiceFactory.Create();
-            EFContext? _efContext = _efContextFactory.Create();
+            IDatabaseService? databaseService = _databaseServiceFactory.Create();
+            EFContext? efContext = _efContextFactory.Create();
 
             Article article = new Article
             {
@@ -192,22 +191,22 @@ namespace RestaurantAppTests
             };
 
             //Act
-            int articleId = await _databaseService.AddArticle(article, _efContext);
+            int articleId = await databaseService.AddArticle(article, efContext);
             articleDetails.ArticleID = articleId;
-            int articleDetailsId = await _databaseService.AddArticleDetails(articleDetails, _efContext);
-            ArticleDetails articleDetailsFind = await _databaseService.GetArticleDetailsByID(articleDetailsId, _efContext);
+            int articleDetailsId = await databaseService.AddArticleDetails(articleDetails, efContext);
+            ArticleDetails articleDetailsFind = await databaseService.GetArticleDetailsByID(articleDetailsId, efContext);
 
             //Assert
             Assert.That(articleDetailsFind, Is.Not.Null);
-            await _databaseService.DeleteArticle(article, _efContext);
+            await databaseService.DeleteArticle(article, efContext);
         }
 
         [Test]
         public async Task AddTable()
         {
             //Arrange
-            IDatabaseService? _databaseService = _databaseServiceFactory.Create();
-            EFContext? _efContext = _efContextFactory.Create();
+            IDatabaseService? databaseService = _databaseServiceFactory.Create();
+            EFContext? efContext = _efContextFactory.Create();
 
             List<Table> tables = new List<Table>();
             int tableId = 1;
@@ -224,20 +223,20 @@ namespace RestaurantAppTests
             }
 
             table.ID = tableId;
-            await _databaseService.AddTable(table, _efContext);
-            Table tableFind = await _databaseService.GetTableByID(tableId, _efContext);
+            await databaseService.AddTable(table, efContext);
+            Table tableFind = await databaseService.GetTableByID(tableId, efContext);
 
             //Assert
             Assert.That(tableFind, Is.Not.Null);
-            await _databaseService.DeleteTable(table, _efContext);
+            await databaseService.DeleteTable(table, efContext);
         }
 
         [Test]
         public async Task AddTableArticleQuantity()
         {
             //Arrange
-            IDatabaseService? _databaseService = _databaseServiceFactory.Create();
-            EFContext? _efContext = _efContextFactory.Create();
+            IDatabaseService? databaseService = _databaseServiceFactory.Create();
+            EFContext? efContext = _efContextFactory.Create();
 
             Article article = new Article
             {
@@ -264,28 +263,28 @@ namespace RestaurantAppTests
             };
 
             //Act
-            int articleId = await _databaseService.AddArticle(article, _efContext);
+            int articleId = await databaseService.AddArticle(article, efContext);
             articleDetail.ArticleID = articleId;
 
-            await _databaseService.AddArticleDetails(articleDetail, _efContext);
+            await databaseService.AddArticleDetails(articleDetail, efContext);
 
             tableArticleQuantity.ArticleID = articleId;
             tableArticleQuantity.ArticleDetails = articleDetails;
 
-            int tableArticleQuantityId = await _databaseService.AddTableArticleQuantity(tableArticleQuantity, _efContext);
-            TableArticleQuantity tableArticleQuantityFind = await _databaseService.GetTableArticleQuantityByID(tableArticleQuantityId, _efContext);
+            int tableArticleQuantityId = await databaseService.AddTableArticleQuantity(tableArticleQuantity, efContext);
+            TableArticleQuantity tableArticleQuantityFind = await databaseService.GetTableArticleQuantityByID(tableArticleQuantityId, efContext);
 
             //Assert
             Assert.That(tableArticleQuantityFind, Is.Not.Null);
-            await _databaseService.DeleteArticle(article, _efContext);
+            await databaseService.DeleteArticle(article, efContext);
         }
 
         [Test]
         public async Task AddBill()
         {
             //Arrange
-            IDatabaseService? _databaseService = _databaseServiceFactory.Create();
-            EFContext? _efContext = _efContextFactory.Create();
+            IDatabaseService? databaseService = _databaseServiceFactory.Create();
+            EFContext? efContext = _efContextFactory.Create();
 
             User user = new User
             {
@@ -306,24 +305,24 @@ namespace RestaurantAppTests
             };
 
             //Act
-            int userId = await _databaseService.AddUser(user, _efContext);
+            int userId = await databaseService.AddUser(user, efContext);
             bill.UserID = userId;
 
-            int billId = await _databaseService.CreateBill(bill, _efContext);
-            Bill billFind = await _databaseService.GetBillByID(billId, _efContext);
+            int billId = await databaseService.CreateBill(bill, efContext);
+            Bill billFind = await databaseService.GetBillByID(billId, efContext);
 
             //Assert
             Assert.That(billFind, Is.Not.Null);
-            await _databaseService.DeleteBill(bill, _efContext);
-            await _databaseService.DeleteUser(user, _efContext);
+            await databaseService.DeleteBill(bill, efContext);
+            await databaseService.DeleteUser(user, efContext);
         }
 
         [Test]
         public async Task AddDataEntry()
         {
             //Arrange
-            IDatabaseService? _databaseService = _databaseServiceFactory.Create();
-            EFContext? _efContext = _efContextFactory.Create();
+            IDatabaseService? databaseService = _databaseServiceFactory.Create();
+            EFContext? efContext = _efContextFactory.Create();
 
             Article article = new Article
             {
@@ -351,26 +350,26 @@ namespace RestaurantAppTests
             };
 
             //Act
-            int articleId = await _databaseService.AddArticle(article, _efContext);
+            int articleId = await databaseService.AddArticle(article, efContext);
             articleDetail.ArticleID = articleId;
-            await _databaseService.AddArticleDetails(articleDetail, _efContext);
+            await databaseService.AddArticleDetails(articleDetail, efContext);
 
             dataEntry.ArticleDetails = articleDetails;
-            int dataEntryId = await _databaseService.AddDataEntry(dataEntry, _efContext);
+            int dataEntryId = await databaseService.AddDataEntry(dataEntry, efContext);
 
-            DataEntry dataEntryFind = await _databaseService.GetDataEntryByID(dataEntryId, _efContext);
+            DataEntry dataEntryFind = await databaseService.GetDataEntryByID(dataEntryId, efContext);
 
             //Assert
             Assert.That(dataEntryFind, Is.Not.Null);
-            await _databaseService.DeleteDataEntry(dataEntryFind, _efContext);
+            await databaseService.DeleteDataEntry(dataEntryFind, efContext);
         }
 
         [Test]
         public async Task AddOnlineOrder()
         {
             //Arrange
-            IDatabaseService? _databaseService = _databaseServiceFactory.Create();
-            EFContext? _efContext = _efContextFactory.Create();
+            IDatabaseService? databaseService = _databaseServiceFactory.Create();
+            EFContext? efContext = _efContextFactory.Create();
 
             User user = new User
             {
@@ -388,25 +387,25 @@ namespace RestaurantAppTests
             };
 
             //Act
-            int userId = await _databaseService.AddUser(user, _efContext);
+            int userId = await databaseService.AddUser(user, efContext);
             onlineOrder.UserID = userId;
 
-            int onlineOrderId = await _databaseService.AddOnlineOrder(onlineOrder, _efContext);
+            int onlineOrderId = await databaseService.AddOnlineOrder(onlineOrder, efContext);
 
-            OnlineOrder onlineOrderFind = await _databaseService.GetOnlineOrderByID(onlineOrderId, _efContext);
+            OnlineOrder onlineOrderFind = await databaseService.GetOnlineOrderByID(onlineOrderId, efContext);
 
             //Assert
             Assert.That(onlineOrderFind, Is.Not.Null);
-            await _databaseService.DeleteOnlineOrder(onlineOrderFind, _efContext);
-            await _databaseService.DeleteUser(user, _efContext);
+            await databaseService.DeleteOnlineOrder(onlineOrderFind, efContext);
+            await databaseService.DeleteUser(user, efContext);
         }
 
         [Test]
         public async Task AddSoldArticleDetails()
         {
             //Arrange
-            IDatabaseService? _databaseService = _databaseServiceFactory.Create();
-            EFContext? _efContext = _efContextFactory.Create();
+            IDatabaseService? databaseService = _databaseServiceFactory.Create();
+            EFContext? efContext = _efContextFactory.Create();
 
             User user = new User
             {
@@ -433,26 +432,26 @@ namespace RestaurantAppTests
             };
 
             //Act
-            int userId = await _databaseService.AddUser(user, _efContext);
+            int userId = await databaseService.AddUser(user, efContext);
             bill.UserID = userId;
 
-            int billId = await _databaseService.CreateBill(bill, _efContext);
+            int billId = await databaseService.CreateBill(bill, efContext);
             soldArticleDetails.BillID = billId;
-            int soldArticleDetailsId = await _databaseService.AddSoldArticleDetails(soldArticleDetails, _efContext);
+            int soldArticleDetailsId = await databaseService.AddSoldArticleDetails(soldArticleDetails, efContext);
 
-            SoldArticleDetails soldArticleDetailsFind = await _databaseService.GetSoldArticleDetailsByID(soldArticleDetailsId, _efContext);
+            SoldArticleDetails soldArticleDetailsFind = await databaseService.GetSoldArticleDetailsByID(soldArticleDetailsId, efContext);
 
             //Assert
             Assert.That(soldArticleDetailsFind, Is.Not.Null);
-            await _databaseService.DeleteUser(user, _efContext);
+            await databaseService.DeleteUser(user, efContext);
         }
 
         [Test]
         public async Task DeleteArticle()
         {
             //Arrange
-            IDatabaseService? _databaseService = _databaseServiceFactory.Create();
-            EFContext? _efContext = _efContextFactory.Create();
+            IDatabaseService? databaseService = _databaseServiceFactory.Create();
+            EFContext? efContext = _efContextFactory.Create();
 
             Article article = new Article
             {
@@ -463,9 +462,9 @@ namespace RestaurantAppTests
             };
 
             //Act
-            int articleId = await _databaseService.AddArticle(article, _efContext);
-            await _databaseService.DeleteArticle(article, _efContext);
-            Article articleFind = await _databaseService.GetArticleByID(articleId, _efContext);
+            int articleId = await databaseService.AddArticle(article, efContext);
+            await databaseService.DeleteArticle(article, efContext);
+            Article articleFind = await databaseService.GetArticleByID(articleId, efContext);
 
             //Assert
             Assert.That(articleFind, Is.Null);
@@ -475,8 +474,8 @@ namespace RestaurantAppTests
         public async Task DeleteArticleDetails()
         {
             //Arrange
-            IDatabaseService? _databaseService = _databaseServiceFactory.Create();
-            EFContext? _efContext = _efContextFactory.Create();
+            IDatabaseService? databaseService = _databaseServiceFactory.Create();
+            EFContext? efContext = _efContextFactory.Create();
 
             Article article = new Article
             {
@@ -493,23 +492,23 @@ namespace RestaurantAppTests
             };
 
             //Act
-            int articleId = await _databaseService.AddArticle(article, _efContext);
+            int articleId = await databaseService.AddArticle(article, efContext);
             articleDetails.ArticleID = articleId;
-            int articleDetailsId = await _databaseService.AddArticleDetails(articleDetails, _efContext);
-            await _databaseService.DeleteArticleDetails(articleDetails, _efContext);
-            ArticleDetails articleDetailsFind = await _databaseService.GetArticleDetailsByID(articleDetailsId, _efContext);
+            int articleDetailsId = await databaseService.AddArticleDetails(articleDetails, efContext);
+            await databaseService.DeleteArticleDetails(articleDetails, efContext);
+            ArticleDetails articleDetailsFind = await databaseService.GetArticleDetailsByID(articleDetailsId, efContext);
 
             //Assert
             Assert.That(articleDetailsFind, Is.Null);
-            await _databaseService.DeleteArticle(article, _efContext);
+            await databaseService.DeleteArticle(article, efContext);
         }
 
         [Test]
         public async Task DeleteBill()
         {
             //Arrange
-            IDatabaseService? _databaseService = _databaseServiceFactory.Create();
-            EFContext? _efContext = _efContextFactory.Create();
+            IDatabaseService? databaseService = _databaseServiceFactory.Create();
+            EFContext? efContext = _efContextFactory.Create();
 
             User user = new User
             {
@@ -530,24 +529,24 @@ namespace RestaurantAppTests
             };
 
             //Act
-            int userId = await _databaseService.AddUser(user, _efContext);
+            int userId = await databaseService.AddUser(user, efContext);
             bill.UserID = userId;
 
-            int billId = await _databaseService.CreateBill(bill, _efContext);
-            await _databaseService.DeleteBill(bill, _efContext);
-            Bill billFind = await _databaseService.GetBillByID(billId, _efContext);
+            int billId = await databaseService.CreateBill(bill, efContext);
+            await databaseService.DeleteBill(bill, efContext);
+            Bill billFind = await databaseService.GetBillByID(billId, efContext);
 
             //Assert
             Assert.That(billFind, Is.Null);
-            await _databaseService.DeleteUser(user, _efContext);
+            await databaseService.DeleteUser(user, efContext);
         }
 
         [Test]
         public async Task DeleteDataEntry()
         {
             //Arrange
-            IDatabaseService? _databaseService = _databaseServiceFactory.Create();
-            EFContext? _efContext = _efContextFactory.Create();
+            IDatabaseService? databaseService = _databaseServiceFactory.Create();
+            EFContext? efContext = _efContextFactory.Create();
 
             Article article = new Article
             {
@@ -575,15 +574,15 @@ namespace RestaurantAppTests
             };
 
             //Act
-            int articleId = await _databaseService.AddArticle(article, _efContext);
+            int articleId = await databaseService.AddArticle(article, efContext);
             articleDetail.ArticleID = articleId;
-            await _databaseService.AddArticleDetails(articleDetail, _efContext);
+            await databaseService.AddArticleDetails(articleDetail, efContext);
 
             dataEntry.ArticleDetails = articleDetails;
-            int dataEntryId = await _databaseService.AddDataEntry(dataEntry, _efContext);
+            int dataEntryId = await databaseService.AddDataEntry(dataEntry, efContext);
 
-            await _databaseService.DeleteDataEntry(dataEntry, _efContext);
-            DataEntry dataEntryFind = await _databaseService.GetDataEntryByID(dataEntryId, _efContext);
+            await databaseService.DeleteDataEntry(dataEntry, efContext);
+            DataEntry dataEntryFind = await databaseService.GetDataEntryByID(dataEntryId, efContext);
 
             //Assert
             Assert.That(dataEntryFind, Is.Null);
@@ -593,8 +592,8 @@ namespace RestaurantAppTests
         public async Task DeleteOnlineOrder()
         {
             //Arrange
-            IDatabaseService? _databaseService = _databaseServiceFactory.Create();
-            EFContext? _efContext = _efContextFactory.Create();
+            IDatabaseService? databaseService = _databaseServiceFactory.Create();
+            EFContext? efContext = _efContextFactory.Create();
 
             User user = new User
             {
@@ -612,24 +611,24 @@ namespace RestaurantAppTests
             };
 
             //Act
-            int userId = await _databaseService.AddUser(user, _efContext);
+            int userId = await databaseService.AddUser(user, efContext);
             onlineOrder.UserID = userId;
 
-            int onlineOrderId = await _databaseService.AddOnlineOrder(onlineOrder, _efContext);
-            await _databaseService.DeleteOnlineOrder(onlineOrder, _efContext);
-            OnlineOrder onlineOrderFind = await _databaseService.GetOnlineOrderByID(onlineOrderId, _efContext);
+            int onlineOrderId = await databaseService.AddOnlineOrder(onlineOrder, efContext);
+            await databaseService.DeleteOnlineOrder(onlineOrder, efContext);
+            OnlineOrder onlineOrderFind = await databaseService.GetOnlineOrderByID(onlineOrderId, efContext);
 
             //Assert
             Assert.That(onlineOrderFind, Is.Null);
-            await _databaseService.DeleteUser(user, _efContext);
+            await databaseService.DeleteUser(user, efContext);
         }
 
         [Test]
         public async Task DeleteSoldArticleDetails()
         {
             //Arrange
-            IDatabaseService? _databaseService = _databaseServiceFactory.Create();
-            EFContext? _efContext = _efContextFactory.Create();
+            IDatabaseService? databaseService = _databaseServiceFactory.Create();
+            EFContext? efContext = _efContextFactory.Create();
 
             User user = new User
             {
@@ -656,27 +655,27 @@ namespace RestaurantAppTests
             };
 
             //Act
-            int userId = await _databaseService.AddUser(user, _efContext);
+            int userId = await databaseService.AddUser(user, efContext);
             bill.UserID = userId;
 
-            int billId = await _databaseService.CreateBill(bill, _efContext);
+            int billId = await databaseService.CreateBill(bill, efContext);
             soldArticleDetails.BillID = billId;
-            int soldArticleDetailsId = await _databaseService.AddSoldArticleDetails(soldArticleDetails, _efContext);
+            int soldArticleDetailsId = await databaseService.AddSoldArticleDetails(soldArticleDetails, efContext);
 
-            await _databaseService.DeleteSoldArticleDetails(soldArticleDetails, _efContext);
-            SoldArticleDetails soldArticleDetailsFind = await _databaseService.GetSoldArticleDetailsByID(soldArticleDetailsId, _efContext);
+            await databaseService.DeleteSoldArticleDetails(soldArticleDetails, efContext);
+            SoldArticleDetails soldArticleDetailsFind = await databaseService.GetSoldArticleDetailsByID(soldArticleDetailsId, efContext);
 
             //Assert
             Assert.That(soldArticleDetailsFind, Is.Null);
-            await _databaseService.DeleteUser(user, _efContext);
+            await databaseService.DeleteUser(user, efContext);
         }
 
         [Test]
         public async Task DeleteTable()
         {
             //Arrange
-            IDatabaseService? _databaseService = _databaseServiceFactory.Create();
-            EFContext? _efContext = _efContextFactory.Create();
+            IDatabaseService? databaseService = _databaseServiceFactory.Create();
+            EFContext? efContext = _efContextFactory.Create();
 
             List<Table> tables = new List<Table>();
             int tableId = 1;
@@ -693,9 +692,9 @@ namespace RestaurantAppTests
             }
 
             table.ID = tableId;
-            await _databaseService.AddTable(table, _efContext);
-            await _databaseService.DeleteTable(table, _efContext);
-            Table tableFind = await _databaseService.GetTableByID(tableId, _efContext);
+            await databaseService.AddTable(table, efContext);
+            await databaseService.DeleteTable(table, efContext);
+            Table tableFind = await databaseService.GetTableByID(tableId, efContext);
 
             //Assert
             Assert.That(tableFind, Is.Null);
@@ -705,8 +704,8 @@ namespace RestaurantAppTests
         public async Task DeleteTableArticleQuantity()
         {
             //Arrange
-            IDatabaseService? _databaseService = _databaseServiceFactory.Create();
-            EFContext? _efContext = _efContextFactory.Create();
+            IDatabaseService? databaseService = _databaseServiceFactory.Create();
+            EFContext? efContext = _efContextFactory.Create();
 
             Article article = new Article
             {
@@ -733,21 +732,21 @@ namespace RestaurantAppTests
             };
 
             //Act
-            int articleId = await _databaseService.AddArticle(article, _efContext);
+            int articleId = await databaseService.AddArticle(article, efContext);
             articleDetail.ArticleID = articleId;
 
-            await _databaseService.AddArticleDetails(articleDetail, _efContext);
+            await databaseService.AddArticleDetails(articleDetail, efContext);
 
             tableArticleQuantity.ArticleID = articleId;
             tableArticleQuantity.ArticleDetails = articleDetails;
 
-            int tableArticleQuantityId = await _databaseService.AddTableArticleQuantity(tableArticleQuantity, _efContext);
-            await _databaseService.DeleteTableArticleQuantity(tableArticleQuantity, _efContext);
-            TableArticleQuantity tableArticleQuantityFind = await _databaseService.GetTableArticleQuantityByID(tableArticleQuantityId, _efContext);
+            int tableArticleQuantityId = await databaseService.AddTableArticleQuantity(tableArticleQuantity, efContext);
+            await databaseService.DeleteTableArticleQuantity(tableArticleQuantity, efContext);
+            TableArticleQuantity tableArticleQuantityFind = await databaseService.GetTableArticleQuantityByID(tableArticleQuantityId, efContext);
 
             //Assert
             Assert.That(tableArticleQuantityFind, Is.Null);
-            await _databaseService.DeleteArticle(article, _efContext);
+            await databaseService.DeleteArticle(article, efContext);
         }
 
 
@@ -755,8 +754,8 @@ namespace RestaurantAppTests
         public async Task DeleteUser()
         {
             //Arrange
-            IDatabaseService? _databaseService = _databaseServiceFactory.Create();
-            EFContext? _efContext = _efContextFactory.Create();
+            IDatabaseService? databaseService = _databaseServiceFactory.Create();
+            EFContext? efContext = _efContextFactory.Create();
 
             User user = new User
             {
@@ -768,9 +767,9 @@ namespace RestaurantAppTests
             };
 
             //Act
-            int userId = await _databaseService.AddUser(user, _efContext);
-            await _databaseService.DeleteUser(user, _efContext);
-            User userFind = await _databaseService.GetUserByID(userId, _efContext);
+            int userId = await databaseService.AddUser(user, efContext);
+            await databaseService.DeleteUser(user, efContext);
+            User userFind = await databaseService.GetUserByID(userId, efContext);
 
             //Assert
             Assert.That(userFind, Is.Null);
@@ -780,8 +779,8 @@ namespace RestaurantAppTests
         public async Task EditArticle()
         {
             //Arrange
-            IDatabaseService? _databaseService = _databaseServiceFactory.Create();
-            EFContext? _efContext = _efContextFactory.Create();
+            IDatabaseService? databaseService = _databaseServiceFactory.Create();
+            EFContext? efContext = _efContextFactory.Create();
 
             string articleName = "UnitTestArticle";
 
@@ -794,21 +793,21 @@ namespace RestaurantAppTests
             };
 
             //Act
-            await _databaseService.AddArticle(article, _efContext);
+            await databaseService.AddArticle(article, efContext);
             article.Name = "UnitTestArticleEdited";
-            await _databaseService.EditArticle(article, _efContext);
+            await databaseService.EditArticle(article, efContext);
 
             //Assert
             Assert.That(article.Name, Is.Not.EqualTo(articleName));
-            await _databaseService.DeleteArticle(article, _efContext);
+            await databaseService.DeleteArticle(article, efContext);
         }
 
         [Test]
         public async Task EditArticleDetails()
         {
             //Arrange
-            IDatabaseService? _databaseService = _databaseServiceFactory.Create();
-            EFContext? _efContext = _efContextFactory.Create();
+            IDatabaseService? databaseService = _databaseServiceFactory.Create();
+            EFContext? efContext = _efContextFactory.Create();
 
             int originalQuantity = 10;
 
@@ -827,25 +826,25 @@ namespace RestaurantAppTests
             };
 
             //Act
-            int articleId = await _databaseService.AddArticle(article, _efContext);
+            int articleId = await databaseService.AddArticle(article, efContext);
 
             articleDetails.ArticleID = articleId;
-            await _databaseService.AddArticleDetails(articleDetails, _efContext);
+            await databaseService.AddArticleDetails(articleDetails, efContext);
 
             articleDetails.OriginalQuantity = 15;
-            await _databaseService.EditArticleDetails(articleDetails, _efContext);
+            await databaseService.EditArticleDetails(articleDetails, efContext);
 
             //Assert
             Assert.That(articleDetails.OriginalQuantity, Is.Not.EqualTo(originalQuantity));
-            await _databaseService.DeleteArticle(article, _efContext);
+            await databaseService.DeleteArticle(article, efContext);
         }
 
         [Test]
         public async Task EditOnlineOrder()
         {
             //Arrange
-            IDatabaseService? _databaseService = _databaseServiceFactory.Create();
-            EFContext? _efContext = _efContextFactory.Create();
+            IDatabaseService? databaseService = _databaseServiceFactory.Create();
+            EFContext? efContext = _efContextFactory.Create();
 
             string firstName = "unitTest";
 
@@ -865,25 +864,25 @@ namespace RestaurantAppTests
             };
 
             //Act
-            int userId = await _databaseService.AddUser(user, _efContext);
+            int userId = await databaseService.AddUser(user, efContext);
             onlineOrder.UserID = userId;
 
-            await _databaseService.AddOnlineOrder(onlineOrder, _efContext);
+            await databaseService.AddOnlineOrder(onlineOrder, efContext);
             onlineOrder.Firstname = "unitTestEdited";
-            await _databaseService.EditOnlineOrder(onlineOrder, _efContext);
+            await databaseService.EditOnlineOrder(onlineOrder, efContext);
 
             //Assert
             Assert.That(onlineOrder.Firstname, Is.Not.EqualTo(firstName));
-            await _databaseService.DeleteOnlineOrder(onlineOrder, _efContext);
-            await _databaseService.DeleteUser(user, _efContext);
+            await databaseService.DeleteOnlineOrder(onlineOrder, efContext);
+            await databaseService.DeleteUser(user, efContext);
         }
 
         [Test]
         public async Task EditTable()
         {
             //Arrange
-            IDatabaseService? _databaseService = _databaseServiceFactory.Create();
-            EFContext? _efContext = _efContextFactory.Create();
+            IDatabaseService? databaseService = _databaseServiceFactory.Create();
+            EFContext? efContext = _efContextFactory.Create();
 
             List<Table> tables = new List<Table>();
             int tableId = 1;
@@ -900,22 +899,22 @@ namespace RestaurantAppTests
             }
 
             table.ID = tableId;
-            await _databaseService.AddTable(table, _efContext);
+            await databaseService.AddTable(table, efContext);
 
             table.InUse = true;
-            await _databaseService.EditTable(table, _efContext);
+            await databaseService.EditTable(table, efContext);
 
             //Assert
             Assert.That(table.InUse, Is.Not.False);
-            await _databaseService.DeleteTable(table, _efContext);
+            await databaseService.DeleteTable(table, efContext);
         }
 
         [Test]
         public async Task EditTableArticleQuantity()
         {
             //Arrange
-            IDatabaseService? _databaseService = _databaseServiceFactory.Create();
-            EFContext? _efContext = _efContextFactory.Create();
+            IDatabaseService? databaseService = _databaseServiceFactory.Create();
+            EFContext? efContext = _efContextFactory.Create();
 
             int quantity = 1;
 
@@ -944,29 +943,29 @@ namespace RestaurantAppTests
             };
 
             //Act
-            int articleId = await _databaseService.AddArticle(article, _efContext);
+            int articleId = await databaseService.AddArticle(article, efContext);
             articleDetail.ArticleID = articleId;
 
-            int articleDetailsId = await _databaseService.AddArticleDetails(articleDetail, _efContext);
+            int articleDetailsId = await databaseService.AddArticleDetails(articleDetail, efContext);
 
             tableArticleQuantity.ArticleID = articleId;
             tableArticleQuantity.ArticleDetails = articleDetails;
 
-            await _databaseService.AddTableArticleQuantity(tableArticleQuantity, _efContext);
+            await databaseService.AddTableArticleQuantity(tableArticleQuantity, efContext);
             tableArticleQuantity.Quantity = 50;
-            await _databaseService.EditTableArticleQuantity(tableArticleQuantity, _efContext);
+            await databaseService.EditTableArticleQuantity(tableArticleQuantity, efContext);
 
             //Assert
             Assert.That(tableArticleQuantity.Quantity, Is.Not.EqualTo(quantity));
-            await _databaseService.DeleteArticle(article, _efContext);
+            await databaseService.DeleteArticle(article, efContext);
         }
 
         [Test]
         public async Task EditUser()
         {
             //Arrange
-            IDatabaseService? _databaseService = _databaseServiceFactory.Create();
-            EFContext? _efContext = _efContextFactory.Create();
+            IDatabaseService? databaseService = _databaseServiceFactory.Create();
+            EFContext? efContext = _efContextFactory.Create();
 
             string firstAndLastname = "UnitTest";
 
@@ -980,13 +979,13 @@ namespace RestaurantAppTests
             };
 
             //Act
-            await _databaseService.AddUser(user, _efContext);
+            await databaseService.AddUser(user, efContext);
             user.FirstAndLastName = "UnitTestEdited";
-            await _databaseService.EditUser(user, _efContext);
+            await databaseService.EditUser(user, efContext);
 
             //Assert
             Assert.That(user.FirstAndLastName, Is.Not.EqualTo(firstAndLastname));
-            await _databaseService.DeleteUser(user, _efContext);
+            await databaseService.DeleteUser(user, efContext);
         }
     }
 }

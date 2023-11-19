@@ -25,13 +25,13 @@ namespace RestaurantApp.Services.Interface
 
         public Task<Article> GetArticleByID(int id, EFContext efContext);
 
-        public Task<ObservableCollection<Article>> GetAllArticles();
+        public Task<ObservableCollection<Article>> GetAllArticles(EFContext efContext);
 
         public Task<int> AddArticle(Article article, EFContext efContext);
 
         public Task EditArticle(Article article, EFContext efContext);
 
-        public Task<ObservableCollection<User>> GetAllUsers();
+        public Task<ObservableCollection<User>> GetAllUsers(EFContext efContext);
 
         public Task<int> AddUser(User user, EFContext efContext);
 

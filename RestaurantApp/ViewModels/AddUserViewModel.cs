@@ -98,7 +98,7 @@ namespace RestaurantApp.ViewModels
             }
 
             using EFContext efContext = new EFContext();
-            ObservableCollection<User> users = await _databaseService.GetAllUsers();
+            ObservableCollection<User> users = await _databaseService.GetAllUsers(efContext);
 
             if (users.Count == 0 && user.UserRole != UserRole.Admin)
             {

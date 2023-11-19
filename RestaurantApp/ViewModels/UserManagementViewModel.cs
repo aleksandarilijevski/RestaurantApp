@@ -141,12 +141,14 @@ namespace RestaurantApp.ViewModels
             FirstOrLastname = string.Empty;
             JMBG = 0;
 
-            Users = await _databaseService.GetAllUsers();
+            EFContext efContext = new EFContext();
+            Users = await _databaseService.GetAllUsers(efContext);
         }
 
         private async void GetAllUsers()
         {
-            Users = await _databaseService.GetAllUsers();
+            EFContext efContext = new EFContext();
+            Users = await _databaseService.GetAllUsers(efContext);
         }
 
         private async void DeleteUser(User user)
@@ -176,7 +178,8 @@ namespace RestaurantApp.ViewModels
 
         private async void FilterUsers()
         {
-            ObservableCollection<User> originalUsers = await _databaseService.GetAllUsers();
+            EFContext efContext = new EFContext();
+            ObservableCollection<User> originalUsers = await _databaseService.GetAllUsers(efContext);
             ObservableCollection<User> filteredUsers = new ObservableCollection<User>();
 
             if (FirstOrLastname != null || FirstOrLastname != string.Empty)

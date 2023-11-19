@@ -122,10 +122,11 @@ namespace RestaurantApp.ViewModels
         private async void CheckIfAnyUserExists()
         {
             ObservableCollection<User> users = new ObservableCollection<User>();
+            EFContext efContext = new EFContext();
 
             do
             {
-                users = await _databaseService.GetAllUsers();
+                users = await _databaseService.GetAllUsers(efContext);
 
                 if (users.Count == 0)
                 {
