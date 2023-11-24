@@ -19,14 +19,22 @@
         <converters:TableOrderConverter x:Key="TableOrderConverter"/>
 
         <Style TargetType="Button" x:Key="RhomboidButton">
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                </Setter.Value>
+            </Setter>
+
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Trigger.EnterActions>
                         <BeginStoryboard>
                             <Storyboard>
                                 <ThicknessAnimation Duration="0:0:0.250" To="0" Storyboard.TargetProperty="BorderThickness" />
-                                <DoubleAnimation Duration="0:0:0.100" To="70" Storyboard.TargetProperty="Height" />
-                                <DoubleAnimation Duration="0:0:0.100" To="90" Storyboard.TargetProperty="Width" />
+                                <DoubleAnimation Duration="0:0:0.100" To="0.9" Storyboard.TargetProperty="RenderTransform.ScaleX" />
+                                <DoubleAnimation Duration="0:0:0.100" To="0.9" Storyboard.TargetProperty="RenderTransform.ScaleY" />
                             </Storyboard>
                         </BeginStoryboard>
                     </Trigger.EnterActions>
@@ -34,8 +42,8 @@
                         <BeginStoryboard>
                             <Storyboard>
                                 <ThicknessAnimation Duration="0:0:0.250" To="0" Storyboard.TargetProperty="BorderThickness" />
-                                <DoubleAnimation Duration="0:0:0.100" To="80" Storyboard.TargetProperty="Height" />
-                                <DoubleAnimation Duration="0:0:0.100" To="90" Storyboard.TargetProperty="Width" />
+                                <DoubleAnimation Duration="0:0:0.100" To="1" Storyboard.TargetProperty="RenderTransform.ScaleX" />
+                                <DoubleAnimation Duration="0:0:0.100" To="1" Storyboard.TargetProperty="RenderTransform.ScaleY" />
                             </Storyboard>
                         </BeginStoryboard>
                     </Trigger.ExitActions>
@@ -44,14 +52,22 @@
         </Style>
 
         <Style TargetType="Button" x:Key="CircleButton">
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                </Setter.Value>
+            </Setter>
+
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Trigger.EnterActions>
                         <BeginStoryboard>
                             <Storyboard>
                                 <ThicknessAnimation Duration="0:0:0.250" To="0" Storyboard.TargetProperty="BorderThickness" />
-                                <DoubleAnimation Duration="0:0:0.100" To="80" Storyboard.TargetProperty="Height" />
-                                <DoubleAnimation Duration="0:0:0.100" To="100" Storyboard.TargetProperty="Width" />
+                                <DoubleAnimation Duration="0:0:0.100" To="0.9" Storyboard.TargetProperty="RenderTransform.ScaleX" />
+                                <DoubleAnimation Duration="0:0:0.100" To="0.9" Storyboard.TargetProperty="RenderTransform.ScaleY" />
                             </Storyboard>
                         </BeginStoryboard>
                     </Trigger.EnterActions>
@@ -59,8 +75,8 @@
                         <BeginStoryboard>
                             <Storyboard>
                                 <ThicknessAnimation Duration="0:0:0.250" To="0" Storyboard.TargetProperty="BorderThickness" />
-                                <DoubleAnimation Duration="0:0:0.100" To="90" Storyboard.TargetProperty="Height" />
-                                <DoubleAnimation Duration="0:0:0.100" To="100" Storyboard.TargetProperty="Width" />
+                                <DoubleAnimation Duration="0:0:0.100" To="1" Storyboard.TargetProperty="RenderTransform.ScaleX" />
+                                <DoubleAnimation Duration="0:0:0.100" To="1" Storyboard.TargetProperty="RenderTransform.ScaleY" />
                             </Storyboard>
                         </BeginStoryboard>
                     </Trigger.ExitActions>
@@ -69,14 +85,22 @@
         </Style>
 
         <Style TargetType="Button" x:Key="HorizontalRectangleButton">
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                </Setter.Value>
+            </Setter>
+
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Trigger.EnterActions>
                         <BeginStoryboard>
                             <Storyboard>
                                 <ThicknessAnimation Duration="0:0:0.250" To="0" Storyboard.TargetProperty="BorderThickness" />
-                                <DoubleAnimation Duration="0:0:0.100" To="44" Storyboard.TargetProperty="Height" />
-                                <DoubleAnimation Duration="0:0:0.100" To="70" Storyboard.TargetProperty="Width" />
+                                <DoubleAnimation Duration="0:0:0.100" To="0.9" Storyboard.TargetProperty="RenderTransform.ScaleX" />
+                                <DoubleAnimation Duration="0:0:0.100" To="0.9" Storyboard.TargetProperty="RenderTransform.ScaleY" />
                             </Storyboard>
                         </BeginStoryboard>
                     </Trigger.EnterActions>
@@ -84,8 +108,8 @@
                         <BeginStoryboard>
                             <Storyboard>
                                 <ThicknessAnimation Duration="0:0:0.250" To="0" Storyboard.TargetProperty="BorderThickness" />
-                                <DoubleAnimation Duration="0:0:0.100" To="44" Storyboard.TargetProperty="Height" />
-                                <DoubleAnimation Duration="0:0:0.100" To="75" Storyboard.TargetProperty="Width" />
+                                <DoubleAnimation Duration="0:0:0.100" To="1" Storyboard.TargetProperty="RenderTransform.ScaleX" />
+                                <DoubleAnimation Duration="0:0:0.100" To="1" Storyboard.TargetProperty="RenderTransform.ScaleY" />
                             </Storyboard>
                         </BeginStoryboard>
                     </Trigger.ExitActions>
@@ -94,14 +118,22 @@
         </Style>
 
         <Style TargetType="Button" x:Key="VerticalRectangleButton">
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                </Setter.Value>
+            </Setter>
+
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Trigger.EnterActions>
                         <BeginStoryboard>
                             <Storyboard>
                                 <ThicknessAnimation Duration="0:0:0.250" To="0" Storyboard.TargetProperty="BorderThickness" />
-                                <DoubleAnimation Duration="0:0:0.100" To="65" Storyboard.TargetProperty="Height" />
-                                <DoubleAnimation Duration="0:0:0.100" To="34" Storyboard.TargetProperty="Width" />
+                                <DoubleAnimation Duration="0:0:0.100" To="0.9" Storyboard.TargetProperty="RenderTransform.ScaleX" />
+                                <DoubleAnimation Duration="0:0:0.100" To="0.9" Storyboard.TargetProperty="RenderTransform.ScaleY" />
                             </Storyboard>
                         </BeginStoryboard>
                     </Trigger.EnterActions>
@@ -109,8 +141,8 @@
                         <BeginStoryboard>
                             <Storyboard>
                                 <ThicknessAnimation Duration="0:0:0.250" To="0" Storyboard.TargetProperty="BorderThickness" />
-                                <DoubleAnimation Duration="0:0:0.100" To="74" Storyboard.TargetProperty="Height" />
-                                <DoubleAnimation Duration="0:0:0.100" To="43" Storyboard.TargetProperty="Width" />
+                                <DoubleAnimation Duration="0:0:0.100" To="1" Storyboard.TargetProperty="RenderTransform.ScaleX" />
+                                <DoubleAnimation Duration="0:0:0.100" To="1" Storyboard.TargetProperty="RenderTransform.ScaleY" />
                             </Storyboard>
                         </BeginStoryboard>
                     </Trigger.ExitActions>
@@ -144,7 +176,7 @@
                     </Button.Template>
                 </Button>
 
-                <Button Content="2" FontSize="25" Command="{Binding OrderingCommand}" Style="{StaticResource CircleButton}" CommandParameter="2" Background="Transparent" RenderTransformOrigin="0.502,0.52" Grid.Column="2" Canvas.Left="269" Canvas.Top="107" Height="100" Width="100" HorizontalAlignment="Left" VerticalAlignment="Center">
+                <Button Content="2" FontSize="25" Command="{Binding OrderingCommand}" Style="{StaticResource CircleButton}" CommandParameter="2" Background="Transparent" Canvas.Left="269" Canvas.Top="107" Height="100" Width="100">
                     <Button.Foreground>
                         <MultiBinding Converter="{StaticResource TableOrderConverter}">
                             <Binding Path="Tables"/>
@@ -162,7 +194,7 @@
                     </Button.Template>
                 </Button>
 
-                <Button Content="3" FontSize="25" Command="{Binding OrderingCommand}" Style="{StaticResource CircleButton}" CommandParameter="3" Background="Transparent" Canvas.Left="59" Canvas.Top="222" Height="101" Width="100" HorizontalAlignment="Left" VerticalAlignment="Center">
+                <Button Content="3" FontSize="25" Command="{Binding OrderingCommand}" Style="{StaticResource CircleButton}" CommandParameter="3" Background="Transparent" Canvas.Left="59" Canvas.Top="222" Height="101" Width="100">
                     <Button.Foreground>
                         <MultiBinding Converter="{StaticResource TableOrderConverter}">
                             <Binding Path="Tables"/>
@@ -180,7 +212,7 @@
                     </Button.Template>
                 </Button>
 
-                <Button Content="4" BorderThickness="0" FontSize="25" Style="{StaticResource HorizontalRectangleButton}" Command="{Binding OrderingCommand}" CommandParameter="4" Background="Transparent" RenderTransformOrigin="0.658,0.42" Grid.Column="2" Canvas.Left="430" Canvas.Top="26" HorizontalAlignment="Center" VerticalAlignment="Center" Width="75" Height="44">
+                <Button Content="4" BorderThickness="0" FontSize="25" Style="{StaticResource HorizontalRectangleButton}" Command="{Binding OrderingCommand}" CommandParameter="4" Background="Transparent" Grid.Column="2" Canvas.Left="430" Canvas.Top="26" HorizontalAlignment="Center" VerticalAlignment="Center" Width="75" Height="44">
                     <Button.Foreground>
                         <MultiBinding Converter="{StaticResource TableOrderConverter}">
                             <Binding Path="Tables"/>
@@ -198,7 +230,7 @@
                     </Button.Template>
                 </Button>
 
-                <Button Content="5" BorderThickness="0" FontSize="25" Style="{StaticResource HorizontalRectangleButton}" Command="{Binding OrderingCommand}" CommandParameter="5" Background="Transparent" RenderTransformOrigin="0.658,0.42" Canvas.Left="575" Canvas.Top="26" Width="75" Height="44" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Button Content="5" BorderThickness="0" FontSize="25" Style="{StaticResource HorizontalRectangleButton}" Command="{Binding OrderingCommand}" CommandParameter="5" Background="Transparent" Canvas.Left="575" Canvas.Top="26" Width="75" Height="44" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Button.Foreground>
                         <MultiBinding Converter="{StaticResource TableOrderConverter}">
                             <Binding Path="Tables"/>
@@ -271,40 +303,13 @@
                     </Button.Template>
                 </Button>
 
-                <Button Content="9" BorderThickness="0" FontSize="25" Command="{Binding OrderingCommand}" CommandParameter="9" Background="Transparent" RenderTransformOrigin="0.658,0.42" Canvas.Left="467" Canvas.Top="135" Height="83" Width="84" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Button Content="9" BorderThickness="0" Style="{StaticResource RhomboidButton}" FontSize="25" Command="{Binding OrderingCommand}" CommandParameter="9" Background="Transparent" Canvas.Left="467" Canvas.Top="135" Height="83" Width="84" HorizontalAlignment="Center" VerticalAlignment="Top">
                     <Button.Foreground>
                         <MultiBinding Converter="{StaticResource TableOrderConverter}">
                             <Binding Path="Tables"/>
                             <Binding Source="9"/>
                         </MultiBinding>
                     </Button.Foreground>
-
-                    <Button.Style>
-                        <Style TargetType="Button">
-                            <Style.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Trigger.EnterActions>
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <ThicknessAnimation Duration="0:0:0.250" To="0" Storyboard.TargetProperty="BorderThickness" />
-                                                <DoubleAnimation Duration="0:0:0.100" To="70" Storyboard.TargetProperty="Height" />
-                                                <DoubleAnimation Duration="0:0:0.100" To="90" Storyboard.TargetProperty="Width" />
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </Trigger.EnterActions>
-                                    <Trigger.ExitActions>
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <ThicknessAnimation Duration="0:0:0.250" To="0" Storyboard.TargetProperty="BorderThickness" />
-                                                <DoubleAnimation Duration="0:0:0.100" To="80" Storyboard.TargetProperty="Height" />
-                                                <DoubleAnimation Duration="0:0:0.100" To="90" Storyboard.TargetProperty="Width" />
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </Trigger.ExitActions>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
 
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
@@ -320,7 +325,7 @@
                     </Button.Template>
                 </Button>
 
-                <Button Content="10" BorderThickness="0" Style="{StaticResource RhomboidButton}" FontSize="25" Command="{Binding OrderingCommand}" CommandParameter="10" Background="Transparent" RenderTransformOrigin="0.658,0.42" Canvas.Left="615" Canvas.Top="135" Height="83" Width="84" HorizontalAlignment="Left" VerticalAlignment="Center">
+                <Button Content="10" BorderThickness="0" Style="{StaticResource RhomboidButton}" FontSize="25" Command="{Binding OrderingCommand}" CommandParameter="10" Background="Transparent" Canvas.Left="615" Canvas.Top="135" Height="83" Width="84">
                     <Button.Foreground>
                         <MultiBinding Converter="{StaticResource TableOrderConverter}">
                             <Binding Path="Tables"/>
@@ -342,7 +347,7 @@
                     </Button.Template>
                 </Button>
 
-                <Button Content="11" BorderThickness="0" FontSize="25" Style="{StaticResource RhomboidButton}" Command="{Binding OrderingCommand}" CommandParameter="11" Background="Transparent" RenderTransformOrigin="0.658,0.42" Canvas.Left="462" Canvas.Top="262" Height="82" Width="94" HorizontalAlignment="Left" VerticalAlignment="Center">
+                <Button Content="11" BorderThickness="0" FontSize="25" Style="{StaticResource RhomboidButton}" Command="{Binding OrderingCommand}" CommandParameter="11" Background="Transparent" Canvas.Left="462" Canvas.Top="262" Height="82" Width="94">
                     <Button.Foreground>
                         <MultiBinding Converter="{StaticResource TableOrderConverter}">
                             <Binding Path="Tables"/>
@@ -364,7 +369,7 @@
                     </Button.Template>
                 </Button>
 
-                <Button Content="12" BorderThickness="0" Style="{StaticResource RhomboidButton}" FontSize="25" Command="{Binding OrderingCommand}" CommandParameter="12" Background="Transparent" RenderTransformOrigin="0.658,0.42" Canvas.Left="613" Canvas.Top="262" Height="82" Width="89" HorizontalAlignment="Left" VerticalAlignment="Center">
+                <Button Content="12" BorderThickness="0" Style="{StaticResource RhomboidButton}" FontSize="25" Command="{Binding OrderingCommand}" CommandParameter="12" Background="Transparent" Canvas.Left="613" Canvas.Top="262" Height="82" Width="89">
                     <Button.Foreground>
                         <MultiBinding Converter="{StaticResource TableOrderConverter}">
                             <Binding Path="Tables"/>
