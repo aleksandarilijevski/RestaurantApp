@@ -32,7 +32,6 @@
                     <Trigger.EnterActions>
                         <BeginStoryboard>
                             <Storyboard>
-                                <ThicknessAnimation Duration="0:0:0.250" To="0" Storyboard.TargetProperty="BorderThickness" />
                                 <DoubleAnimation Duration="0:0:0.100" To="0.9" Storyboard.TargetProperty="RenderTransform.ScaleX" />
                                 <DoubleAnimation Duration="0:0:0.100" To="0.9" Storyboard.TargetProperty="RenderTransform.ScaleY" />
                             </Storyboard>
@@ -41,7 +40,6 @@
                     <Trigger.ExitActions>
                         <BeginStoryboard>
                             <Storyboard>
-                                <ThicknessAnimation Duration="0:0:0.250" To="0" Storyboard.TargetProperty="BorderThickness" />
                                 <DoubleAnimation Duration="0:0:0.100" To="1" Storyboard.TargetProperty="RenderTransform.ScaleX" />
                                 <DoubleAnimation Duration="0:0:0.100" To="1" Storyboard.TargetProperty="RenderTransform.ScaleY" />
                             </Storyboard>
@@ -65,7 +63,6 @@
                     <Trigger.EnterActions>
                         <BeginStoryboard>
                             <Storyboard>
-                                <ThicknessAnimation Duration="0:0:0.250" To="0" Storyboard.TargetProperty="BorderThickness" />
                                 <DoubleAnimation Duration="0:0:0.100" To="0.9" Storyboard.TargetProperty="RenderTransform.ScaleX" />
                                 <DoubleAnimation Duration="0:0:0.100" To="0.9" Storyboard.TargetProperty="RenderTransform.ScaleY" />
                             </Storyboard>
@@ -74,7 +71,6 @@
                     <Trigger.ExitActions>
                         <BeginStoryboard>
                             <Storyboard>
-                                <ThicknessAnimation Duration="0:0:0.250" To="0" Storyboard.TargetProperty="BorderThickness" />
                                 <DoubleAnimation Duration="0:0:0.100" To="1" Storyboard.TargetProperty="RenderTransform.ScaleX" />
                                 <DoubleAnimation Duration="0:0:0.100" To="1" Storyboard.TargetProperty="RenderTransform.ScaleY" />
                             </Storyboard>
@@ -98,7 +94,6 @@
                     <Trigger.EnterActions>
                         <BeginStoryboard>
                             <Storyboard>
-                                <ThicknessAnimation Duration="0:0:0.250" To="0" Storyboard.TargetProperty="BorderThickness" />
                                 <DoubleAnimation Duration="0:0:0.100" To="0.9" Storyboard.TargetProperty="RenderTransform.ScaleX" />
                                 <DoubleAnimation Duration="0:0:0.100" To="0.9" Storyboard.TargetProperty="RenderTransform.ScaleY" />
                             </Storyboard>
@@ -107,7 +102,6 @@
                     <Trigger.ExitActions>
                         <BeginStoryboard>
                             <Storyboard>
-                                <ThicknessAnimation Duration="0:0:0.250" To="0" Storyboard.TargetProperty="BorderThickness" />
                                 <DoubleAnimation Duration="0:0:0.100" To="1" Storyboard.TargetProperty="RenderTransform.ScaleX" />
                                 <DoubleAnimation Duration="0:0:0.100" To="1" Storyboard.TargetProperty="RenderTransform.ScaleY" />
                             </Storyboard>
@@ -131,7 +125,6 @@
                     <Trigger.EnterActions>
                         <BeginStoryboard>
                             <Storyboard>
-                                <ThicknessAnimation Duration="0:0:0.250" To="0" Storyboard.TargetProperty="BorderThickness" />
                                 <DoubleAnimation Duration="0:0:0.100" To="0.9" Storyboard.TargetProperty="RenderTransform.ScaleX" />
                                 <DoubleAnimation Duration="0:0:0.100" To="0.9" Storyboard.TargetProperty="RenderTransform.ScaleY" />
                             </Storyboard>
@@ -140,7 +133,6 @@
                     <Trigger.ExitActions>
                         <BeginStoryboard>
                             <Storyboard>
-                                <ThicknessAnimation Duration="0:0:0.250" To="0" Storyboard.TargetProperty="BorderThickness" />
                                 <DoubleAnimation Duration="0:0:0.100" To="1" Storyboard.TargetProperty="RenderTransform.ScaleX" />
                                 <DoubleAnimation Duration="0:0:0.100" To="1" Storyboard.TargetProperty="RenderTransform.ScaleY" />
                             </Storyboard>
