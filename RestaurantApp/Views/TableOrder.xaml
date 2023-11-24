@@ -94,8 +94,8 @@
                     <Trigger.EnterActions>
                         <BeginStoryboard>
                             <Storyboard>
-                                <DoubleAnimation Duration="0:0:0.100" To="0.9" Storyboard.TargetProperty="RenderTransform.ScaleX" />
-                                <DoubleAnimation Duration="0:0:0.100" To="0.9" Storyboard.TargetProperty="RenderTransform.ScaleY" />
+                                <DoubleAnimation Duration="0:0:0.100" To="0.89" Storyboard.TargetProperty="RenderTransform.ScaleX" />
+                                <DoubleAnimation Duration="0:0:0.100" To="0.89" Storyboard.TargetProperty="RenderTransform.ScaleY" />
                             </Storyboard>
                         </BeginStoryboard>
                     </Trigger.EnterActions>
@@ -125,8 +125,8 @@
                     <Trigger.EnterActions>
                         <BeginStoryboard>
                             <Storyboard>
-                                <DoubleAnimation Duration="0:0:0.100" To="0.9" Storyboard.TargetProperty="RenderTransform.ScaleX" />
-                                <DoubleAnimation Duration="0:0:0.100" To="0.9" Storyboard.TargetProperty="RenderTransform.ScaleY" />
+                                <DoubleAnimation Duration="0:0:0.100" To="0.89" Storyboard.TargetProperty="RenderTransform.ScaleX" />
+                                <DoubleAnimation Duration="0:0:0.100" To="0.89" Storyboard.TargetProperty="RenderTransform.ScaleY" />
                             </Storyboard>
                         </BeginStoryboard>
                     </Trigger.EnterActions>
@@ -168,7 +168,7 @@
                     </Button.Template>
                 </Button>
 
-                <Button Content="2" FontSize="25" Command="{Binding OrderingCommand}" Style="{StaticResource CircleButton}" CommandParameter="2" Background="Transparent" Canvas.Left="269" Canvas.Top="107" Height="100" Width="100">
+                <Button Content="2" FontSize="25" Command="{Binding OrderingCommand}" Style="{StaticResource CircleButton}" CommandParameter="2" Background="Transparent" Canvas.Left="269" Canvas.Top="107" Height="99" Width="100">
                     <Button.Foreground>
                         <MultiBinding Converter="{StaticResource TableOrderConverter}">
                             <Binding Path="Tables"/>
@@ -186,7 +186,7 @@
                     </Button.Template>
                 </Button>
 
-                <Button Content="3" FontSize="25" Command="{Binding OrderingCommand}" Style="{StaticResource CircleButton}" CommandParameter="3" Background="Transparent" Canvas.Left="59" Canvas.Top="222" Height="101" Width="100">
+                <Button Content="3" FontSize="25" Command="{Binding OrderingCommand}" Style="{StaticResource CircleButton}" CommandParameter="3" Background="Transparent" Canvas.Left="59" Canvas.Top="222" Height="99" Width="100">
                     <Button.Foreground>
                         <MultiBinding Converter="{StaticResource TableOrderConverter}">
                             <Binding Path="Tables"/>
@@ -204,7 +204,7 @@
                     </Button.Template>
                 </Button>
 
-                <Button Content="4" BorderThickness="0" FontSize="25" Style="{StaticResource HorizontalRectangleButton}" Command="{Binding OrderingCommand}" CommandParameter="4" Background="Transparent" Grid.Column="2" Canvas.Left="430" Canvas.Top="26" HorizontalAlignment="Center" VerticalAlignment="Center" Width="75" Height="44">
+                <Button Content="4" BorderThickness="0" FontSize="25" Style="{StaticResource HorizontalRectangleButton}" Command="{Binding OrderingCommand}" CommandParameter="4" Background="Transparent" Canvas.Left="430" Canvas.Top="26" Width="75" Height="44">
                     <Button.Foreground>
                         <MultiBinding Converter="{StaticResource TableOrderConverter}">
                             <Binding Path="Tables"/>
@@ -241,7 +241,7 @@
                 </Button>
 
 
-                <Button Content="6" BorderThickness="0" FontSize="25" Style="{StaticResource HorizontalRectangleButton}" Command="{Binding OrderingCommand}" CommandParameter="6" Background="Transparent" RenderTransformOrigin="0.658,0.42" Canvas.Left="718" Canvas.Top="26" Height="44" Width="75" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Button Content="6" BorderThickness="0" FontSize="25" Style="{StaticResource HorizontalRectangleButton}" Command="{Binding OrderingCommand}" CommandParameter="6" Background="Transparent" RenderTransformOrigin="0.52,0.545" Canvas.Left="718" Canvas.Top="26" Height="44" Width="75" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Button.Foreground>
                         <MultiBinding Converter="{StaticResource TableOrderConverter}">
                             <Binding Path="Tables"/>
@@ -259,7 +259,7 @@
                     </Button.Template>
                 </Button>
 
-                <Button Content="7" BorderThickness="0" FontSize="25" Style="{StaticResource VerticalRectangleButton}" Command="{Binding OrderingCommand}" CommandParameter="7" Background="Transparent" Canvas.Left="771" Canvas.Top="112"  Height="78" Width="44">
+                <Button Content="7" BorderThickness="0" FontSize="25" Style="{StaticResource VerticalRectangleButton}" Command="{Binding OrderingCommand}" CommandParameter="7" Background="Transparent" Canvas.Left="771" Canvas.Top="112"  Height="75" Width="44">
                     <Button.Foreground>
                         <MultiBinding Converter="{StaticResource TableOrderConverter}">
                             <Binding Path="Tables"/>
@@ -277,7 +277,7 @@
                     </Button.Template>
                 </Button>
 
-                <Button Content="8" BorderThickness="0" FontSize="25" Style="{StaticResource VerticalRectangleButton}" Command="{Binding OrderingCommand}" CommandParameter="8" Background="Transparent" RenderTransformOrigin="0.658,0.42" Grid.ColumnSpan="2" Canvas.Left="771" Canvas.Top="260" Height="75" Width="44" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Button Content="8" BorderThickness="0" FontSize="25" Style="{StaticResource VerticalRectangleButton}" Command="{Binding OrderingCommand}" CommandParameter="8" Background="Transparent" Canvas.Left="771" Canvas.Top="260" Height="75" Width="44">
                     <Button.Foreground>
                         <MultiBinding Converter="{StaticResource TableOrderConverter}">
                             <Binding Path="Tables"/>
