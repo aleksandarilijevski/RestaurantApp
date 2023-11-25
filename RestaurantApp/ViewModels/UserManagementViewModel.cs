@@ -1,6 +1,8 @@
-﻿using EntityFramework.Models;
+﻿using EntityFramework.Enums;
+using EntityFramework.Models;
 using Prism.Commands;
 using Prism.Mvvm;
+using Prism.Regions;
 using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
 using System;
@@ -13,6 +15,7 @@ namespace RestaurantApp.ViewModels
     public class UserManagementViewModel : BindableBase
     {
         private IDatabaseService _databaseService;
+        private IRegionManager _regionManager;
         private IDialogService _dialogService;
         private DelegateCommand<User> _deleteUserCommand;
         private DelegateCommand _getAllUsersCommand;
@@ -25,10 +28,11 @@ namespace RestaurantApp.ViewModels
         private string _firstOrLastname;
         private long _jmbg;
 
-        public UserManagementViewModel(IDatabaseService databaseService, IDialogService dialogService)
+        public UserManagementViewModel(IDatabaseService databaseService, IDialogService dialogService, IRegionManager regionManager)
         {
             _dialogService = dialogService;
             _databaseService = databaseService;
+            _regionManager = regionManager;
         }
 
         public string FirstOrLastname
@@ -58,6 +62,8 @@ namespace RestaurantApp.ViewModels
                 RaisePropertyChanged();
             }
         }
+
+        public User User { get; set; }
 
         public ObservableCollection<User> Users
         {
@@ -145,8 +151,48 @@ namespace RestaurantApp.ViewModels
             Users = await _databaseService.GetAllUsers(efContext);
         }
 
+        private bool UserLogin()
+        {
+            bool isResultGood = false;
+
+            _dialogService.ShowDialog("userLoginDialog", r =>
+            {
+                if (r.Result == ButtonResult.OK)
+                {
+                    isResultGood = true;
+                    User = r.Parameters.GetValue<User>("user");
+                }
+                else
+                {
+                    isResultGood = false;
+                }
+            });
+
+            return isResultGood;
+        }
+
         private async void GetAllUsers()
         {
+            if (Users is not null)
+            {
+                Users.Clear();
+            }
+
+            bool result = UserLogin();
+
+            if (!result)
+            {
+                _regionManager.RequestNavigate("MainRegion", "Options");
+                return;
+            }
+
+            if (User.UserRole is UserRole.Waiter)
+            {
+                MessageBox.Show("Waiter can't access to user management!", "Access forbidden", MessageBoxButton.OK, MessageBoxImage.Error);
+                _regionManager.RequestNavigate("MainRegion", "Options");
+                return;
+            }
+
             EFContext efContext = new EFContext();
             Users = await _databaseService.GetAllUsers(efContext);
         }
@@ -212,7 +258,12 @@ namespace RestaurantApp.ViewModels
 
         private void ShowAddUserDialog()
         {
-            _dialogService.ShowDialog("addUserDialog");
+            DialogParameters dialogParameters = new DialogParameters
+            {
+                {"loggedUser", User}
+            };
+
+            _dialogService.ShowDialog("addUserDialog",dialogParameters, r => {});
             GetAllUsers();
         }
     }

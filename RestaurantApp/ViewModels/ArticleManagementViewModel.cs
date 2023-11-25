@@ -177,7 +177,10 @@ namespace RestaurantApp.ViewModels
 
         private async void GetAllArticles()
         {
-            Articles.Clear();
+            if (Articles is not null)
+            {
+                Articles.Clear();
+            }
 
             bool result = UserLogin();
 
@@ -189,7 +192,7 @@ namespace RestaurantApp.ViewModels
 
             if (User.UserRole is UserRole.Waiter)
             {
-                MessageBox.Show("Waiter can't access to article management!", "Article Management", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Waiter can't access to article management!", "Access forbidden", MessageBoxButton.OK, MessageBoxImage.Error);
                 _regionManager.RequestNavigate("MainRegion", "Options");
                 return;
             }

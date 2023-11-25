@@ -24,6 +24,8 @@ namespace RestaurantApp.ViewModels
 
         public User User { get; set; } = new User();
 
+        public User LoggedUser { get; set; }
+
         public string Title { get; set; } = "Add user";
 
         public UserRole UserRole { get; set; } = UserRole.Waiter;
@@ -67,10 +69,17 @@ namespace RestaurantApp.ViewModels
         public virtual void OnDialogOpened(IDialogParameters parameters)
         {
             User.DateOfBirth = DateTime.Now;
+            LoggedUser = parameters.GetValue<User>("loggedUser");
         }
 
         private async void AddUser(User user)
         {
+            if (LoggedUser.UserRole != UserRole.Admin)
+            {
+                MessageBox.Show("Manager can't create users!", "Access forbidden", MessageBoxButton.OK, MessageBoxImage.Error);
+                CloseDialog("true");
+            }
+
             user.UserRole = UserRole;
 
             if (user.Barcode == 0)

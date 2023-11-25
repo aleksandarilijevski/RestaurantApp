@@ -1,8 +1,10 @@
 ﻿using ClosedXML.Excel;
+using EntityFramework.Enums;
 using EntityFramework.Models;
 using Microsoft.Win32;
 using Prism.Commands;
 using Prism.Mvvm;
+using Prism.Regions;
 using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
 using System;
@@ -18,6 +20,7 @@ namespace RestaurantApp.ViewModels
     {
         private IDatabaseService _databaseService;
         private IDialogService _dialogService;
+        private IRegionManager _regionManager;
         private DelegateCommand _loadAllBillsCommand;
         private List<Bill> _originalBills = new List<Bill>();
         private ObservableCollection<Bill> _bills = new ObservableCollection<Bill>();
@@ -33,11 +36,14 @@ namespace RestaurantApp.ViewModels
         private DateTime _filterDateFrom;
         private DateTime _filterDateTo;
 
-        public ReportManagementViewModel(IDatabaseService databaseService, IDialogService dialogService)
+        public ReportManagementViewModel(IDatabaseService databaseService, IDialogService dialogService, IRegionManager regionManager)
         {
             _databaseService = databaseService;
             _dialogService = dialogService;
+            _regionManager = regionManager;
         }
+
+        public User User { get; set; }
 
         public decimal Total
         {
@@ -224,8 +230,48 @@ namespace RestaurantApp.ViewModels
             _dialogService.ShowDialog("reportDetailsDialog", dialogParameters, r => { });
         }
 
+        private bool UserLogin()
+        {
+            bool isResultGood = false;
+
+            _dialogService.ShowDialog("userLoginDialog", r =>
+            {
+                if (r.Result == ButtonResult.OK)
+                {
+                    isResultGood = true;
+                    User = r.Parameters.GetValue<User>("user");
+                }
+                else
+                {
+                    isResultGood = false;
+                }
+            });
+
+            return isResultGood;
+        }
+
         private async void LoadAllBills()
         {
+            if (OriginalBills is not null)
+            {
+                OriginalBills.Clear();
+            }
+
+            bool result = UserLogin();
+
+            if (!result)
+            {
+                _regionManager.RequestNavigate("MainRegion", "Options");
+                return;
+            }
+
+            if (User.UserRole is UserRole.Waiter)
+            {
+                MessageBox.Show("Waiter can't access to report management!", "Access forbidden", MessageBoxButton.OK, MessageBoxImage.Error);
+                _regionManager.RequestNavigate("MainRegion", "Options");
+                return;
+            }
+
             SoldArticleDetails = await _databaseService.GetAllSoldArticleDetails();
 
             List<Bill> bills = await _databaseService.GetAllBills();
