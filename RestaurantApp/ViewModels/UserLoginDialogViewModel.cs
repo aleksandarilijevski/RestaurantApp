@@ -98,7 +98,6 @@ namespace RestaurantApp.ViewModels
             }
 
             using EFContext efContext = new EFContext();
-
             User user = await _databaseService.GetUserByBarcode(barcodeLong, efContext);
 
             if (user is null)

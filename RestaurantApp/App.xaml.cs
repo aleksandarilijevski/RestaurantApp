@@ -28,7 +28,6 @@ namespace RestaurantApp
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            //containerRegistry.Register<IDatabaseService, DatabaseService>();
             IContainerProvider containerProvider = Container.Resolve<IContainerProvider>();
             containerRegistry.AddAbstractFactory<IDatabaseService, DatabaseService>(containerProvider);
 

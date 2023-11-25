@@ -1,4 +1,5 @@
-﻿using EntityFramework.Models;
+﻿using EntityFramework.Enums;
+using EntityFramework.Models;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
@@ -8,6 +9,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace RestaurantApp.ViewModels
 {
@@ -47,6 +49,8 @@ namespace RestaurantApp.ViewModels
                 RaisePropertyChanged();
             }
         }
+
+        public User User { get;set; }
 
         public ObservableCollection<Article> Articles
         {
@@ -151,8 +155,45 @@ namespace RestaurantApp.ViewModels
             RaisePropertyChanged(nameof(Articles));
         }
 
+        private bool UserLogin()
+        {
+            bool isResultGood = false;
+
+            _dialogService.ShowDialog("userLoginDialog", r =>
+            {
+                if (r.Result == ButtonResult.OK)
+                {
+                    isResultGood = true;
+                    User = r.Parameters.GetValue<User>("user");
+                }
+                else
+                {
+                    isResultGood = false;
+                }
+            });
+
+            return isResultGood;
+        }
+
         private async void GetAllArticles()
         {
+            Articles.Clear();
+
+            bool result = UserLogin();
+
+            if (!result)
+            {
+                _regionManager.RequestNavigate("MainRegion", "Options");
+                return;
+            }
+
+            if (User.UserRole is UserRole.Waiter)
+            {
+                MessageBox.Show("Waiter can't access to article management!", "Article Management", MessageBoxButton.OK, MessageBoxImage.Error);
+                _regionManager.RequestNavigate("MainRegion", "Options");
+                return;
+            }
+
             EFContext efContext = new EFContext();
             Articles = await _databaseService.GetAllArticles(efContext);
         }

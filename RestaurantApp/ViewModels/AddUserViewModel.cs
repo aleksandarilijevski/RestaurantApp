@@ -26,7 +26,7 @@ namespace RestaurantApp.ViewModels
 
         public string Title { get; set; } = "Add user";
 
-        public UserRole UserRole { get; set; }
+        public UserRole UserRole { get; set; } = UserRole.Waiter;
 
         public DelegateCommand<User> AddUserCommand
         {
