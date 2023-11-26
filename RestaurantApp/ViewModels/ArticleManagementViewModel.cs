@@ -5,6 +5,7 @@ using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -155,6 +156,10 @@ namespace RestaurantApp.ViewModels
             RaisePropertyChanged(nameof(Articles));
         }
 
+        public static DateTime LoggedTime { get; set; }
+
+        public DateTime SessionTime { get; set; }
+
         private bool UserLogin()
         {
             bool isResultGood = false;
@@ -165,6 +170,8 @@ namespace RestaurantApp.ViewModels
                 {
                     isResultGood = true;
                     User = r.Parameters.GetValue<User>("user");
+                    LoggedTime = DateTime.Now;
+                    SessionTime = LoggedTime.AddMinutes(1);
                 }
                 else
                 {
@@ -182,7 +189,12 @@ namespace RestaurantApp.ViewModels
                 Articles.Clear();
             }
 
-            bool result = UserLogin();
+            bool result = true;
+
+            if (User is null)
+            {
+                result = UserLogin();
+            }
 
             if (!result)
             {
@@ -196,6 +208,18 @@ namespace RestaurantApp.ViewModels
                 _regionManager.RequestNavigate("MainRegion", "Options");
                 return;
             }
+
+            LoggedTime = DateTime.Now;
+
+            if (LoggedTime.Minute >= SessionTime.Minute)
+            {
+                MessageBox.Show("Session expired!", "Access forbidden", MessageBoxButton.OK, MessageBoxImage.Error);
+                _regionManager.RequestNavigate("MainRegion", "Options");
+                User = null;
+                SessionTime = new DateTime();
+                return;
+            }
+
 
             EFContext efContext = new EFContext();
             Articles = await _databaseService.GetAllArticles(efContext);

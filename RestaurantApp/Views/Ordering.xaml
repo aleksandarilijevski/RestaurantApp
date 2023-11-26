@@ -27,6 +27,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100"/>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="100"/>
         </Grid.ColumnDefinitions>
 
         <TextBox FontSize="20" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" TextAlignment="Center" x:Name="searchBox" Text="{Binding Barcode}" Margin="3">
@@ -65,9 +66,9 @@
             </TextBox.Style>
         </TextBox>
 
-        <TextBlock Text="{Binding TableID, StringFormat='Order for table ID : {0}'}" Grid.Row="1" Grid.RowSpan="2" TextAlignment="Center" FontSize="17" Background="White" Grid.ColumnSpan="2"/>
+        <TextBlock Text="{Binding TableID, StringFormat='Order for table ID : {0}'}" Grid.Row="1" Grid.RowSpan="2" TextAlignment="Center" FontSize="17" Background="White" Grid.ColumnSpan="3"/>
 
-        <DataGrid Grid.Row="2" CanUserAddRows="False" AutoGenerateColumns="False" FontSize="20" Grid.ColumnSpan="2" ItemsSource="{Binding TableArticleQuantities,Mode=TwoWay, IsAsync=True}" SelectedItem="{Binding SelectedTableArticleQuantity}">
+        <DataGrid Grid.Row="2" CanUserAddRows="False" AutoGenerateColumns="False" FontSize="20" Grid.ColumnSpan="3" ItemsSource="{Binding TableArticleQuantities,Mode=TwoWay, IsAsync=True}" SelectedItem="{Binding SelectedTableArticleQuantity}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding Article.ID}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Barcode" Binding="{Binding Article.Barcode}" IsReadOnly="True" />
@@ -90,8 +91,17 @@
             Content="Go to payment"
             FontSize="16"
             Grid.Row="3"
-            Grid.ColumnSpan="2" 
+            Grid.ColumnSpan="3" 
             Command="{Binding ShowPaymentUserControlCommand}"/>
+
+        <Button
+            Margin="0,0,3,0"
+            Height="35"
+            Content="History"
+            FontSize="16"
+            Grid.Row="0"
+            Grid.Column="2"
+            Command="{Binding ShowInvoiceHistoryDialogCommand}"/>
 
     </Grid>
 </UserControl>

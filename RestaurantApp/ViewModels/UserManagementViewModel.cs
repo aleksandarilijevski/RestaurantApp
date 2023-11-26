@@ -178,7 +178,12 @@ namespace RestaurantApp.ViewModels
                 Users.Clear();
             }
 
-            bool result = UserLogin();
+            bool result = false;
+
+            if (User is null)
+            {
+               result = UserLogin();
+            }
 
             if (!result)
             {

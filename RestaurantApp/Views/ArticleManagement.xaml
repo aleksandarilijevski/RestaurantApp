@@ -125,13 +125,12 @@
             Width="auto"
             Height="45"
             Content="Data entry"
-            Grid.Row="2" 
+            Grid.Row="3" 
             Grid.Column="2"
             Grid.ColumnSpan="2"
             FontSize="25"
             Margin="5,0,10,0"
             Command="{Binding ShowAddArticleByDataEntryCommand}" />
-        
-
+       
     </Grid>
 </UserControl>

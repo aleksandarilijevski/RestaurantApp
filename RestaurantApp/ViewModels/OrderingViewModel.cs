@@ -30,6 +30,7 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand _showPaymentUserControlCommand;
         private DelegateCommand<TableArticleQuantity> _deleteArticleFromTableCommand;
         private DelegateCommand _navigateToTablesCommand;
+        private DelegateCommand _showInvoiceHistoryDialogCommand;
         private ObservableCollection<TableArticleQuantity> _tableArticleQuantities;
 
         public OrderingViewModel(IDatabaseService databaseService, IRegionManager regionManager, IDialogService dialogService)
@@ -153,6 +154,29 @@ namespace RestaurantApp.ViewModels
                 _navigateToTablesCommand = new DelegateCommand(NavigateToTables);
                 return _navigateToTablesCommand;
             }
+        }
+
+        public DelegateCommand ShowInvoiceHistoryDialogCommand
+        {
+            get
+            {
+                _showInvoiceHistoryDialogCommand = new DelegateCommand(ShowInvoiceHistoryDialog);
+                return _showInvoiceHistoryDialogCommand;
+            }
+        }
+
+        private async void ShowInvoiceHistoryDialog()
+        {
+            List<Bill> originalBills = await _databaseService.GetAllBills();
+            List<Bill> billsFilteredByDate = originalBills.Where(x => x.CreatedDateTime?.Date == DateTime.Today && x.TableID == Table.ID).ToList();
+
+            DialogParameters dialogParameters = new DialogParameters
+            {
+                { "bills", billsFilteredByDate},
+                { "tableID", Table.ID},
+            };
+
+            _dialogService.ShowDialog("invoiceHistoryDialog",dialogParameters,r => {});
         }
 
         public void OnNavigatedTo(NavigationContext navigationContext)
