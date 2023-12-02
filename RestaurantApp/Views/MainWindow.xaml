@@ -15,6 +15,7 @@
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding CheckIfAnyUserExistsCommand}"/>
             <i:InvokeCommandAction Command="{Binding LoadConfigurationCommand}"/>
+            <i:InvokeCommandAction Command="{Binding CheckIfConfigFileExistsCommand}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
 

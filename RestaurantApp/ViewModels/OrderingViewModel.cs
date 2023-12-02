@@ -176,7 +176,7 @@ namespace RestaurantApp.ViewModels
                 { "tableID", Table.ID},
             };
 
-            _dialogService.ShowDialog("invoiceHistoryDialog",dialogParameters,r => {});
+            _dialogService.ShowDialog("tableInvoiceHistoryDialog", dialogParameters,r => {});
         }
 
         public void OnNavigatedTo(NavigationContext navigationContext)

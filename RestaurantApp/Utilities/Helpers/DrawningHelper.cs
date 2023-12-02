@@ -1,4 +1,5 @@
-﻿using EntityFramework.Models;
+﻿using DocumentFormat.OpenXml.Office.CoverPageProps;
+using EntityFramework.Models;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 using RestaurantApp.Enums;
@@ -14,6 +15,10 @@ namespace RestaurantApp.Utilities.Helpers
 {
     public static class DrawningHelper
     {
+        public static string CompanyName { get; set; }
+
+        public static string CompanyAddress { get; set; }
+
         private static async Task<XImage> GetCustomQRCode(string text)
         {
             string url = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + text;

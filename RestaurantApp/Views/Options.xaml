@@ -13,7 +13,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="140"/>
+            <ColumnDefinition Width="130"/>
             <ColumnDefinition Width="80"/>
             <ColumnDefinition Width="140"/>
             <ColumnDefinition Width="80"/>
@@ -26,6 +26,7 @@
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
             <RowDefinition Height="*" />
             <RowDefinition Height="150" />
             <RowDefinition Height="*" />
@@ -34,12 +35,20 @@
         <ContentControl prism:RegionManager.RegionName="OptionsRegion"/>
 
         <Button
+            Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+            ToolTip="MaterialDesignFloatingActionMiniDarkButton"     
+            Command="{Binding ShowCompanyInformationsDialogCommand}"
+            Grid.Row="0" Grid.Column="10" HorizontalAlignment="Right" Margin="0,5,10,0">
+            <materialDesign:PackIcon Kind="Cog" />
+        </Button>
+
+        <Button
             Width="130"
             Height="130"
             Style="{StaticResource MaterialDesignFlatSecondaryDarkBgButton}"
             ToolTip="MaterialDesignFlatSecondaryDarkBgButton"
             Content="   Table&#xa;overview" 
-            Grid.Row="1" 
+            Grid.Row="2" 
             Grid.Column="1" 
             FontSize="15" 
             Command="{Binding ShowTableOverviewCommand}"/>
@@ -49,7 +58,7 @@
             Width="130"
             Height="130"
             Style="{StaticResource MaterialDesignFlatSecondaryDarkBgButton}"
-            Grid.Row="1"
+            Grid.Row="2"
             Grid.Column="3"
             FontSize="15"
             Command="{Binding ShowArticleManagementCommand}"/>
@@ -59,7 +68,7 @@
             Height="130"
             Style="{StaticResource MaterialDesignFlatSecondaryDarkBgButton}"
             Content="       User&#xa;Management" 
-            Grid.Row="1" 
+            Grid.Row="2" 
             Grid.Column="5" 
             FontSize="15" 
             Command="{Binding ShowUserManagementCommand}"/>
@@ -69,7 +78,7 @@
             Width="130"
             Height="130"
             Content=" Online&#xa;ordering"
-            Grid.Row="1"
+            Grid.Row="2"
             Grid.Column="7"
             FontSize="15"
             Command="{Binding ShowOnlineOrderingCommand}"/>
@@ -79,7 +88,7 @@
             Width="130"
             Height="130"
             Content="     Report&#xa;Management"
-            Grid.Row="1"
+            Grid.Row="2"
             Grid.Column="9"
             FontSize="15"
             Command="{Binding ShowReportManagementCommand}"/>

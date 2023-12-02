@@ -1,11 +1,15 @@
 ﻿using EntityFramework.Models;
+using Newtonsoft.Json.Linq;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
+using RestaurantApp.Utilities.Helpers;
 using System;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Windows;
 
 namespace RestaurantApp.ViewModels
 {
@@ -21,6 +25,7 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand _loadConfigurationCommand;
         private DelegateCommand _showTableOverviewCommand;
         private DelegateCommand _checkIfAnyUserExistsCommand;
+        private DelegateCommand _checkIfConfigFileExistsCommand;
 
         public MainWindowViewModel(IRegionManager regionManager, IDatabaseService databaseService, IDialogService dialogService)
         {
@@ -36,6 +41,51 @@ namespace RestaurantApp.ViewModels
                 _navigateToArticleManagementCommand = new DelegateCommand(() => Navigate("MainRegion", "ArticleManagement"));
                 return _navigateToArticleManagementCommand;
             }
+        }
+
+        public DelegateCommand CheckIfConfigFileExistsCommand
+        {
+            get
+            {
+                _checkIfConfigFileExistsCommand = new DelegateCommand(CheckIfConfigFileExists);
+                return _checkIfConfigFileExistsCommand;
+            }
+        }
+
+        private void CheckIfConfigFileExists()
+        {
+            if (!File.Exists("config.ini"))
+            {
+                do
+                {
+                    _dialogService.ShowDialog("companyInformationsDialog");
+                } while (!File.Exists("config.ini"));
+            }
+
+            string data = string.Empty;
+
+            using(StreamReader streamReader = new StreamReader("config.ini"))
+            {
+                data = streamReader.ReadToEnd();
+            }
+
+            JObject parsedData = JObject.Parse(data);
+
+            if (parsedData.Count == 0)
+            {
+                MessageBox.Show("Config file is not in right format!", "Company informations", MessageBoxButton.OK, MessageBoxImage.Error);
+                File.Delete("config.ini");
+
+                do
+                {
+                    _dialogService.ShowDialog("companyInformationsDialog");
+                } while (!File.Exists("config.ini"));
+
+                return;
+            }
+
+            DrawningHelper.CompanyName = parsedData["Company name"].ToString();
+            DrawningHelper.CompanyAddress = parsedData["Company address"].ToString();
         }
 
         public DelegateCommand NavigateToUserManagementCommand

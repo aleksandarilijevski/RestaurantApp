@@ -118,7 +118,17 @@ namespace RestaurantApp.ViewModels
 
         private async void PrintBill()
         {
-            List<TableArticleQuantity> soldTableArticleQuantities = Bill.Table.TableArticleQuantities.OfType<SoldTableArticleQuantity>().Select(sold => (TableArticleQuantity)sold).ToList();
+            List<TableArticleQuantity> soldTableArticleQuantities = null;
+
+            if (Bill.Table is not null)
+            {
+                soldTableArticleQuantities = Bill.Table.TableArticleQuantities.OfType<SoldTableArticleQuantity>().Select(sold => (TableArticleQuantity)sold).ToList();
+            }
+
+            if (Bill.OnlineOrder is not null)
+            {
+                soldTableArticleQuantities = Bill.OnlineOrder.TableArticleQuantities.OfType<SoldTableArticleQuantity>().Select(sold => (TableArticleQuantity)sold).ToList();
+            }
 
             User user = await _databaseService.GetUserByID(Bill.UserID, new EFContext());
             DrawningHelper.RedrawBill(Bill, soldTableArticleQuantities,user);

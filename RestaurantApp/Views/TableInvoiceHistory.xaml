@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="RestaurantApp.Views.InvoiceHistory"
+﻿<UserControl x:Class="RestaurantApp.Views.TableInvoiceHistory"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -29,7 +29,7 @@
                 <DataGridTemplateColumn Header="Details">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="Details" Command="{Binding DataContext.ShowReportDetailsCommand,RelativeSource={RelativeSource AncestorType={x:Type local:InvoiceHistory}}}"/>
+                            <Button Content="Details" Command="{Binding DataContext.ShowReportDetailsCommand,RelativeSource={RelativeSource AncestorType={x:Type local:TableInvoiceHistory}}}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

@@ -38,7 +38,8 @@ namespace RestaurantApp.Module
             containerRegistry.RegisterDialog<ReportDetails, ReportDetailsViewModel>("reportDetailsDialog");
             containerRegistry.RegisterDialog<DataEntryDetails, DataEntryDetailsViewModel>("dataEntryDetailsDialog");
             containerRegistry.RegisterDialog<UserLoginDialog, UserLoginDialogViewModel>("userLoginDialog");
-            containerRegistry.RegisterDialog<InvoiceHistory, InvoiceHistoryViewModel>("invoiceHistoryDialog");
+            containerRegistry.RegisterDialog<TableInvoiceHistory, TableInvoiceHistoryViewModel>("tableInvoiceHistoryDialog");
+            containerRegistry.RegisterDialog<CompanyInformations, CompanyInformationsViewModel>("companyInformationsDialog");
         }
     }
 }

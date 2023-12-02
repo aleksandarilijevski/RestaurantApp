@@ -29,7 +29,7 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand<TableArticleQuantity> _deleteTableArticleQuantityCommand;
         private DelegateCommand _goToPaymentCommand;
         private DelegateCommand _checkIfOnlineOrderExistsCommand;
-
+        private DelegateCommand _showInvoiceHistoryDialogCommand;
         private string _firstname;
         private string _lastname;
         private string _address;
@@ -212,6 +212,15 @@ namespace RestaurantApp.ViewModels
             }
         }
 
+        public DelegateCommand ShowInvoiceHistoryDialogCommand
+        {
+            get
+            {
+                _showInvoiceHistoryDialogCommand = new DelegateCommand(ShowInvoiceHistoryDialog);
+                return _showInvoiceHistoryDialogCommand;
+            }
+        }
+
         public DelegateCommand<string> AddArticleToOnlineOrderCommand
         {
             get
@@ -239,6 +248,19 @@ namespace RestaurantApp.ViewModels
             ApartmentNumber = 0;
             PhoneNumber = 0;
             Floor = 0;
+        }
+
+        private async void ShowInvoiceHistoryDialog()
+        {
+            List<Bill> originalBills = await _databaseService.GetAllBills();
+            List<Bill> billsFilteredByDate = originalBills.Where(x => x.CreatedDateTime?.Date == DateTime.Today && x.OnlineOrder != null).ToList();
+
+            DialogParameters dialogParameters = new DialogParameters
+            {
+                { "bills", billsFilteredByDate},
+            };
+
+            _dialogService.ShowDialog("invoiceHistoryDialog", dialogParameters, r => { });
         }
 
         private void GoToPayment()

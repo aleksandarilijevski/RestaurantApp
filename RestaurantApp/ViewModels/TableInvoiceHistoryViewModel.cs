@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace RestaurantApp.ViewModels
 {
-    public class InvoiceHistoryViewModel : IDialogAware
+    public class TableInvoiceHistoryViewModel : IDialogAware
     {
         private IDialogService _dialogService;
 
@@ -16,13 +16,13 @@ namespace RestaurantApp.ViewModels
 
         public string DateNow { get; set; } = DateTime.Now.ToString("dd/MM/yyyy");
 
-        public string Title => "Invoice History";
+        public string Title => "Table invoice history";
 
         public Bill SelectedBill { get; set; }
 
         private DelegateCommand _showReportDetailsCommand;
 
-        public InvoiceHistoryViewModel(IDialogService dialogService)
+        public TableInvoiceHistoryViewModel(IDialogService dialogService)
         {
             _dialogService = dialogService;
         }

@@ -19,7 +19,7 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="35" />
-            <RowDefinition Height="25" />
+            <RowDefinition Height="40" />
             <RowDefinition Height="*" />
             <RowDefinition Height="35" />
         </Grid.RowDefinitions>
@@ -30,7 +30,7 @@
             <ColumnDefinition Width="100"/>
         </Grid.ColumnDefinitions>
 
-        <TextBox FontSize="20" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" TextAlignment="Center" x:Name="searchBox" Text="{Binding Barcode}" Margin="3">
+        <TextBox FontSize="20" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" TextAlignment="Center" x:Name="searchBox" Text="{Binding Barcode}" Margin="3">
             <TextBox.InputBindings>
                 <KeyBinding Command="{Binding AddArticleToTableCommand}" CommandParameter="{Binding Text,ElementName=searchBox}" Key="Enter" />
             </TextBox.InputBindings>
@@ -95,11 +95,11 @@
             Command="{Binding ShowPaymentUserControlCommand}"/>
 
         <Button
-            Margin="0,0,3,0"
+            Margin="0,0,5,5"
             Height="35"
             Content="History"
             FontSize="16"
-            Grid.Row="0"
+            Grid.Row="1"
             Grid.Column="2"
             Command="{Binding ShowInvoiceHistoryDialogCommand}"/>
 
