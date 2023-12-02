@@ -118,9 +118,9 @@ namespace RestaurantApp.Utilities.Helpers
             offset += 20;
             gfx.DrawString("123456789", font, XBrushes.Black, new XRect(0, offset, page.Width, 0), XStringFormats.TopCenter);
             offset += 20;
-            gfx.DrawString("VP DIMA TOPOLA", font, XBrushes.Black, new XRect(0, offset, page.Width, 0), XStringFormats.TopCenter);
+            gfx.DrawString(CompanyName ,font, XBrushes.Black, new XRect(0, offset, page.Width, 0), XStringFormats.TopCenter);
             offset += 20;
-            gfx.DrawString("Mije Todorovica 76", font, XBrushes.Black, new XRect(0, offset, page.Width, 0), XStringFormats.TopCenter);
+            gfx.DrawString(CompanyAddress, font, XBrushes.Black, new XRect(0, offset, page.Width, 0), XStringFormats.TopCenter);
             offset += 50;
             gfx.DrawString("Kasir :", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
             gfx.DrawString(user.FirstAndLastName.PadLeft(80), font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
@@ -256,9 +256,9 @@ namespace RestaurantApp.Utilities.Helpers
             offset += 20;
             gfx.DrawString("123456789", font, XBrushes.Black, new XRect(0, offset, page.Width, 0), XStringFormats.TopCenter);
             offset += 20;
-            gfx.DrawString("VP DIMA TOPOLA", font, XBrushes.Black, new XRect(0, offset, page.Width, 0), XStringFormats.TopCenter);
+            gfx.DrawString(CompanyName, font, XBrushes.Black, new XRect(0, offset, page.Width, 0), XStringFormats.TopCenter);
             offset += 20;
-            gfx.DrawString("Mije Todorovica 76", font, XBrushes.Black, new XRect(0, offset, page.Width, 0), XStringFormats.TopCenter);
+            gfx.DrawString(CompanyAddress, font, XBrushes.Black, new XRect(0, offset, page.Width, 0), XStringFormats.TopCenter);
             offset += 50;
             gfx.DrawString("Kasir :", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
             gfx.DrawString(user.FirstAndLastName.PadLeft(80), font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
