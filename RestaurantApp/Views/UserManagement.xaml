@@ -84,6 +84,7 @@
                 <DataGridTextColumn Header="First and lastname" Binding="{Binding FirstAndLastName}"/>
                 <DataGridTextColumn Header="Date of birth" Binding="{Binding DateOfBirth}"/>
                 <DataGridTextColumn Header="JMBG" Binding="{Binding JMBG}"/>
+                <DataGridTextColumn Header="Role" Binding="{Binding UserRole}"/>
 
                 <DataGridTemplateColumn Header="Edit">
                     <DataGridTemplateColumn.CellTemplate>

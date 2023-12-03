@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         xmlns:prism="http://prismlibrary.com/"
         prism:ViewModelLocator.AutoWireViewModel="True"
-        Title="Restaurant Application" Height="420" Width="1200">
+        Title="Restaurant Application" Height="600" Width="1150">
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">

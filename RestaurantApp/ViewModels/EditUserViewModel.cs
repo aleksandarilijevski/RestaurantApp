@@ -104,6 +104,8 @@ namespace RestaurantApp.ViewModels
                 return;
             }
 
+            efContext.Entry(userJMBGCheck).State = EntityState.Detached;
+
             await _databaseService.EditUser(user, efContext);
             CloseDialog("true");
         }
