@@ -176,7 +176,7 @@ namespace RestaurantApp.ViewModels
                 { "tableID", Table.ID},
             };
 
-            _dialogService.ShowDialog("tableInvoiceHistoryDialog", dialogParameters,r => {});
+            _dialogService.ShowDialog("tableInvoiceHistoryDialog", dialogParameters, r => { });
         }
 
         public void OnNavigatedTo(NavigationContext navigationContext)
@@ -237,22 +237,31 @@ namespace RestaurantApp.ViewModels
 
             List<TableArticleQuantity> filtered = Table.TableArticleQuantities.Where(x => x is not (SoldTableArticleQuantity)).ToList();
 
-            if (Table.UserID is null || filtered.Count == 0)
-            {
-                bool dialogResult = UserLogin();
+            bool dialogResult = UserLogin();
 
-                if (dialogResult)
+            if (dialogResult)
+            {
+                if (Table.User is null || filtered.Count == 0)
                 {
                     Table.UserID = User.ID;
-                    await _databaseService.EditTable(Table, efContext);
+                    Table.User = await _databaseService.GetUserByID(User.ID, efContext);
                 }
 
-                if (!dialogResult)
+                if (User.Barcode != Table.User.Barcode)
                 {
+                    MessageBox.Show("Table is already in use by another waiter!", "Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
                     _regionManager.RequestNavigate("MainRegion", "TableOrder");
                     return;
                 }
+
+                await _databaseService.EditTable(Table, efContext);
             }
+            else
+            {
+                _regionManager.RequestNavigate("MainRegion", "TableOrder");
+                return;
+            }
+
 
             if (Table.TableArticleQuantities is null)
             {

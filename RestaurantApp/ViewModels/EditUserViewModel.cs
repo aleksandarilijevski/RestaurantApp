@@ -88,7 +88,10 @@ namespace RestaurantApp.ViewModels
 
             User userBarcodeCheck = await _databaseService.GetUserByBarcode(user.Barcode, efContext);
 
-            efContext.Entry(userBarcodeCheck).State = EntityState.Detached;
+            if (userBarcodeCheck is null)
+            {
+                efContext.Entry(userBarcodeCheck).State = EntityState.Detached;
+            }
 
             if (userBarcodeCheck is not null && userBarcodeCheck.ID != user.ID)
             {
@@ -104,7 +107,10 @@ namespace RestaurantApp.ViewModels
                 return;
             }
 
-            efContext.Entry(userJMBGCheck).State = EntityState.Detached;
+            if (userJMBGCheck is null)
+            {
+                efContext.Entry(userJMBGCheck).State = EntityState.Detached;
+            }
 
             await _databaseService.EditUser(user, efContext);
             CloseDialog("true");

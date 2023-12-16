@@ -18,7 +18,6 @@ namespace RestaurantApp.ViewModels
 {
     public class ArticleManagementViewModel : BindableBase
     {
-        private Timer _timer;
         private IDatabaseService _databaseService;
         private IDialogService _dialogService;
         private IRegionManager _regionManager;
@@ -39,8 +38,6 @@ namespace RestaurantApp.ViewModels
             _dialogService = dialogService;
             _databaseService = databaseService;
             _regionManager = regionManager;
-            InitializeMouseInactivityTimer();
-            InitializeMouseEvents();
         }
 
         public string ArticleName
@@ -71,31 +68,6 @@ namespace RestaurantApp.ViewModels
                 _articles = value;
                 RaisePropertyChanged();
             }
-        }
-
-        private void InitializeMouseInactivityTimer()
-        {
-            _timer = new Timer(5000);
-            _timer.Elapsed += MouseInactivityTimerElapsed;
-            _timer.Start();
-        }
-
-        private void MouseInactivityTimerElapsed(object sender, ElapsedEventArgs e)
-        {
-            Debug.WriteLine("Logoff!");
-        }
-
-
-        private void InitializeMouseEvents()
-        {
-            Mouse.AddMouseMoveHandler(Application.Current.MainWindow, MouseMoveHandler);
-        }
-
-        private void MouseMoveHandler(object sender, MouseEventArgs e)
-        {
-            // Reset the timer on mouse move
-            _timer.Stop();
-            _timer.Start();
         }
 
         public List<ArticleDetails> ArticleDetailsList { get; set; }
