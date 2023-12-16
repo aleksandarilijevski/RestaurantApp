@@ -5,6 +5,7 @@ using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
+using RestaurantApp.Utilities.Helpers;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -178,24 +179,25 @@ namespace RestaurantApp.ViewModels
                 Users.Clear();
             }
 
-            bool result = false;
-
-            if (User is null)
+            if (LoggedUserHelper.LoggedUser is null)
             {
-               result = UserLogin();
-            }
+                bool result = false;
+                result = UserLogin();
 
-            if (!result)
-            {
-                _regionManager.RequestNavigate("MainRegion", "Options");
-                return;
-            }
+                if (!result)
+                {
+                    _regionManager.RequestNavigate("MainRegion", "Options");
+                    return;
+                }
 
-            if (User.UserRole is UserRole.Waiter)
-            {
-                MessageBox.Show("Waiter can't access to user management!", "Access forbidden", MessageBoxButton.OK, MessageBoxImage.Error);
-                _regionManager.RequestNavigate("MainRegion", "Options");
-                return;
+                if (User.UserRole is UserRole.Waiter)
+                {
+                    MessageBox.Show("Waiter can't access to user management!", "Access forbidden", MessageBoxButton.OK, MessageBoxImage.Error);
+                    _regionManager.RequestNavigate("MainRegion", "Options");
+                    return;
+                }
+
+                LoggedUserHelper.LoggedUser = User;
             }
 
             EFContext efContext = new EFContext();
@@ -268,7 +270,7 @@ namespace RestaurantApp.ViewModels
                 {"loggedUser", User}
             };
 
-            _dialogService.ShowDialog("addUserDialog",dialogParameters, r => {});
+            _dialogService.ShowDialog("addUserDialog", dialogParameters, r => { });
             GetAllUsers();
         }
     }

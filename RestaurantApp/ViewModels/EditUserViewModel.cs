@@ -88,16 +88,13 @@ namespace RestaurantApp.ViewModels
 
             User userBarcodeCheck = await _databaseService.GetUserByBarcode(user.Barcode, efContext);
 
-            if (userBarcodeCheck is null)
-            {
-                efContext.Entry(userBarcodeCheck).State = EntityState.Detached;
-            }
 
             if (userBarcodeCheck is not null && userBarcodeCheck.ID != user.ID)
             {
                 MessageBox.Show("User with entered barcode already exists!", "Edit user", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+
 
             User userJMBGCheck = await _databaseService.GetUserByJMBG(user.JMBG, efContext);
 
@@ -107,7 +104,7 @@ namespace RestaurantApp.ViewModels
                 return;
             }
 
-            if (userJMBGCheck is null)
+            if (userJMBGCheck is not null)
             {
                 efContext.Entry(userJMBGCheck).State = EntityState.Detached;
             }

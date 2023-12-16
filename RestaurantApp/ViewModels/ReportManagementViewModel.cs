@@ -7,6 +7,7 @@ using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
+using RestaurantApp.Utilities.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -257,19 +258,25 @@ namespace RestaurantApp.ViewModels
                 OriginalBills.Clear();
             }
 
-            bool result = UserLogin();
 
-            if (!result)
+            if (LoggedUserHelper.LoggedUser is null)
             {
-                _regionManager.RequestNavigate("MainRegion", "Options");
-                return;
-            }
+                bool result = UserLogin();
 
-            if (User.UserRole is UserRole.Waiter)
-            {
-                MessageBox.Show("Waiter can't access to report management!", "Access forbidden", MessageBoxButton.OK, MessageBoxImage.Error);
-                _regionManager.RequestNavigate("MainRegion", "Options");
-                return;
+                if (!result)
+                {
+                    _regionManager.RequestNavigate("MainRegion", "Options");
+                    return;
+                }
+
+                if (User.UserRole is UserRole.Waiter)
+                {
+                    MessageBox.Show("Waiter can't access to report management!", "Access forbidden", MessageBoxButton.OK, MessageBoxImage.Error);
+                    _regionManager.RequestNavigate("MainRegion", "Options");
+                    return;
+                }
+
+                LoggedUserHelper.LoggedUser = User;
             }
 
             SoldArticleDetails = await _databaseService.GetAllSoldArticleDetails();
