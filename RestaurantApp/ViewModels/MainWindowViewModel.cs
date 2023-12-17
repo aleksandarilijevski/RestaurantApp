@@ -8,8 +8,11 @@ using RestaurantApp.Services.Interface;
 using RestaurantApp.Utilities.Helpers;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
+using System.Timers;
 using System.Windows;
+using System.Windows.Input;
 
 namespace RestaurantApp.ViewModels
 {
@@ -26,12 +29,41 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand _showTableOverviewCommand;
         private DelegateCommand _checkIfAnyUserExistsCommand;
         private DelegateCommand _checkIfConfigFileExistsCommand;
+        //10 minutes = 60000 * 10
+        private int InactivityTimer = 3000;
+        private Timer mouseInactivityTimer;
 
         public MainWindowViewModel(IRegionManager regionManager, IDatabaseService databaseService, IDialogService dialogService)
         {
             _regionManager = regionManager;
             _databaseService = databaseService;
             _dialogService = dialogService;
+            InitializeMouseInactivityTimer();
+            InitializeMouseEvents();
+        }
+
+        private void InitializeMouseInactivityTimer()
+        {
+            mouseInactivityTimer = new Timer(InactivityTimer);
+            mouseInactivityTimer.Elapsed += MouseInactivityTimerElapsed;
+            mouseInactivityTimer.Start();
+        }
+
+        private void InitializeMouseEvents()
+        {
+            Mouse.AddMouseMoveHandler(Application.Current.MainWindow, MouseMoveHandler);
+        }
+
+        private void MouseMoveHandler(object sender, MouseEventArgs e)
+        {
+            mouseInactivityTimer.Stop();
+            mouseInactivityTimer.Start();
+        }
+
+        private void MouseInactivityTimerElapsed(object sender, ElapsedEventArgs e)
+        {
+            LoggedUserHelper.LoggedUser = null;
+            Debug.WriteLine("User is logged off!");
         }
 
         public DelegateCommand NavigateToArticleManagementCommand
@@ -64,7 +96,7 @@ namespace RestaurantApp.ViewModels
 
             string data = string.Empty;
 
-            using(StreamReader streamReader = new StreamReader("config.ini"))
+            using (StreamReader streamReader = new StreamReader("config.ini"))
             {
                 data = streamReader.ReadToEnd();
             }

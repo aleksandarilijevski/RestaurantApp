@@ -1,7 +1,10 @@
-﻿using Prism.Commands;
+﻿using EntityFramework.Models;
+using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
+using RestaurantApp.Utilities.Helpers;
+using System.Windows;
 
 namespace RestaurantApp.ViewModels
 {
@@ -15,8 +18,27 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand _showReportManagementCommand;
         private DelegateCommand _showOnlineOrderingCommand;
         private DelegateCommand _showCompanyInformationsDialogCommand;
+        private DelegateCommand _showLoggedUserCommand;
+        private DelegateCommand _logoutUserCommand;
+        private string _message;
 
-        public OptionsViewModel(IRegionManager regionManager,IDialogService dialogService)
+        public User LoggedUser { get; set; }
+
+        public string Message
+        {
+            get
+            {
+                return _message;
+            }
+
+            set
+            {
+                _message = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public OptionsViewModel(IRegionManager regionManager, IDialogService dialogService)
         {
             _regionManager = regionManager;
             _dialogService = dialogService;
@@ -73,6 +95,55 @@ namespace RestaurantApp.ViewModels
             {
                 _showCompanyInformationsDialogCommand = new DelegateCommand(ShowCompanyInformationsDialog);
                 return _showCompanyInformationsDialogCommand;
+            }
+        }
+
+        public DelegateCommand ShowLoggedUserCommand
+        {
+            get
+            {
+                _showLoggedUserCommand = new DelegateCommand(ShowLoggedUser);
+                return _showLoggedUserCommand;
+            }
+        }
+
+        public DelegateCommand LogoutUserCommand
+        {
+            get
+            {
+                _logoutUserCommand = new DelegateCommand(LogoutUser);
+                return _logoutUserCommand;
+            }
+        }
+
+        private void LogoutUser()
+        {
+            if (LoggedUserHelper.LoggedUser is null)
+            {
+                MessageBox.Show("No one is logged to be logged out!", "Main menu", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (LoggedUserHelper.LoggedUser is not null)
+            {
+                MessageBox.Show("You're logged out!", "Main menu", MessageBoxButton.OK, MessageBoxImage.Information);
+                LoggedUserHelper.LoggedUser = null;
+                Message = "No one is logged!";
+            }
+        }
+
+        private void ShowLoggedUser()
+        {
+            LoggedUser = LoggedUserHelper.LoggedUser;
+
+            if (LoggedUser is null)
+            {
+                Message = "No one is logged!";
+            }
+
+            if (LoggedUser is not null)
+            {
+                Message = $"User : {LoggedUser.FirstAndLastName} is logged!         |           Role : {LoggedUser.UserRole}";
             }
         }
 

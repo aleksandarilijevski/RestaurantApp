@@ -3,12 +3,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:local="clr-namespace:RestaurantApp.Views"
              mc:Ignorable="d"
              xmlns:prism="http://prismlibrary.com/"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:materialDesignConverters="clr-namespace:MaterialDesignThemes.Wpf.Converters;assembly=MaterialDesignThemes.Wpf"
              d:DesignHeight="450" d:DesignWidth="1100">
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding ShowLoggedUserCommand}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -30,7 +37,10 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="150" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="50" />
         </Grid.RowDefinitions>
+
+        <TextBlock FontSize="15" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5" Text="{Binding Message,UpdateSourceTrigger=PropertyChanged}" Margin="10,5,0,0" />
 
         <ContentControl prism:RegionManager.RegionName="OptionsRegion"/>
 
@@ -92,6 +102,17 @@
             Grid.Column="9"
             FontSize="15"
             Command="{Binding ShowReportManagementCommand}"/>
-        
+
+        <Button
+            Content="Logout"
+            FontSize="15"
+            Grid.Row="4"
+            Grid.Column="9"
+            Grid.ColumnSpan="2"
+            Margin="0,0,5,0"
+            Width="130"
+            HorizontalAlignment="Right"
+            Command="{Binding LogoutUserCommand}"/>
+
     </Grid>
 </UserControl>
