@@ -7,6 +7,7 @@ using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
 using RestaurantApp.Utilities.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
@@ -181,8 +182,7 @@ namespace RestaurantApp.ViewModels
 
             if (LoggedUserHelper.LoggedUser is null)
             {
-                bool result = false;
-                result = UserLogin();
+                bool result = UserLogin();
 
                 if (!result)
                 {
@@ -202,6 +202,17 @@ namespace RestaurantApp.ViewModels
 
             EFContext efContext = new EFContext();
             Users = await _databaseService.GetAllUsers(efContext);
+
+            if (LoggedUserHelper.LoggedUser.UserRole == UserRole.Manager)
+            {
+                List<User> admins = new List<User>();
+                admins = Users.Where(x => x.UserRole == UserRole.Admin).ToList();
+
+                foreach (User admin in admins)
+                {
+                    Users.Remove(admin);
+                }
+            }
         }
 
         private async void DeleteUser(User user)
