@@ -3,8 +3,10 @@ using EntityFramework.Models;
 using Microsoft.EntityFrameworkCore;
 using Prism.Commands;
 using Prism.Mvvm;
+using Prism.Regions;
 using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
+using RestaurantApp.Utilities.Helpers;
 using System;
 using System.Windows;
 
@@ -15,12 +17,14 @@ namespace RestaurantApp.ViewModels
         private IDatabaseService _databaseService;
         private DelegateCommand<User> _editUserCommand;
         private User _user;
+        private IRegionManager _regionManger;
 
         public event Action<IDialogResult> RequestClose;
 
-        public EditUserViewModel(IDatabaseService databaseService)
+        public EditUserViewModel(IDatabaseService databaseService,IRegionManager regionManager)
         {
             _databaseService = databaseService;
+            _regionManger = regionManager;
         }
 
         public User User
@@ -38,6 +42,10 @@ namespace RestaurantApp.ViewModels
         }
 
         public UserRole UserRole { get; set; }
+
+        //Ask about this
+        //Why i can't simply directly get logged user from static class
+        public User LoggedUser = LoggedUserHelper.LoggedUser;
 
         public string Title { get; set; } = "Edit user";
 
@@ -88,13 +96,11 @@ namespace RestaurantApp.ViewModels
 
             User userBarcodeCheck = await _databaseService.GetUserByBarcode(user.Barcode, efContext);
 
-
             if (userBarcodeCheck is not null && userBarcodeCheck.ID != user.ID)
             {
                 MessageBox.Show("User with entered barcode already exists!", "Edit user", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-
 
             User userJMBGCheck = await _databaseService.GetUserByJMBG(user.JMBG, efContext);
 
@@ -110,6 +116,14 @@ namespace RestaurantApp.ViewModels
             }
 
             await _databaseService.EditUser(user, efContext);
+
+            if (user.ID == LoggedUser.ID)
+            {
+                LoggedUserHelper.LoggedUser = null;
+                MessageBox.Show("You're logged out!", "User management", MessageBoxButton.OK, MessageBoxImage.Information);
+                _regionManger.RequestNavigate("MainRegion", "Options");
+            }
+
             CloseDialog("true");
         }
     }
