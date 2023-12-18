@@ -58,7 +58,7 @@ namespace RestaurantApp.ViewModels
 
         private async void LoadAllTables()
         {
-            Tables = new ObservableCollection<Table>(await _databaseService.GetAllTables());
+            Tables = new ObservableCollection<Table>(await _databaseService.GetAllTables(new EFContext()));
         }
 
         private void ShowOrderingUsercontrol(string id)

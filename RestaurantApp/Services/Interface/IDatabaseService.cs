@@ -49,7 +49,7 @@ namespace RestaurantApp.Services.Interface
 
         public Task EditOnlineOrder(OnlineOrder onlineOrder, EFContext efContext);
 
-        public Task<List<Table>> GetAllTables();
+        public Task<List<Table>> GetAllTables(EFContext efContext);
 
         public Task<int> AddTableArticleQuantity(TableArticleQuantity tableArticleQuantity, EFContext efContext);
 

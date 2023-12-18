@@ -8,6 +8,8 @@ using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
 using RestaurantApp.Utilities.Helpers;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 
 namespace RestaurantApp.ViewModels
@@ -21,7 +23,7 @@ namespace RestaurantApp.ViewModels
 
         public event Action<IDialogResult> RequestClose;
 
-        public EditUserViewModel(IDatabaseService databaseService,IRegionManager regionManager)
+        public EditUserViewModel(IDatabaseService databaseService, IRegionManager regionManager)
         {
             _databaseService = databaseService;
             _regionManger = regionManager;
@@ -113,6 +115,25 @@ namespace RestaurantApp.ViewModels
             if (userJMBGCheck is not null)
             {
                 efContext.Entry(userJMBGCheck).State = EntityState.Detached;
+            }
+
+            List<Table> tables = await _databaseService.GetAllTables(efContext);
+            OnlineOrder onlineOrder = await _databaseService.GetLastOnlineOrder(efContext);
+
+            if (onlineOrder.UserID == user.ID)
+            {
+                MessageBox.Show("You cannot change user which is currently active!", "Edit user", MessageBoxButton.OK, MessageBoxImage.Error);
+                CloseDialog("true");
+                return;
+            }
+
+            Table table = tables.FirstOrDefault(x => x.UserID == user.ID);
+
+            if (table is not null)
+            {
+                MessageBox.Show("You cannot change user which is currently active!", "Edit user", MessageBoxButton.OK, MessageBoxImage.Error);
+                CloseDialog("true");
+                return;
             }
 
             await _databaseService.EditUser(user, efContext);

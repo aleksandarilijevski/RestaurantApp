@@ -124,9 +124,8 @@ namespace RestaurantApp.Services
             await efContext.SaveChangesAsync();
         }
 
-        public async Task<List<Table>> GetAllTables()
+        public async Task<List<Table>> GetAllTables(EFContext efContext)
         {
-            using EFContext efContext = new EFContext();
             List<Table> tables = await efContext.Tables.ToListAsync();
             return tables;
         }

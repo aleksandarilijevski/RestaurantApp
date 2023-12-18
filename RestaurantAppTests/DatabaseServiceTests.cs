@@ -113,7 +113,7 @@ namespace RestaurantAppTests
             await databaseService.AddTable(table1, efContext);
             await databaseService.AddTable(table2, efContext);
 
-            List<Table> tables = await databaseService.GetAllTables();
+            List<Table> tables = await databaseService.GetAllTables(efContext);
 
             //Assert
             Assert.That(tables, Is.Not.Empty);
