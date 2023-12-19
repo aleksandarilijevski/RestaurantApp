@@ -41,6 +41,18 @@ namespace RestaurantApp.Services
             return onlineOrder;
         }
 
+        public async Task<int> GetMaxOnlineOrderID(EFContext efContext)
+        {
+            int id = 0;
+
+            if (efContext.OnlineOrders.Any())
+            {
+                id = efContext.OnlineOrders.Max(x => x.ID);
+            }
+
+            return id;
+        }
+
         public async Task<int> AddOnlineOrder(OnlineOrder onlineOrder, EFContext efContext)
         {
             efContext.OnlineOrders.Add(onlineOrder);
@@ -75,9 +87,14 @@ namespace RestaurantApp.Services
 
         public async Task<ObservableCollection<User>> GetAllUsers(EFContext efContext)
         {
-            //using EFContext efContext = new EFContext();
             List<User> users = await efContext.Users.Select(x => x).Where(x => x.IsDeleted == false).ToListAsync();
             return new ObservableCollection<User>(users);
+        }
+
+        public async Task<ObservableCollection<OnlineOrder>> GetAllOnlineOrders(EFContext efContext)
+        {
+            List<OnlineOrder> onlineOrders = await efContext.OnlineOrders.Select(x => x).ToListAsync();
+            return new ObservableCollection<OnlineOrder>(onlineOrders);
         }
 
         public async Task<int> AddUser(User user, EFContext efContext)

@@ -29,6 +29,7 @@ namespace RestaurantApp.Module
             containerRegistry.RegisterForNavigation<ReportManagement>();
             containerRegistry.RegisterForNavigation<OnlineOrdering>();
             containerRegistry.RegisterForNavigation<DataEntryManagement>();
+            containerRegistry.RegisterForNavigation<OnlineOrders>();
             containerRegistry.RegisterDialog<EditArticle, EditArticleViewModel>("editArticleDialog");
             containerRegistry.RegisterDialog<AddArticle, AddArticleViewModel>("addArticleDialog");
             containerRegistry.RegisterDialog<EditUser, EditUserViewModel>("editUserDialog");

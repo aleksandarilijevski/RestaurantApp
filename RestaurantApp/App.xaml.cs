@@ -53,6 +53,7 @@ namespace RestaurantApp
             ViewModelLocationProvider.Register<UserLoginDialog, UserLoginDialogViewModel>();
             ViewModelLocationProvider.Register<TableInvoiceHistory, TableInvoiceHistoryViewModel>();
             ViewModelLocationProvider.Register<CompanyInformations, CompanyInformationsViewModel>();
+            ViewModelLocationProvider.Register<OnlineOrders, OnlineOrdersViewModel>();
         }
 
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)

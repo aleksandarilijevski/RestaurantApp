@@ -1,4 +1,5 @@
 ﻿using EntityFramework.Models;
+using Microsoft.EntityFrameworkCore;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
@@ -335,24 +336,54 @@ namespace RestaurantApp.ViewModels
 
             if (onlineOrder is null)
             {
-                onlineOrder = new OnlineOrder();
-                await _databaseService.AddOnlineOrder(onlineOrder, efContext);
+                OnlineOrder = new OnlineOrder();
+                int id = await _databaseService.AddOnlineOrder(OnlineOrder, efContext);
+               //OnlineOrder.ID = id;
+            }
+
+            bool dialogResult = UserLogin();
+
+            if (dialogResult)
+            {
                 OnlineOrder = onlineOrder;
+                OnlineOrder.User = User;
 
-                bool dialogResult = UserLogin();
-
-                if (dialogResult)
+                if (OnlineOrder.UserID is not null && User.ID != OnlineOrder.UserID)
                 {
-                    OnlineOrder.UserID = User.ID;
-                    await _databaseService.EditOnlineOrder(OnlineOrder, efContext);
-                }
-
-                if (!dialogResult)
-                {
+                    MessageBox.Show("Online ordering is used by someone else!", "Online ordering", MessageBoxButton.OK, MessageBoxImage.Error);
                     _regionManager.RequestNavigate("MainRegion", "Options");
                     return;
                 }
+
+                await _databaseService.EditOnlineOrder(OnlineOrder, efContext);
             }
+
+            if (!dialogResult)
+            {
+                _regionManager.RequestNavigate("MainRegion", "Options");
+                return;
+            }
+
+            //if (onlineOrder is null)
+            //{
+            //    onlineOrder = new OnlineOrder();
+            //    await _databaseService.AddOnlineOrder(onlineOrder, efContext);
+            //    OnlineOrder = onlineOrder;
+
+            //    bool dialogResult = UserLogin();
+
+            //    if (dialogResult)
+            //    {
+            //        OnlineOrder.UserID = User.ID;
+            //        await _databaseService.EditOnlineOrder(OnlineOrder, efContext);
+            //    }
+
+            //    if (!dialogResult)
+            //    {
+            //        _regionManager.RequestNavigate("MainRegion", "Options");
+            //        return;
+            //    }
+            //}
 
             if (onlineOrder is not null && onlineOrder.IsPayed == false)
             {
@@ -360,43 +391,43 @@ namespace RestaurantApp.ViewModels
                 TableArticleQuantities = new ObservableCollection<TableArticleQuantity>(OnlineOrder.TableArticleQuantities);
             }
 
-            if (onlineOrder.TableArticleQuantities.Count == 0 && onlineOrder.User is null)
-            {
-                bool dialogResult = UserLogin();
+            //if (onlineOrder.TableArticleQuantities.Count == 0 && onlineOrder.User is null)
+            //{
+            //    bool dialogResult = UserLogin();
 
-                if (dialogResult)
-                {
-                    OnlineOrder.UserID = User.ID;
-                    await _databaseService.EditOnlineOrder(OnlineOrder, efContext);
-                }
+            //    if (dialogResult)
+            //    {
+            //        OnlineOrder.UserID = User.ID;
+            //        await _databaseService.EditOnlineOrder(OnlineOrder, efContext);
+            //    }
 
-                if (!dialogResult)
-                {
-                    _regionManager.RequestNavigate("MainRegion", "Options");
-                    return;
-                }
-            }
+            //    if (!dialogResult)
+            //    {
+            //        _regionManager.RequestNavigate("MainRegion", "Options");
+            //        return;
+            //    }
+            //}
 
-            if (onlineOrder.IsPayed == true)
-            {
-                onlineOrder = new OnlineOrder();
-                await _databaseService.AddOnlineOrder(onlineOrder, efContext);
-                OnlineOrder = onlineOrder;
+            //if (onlineOrder.IsPayed == true)
+            //{
+            //    onlineOrder = new OnlineOrder();
+            //    await _databaseService.AddOnlineOrder(onlineOrder, efContext);
+            //    OnlineOrder = onlineOrder;
 
-                bool dialogResult = UserLogin();
+            //    bool dialogResult = UserLogin();
 
-                if (dialogResult)
-                {
-                    OnlineOrder.UserID = User.ID;
-                    await _databaseService.EditOnlineOrder(OnlineOrder, efContext);
-                }
+            //    if (dialogResult)
+            //    {
+            //        OnlineOrder.UserID = User.ID;
+            //        await _databaseService.EditOnlineOrder(OnlineOrder, efContext);
+            //    }
 
-                if (!dialogResult)
-                {
-                    _regionManager.RequestNavigate("MainRegion", "Options");
-                    return;
-                }
-            }
+            //    if (!dialogResult)
+            //    {
+            //        _regionManager.RequestNavigate("MainRegion", "Options");
+            //        return;
+            //    }
+            //}
         }
 
         private async void AddArticleToOnlineOrder(string barcode)

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EntityFramework.Migrations
 {
     [DbContext(typeof(EFContext))]
-    [Migration("20230930160957_UserIsDeletedBool")]
-    partial class UserIsDeletedBool
+    [Migration("20231219010157_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -218,10 +218,7 @@ namespace EntityFramework.Migrations
             modelBuilder.Entity("EntityFramework.Models.OnlineOrder", b =>
                 {
                     b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");

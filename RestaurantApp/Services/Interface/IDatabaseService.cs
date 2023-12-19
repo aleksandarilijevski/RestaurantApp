@@ -19,6 +19,8 @@ namespace RestaurantApp.Services.Interface
 
         public Task EditArticleDetails(ArticleDetails articleDetails, EFContext efContext);
 
+        public Task<ObservableCollection<OnlineOrder>> GetAllOnlineOrders(EFContext efContext);
+
         public Task<int> CreateBill(Bill bill, EFContext efContext);
 
         public Task<int> AddDataEntry(DataEntry dataEntry, EFContext efContext);
@@ -54,6 +56,8 @@ namespace RestaurantApp.Services.Interface
         public Task<int> AddTableArticleQuantity(TableArticleQuantity tableArticleQuantity, EFContext efContext);
 
         public Task<List<ArticleDetails>> GetArticleDetailsByArticleID(int articleId, EFContext efContext);
+
+        public Task<int> GetMaxOnlineOrderID(EFContext efContext);
 
         public Task<int> AddArticleDetails(ArticleDetails articleDetails, EFContext efContext);
 

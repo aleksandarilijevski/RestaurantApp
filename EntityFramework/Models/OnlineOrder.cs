@@ -1,7 +1,14 @@
-﻿namespace EntityFramework.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+namespace EntityFramework.Models
 {
     public class OnlineOrder : BaseEntity
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public int ID { get;set; }
+
         public string? Firstname { get; set; }
 
         public string? Lastname { get; set; }

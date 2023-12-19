@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -7,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace EntityFramework.Migrations
 {
     /// <inheritdoc />
-    public partial class WaiterReferenceInBillModel : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -66,29 +65,7 @@ namespace EntityFramework.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "OnlineOrders",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Firstname = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Lastname = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<long>(type: "bigint", nullable: true),
-                    Floor = table.Column<int>(type: "int", nullable: true),
-                    ApartmentNumber = table.Column<int>(type: "int", nullable: true),
-                    Comment = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsPayed = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ModifiedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OnlineOrders", x => x.ID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Waiters",
+                name: "Users",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
@@ -97,30 +74,14 @@ namespace EntityFramework.Migrations
                     FirstAndLastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
                     JMBG = table.Column<long>(type: "bigint", nullable: false),
+                    UserRole = table.Column<int>(type: "int", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ModifiedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Waiters", x => x.ID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Tables",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "int", nullable: false),
-                    InUse = table.Column<bool>(type: "bit", nullable: false),
-                    ArticleID = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Tables", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_Tables_Articles_ArticleID",
-                        column: x => x.ArticleID,
-                        principalTable: "Articles",
-                        principalColumn: "ID");
+                    table.PrimaryKey("PK_Users", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -155,41 +116,54 @@ namespace EntityFramework.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Bills",
+                name: "OnlineOrders",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TableID = table.Column<int>(type: "int", nullable: true),
-                    OnlineOrderID = table.Column<int>(type: "int", nullable: true),
-                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Cash = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Change = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    PaymentType = table.Column<int>(type: "int", nullable: false),
-                    RegistrationNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    WaiterID = table.Column<int>(type: "int", nullable: false),
+                    ID = table.Column<int>(type: "int", nullable: false),
+                    Firstname = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Lastname = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<long>(type: "bigint", nullable: true),
+                    Floor = table.Column<int>(type: "int", nullable: true),
+                    ApartmentNumber = table.Column<int>(type: "int", nullable: true),
+                    Comment = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsPayed = table.Column<bool>(type: "bit", nullable: false),
+                    UserID = table.Column<int>(type: "int", nullable: true),
                     CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ModifiedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Bills", x => x.ID);
+                    table.PrimaryKey("PK_OnlineOrders", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Bills_OnlineOrders_OnlineOrderID",
-                        column: x => x.OnlineOrderID,
-                        principalTable: "OnlineOrders",
+                        name: "FK_OnlineOrders_Users_UserID",
+                        column: x => x.UserID,
+                        principalTable: "Users",
+                        principalColumn: "ID");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Tables",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false),
+                    InUse = table.Column<bool>(type: "bit", nullable: false),
+                    UserID = table.Column<int>(type: "int", nullable: true),
+                    ArticleID = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tables", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Tables_Articles_ArticleID",
+                        column: x => x.ArticleID,
+                        principalTable: "Articles",
                         principalColumn: "ID");
                     table.ForeignKey(
-                        name: "FK_Bills_Tables_TableID",
-                        column: x => x.TableID,
-                        principalTable: "Tables",
+                        name: "FK_Tables_Users_UserID",
+                        column: x => x.UserID,
+                        principalTable: "Users",
                         principalColumn: "ID");
-                    table.ForeignKey(
-                        name: "FK_Bills_Waiters_WaiterID",
-                        column: x => x.WaiterID,
-                        principalTable: "Waiters",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -211,11 +185,50 @@ namespace EntityFramework.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Bills",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TableID = table.Column<int>(type: "int", nullable: true),
+                    OnlineOrderID = table.Column<int>(type: "int", nullable: true),
+                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Cash = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Change = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PaymentType = table.Column<int>(type: "int", nullable: false),
+                    RegistrationNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserID = table.Column<int>(type: "int", nullable: false),
+                    CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Bills", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Bills_OnlineOrders_OnlineOrderID",
+                        column: x => x.OnlineOrderID,
+                        principalTable: "OnlineOrders",
+                        principalColumn: "ID");
+                    table.ForeignKey(
+                        name: "FK_Bills_Tables_TableID",
+                        column: x => x.TableID,
+                        principalTable: "Tables",
+                        principalColumn: "ID");
+                    table.ForeignKey(
+                        name: "FK_Bills_Users_UserID",
+                        column: x => x.UserID,
+                        principalTable: "Users",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "SoldArticleDetails",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    ArticlePrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     EntryPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     SoldQuantity = table.Column<int>(type: "int", nullable: false),
                     BillID = table.Column<int>(type: "int", nullable: false),
@@ -333,9 +346,14 @@ namespace EntityFramework.Migrations
                 column: "TableID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Bills_WaiterID",
+                name: "IX_Bills_UserID",
                 table: "Bills",
-                column: "WaiterID");
+                column: "UserID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OnlineOrders_UserID",
+                table: "OnlineOrders",
+                column: "UserID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SoldArticleDetails_BillID",
@@ -386,6 +404,11 @@ namespace EntityFramework.Migrations
                 name: "IX_Tables_ArticleID",
                 table: "Tables",
                 column: "ArticleID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tables_UserID",
+                table: "Tables",
+                column: "UserID");
         }
 
         /// <inheritdoc />
@@ -422,10 +445,10 @@ namespace EntityFramework.Migrations
                 name: "Tables");
 
             migrationBuilder.DropTable(
-                name: "Waiters");
+                name: "Articles");
 
             migrationBuilder.DropTable(
-                name: "Articles");
+                name: "Users");
 
             migrationBuilder.DropSequence(
                 name: "TableArticleQuantitySequence");

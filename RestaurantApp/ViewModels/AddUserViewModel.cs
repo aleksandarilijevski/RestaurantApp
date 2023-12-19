@@ -74,7 +74,8 @@ namespace RestaurantApp.ViewModels
 
         private async void AddUser(User user)
         {
-            if (LoggedUser.UserRole != UserRole.Admin)
+
+            if (LoggedUser is not null && LoggedUser.UserRole != UserRole.Admin)
             {
                 MessageBox.Show("Manager can't create users!", "Access forbidden", MessageBoxButton.OK, MessageBoxImage.Error);
                 CloseDialog("true");

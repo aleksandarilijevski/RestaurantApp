@@ -84,7 +84,7 @@ namespace RestaurantApp.ViewModels
         {
             get
             {
-                _showOnlineOrderingCommand = new DelegateCommand(() => Navigate("MainRegion", "OnlineOrdering"));
+                _showOnlineOrderingCommand = new DelegateCommand(() => Navigate("MainRegion", "OnlineOrders"));
                 return _showOnlineOrderingCommand;
             }
         }
