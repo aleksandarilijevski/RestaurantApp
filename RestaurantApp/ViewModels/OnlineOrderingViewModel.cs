@@ -457,14 +457,6 @@ namespace RestaurantApp.ViewModels
 
             TableArticleQuantities.Remove(tableArticleQuantity);
             await _databaseService.DeleteTableArticleQuantity(tableArticleQuantityLoad, new EFContext());
-
-            if (TableArticleQuantities.Count == 0)
-            {
-                //OnlineOrder.UserID = null;
-                //new context should be here
-                await _databaseService.EditOnlineOrder(OnlineOrder, new EFContext());
-                _regionManager.RequestNavigate("MainRegion", "OnlineOrders");
-            }
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)
