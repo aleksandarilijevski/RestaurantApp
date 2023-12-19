@@ -84,6 +84,7 @@ namespace RestaurantApp.ViewModels
 
             ObservableCollection<OnlineOrder> onlineOrders = await _databaseService.GetAllOnlineOrders(efContext);
             OnlineOrders = new ObservableCollection<OnlineOrder>(onlineOrders.Where(x => x.CreatedDateTime?.ToString("dd/MM/yyyy") == DateTime.Now.ToString("dd/MM/yyyy")));
+            OnlineOrders = new ObservableCollection<OnlineOrder>(OnlineOrders.OrderByDescending(x => x.CreatedDateTime));
         }
 
         public async void AddOnlineOrder()
@@ -98,6 +99,7 @@ namespace RestaurantApp.ViewModels
             await _databaseService.AddOnlineOrder(onlineOrder, efContext);
 
             OnlineOrders.Add(onlineOrder);
+            OnlineOrders = new ObservableCollection<OnlineOrder>(OnlineOrders.OrderByDescending(x => x.CreatedDateTime));
         }
 
         private async void DeleteOnlineOrder()
