@@ -1,25 +1,29 @@
 ﻿using EntityFramework.Models;
 using Prism.Commands;
 using Prism.Mvvm;
+using Prism.Regions;
 using RestaurantApp.Services.Interface;
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
-using System.Windows.Documents;
 
 namespace RestaurantApp.ViewModels
 {
     public class OnlineOrdersViewModel : BindableBase
     {
         private IDatabaseService _databaseService;
+        private IRegionManager _regionManager;
         private DelegateCommand _loadOnlineOrdersCommand;
         private DelegateCommand _addOnlineOrderCommand;
         private DelegateCommand _deleteOnlineOrdersCommand;
+        private DelegateCommand<OnlineOrder> _openOnlineOrderCommand;
         private ObservableCollection<OnlineOrder> _onlineOrders;
 
-        public OnlineOrdersViewModel(IDatabaseService databaseService)
+        public OnlineOrdersViewModel(IDatabaseService databaseService, IRegionManager regionManager)
         {
             _databaseService = databaseService;
+            _regionManager = regionManager;
         }
 
         public ObservableCollection<OnlineOrder> OnlineOrders
@@ -65,10 +69,21 @@ namespace RestaurantApp.ViewModels
             }
         }
 
+        public DelegateCommand<OnlineOrder> OpenOnlineOrderCommand
+        {
+            get
+            {
+                _openOnlineOrderCommand = new DelegateCommand<OnlineOrder>(OpenOnlineOrder);
+                return _openOnlineOrderCommand;
+            }
+        }
+
         private async void LoadOnlineOrders()
         {
             using EFContext efContext = new EFContext();
-            OnlineOrders = await _databaseService.GetAllOnlineOrders(efContext);
+
+            ObservableCollection<OnlineOrder> onlineOrders = await _databaseService.GetAllOnlineOrders(efContext);
+            OnlineOrders = new ObservableCollection<OnlineOrder>(onlineOrders.Where(x => x.CreatedDateTime?.ToString("dd/MM/yyyy") == DateTime.Now.ToString("dd/MM/yyyy")));
         }
 
         public async void AddOnlineOrder()
@@ -95,8 +110,28 @@ namespace RestaurantApp.ViewModels
                 return;
             }
 
+            if (SelectedOnlineOrder.TableArticleQuantities.Count != 0)
+            {
+                MessageBoxResult messageBoxResult = MessageBox.Show("There is articles on selected online order, are you sure you want to delete it?", "Online ordering", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                
+                if (messageBoxResult == MessageBoxResult.No)
+                {
+                    return;
+                }
+            }
+
             await _databaseService.DeleteOnlineOrder(SelectedOnlineOrder, efContext);
             OnlineOrders.Remove(SelectedOnlineOrder);
+        }
+
+        private void OpenOnlineOrder(OnlineOrder onlineOrder)
+        {
+            NavigationParameters navigationParameters = new NavigationParameters
+            {
+                { "onlineOrder", onlineOrder }
+            };
+
+            _regionManager.RequestNavigate("MainRegion", "OnlineOrdering", navigationParameters);
         }
     }
 }

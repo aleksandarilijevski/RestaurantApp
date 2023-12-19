@@ -9,6 +9,7 @@ using RestaurantApp.Services.Interface;
 using RestaurantApp.Utilities.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 
@@ -118,7 +119,9 @@ namespace RestaurantApp.ViewModels
             }
 
             List<Table> tables = await _databaseService.GetAllTables(efContext);
-            OnlineOrder onlineOrder = await _databaseService.GetLastOnlineOrder(efContext);
+            ObservableCollection<OnlineOrder> onlineOrders = await _databaseService.GetAllOnlineOrders(efContext);
+
+            OnlineOrder onlineOrder = onlineOrders.FirstOrDefault(x => x.UserID == user.ID);
 
             if (onlineOrder.UserID == user.ID)
             {

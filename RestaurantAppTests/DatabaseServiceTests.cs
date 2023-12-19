@@ -1,3 +1,4 @@
+using DocumentFormat.OpenXml.Wordprocessing;
 using EntityFramework.Enums;
 using EntityFramework.Models;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using RestaurantApp.Factories.Interfaces;
 using RestaurantApp.Services;
 using RestaurantApp.Services.Interface;
 using System.Collections.ObjectModel;
+using Table = EntityFramework.Models.Table;
 
 namespace RestaurantAppTests
 {
@@ -100,7 +102,7 @@ namespace RestaurantAppTests
             Table table1 = new Table
             {
                 ID = 1,
-                InUse = false
+                InUse = false,
             };
 
             Table table2 = new Table
@@ -118,6 +120,37 @@ namespace RestaurantAppTests
             //Assert
             Assert.That(tables, Is.Not.Empty);
 
+        }
+
+        [Test]
+        public async Task GetAllOnlineOrders()
+        {
+            //Arrange
+            IDatabaseService? databaseService = _databaseServiceFactory.Create();
+            EFContext? efContext = _efContextFactory.Create();
+
+            OnlineOrder onlineOrder = new OnlineOrder
+            {
+                ID = 1,
+                Firstname = "UnitTest1",
+                IsPayed = false
+            };
+
+            OnlineOrder onlineOrder2 = new OnlineOrder
+            {
+                ID = 2,
+                Firstname = "UnitTest2",
+                IsPayed = false
+            };
+
+            //Act
+            await databaseService.AddOnlineOrder(onlineOrder, efContext);
+            await databaseService.AddOnlineOrder(onlineOrder2, efContext);
+
+            ObservableCollection<OnlineOrder> onlineOrders = await databaseService.GetAllOnlineOrders(efContext);
+
+            //Assert
+            Assert.That(onlineOrders,Is.Not.Null);
         }
 
         [Test]

@@ -166,7 +166,7 @@ namespace RestaurantApp.ViewModels
             }
 
             OnlineOrder.IsPayed = true;
-            OnlineOrder.UserID = null;
+            //OnlineOrder.UserID = null;
             await _databaseService.EditOnlineOrder(OnlineOrder, efContext);
             return bill;
         }

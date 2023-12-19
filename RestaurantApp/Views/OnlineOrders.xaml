@@ -7,7 +7,7 @@
              xmlns:local="clr-namespace:RestaurantApp.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    
+
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding LoadOnlineOrdersCommand}"/>
@@ -28,14 +28,20 @@
             <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
         
-            <DataGrid IsReadOnly="True" FontSize="25" Grid.ColumnSpan="3" Grid.RowSpan="4" ItemsSource="{Binding OnlineOrders}" AutoGenerateColumns="False" SelectedItem="{Binding SelectedOnlineOrder}">
+        <DataGrid x:Name="dataGrid" IsReadOnly="True" FontSize="25" Grid.ColumnSpan="3" Grid.RowSpan="4" ItemsSource="{Binding OnlineOrders,IsAsync=True}" AutoGenerateColumns="False" SelectedItem="{Binding SelectedOnlineOrder}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding ID}"/>
                 <DataGridTextColumn Header="Firstname" Binding="{Binding Firstname}"/>
                 <DataGridTextColumn Header="Lastname" Binding="{Binding Lastname}"/>
                 <DataGridTextColumn Header="Address" Binding="{Binding Address}"/>
                 <DataGridTextColumn Header="Phone number" Binding="{Binding PhoneNumber}"/>
+                <DataGridTextColumn Header="Used by" Binding="{Binding User.FirstAndLastName}"/>
+                <DataGridTextColumn Header="Processed" Binding="{Binding IsPayed}" Width="*"/>
             </DataGrid.Columns>
+
+            <DataGrid.InputBindings>
+                <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding OpenOnlineOrderCommand}" CommandParameter="{Binding SelectedItem,ElementName=dataGrid}"/>
+            </DataGrid.InputBindings>
         </DataGrid>
 
         <Button 

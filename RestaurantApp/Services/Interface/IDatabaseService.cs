@@ -15,8 +15,6 @@ namespace RestaurantApp.Services.Interface
 
         public Task<List<TableArticleQuantity>> GetTableArticleQuantityByArticleID(int articleId, EFContext efContext);
 
-        public Task<OnlineOrder> GetLastOnlineOrder(EFContext efContext);
-
         public Task EditArticleDetails(ArticleDetails articleDetails, EFContext efContext);
 
         public Task<ObservableCollection<OnlineOrder>> GetAllOnlineOrders(EFContext efContext);

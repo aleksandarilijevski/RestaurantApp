@@ -1,5 +1,4 @@
 ﻿using EntityFramework.Models;
-using Microsoft.EntityFrameworkCore;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
@@ -18,7 +17,7 @@ using System.Windows;
 
 namespace RestaurantApp.ViewModels
 {
-    public class OnlineOrderingViewModel : BindableBase
+    public class OnlineOrderingViewModel : BindableBase, INavigationAware
     {
         private IDatabaseService _databaseService;
         private IRegionManager _regionManager;
@@ -29,15 +28,10 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand<string> _addArticleToOnlineOrderCommand;
         private DelegateCommand<TableArticleQuantity> _deleteTableArticleQuantityCommand;
         private DelegateCommand _goToPaymentCommand;
-        private DelegateCommand _checkIfOnlineOrderExistsCommand;
+        private DelegateCommand _loadOnlineOrderCommand;
         private DelegateCommand _showInvoiceHistoryDialogCommand;
-        private string _firstname;
-        private string _lastname;
-        private string _address;
-        private string _comment;
-        private long _phoneNumber;
-        private int _apartmentNumber;
-        private int _floor;
+        private DelegateCommand _editOnlineOrder;
+        private OnlineOrder _onlineOrder;
 
         public OnlineOrderingViewModel(IDatabaseService databaseService, IRegionManager regionManager, IDialogService dialogService, EFContext efContext)
         {
@@ -81,102 +75,16 @@ namespace RestaurantApp.ViewModels
 
         public User User { get; set; }
 
-        public OnlineOrder OnlineOrder { get; set; } = new OnlineOrder();
-
-        public string Firstname
+        public OnlineOrder OnlineOrder
         {
             get
             {
-                return _firstname;
+                return _onlineOrder;
             }
 
             set
             {
-                _firstname = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public string Lastname
-        {
-            get
-            {
-                return _lastname;
-            }
-
-            set
-            {
-                _lastname = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public string Address
-        {
-            get
-            {
-                return _address;
-            }
-
-            set
-            {
-                _address = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public int Floor
-        {
-            get
-            {
-                return _floor;
-            }
-
-            set
-            {
-                _floor = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public long PhoneNumber
-        {
-            get
-            {
-                return _phoneNumber;
-            }
-
-            set
-            {
-                _phoneNumber = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public int ApartmentNumber
-        {
-            get
-            {
-                return _apartmentNumber;
-            }
-
-            set
-            {
-                _apartmentNumber = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public string Comment
-        {
-            get
-            {
-                return _comment;
-            }
-
-            set
-            {
-                _comment = value;
+                _onlineOrder = value;
                 RaisePropertyChanged();
             }
         }
@@ -187,6 +95,15 @@ namespace RestaurantApp.ViewModels
             {
                 _deleteTableArticleQuantityCommand = new DelegateCommand<TableArticleQuantity>(DeleteTableArticleQuantity);
                 return _deleteTableArticleQuantityCommand;
+            }
+        }
+
+        public DelegateCommand EditOnlineOrderCommand
+        {
+            get
+            {
+                _editOnlineOrder = new DelegateCommand(EditOnlineOrder);
+                return _editOnlineOrder;
             }
         }
 
@@ -231,24 +148,19 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public DelegateCommand CheckIfOnlineOrderExistsCommand
+        public DelegateCommand LoadOnlineOrderCommand
         {
             get
             {
-                _checkIfOnlineOrderExistsCommand = new DelegateCommand(CheckIfOnlineOrderExists);
-                return _checkIfOnlineOrderExistsCommand;
+                _loadOnlineOrderCommand = new DelegateCommand(LoadOnlineOrder);
+                return _loadOnlineOrderCommand;
             }
         }
 
-        private void ClearProperties()
+        private async void EditOnlineOrder()
         {
-            Firstname = string.Empty;
-            Lastname = string.Empty;
-            Address = string.Empty;
-            Comment = string.Empty;
-            ApartmentNumber = 0;
-            PhoneNumber = 0;
-            Floor = 0;
+            using EFContext efContext = new EFContext();
+            await _databaseService.EditOnlineOrder(OnlineOrder, efContext);
         }
 
         private async void ShowInvoiceHistoryDialog()
@@ -272,25 +184,25 @@ namespace RestaurantApp.ViewModels
                 return;
             }
 
-            if (Firstname is null || Firstname == string.Empty)
+            if (OnlineOrder.Firstname is null || OnlineOrder.Firstname == string.Empty)
             {
                 MessageBox.Show("Firstname field can not be empty!", "Online Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            if (Lastname is null || Lastname == string.Empty)
+            if (OnlineOrder.Lastname is null || OnlineOrder.Lastname == string.Empty)
             {
                 MessageBox.Show("Lastname field can not be empty!", "Online Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            if (Address is null || Address == string.Empty)
+            if (OnlineOrder.Address is null || OnlineOrder.Address == string.Empty)
             {
                 MessageBox.Show("Address field can not be empty!", "Online Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            if (PhoneNumber.ToString().Length < 8)
+            if (OnlineOrder.PhoneNumber.ToString().Length < 8)
             {
                 MessageBox.Show("Phone number field is not valid!", "Online Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -301,8 +213,6 @@ namespace RestaurantApp.ViewModels
                 {"tableArticleQuantities",TableArticleQuantities.ToList() },
                 {"onlineOrder",OnlineOrder }
             };
-
-            ClearProperties();
 
             _regionManager.RequestNavigate("MainRegion", "Payment", navigationParameters);
         }
@@ -327,107 +237,68 @@ namespace RestaurantApp.ViewModels
             return isResultGood;
         }
 
-        private async void CheckIfOnlineOrderExists()
+        public void OnNavigatedTo(NavigationContext navigationContext)
         {
-            TableArticleQuantities.Clear();
+            OnlineOrder = (OnlineOrder)navigationContext.Parameters["onlineOrder"];
+        }
+
+        private async void LoadOnlineOrder()
+        {
+            //Create one more onlineOrder
+            //We are doing this because we don't want to display any data while user is not logged!
+            OnlineOrder onlineOrder = OnlineOrder;
+            OnlineOrder = null;
+
             using EFContext efContext = new EFContext();
 
-            OnlineOrder onlineOrder = await _databaseService.GetLastOnlineOrder(efContext);
-
-            if (onlineOrder is null)
+            if (onlineOrder.IsPayed)
             {
-                OnlineOrder = new OnlineOrder();
-                int id = await _databaseService.AddOnlineOrder(OnlineOrder, efContext);
-               //OnlineOrder.ID = id;
+                MessageBoxResult messageBoxResult = MessageBox.Show("Do you want to print invoice again?", "Online ordering", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                if (messageBoxResult == MessageBoxResult.Yes)
+                {
+                    _regionManager.RequestNavigate("MainRegion", "OnlineOrders");
+
+                    int userId = onlineOrder.UserID ?? (int)default;
+                    User user = await _databaseService.GetUserByID(userId, efContext);
+
+                    List<Bill> bills = await _databaseService.GetAllBills();
+                    Bill bill = bills.FirstOrDefault(x => x.OnlineOrderID == onlineOrder.ID);
+
+                    DrawningHelper.RedrawBill(bill, onlineOrder.TableArticleQuantities, user);
+                    return;
+                }
+
+                if (messageBoxResult == MessageBoxResult.No)
+                {
+                    _regionManager.RequestNavigate("MainRegion", "OnlineOrders");
+                    return;
+                }
             }
 
             bool dialogResult = UserLogin();
 
             if (dialogResult)
             {
-                OnlineOrder = onlineOrder;
-                OnlineOrder.User = User;
-
-                if (OnlineOrder.UserID is not null && User.ID != OnlineOrder.UserID)
+                if (onlineOrder.UserID is not null && User.ID != onlineOrder.UserID)
                 {
-                    MessageBox.Show("Online ordering is used by someone else!", "Online ordering", MessageBoxButton.OK, MessageBoxImage.Error);
-                    _regionManager.RequestNavigate("MainRegion", "Options");
+                    MessageBox.Show("Selected online order is in use by someone else!", "Online ordering", MessageBoxButton.OK, MessageBoxImage.Error);
+                    _regionManager.RequestNavigate("MainRegion", "OnlineOrders");
                     return;
                 }
 
-                await _databaseService.EditOnlineOrder(OnlineOrder, efContext);
+                onlineOrder.UserID = User.ID;
+                await _databaseService.EditOnlineOrder(onlineOrder, efContext);
             }
 
             if (!dialogResult)
             {
-                _regionManager.RequestNavigate("MainRegion", "Options");
+                _regionManager.RequestNavigate("MainRegion", "OnlineOrders");
                 return;
             }
 
-            //if (onlineOrder is null)
-            //{
-            //    onlineOrder = new OnlineOrder();
-            //    await _databaseService.AddOnlineOrder(onlineOrder, efContext);
-            //    OnlineOrder = onlineOrder;
-
-            //    bool dialogResult = UserLogin();
-
-            //    if (dialogResult)
-            //    {
-            //        OnlineOrder.UserID = User.ID;
-            //        await _databaseService.EditOnlineOrder(OnlineOrder, efContext);
-            //    }
-
-            //    if (!dialogResult)
-            //    {
-            //        _regionManager.RequestNavigate("MainRegion", "Options");
-            //        return;
-            //    }
-            //}
-
-            if (onlineOrder is not null && onlineOrder.IsPayed == false)
-            {
-                OnlineOrder = onlineOrder;
-                TableArticleQuantities = new ObservableCollection<TableArticleQuantity>(OnlineOrder.TableArticleQuantities);
-            }
-
-            //if (onlineOrder.TableArticleQuantities.Count == 0 && onlineOrder.User is null)
-            //{
-            //    bool dialogResult = UserLogin();
-
-            //    if (dialogResult)
-            //    {
-            //        OnlineOrder.UserID = User.ID;
-            //        await _databaseService.EditOnlineOrder(OnlineOrder, efContext);
-            //    }
-
-            //    if (!dialogResult)
-            //    {
-            //        _regionManager.RequestNavigate("MainRegion", "Options");
-            //        return;
-            //    }
-            //}
-
-            //if (onlineOrder.IsPayed == true)
-            //{
-            //    onlineOrder = new OnlineOrder();
-            //    await _databaseService.AddOnlineOrder(onlineOrder, efContext);
-            //    OnlineOrder = onlineOrder;
-
-            //    bool dialogResult = UserLogin();
-
-            //    if (dialogResult)
-            //    {
-            //        OnlineOrder.UserID = User.ID;
-            //        await _databaseService.EditOnlineOrder(OnlineOrder, efContext);
-            //    }
-
-            //    if (!dialogResult)
-            //    {
-            //        _regionManager.RequestNavigate("MainRegion", "Options");
-            //        return;
-            //    }
-            //}
+            OnlineOrder = onlineOrder;
+            TableArticleQuantities = new ObservableCollection<TableArticleQuantity>(OnlineOrder.TableArticleQuantities);
         }
 
         private async void AddArticleToOnlineOrder(string barcode)
@@ -592,9 +463,18 @@ namespace RestaurantApp.ViewModels
                 //OnlineOrder.UserID = null;
                 //new context should be here
                 await _databaseService.EditOnlineOrder(OnlineOrder, new EFContext());
-                ClearProperties();
-                _regionManager.RequestNavigate("MainRegion", "Options");
+                _regionManager.RequestNavigate("MainRegion", "OnlineOrders");
             }
+        }
+
+        public bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return false;
+        }
+
+        public void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+
         }
     }
 }

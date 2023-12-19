@@ -11,7 +11,7 @@
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction Command="{Binding CheckIfOnlineOrderExistsCommand}"/>
+            <i:InvokeCommandAction Command="{Binding LoadOnlineOrderCommand}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
@@ -35,25 +35,53 @@
         </Grid.RowDefinitions>
 
         <TextBlock Text="Firstname :" FontSize="20" Margin="10,10,0,0"/>
-        <TextBox  FontSize="20" Grid.Row="0" Grid.Column="1" TextAlignment="Center" Text="{Binding Firstname}"/>
+        <TextBox  FontSize="20" Grid.Row="0" Grid.Column="1" TextAlignment="Center" Text="{Binding OnlineOrder.Firstname, UpdateSourceTrigger=PropertyChanged}">
+            <TextBox.InputBindings>
+                <KeyBinding Command="{Binding EditOnlineOrderCommand}" Key="Enter" />
+            </TextBox.InputBindings>
+        </TextBox>
 
         <TextBlock Text="Lastname :" FontSize="20" Margin="10,10,0,0" Grid.Row="1" Grid.Column="0"/>
-        <TextBox  FontSize="20" Grid.Row="1" Grid.Column="1" TextAlignment="Center" Text="{Binding Lastname}"/>
+        <TextBox  FontSize="20" Grid.Row="1" Grid.Column="1" TextAlignment="Center" Text="{Binding OnlineOrder.Lastname, UpdateSourceTrigger=PropertyChanged}">
+            <TextBox.InputBindings>
+                <KeyBinding Command="{Binding EditOnlineOrderCommand}" Key="Enter" />
+            </TextBox.InputBindings>
+        </TextBox>
 
         <TextBlock Text="Address :" FontSize="20" Margin="10,10,0,0" Grid.Row="0" Grid.Column="3"/>
-        <TextBox  FontSize="20" Grid.Row="0" Grid.Column="4" TextAlignment="Center" Text="{Binding Address}"/>
+        <TextBox  FontSize="20" Grid.Row="0" Grid.Column="4" TextAlignment="Center" Text="{Binding OnlineOrder.Address, UpdateSourceTrigger=PropertyChanged}">
+            <TextBox.InputBindings>
+                <KeyBinding Command="{Binding EditOnlineOrderCommand}" Key="Enter" />
+            </TextBox.InputBindings>
+        </TextBox>
 
         <TextBlock Text="Floor :" FontSize="20" Margin="10,10,0,0" Grid.Row="1" Grid.Column="3"/>
-        <TextBox  FontSize="20" Grid.Row="1" Grid.Column="4" TextAlignment="Center" Text="{Binding Floor, StringFormat=.}"/>
+        <TextBox  FontSize="20" Grid.Row="1" Grid.Column="4" TextAlignment="Center" Text="{Binding OnlineOrder.Floor, UpdateSourceTrigger=PropertyChanged, StringFormat=.}">
+            <TextBox.InputBindings>
+                <KeyBinding Command="{Binding EditOnlineOrderCommand}" Key="Enter" />
+            </TextBox.InputBindings>
+        </TextBox>
 
         <TextBlock Text="Phone number :" FontSize="20" Margin="10,10,0,0" Grid.Row="2" Grid.Column="0"/>
-        <TextBox  FontSize="20" Grid.Row="2" Grid.Column="1" TextAlignment="Center" Text="{Binding PhoneNumber, StringFormat=.}"/>
+        <TextBox  FontSize="20" Grid.Row="2" Grid.Column="1" TextAlignment="Center" Text="{Binding OnlineOrder.PhoneNumber, UpdateSourceTrigger=PropertyChanged, StringFormat=.}">
+            <TextBox.InputBindings>
+                <KeyBinding Command="{Binding EditOnlineOrderCommand}" Key="Enter" />
+            </TextBox.InputBindings>
+        </TextBox>
 
         <TextBlock Text="Apartment number :" FontSize="20" Margin="10,10,0,0" Grid.Row="2" Grid.Column="3"/>
-        <TextBox  FontSize="20" Grid.Row="2" Grid.Column="4" TextAlignment="Center" Text="{Binding ApartmentNumber, StringFormat=.}"/>
+        <TextBox  FontSize="20" Grid.Row="2" Grid.Column="4" TextAlignment="Center" Text="{Binding OnlineOrder.ApartmentNumber, UpdateSourceTrigger=PropertyChanged, StringFormat=.}">
+            <TextBox.InputBindings>
+                <KeyBinding Command="{Binding EditOnlineOrderCommand}" Key="Enter" />
+            </TextBox.InputBindings>
+        </TextBox>
 
         <TextBlock Text="Comment :" FontSize="20" Margin="10,10,0,0" Grid.Row="3" Grid.Column="0"/>
-        <TextBox  FontSize="20" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" TextAlignment="Left"  Text="{Binding Comment}"/>
+        <TextBox  FontSize="20" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" TextAlignment="Left"  Text="{Binding OnlineOrder.Comment, UpdateSourceTrigger=PropertyChanged}">
+            <TextBox.InputBindings>
+                <KeyBinding Command="{Binding EditOnlineOrderCommand}" Key="Enter" />
+            </TextBox.InputBindings>
+        </TextBox>
 
         <TextBox  FontSize="20" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="5" x:Name="articleSearch" TextAlignment="Center" Margin="0,10,0,0" Text="{Binding Barcode}" FocusManager.FocusedElement="{Binding ElementName=articleSearch}">
             <TextBox.Style>
