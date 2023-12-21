@@ -29,8 +29,8 @@ namespace RestaurantApp.ViewModels
         private DelegateCommand<TableArticleQuantity> _deleteTableArticleQuantityCommand;
         private DelegateCommand _goToPaymentCommand;
         private DelegateCommand _loadOnlineOrderCommand;
-        private DelegateCommand _showInvoiceHistoryDialogCommand;
         private DelegateCommand _editOnlineOrder;
+        private DelegateCommand _logoutCommand;
         private OnlineOrder _onlineOrder;
 
         public OnlineOrderingViewModel(IDatabaseService databaseService, IRegionManager regionManager, IDialogService dialogService, EFContext efContext)
@@ -116,6 +116,15 @@ namespace RestaurantApp.ViewModels
             }
         }
 
+        public DelegateCommand LogoutCommand
+        {
+            get
+            {
+                _logoutCommand = new DelegateCommand(Logout);
+                return _logoutCommand;
+            }
+        }
+
         public ObservableCollection<TableArticleQuantity> TableArticleQuantities
         {
             get
@@ -127,15 +136,6 @@ namespace RestaurantApp.ViewModels
             {
                 _tableArticleQuantities = value;
                 RaisePropertyChanged();
-            }
-        }
-
-        public DelegateCommand ShowInvoiceHistoryDialogCommand
-        {
-            get
-            {
-                _showInvoiceHistoryDialogCommand = new DelegateCommand(ShowInvoiceHistoryDialog);
-                return _showInvoiceHistoryDialogCommand;
             }
         }
 
@@ -161,19 +161,6 @@ namespace RestaurantApp.ViewModels
         {
             using EFContext efContext = new EFContext();
             await _databaseService.EditOnlineOrder(OnlineOrder, efContext);
-        }
-
-        private async void ShowInvoiceHistoryDialog()
-        {
-            List<Bill> originalBills = await _databaseService.GetAllBills();
-            List<Bill> billsFilteredByDate = originalBills.Where(x => x.CreatedDateTime?.Date == DateTime.Today && x.OnlineOrder != null).ToList();
-
-            DialogParameters dialogParameters = new DialogParameters
-            {
-                { "bills", billsFilteredByDate},
-            };
-
-            _dialogService.ShowDialog("invoiceHistoryDialog", dialogParameters, r => { });
         }
 
         private void GoToPayment()
@@ -460,6 +447,15 @@ namespace RestaurantApp.ViewModels
 
             TableArticleQuantities.Remove(tableArticleQuantity);
             await _databaseService.DeleteTableArticleQuantity(tableArticleQuantityLoad, new EFContext());
+        }
+
+        private async void Logout()
+        {
+            using EFContext efContext = new EFContext();
+            OnlineOrder.UserID = null;
+            await _databaseService.EditOnlineOrder(OnlineOrder,efContext);
+
+            _regionManager.RequestNavigate("MainRegion", "OnlineOrders");
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)

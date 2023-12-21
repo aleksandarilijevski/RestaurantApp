@@ -1,4 +1,5 @@
-﻿using EntityFramework.Models;
+﻿using DocumentFormat.OpenXml.Vml.Spreadsheet;
+using EntityFramework.Models;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
@@ -83,7 +84,11 @@ namespace RestaurantApp.ViewModels
             using EFContext efContext = new EFContext();
 
             ObservableCollection<OnlineOrder> onlineOrders = await _databaseService.GetAllOnlineOrders(efContext);
-            OnlineOrders = new ObservableCollection<OnlineOrder>(onlineOrders.Where(x => x.CreatedDateTime?.ToString("dd/MM/yyyy") == DateTime.Now.ToString("dd/MM/yyyy")));
+            ObservableCollection<OnlineOrder> payedOrders = new ObservableCollection<OnlineOrder>(onlineOrders.Where(x => x.CreatedDateTime?.ToString("dd/MM/yyyy") == DateTime.Now.ToString("dd/MM/yyyy") && x.IsPayed == true));
+
+            OnlineOrders = new ObservableCollection<OnlineOrder>();
+            OnlineOrders.AddRange(payedOrders);
+            OnlineOrders.AddRange(onlineOrders.Where(x => x.IsPayed == false));
             OnlineOrders = new ObservableCollection<OnlineOrder>(OnlineOrders.OrderByDescending(x => x.CreatedDateTime));
         }
 
