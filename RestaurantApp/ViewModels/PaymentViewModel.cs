@@ -233,7 +233,7 @@ namespace RestaurantApp.ViewModels
             //Table.User.IsActive = false;
             await _databaseService.EditTable(Table, efContext);
 
-            User user = await _databaseService.GetUserByID(OnlineOrder.UserID ?? (int)default, efContext);
+            User user = await _databaseService.GetUserByID(Table.UserID ?? (int)default, efContext);
             user.IsActive = false;
             await _databaseService.EditUser(user, efContext);
 
@@ -292,17 +292,17 @@ namespace RestaurantApp.ViewModels
             return configuration.BillCounter;
         }
 
-        private async Task RemoveUserFromTable()
-        {
-            Table.UserID = null;
-            await _databaseService.EditTable(Table, new EFContext());
-        }
+        //private async Task RemoveUserFromTable()
+        //{
+        //    Table.UserID = null;
+        //    await _databaseService.EditTable(Table, new EFContext());
+        //}
 
-        private async Task RemoveUserFromOnlineOrder()
-        {
-            OnlineOrder.UserID = null;
-            await _databaseService.EditOnlineOrder(OnlineOrder, new EFContext());
-        }
+        //private async Task RemoveUserFromOnlineOrder()
+        //{
+        //    OnlineOrder.UserID = null;
+        //    await _databaseService.EditOnlineOrder(OnlineOrder, new EFContext());
+        //}
 
         private async void IssueBill()
         {
@@ -331,17 +331,18 @@ namespace RestaurantApp.ViewModels
                         {
                             user = await _databaseService.GetUserByID((int)OnlineOrder.UserID, new EFContext());
                             bill = await AddBillOnlineOrder(cash, change);
-                            await RemoveUserFromOnlineOrder();
+                            //await RemoveUserFromOnlineOrder();
+                            _regionManager.RequestNavigate("MainRegion", "OnlineOrders");
                         }
                         else
                         {
                             user = await _databaseService.GetUserByID((int)Table.UserID, new EFContext());
                             bill = await AddBill(cash, change);
-                            await RemoveUserFromTable();
+                            //await RemoveUserFromTable();
+                            _regionManager.RequestNavigate("MainRegion", "TableOrder");
                         }
 
                         DrawningHelper.DrawBill(bill, TableArticleQuantities, user);
-                        _regionManager.RequestNavigate("MainRegion", "TableOrder");
                     }
                 });
             }
@@ -355,17 +356,18 @@ namespace RestaurantApp.ViewModels
                 {
                     user = await _databaseService.GetUserByID((int)OnlineOrder.UserID, new EFContext());
                     bill = await AddBillOnlineOrder(0, 0);
-                    await RemoveUserFromOnlineOrder();
+                    //await RemoveUserFromOnlineOrder();
+                    _regionManager.RequestNavigate("MainRegion", "OnlineOrders");
                 }
                 else
                 {
                     user = await _databaseService.GetUserByID((int)Table.UserID, new EFContext());
                     bill = await AddBill(0, 0);
-                    await RemoveUserFromTable();
+                    //await RemoveUserFromTable();
+                    _regionManager.RequestNavigate("MainRegion", "TableOrder");
                 }
 
                 DrawningHelper.DrawBill(bill, TableArticleQuantities, user);
-                _regionManager.RequestNavigate("MainRegion", "TableOrder");
             }
         }
 

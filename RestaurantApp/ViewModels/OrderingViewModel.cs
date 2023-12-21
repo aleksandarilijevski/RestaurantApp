@@ -1,4 +1,5 @@
 ﻿using EntityFramework.Models;
+using Microsoft.EntityFrameworkCore;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
@@ -246,8 +247,11 @@ namespace RestaurantApp.ViewModels
                     Table.UserID = User.ID;
                     Table.User = await _databaseService.GetUserByID(User.ID, efContext);
 
+                    //efContext.Entry(Table.User).State = EntityState.Detached;
+
                     User.IsActive = true;
-                    await _databaseService.EditUser(User, efContext);
+                    //await _databaseService.EditUser(User, efContext);
+                    await _databaseService.EditUser(Table.User, efContext);
                 }
 
                 if (User.Barcode != Table.User.Barcode)
