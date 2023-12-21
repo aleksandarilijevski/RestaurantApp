@@ -289,6 +289,9 @@ namespace RestaurantApp.ViewModels
 
                 onlineOrder.UserID = User.ID;
                 await _databaseService.EditOnlineOrder(onlineOrder, efContext);
+
+                User.IsActive = true;
+                await _databaseService.EditUser(User, efContext);
             }
 
             if (!dialogResult)

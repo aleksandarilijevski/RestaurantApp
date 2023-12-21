@@ -112,6 +112,12 @@ namespace RestaurantApp.ViewModels
                 return;
             }
 
+            if (SelectedOnlineOrder.IsPayed)
+            {
+                MessageBox.Show("You can't delete proceseed order!", "Online ordering", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             if (SelectedOnlineOrder.TableArticleQuantities.Count != 0)
             {
                 MessageBoxResult messageBoxResult = MessageBox.Show("There is articles on selected online order, are you sure you want to delete it?", "Online ordering", MessageBoxButton.YesNo, MessageBoxImage.Question);

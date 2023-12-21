@@ -166,8 +166,13 @@ namespace RestaurantApp.ViewModels
             }
 
             OnlineOrder.IsPayed = true;
+            //OnlineOrder.User.IsActive = false;
             //OnlineOrder.UserID = null;
             await _databaseService.EditOnlineOrder(OnlineOrder, efContext);
+
+            User user = await _databaseService.GetUserByID(OnlineOrder.UserID ?? (int)default, efContext);
+            user.IsActive = false;
+            await _databaseService.EditUser(user,efContext);
             return bill;
         }
 
@@ -225,7 +230,12 @@ namespace RestaurantApp.ViewModels
 
 
             Table.InUse = false;
+            //Table.User.IsActive = false;
             await _databaseService.EditTable(Table, efContext);
+
+            User user = await _databaseService.GetUserByID(OnlineOrder.UserID ?? (int)default, efContext);
+            user.IsActive = false;
+            await _databaseService.EditUser(user, efContext);
 
             List<SoldTableArticleQuantity> soldTableArticleQuantities = new List<SoldTableArticleQuantity>();
             List<TableArticleQuantity> tableArticleQuantities = TableArticleQuantities.Select(x => x).Where(x => !(x is SoldTableArticleQuantity)).ToList();

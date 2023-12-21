@@ -118,26 +118,33 @@ namespace RestaurantApp.ViewModels
                 efContext.Entry(userJMBGCheck).State = EntityState.Detached;
             }
 
-            List<Table> tables = await _databaseService.GetAllTables(efContext);
-            ObservableCollection<OnlineOrder> onlineOrders = await _databaseService.GetAllOnlineOrders(efContext);
+            //List<Table> tables = await _databaseService.GetAllTables(efContext);
+            //ObservableCollection<OnlineOrder> onlineOrders = await _databaseService.GetAllOnlineOrders(efContext);
 
-            OnlineOrder onlineOrder = onlineOrders.FirstOrDefault(x => x.UserID == user.ID);
-
-            if (onlineOrder.UserID == user.ID)
+            if (user.IsActive)
             {
                 MessageBox.Show("You cannot change user which is currently active!", "Edit user", MessageBoxButton.OK, MessageBoxImage.Error);
                 CloseDialog("true");
                 return;
             }
 
-            Table table = tables.FirstOrDefault(x => x.UserID == user.ID);
+            //OnlineOrder onlineOrder = onlineOrders.FirstOrDefault(x => x.UserID == user.ID);
 
-            if (table is not null)
-            {
-                MessageBox.Show("You cannot change user which is currently active!", "Edit user", MessageBoxButton.OK, MessageBoxImage.Error);
-                CloseDialog("true");
-                return;
-            }
+            //if (onlineOrder.UserID == user.ID)
+            //{
+            //    MessageBox.Show("You cannot change user which is currently active!", "Edit user", MessageBoxButton.OK, MessageBoxImage.Error);
+            //    CloseDialog("true");
+            //    return;
+            //}
+
+            //Table table = tables.FirstOrDefault(x => x.UserID == user.ID);
+
+            //if (table is not null)
+            //{
+            //    MessageBox.Show("You cannot change user which is currently active!", "Edit user", MessageBoxButton.OK, MessageBoxImage.Error);
+            //    CloseDialog("true");
+            //    return;
+            //}
 
             await _databaseService.EditUser(user, efContext);
 

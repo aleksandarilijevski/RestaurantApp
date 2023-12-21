@@ -36,12 +36,16 @@
                 <DataGridTextColumn Header="Address" Binding="{Binding Address}"/>
                 <DataGridTextColumn Header="Phone number" Binding="{Binding PhoneNumber}"/>
                 <DataGridTextColumn Header="Used by" Binding="{Binding User.FirstAndLastName}"/>
-                <DataGridTextColumn Header="Processed" Binding="{Binding IsPayed}" Width="*"/>
-            </DataGrid.Columns>
+                <DataGridTextColumn Header="Processed" Binding="{Binding IsPayed}"/>
 
-            <DataGrid.InputBindings>
-                <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding OpenOnlineOrderCommand}" CommandParameter="{Binding SelectedItem,ElementName=dataGrid}"/>
-            </DataGrid.InputBindings>
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="USE" Command="{Binding DataContext.OpenOnlineOrderCommand,RelativeSource={RelativeSource AncestorType={x:Type local:OnlineOrders}}}" CommandParameter="{Binding SelectedItem,ElementName=dataGrid}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
         </DataGrid>
 
         <Button 

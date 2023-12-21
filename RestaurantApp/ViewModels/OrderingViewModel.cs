@@ -245,6 +245,9 @@ namespace RestaurantApp.ViewModels
                 {
                     Table.UserID = User.ID;
                     Table.User = await _databaseService.GetUserByID(User.ID, efContext);
+
+                    User.IsActive = true;
+                    await _databaseService.EditUser(User, efContext);
                 }
 
                 if (User.Barcode != Table.User.Barcode)
