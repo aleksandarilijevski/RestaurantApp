@@ -89,7 +89,10 @@ namespace RestaurantApp.ViewModels
             using EFContext efContext = new EFContext();
 
             ObservableCollection<OnlineOrder> onlineOrders = await _databaseService.GetAllOnlineOrders(efContext);
-            ObservableCollection<OnlineOrder> payedOrders = new ObservableCollection<OnlineOrder>(onlineOrders.Where(x => x.CreatedDateTime?.ToString("dd/MM/yyyy") == DateTime.Now.ToString("dd/MM/yyyy") && x.IsPayed == true));
+            ObservableCollection<OnlineOrder> payedOrders = new ObservableCollection<OnlineOrder>();
+
+            payedOrders.AddRange(onlineOrders.Where(x => x.CreatedDateTime?.ToString("dd/MM/yyyy") == DateTime.Now.ToString("dd/MM/yyyy") && x.IsPayed == true));
+            payedOrders.AddRange(onlineOrders.Where(x => x.ModifiedDateTime?.ToString("dd/MM/yyyy") == DateTime.Now.ToString("dd/MM/yyyy") && x.IsPayed == true));
 
             OnlineOrders = new ObservableCollection<OnlineOrder>();
             OnlineOrders.AddRange(payedOrders);

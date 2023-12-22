@@ -90,7 +90,7 @@ namespace RestaurantApp.Utilities.Helpers
 
             pdfPage.Height -= offset;
 
-            string path = "C:\\Users\\" + Environment.UserName + "\\Desktop\\fakeInvoice.pdf";
+            string path = "fakeInvoice.pdf";
 
             pdfDocument.Save(path);
             pdfDocument.Close();
@@ -228,7 +228,7 @@ namespace RestaurantApp.Utilities.Helpers
 
             page.Height -= offset;
 
-            string path = "C:\\Users\\" + Environment.UserName + "\\Desktop\\invoiceReprinted.pdf";
+            string path = "invoiceReprinted.pdf";
 
             document.Save(path);
             document.Close();
@@ -364,7 +364,7 @@ namespace RestaurantApp.Utilities.Helpers
 
             page.Height -= offset;
 
-            string path = "C:\\Users\\" + Environment.UserName + "\\Desktop\\invoice.pdf";
+            string path = "invoice.pdf";
 
             document.Save(path);
             document.Close();
