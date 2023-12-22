@@ -130,7 +130,7 @@ namespace RestaurantApp.ViewModels
         {
             if (LoggedUserHelper.LoggedUser is null)
             {
-                MessageBox.Show("No one is logged to be logged out!", "Main menu", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("You're not logged!", "Main menu", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 

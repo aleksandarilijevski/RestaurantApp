@@ -274,7 +274,7 @@ namespace RestaurantApp.ViewModels
                 Bills.Clear();
             }
 
-            TotalProfit += "Total profit : N/A";
+            TotalProfit = "Total profit : N/A";
 
             if (LoggedUserHelper.LoggedUser is null)
             {

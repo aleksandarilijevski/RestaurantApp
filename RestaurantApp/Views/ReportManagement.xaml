@@ -27,6 +27,7 @@
             <RowDefinition Height="65" />
             <RowDefinition Height="*" />
             <RowDefinition Height="40" />
+            <RowDefinition Height="40" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
@@ -142,13 +143,13 @@
             </DataGrid.Columns>            
         </DataGrid>
 
-        <TextBox
+        <TextBlock
             Text="{Binding TotalProfit}"
-            Grid.Row="3"
+            Grid.Row="4"
             Grid.ColumnSpan="7"
+            Margin="0,5"
             TextAlignment="Center"
             FontSize="20"
-            IsReadOnly="True"
             />
 
     </Grid>
