@@ -1,5 +1,4 @@
 ﻿using EntityFramework.Models;
-using Microsoft.EntityFrameworkCore;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
@@ -11,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,19 +18,31 @@ namespace RestaurantApp.ViewModels
 {
     public class OrderingViewModel : BindableBase, INavigationAware
     {
-        private IDatabaseService _databaseService;
-        private IRegionManager _regionManager;
-        private IDialogService _dialogService;
-        private DelegateCommand<string> _addArticleToTableCommand;
-        private Table _table;
-        private TableArticleQuantity _selectedTableArticleQuantity;
         private string _barcode;
+
+        private IDatabaseService _databaseService;
+
+        private IRegionManager _regionManager;
+
+        private IDialogService _dialogService;
+
+        private DelegateCommand<string> _addArticleToTableCommand;
+
         private DelegateCommand<Table> _getTableCommand;
+
         private DelegateCommand _showPaymentUserControlCommand;
+
         private DelegateCommand<TableArticleQuantity> _deleteArticleFromTableCommand;
+
         private DelegateCommand _navigateToTablesCommand;
+
         private DelegateCommand _showInvoiceHistoryDialogCommand;
+
         private ObservableCollection<TableArticleQuantity> _tableArticleQuantities;
+
+        private TableArticleQuantity _selectedTableArticleQuantity;
+
+        private Table _table;
 
         public OrderingViewModel(IDatabaseService databaseService, IRegionManager regionManager, IDialogService dialogService)
         {
@@ -42,6 +52,8 @@ namespace RestaurantApp.ViewModels
         }
 
         public int TableID { get; set; }
+
+        public User User { get; set; }
 
         public Table Table
         {
@@ -56,8 +68,6 @@ namespace RestaurantApp.ViewModels
                 RaisePropertyChanged();
             }
         }
-
-        public User User { get; set; }
 
         public string Barcode
         {
@@ -185,16 +195,6 @@ namespace RestaurantApp.ViewModels
             TableID = int.Parse(navigationContext.Parameters["id"].ToString());
         }
 
-        public bool IsNavigationTarget(NavigationContext navigationContext)
-        {
-            return false;
-        }
-
-        public void OnNavigatedFrom(NavigationContext navigationContext)
-        {
-
-        }
-
         private async void OnQuantityPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(TableArticleQuantity.Quantity))
@@ -247,10 +247,7 @@ namespace RestaurantApp.ViewModels
                     Table.UserID = User.ID;
                     Table.User = await _databaseService.GetUserByID(User.ID, efContext);
 
-                    //efContext.Entry(Table.User).State = EntityState.Detached;
-
                     User.IsActive = true;
-                    //await _databaseService.EditUser(User, efContext);
                     await _databaseService.EditUser(Table.User, efContext);
                 }
 
@@ -269,7 +266,6 @@ namespace RestaurantApp.ViewModels
                 return;
             }
 
-
             if (Table.TableArticleQuantities is null)
             {
                 Table.UserID = User.ID;
@@ -278,7 +274,6 @@ namespace RestaurantApp.ViewModels
             }
 
             TableArticleQuantities = new ObservableCollection<TableArticleQuantity>(_table.TableArticleQuantities.Where(x => !(x is SoldTableArticleQuantity)));
-
             RaisePropertyChanged(nameof(Table));
         }
 
@@ -338,8 +333,6 @@ namespace RestaurantApp.ViewModels
         private async Task IsQuantityAvailableForArticleOnTable(TableArticleQuantity selectedTableArticleQuantity)
         {
             using EFContext efContext = new EFContext();
-
-            Debug.WriteLine("Trigger method");
 
             TableArticleQuantity tableArticleQuantity = await _databaseService.GetTableArticleQuantityByID(selectedTableArticleQuantity.ID, efContext);
             List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleID(selectedTableArticleQuantity.ArticleID, efContext);
@@ -475,6 +468,16 @@ namespace RestaurantApp.ViewModels
         private void NavigateToTables()
         {
             _regionManager.RequestNavigate("MainRegion", "TableOrder");
+        }
+
+        public bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return false;
+        }
+
+        public void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+
         }
     }
 }

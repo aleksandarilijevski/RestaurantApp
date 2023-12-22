@@ -3,7 +3,6 @@ using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
 using RestaurantApp.Services.Interface;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace RestaurantApp.ViewModels
@@ -11,9 +10,13 @@ namespace RestaurantApp.ViewModels
     public class TableOrderViewModel : BindableBase
     {
         private IRegionManager _regionManager;
+
         private IDatabaseService _databaseService;
+
         private DelegateCommand<string> _orderingCommand;
+
         private DelegateCommand _loadAllTablesCommand;
+
         private ObservableCollection<Table> _tables;
 
         public TableOrderViewModel(IRegionManager regionManager, IDatabaseService databaseService)
@@ -58,7 +61,8 @@ namespace RestaurantApp.ViewModels
 
         private async void LoadAllTables()
         {
-            Tables = new ObservableCollection<Table>(await _databaseService.GetAllTables(new EFContext()));
+            using EFContext efContext = new EFContext();
+            Tables = new ObservableCollection<Table>(await _databaseService.GetAllTables(efContext));
         }
 
         private void ShowOrderingUsercontrol(string id)

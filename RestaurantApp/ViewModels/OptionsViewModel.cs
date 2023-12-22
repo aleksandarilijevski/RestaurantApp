@@ -10,17 +10,33 @@ namespace RestaurantApp.ViewModels
 {
     public class OptionsViewModel : BindableBase
     {
-        private IRegionManager _regionManager;
-        private IDialogService _dialogService;
-        private DelegateCommand _showTableOverviewCommand;
-        private DelegateCommand _showArticleManagementCommand;
-        private DelegateCommand _showUserManagementCommand;
-        private DelegateCommand _showReportManagementCommand;
-        private DelegateCommand _showOnlineOrderingCommand;
-        private DelegateCommand _showCompanyInformationsDialogCommand;
-        private DelegateCommand _showLoggedUserCommand;
-        private DelegateCommand _logoutUserCommand;
         private string _message;
+
+        private IRegionManager _regionManager;
+
+        private IDialogService _dialogService;
+
+        private DelegateCommand _showTableOverviewCommand;
+
+        private DelegateCommand _showArticleManagementCommand;
+
+        private DelegateCommand _showUserManagementCommand;
+
+        private DelegateCommand _showReportManagementCommand;
+
+        private DelegateCommand _showOnlineOrderingCommand;
+
+        private DelegateCommand _showCompanyInformationsDialogCommand;
+
+        private DelegateCommand _showLoggedUserCommand;
+
+        private DelegateCommand _logoutUserCommand;
+
+        public OptionsViewModel(IRegionManager regionManager, IDialogService dialogService)
+        {
+            _regionManager = regionManager;
+            _dialogService = dialogService;
+        }
 
         public User LoggedUser { get; set; }
 
@@ -36,12 +52,6 @@ namespace RestaurantApp.ViewModels
                 _message = value;
                 RaisePropertyChanged();
             }
-        }
-
-        public OptionsViewModel(IRegionManager regionManager, IDialogService dialogService)
-        {
-            _regionManager = regionManager;
-            _dialogService = dialogService;
         }
 
         public DelegateCommand ShowUserManagementCommand

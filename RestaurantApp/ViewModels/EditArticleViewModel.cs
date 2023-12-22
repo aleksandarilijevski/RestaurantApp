@@ -12,15 +12,19 @@ namespace RestaurantApp.ViewModels
     public class EditArticleViewModel : BindableBase, IDialogAware
     {
         private IDatabaseService _databaseService;
-        private DelegateCommand _editArticleCommand;
-        private Article _article;
 
-        public event Action<IDialogResult> RequestClose;
+        private DelegateCommand _editArticleCommand;
+
+        private Article _article;
 
         public EditArticleViewModel(IDatabaseService databaseService)
         {
             _databaseService = databaseService;
         }
+
+        public string Title { get; set; } = "Edit article";
+
+        public event Action<IDialogResult> RequestClose;
 
         public Article Article
         {
@@ -35,8 +39,6 @@ namespace RestaurantApp.ViewModels
                 RaisePropertyChanged();
             }
         }
-
-        public string Title { get; set; } = "Edit article";
 
         public DelegateCommand EditArticleCommand
         {
@@ -59,26 +61,12 @@ namespace RestaurantApp.ViewModels
             RaiseRequestClose(new DialogResult(result));
         }
 
-        public virtual void RaiseRequestClose(IDialogResult dialogResult)
-        {
-            RequestClose?.Invoke(dialogResult);
-        }
-
-        public virtual bool CanCloseDialog()
-        {
-            return true;
-        }
-
-        public virtual void OnDialogClosed()
-        {
-
-        }
-
         public virtual void OnDialogOpened(IDialogParameters parameters)
         {
             Article = parameters.GetValue<Article>("article");
         }
 
+        //Check
         private async void EditArticle()
         {
             using EFContext efContext = new EFContext();
@@ -95,6 +83,21 @@ namespace RestaurantApp.ViewModels
 
             await _databaseService.EditArticle(Article, efContext);
             CloseDialog("true");
+        }
+
+        public virtual void RaiseRequestClose(IDialogResult dialogResult)
+        {
+            RequestClose?.Invoke(dialogResult);
+        }
+
+        public virtual bool CanCloseDialog()
+        {
+            return true;
+        }
+
+        public virtual void OnDialogClosed()
+        {
+
         }
     }
 }

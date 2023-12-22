@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Office.CoverPageProps;
-using EntityFramework.Models;
+﻿using EntityFramework.Models;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 using RestaurantApp.Enums;
@@ -40,7 +39,6 @@ namespace RestaurantApp.Utilities.Helpers
 
             XGraphics gfx = XGraphics.FromPdfPage(pdfPage);
 
-            XPen pen = new XPen(XColors.Black, 1);
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             XFont font = new XFont("Verdana", 15, XFontStyle.Regular);
 
@@ -98,7 +96,7 @@ namespace RestaurantApp.Utilities.Helpers
             pdfDocument.Close();
         }
 
-        public static async void RedrawBill(Bill bill, List<TableArticleQuantity> tableArticleQuantities,User user)
+        public static async void RedrawBill(Bill bill, List<TableArticleQuantity> tableArticleQuantities, User user)
         {
             PdfDocument document = new PdfDocument();
             PdfPage page = document.AddPage();
@@ -118,7 +116,7 @@ namespace RestaurantApp.Utilities.Helpers
             offset += 20;
             gfx.DrawString("123456789", font, XBrushes.Black, new XRect(0, offset, page.Width, 0), XStringFormats.TopCenter);
             offset += 20;
-            gfx.DrawString(CompanyName ,font, XBrushes.Black, new XRect(0, offset, page.Width, 0), XStringFormats.TopCenter);
+            gfx.DrawString(CompanyName, font, XBrushes.Black, new XRect(0, offset, page.Width, 0), XStringFormats.TopCenter);
             offset += 20;
             gfx.DrawString(CompanyAddress, font, XBrushes.Black, new XRect(0, offset, page.Width, 0), XStringFormats.TopCenter);
             offset += 50;

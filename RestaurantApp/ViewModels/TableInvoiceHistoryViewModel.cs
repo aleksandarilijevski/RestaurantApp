@@ -10,6 +10,8 @@ namespace RestaurantApp.ViewModels
     {
         private IDialogService _dialogService;
 
+        private DelegateCommand _showReportDetailsCommand;
+
         public List<Bill> Bills { get; set; }
 
         public int TableID { get; set; }
@@ -19,8 +21,6 @@ namespace RestaurantApp.ViewModels
         public string Title => "Table invoice history";
 
         public Bill SelectedBill { get; set; }
-
-        private DelegateCommand _showReportDetailsCommand;
 
         public TableInvoiceHistoryViewModel(IDialogService dialogService)
         {
@@ -48,6 +48,12 @@ namespace RestaurantApp.ViewModels
             _dialogService.ShowDialog("reportDetailsDialog", dialogParameters, r => { });
         }
 
+        public void OnDialogOpened(IDialogParameters parameters)
+        {
+            Bills = parameters.GetValue<List<Bill>>("bills");
+            TableID = parameters.GetValue<int>("tableID");
+        }
+
         public bool CanCloseDialog()
         {
             return true;
@@ -56,12 +62,6 @@ namespace RestaurantApp.ViewModels
         public void OnDialogClosed()
         {
 
-        }
-
-        public void OnDialogOpened(IDialogParameters parameters)
-        {
-            Bills = parameters.GetValue<List<Bill>>("bills");
-            TableID = parameters.GetValue<int>("tableID");
         }
     }
 }

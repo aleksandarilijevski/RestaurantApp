@@ -162,9 +162,8 @@ namespace RestaurantApp.Services
             return dataEntry.ID;
         }
 
-        public async Task<DataEntry> GetDataEntryByNumber(int dataEntryNumber)
+        public async Task<DataEntry> GetDataEntryByNumber(int dataEntryNumber, EFContext efContext)
         {
-            using EFContext efContext = new EFContext();
             DataEntry dataEntry = await efContext.DataEntries.FirstOrDefaultAsync(x => x.DataEntryNumber == dataEntryNumber);
             return dataEntry;
         }
@@ -242,9 +241,8 @@ namespace RestaurantApp.Services
             return bills;
         }
 
-        public async Task<ObservableCollection<DataEntry>> GetAllDataEntries()
+        public async Task<ObservableCollection<DataEntry>> GetAllDataEntries(EFContext efContext)
         {
-            using EFContext efContext = new EFContext();
             List<DataEntry> dataEntries = await efContext.DataEntries.Include(x => x.ArticleDetails).ThenInclude(x => x.Article).ToListAsync();
             return new ObservableCollection<DataEntry>(dataEntries);
         }

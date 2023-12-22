@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Vml.Spreadsheet;
-using EntityFramework.Models;
+﻿using EntityFramework.Models;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
@@ -14,11 +13,17 @@ namespace RestaurantApp.ViewModels
     public class OnlineOrdersViewModel : BindableBase
     {
         private IDatabaseService _databaseService;
+
         private IRegionManager _regionManager;
+
         private DelegateCommand _loadOnlineOrdersCommand;
+
         private DelegateCommand _addOnlineOrderCommand;
+
         private DelegateCommand _deleteOnlineOrdersCommand;
+
         private DelegateCommand<OnlineOrder> _openOnlineOrderCommand;
+
         private ObservableCollection<OnlineOrder> _onlineOrders;
 
         public OnlineOrdersViewModel(IDatabaseService databaseService, IRegionManager regionManager)
@@ -26,6 +31,8 @@ namespace RestaurantApp.ViewModels
             _databaseService = databaseService;
             _regionManager = regionManager;
         }
+
+        public OnlineOrder SelectedOnlineOrder { get; set; }
 
         public ObservableCollection<OnlineOrder> OnlineOrders
         {
@@ -40,8 +47,6 @@ namespace RestaurantApp.ViewModels
                 RaisePropertyChanged();
             }
         }
-
-        public OnlineOrder SelectedOnlineOrder { get; set; }
 
         public DelegateCommand LoadOnlineOrdersCommand
         {
@@ -89,7 +94,7 @@ namespace RestaurantApp.ViewModels
             OnlineOrders = new ObservableCollection<OnlineOrder>();
             OnlineOrders.AddRange(payedOrders);
             OnlineOrders.AddRange(onlineOrders.Where(x => x.IsPayed == false));
-            OnlineOrders = new ObservableCollection<OnlineOrder>(OnlineOrders.OrderByDescending(x => x.CreatedDateTime));
+            OnlineOrders.OrderByDescending(x => x.CreatedDateTime);
         }
 
         public async void AddOnlineOrder()
@@ -126,7 +131,7 @@ namespace RestaurantApp.ViewModels
             if (SelectedOnlineOrder.TableArticleQuantities.Count != 0)
             {
                 MessageBoxResult messageBoxResult = MessageBox.Show("There is articles on selected online order, are you sure you want to delete it?", "Online ordering", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                
+
                 if (messageBoxResult == MessageBoxResult.No)
                 {
                     return;

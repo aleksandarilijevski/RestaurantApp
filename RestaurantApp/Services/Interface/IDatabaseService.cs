@@ -59,7 +59,7 @@ namespace RestaurantApp.Services.Interface
 
         public Task<int> AddArticleDetails(ArticleDetails articleDetails, EFContext efContext);
 
-        public Task<DataEntry> GetDataEntryByNumber(int dataEntryNumber);
+        public Task<DataEntry> GetDataEntryByNumber(int dataEntryNumber, EFContext efContext);
 
         public Task DeleteArticleDetails(ArticleDetails articleDetails, EFContext efContext);
 
@@ -73,7 +73,7 @@ namespace RestaurantApp.Services.Interface
 
         public Task<List<Bill>> GetAllBills();
 
-        public Task<ObservableCollection<DataEntry>> GetAllDataEntries();
+        public Task<ObservableCollection<DataEntry>> GetAllDataEntries(EFContext efContext);
 
         public Task<int> AddSoldArticleDetails(SoldArticleDetails soldArticleDetails, EFContext efContext);
 

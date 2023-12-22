@@ -9,11 +9,15 @@ namespace RestaurantApp.ViewModels
 {
     public class ArticleDetailsViewModel : BindableBase, INavigationAware
     {
-        private IDatabaseService _databaseService;
-        private IDialogService _dialogService;
-        private DelegateCommand<ArticleDetails> _showEditArticleDetailCommand;
-        private DelegateCommand<ArticleDetails> _deleteArticleDetailsCommand;
         private Article _article;
+
+        private IDatabaseService _databaseService;
+
+        private IDialogService _dialogService;
+
+        private DelegateCommand<ArticleDetails> _showEditArticleDetailCommand;
+
+        private DelegateCommand<ArticleDetails> _deleteArticleDetailsCommand;
 
         public ArticleDetailsViewModel(IDatabaseService databaseService, IDialogService dialogService)
         {
@@ -53,22 +57,7 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public bool IsNavigationTarget(NavigationContext navigationContext)
-        {
-            return false;
-        }
-
-        public void OnNavigatedFrom(NavigationContext navigationContext)
-        {
-
-        }
-
-        public void OnNavigatedTo(NavigationContext navigationContext)
-        {
-            Article = (Article)navigationContext.Parameters["article"];
-        }
-
-        public void ShowEditArticleDetail(ArticleDetails articleDetails)
+       public void ShowEditArticleDetail(ArticleDetails articleDetails)
         {
             DialogParameters dialogParameters = new DialogParameters
             {
@@ -83,6 +72,21 @@ namespace RestaurantApp.ViewModels
             using EFContext efContext = new EFContext();
             await _databaseService.DeleteArticleDetails(articleDetails, efContext);
             RaisePropertyChanged(nameof(Article));
+        }
+
+        public void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            Article = (Article)navigationContext.Parameters["article"];
+        }
+
+        public bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return false;
+        }
+
+        public void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+
         }
     }
 }

@@ -14,9 +14,12 @@ namespace RestaurantApp.ViewModels
     class ReportDetailsViewModel : BindableBase, IDialogAware
     {
         private string _totalPrice = "Total price : ";
-        private DelegateCommand _printBillCommand;
-        private ObservableCollection<TableArticleQuantity> _soldTableArticleQuantities;
+
         private IDatabaseService _databaseService;
+
+        private DelegateCommand _printBillCommand;
+
+        private ObservableCollection<TableArticleQuantity> _soldTableArticleQuantities;
 
         public string Title { get; set; } = "Report details";
 
@@ -26,6 +29,8 @@ namespace RestaurantApp.ViewModels
         {
             _databaseService = databaseService;
         }
+
+        public event Action<IDialogResult> RequestClose;
 
         public ObservableCollection<TableArticleQuantity> SoldTableArticleQuantities
         {
@@ -64,7 +69,38 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public event Action<IDialogResult> RequestClose;
+        //Check
+        private void GetSoldArticles()
+        {
+            if (Bill.Table is not null)
+            {
+                SoldTableArticleQuantities = new ObservableCollection<TableArticleQuantity>(Bill.Table.TableArticleQuantities.Select(x => x).Where(x => x.BillID == Bill.ID && (x is SoldTableArticleQuantity)).OfType<SoldTableArticleQuantity>().ToList());
+            }
+
+            if (Bill.OnlineOrder is not null)
+            {
+                SoldTableArticleQuantities = new ObservableCollection<TableArticleQuantity>(Bill.OnlineOrder.TableArticleQuantities.Select(x => x).Where(x => x.BillID == Bill.ID && (x is SoldTableArticleQuantity)).OfType<SoldTableArticleQuantity>().ToList());
+            }
+        }
+
+        private async void PrintBill()
+        {
+            using EFContext efContext = new EFContext();
+            List<TableArticleQuantity> soldTableArticleQuantities = null;
+
+            if (Bill.Table is not null)
+            {
+                soldTableArticleQuantities = Bill.Table.TableArticleQuantities.OfType<SoldTableArticleQuantity>().Select(sold => (TableArticleQuantity)sold).ToList();
+            }
+
+            if (Bill.OnlineOrder is not null)
+            {
+                soldTableArticleQuantities = Bill.OnlineOrder.TableArticleQuantities.OfType<SoldTableArticleQuantity>().Select(sold => (TableArticleQuantity)sold).ToList();
+            }
+
+            User user = await _databaseService.GetUserByID(Bill.UserID, efContext);
+            DrawningHelper.RedrawBill(Bill, soldTableArticleQuantities, user);
+        }
 
         protected virtual void CloseDialog(string parameter)
         {
@@ -82,6 +118,12 @@ namespace RestaurantApp.ViewModels
             RaiseRequestClose(new DialogResult(result));
         }
 
+        public virtual void OnDialogOpened(IDialogParameters parameters)
+        {
+            Bill = parameters.GetValue<Bill>("bill");
+            GetSoldArticles();
+        }
+
         public virtual void RaiseRequestClose(IDialogResult dialogResult)
         {
             RequestClose?.Invoke(dialogResult);
@@ -95,43 +137,6 @@ namespace RestaurantApp.ViewModels
         public virtual void OnDialogClosed()
         {
 
-        }
-
-        public virtual void OnDialogOpened(IDialogParameters parameters)
-        {
-            Bill = parameters.GetValue<Bill>("bill");
-            GetSoldArticles();
-        }
-
-        private void GetSoldArticles()
-        {
-            if (Bill.Table is not null)
-            {
-                SoldTableArticleQuantities = new ObservableCollection<TableArticleQuantity>(Bill.Table.TableArticleQuantities.Select(x => x).Where(x => x.BillID == Bill.ID && (x is SoldTableArticleQuantity)).OfType<SoldTableArticleQuantity>().ToList());
-            }
-
-            if (Bill.OnlineOrder is not null)
-            {
-                SoldTableArticleQuantities = new ObservableCollection<TableArticleQuantity>(Bill.OnlineOrder.TableArticleQuantities.Select(x => x).Where(x => x.BillID == Bill.ID && (x is SoldTableArticleQuantity)).OfType<SoldTableArticleQuantity>().ToList());
-            }
-        }
-
-        private async void PrintBill()
-        {
-            List<TableArticleQuantity> soldTableArticleQuantities = null;
-
-            if (Bill.Table is not null)
-            {
-                soldTableArticleQuantities = Bill.Table.TableArticleQuantities.OfType<SoldTableArticleQuantity>().Select(sold => (TableArticleQuantity)sold).ToList();
-            }
-
-            if (Bill.OnlineOrder is not null)
-            {
-                soldTableArticleQuantities = Bill.OnlineOrder.TableArticleQuantities.OfType<SoldTableArticleQuantity>().Select(sold => (TableArticleQuantity)sold).ToList();
-            }
-
-            User user = await _databaseService.GetUserByID(Bill.UserID, new EFContext());
-            DrawningHelper.RedrawBill(Bill, soldTableArticleQuantities,user);
         }
     }
 }

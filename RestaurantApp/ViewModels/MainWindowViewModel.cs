@@ -19,18 +19,30 @@ namespace RestaurantApp.ViewModels
     public class MainWindowViewModel : BindableBase
     {
         private IRegionManager _regionManager;
+
         private IDatabaseService _databaseService;
+
         private IDialogService _dialogService;
+
         private DelegateCommand _navigateToArticleManagementCommand;
+
         private DelegateCommand _navigateToUserManagementCommand;
+
         private DelegateCommand _navigateToMenuCommand;
+
         private DelegateCommand _navigateToOnlineOrderingCommand;
+
         private DelegateCommand _loadConfigurationCommand;
+
         private DelegateCommand _showTableOverviewCommand;
+
         private DelegateCommand _checkIfAnyUserExistsCommand;
+
         private DelegateCommand _checkIfConfigFileExistsCommand;
+
         //10 minutes = 60000 * 10
         private int InactivityTimer = 15000;
+
         private Timer mouseInactivityTimer;
 
         public MainWindowViewModel(IRegionManager regionManager, IDatabaseService databaseService, IDialogService dialogService)
@@ -40,30 +52,6 @@ namespace RestaurantApp.ViewModels
             _dialogService = dialogService;
             InitializeMouseInactivityTimer();
             InitializeMouseEvents();
-        }
-
-        private void InitializeMouseInactivityTimer()
-        {
-            mouseInactivityTimer = new Timer(InactivityTimer);
-            mouseInactivityTimer.Elapsed += MouseInactivityTimerElapsed;
-            mouseInactivityTimer.Start();
-        }
-
-        private void InitializeMouseEvents()
-        {
-            Mouse.AddMouseMoveHandler(Application.Current.MainWindow, MouseMoveHandler);
-        }
-
-        private void MouseMoveHandler(object sender, MouseEventArgs e)
-        {
-            mouseInactivityTimer.Stop();
-            mouseInactivityTimer.Start();
-        }
-
-        private void MouseInactivityTimerElapsed(object sender, ElapsedEventArgs e)
-        {
-            LoggedUserHelper.LoggedUser = null;
-            Debug.WriteLine("User is logged off!");
         }
 
         public DelegateCommand NavigateToArticleManagementCommand
@@ -82,42 +70,6 @@ namespace RestaurantApp.ViewModels
                 _checkIfConfigFileExistsCommand = new DelegateCommand(CheckIfConfigFileExists);
                 return _checkIfConfigFileExistsCommand;
             }
-        }
-
-        private void CheckIfConfigFileExists()
-        {
-            if (!File.Exists("config.ini"))
-            {
-                do
-                {
-                    _dialogService.ShowDialog("companyInformationsDialog");
-                } while (!File.Exists("config.ini"));
-            }
-
-            string data = string.Empty;
-
-            using (StreamReader streamReader = new StreamReader("config.ini"))
-            {
-                data = streamReader.ReadToEnd();
-            }
-
-            JObject parsedData = JObject.Parse(data);
-
-            if (parsedData.Count == 0)
-            {
-                MessageBox.Show("Config file is not in right format!", "Company informations", MessageBoxButton.OK, MessageBoxImage.Error);
-                File.Delete("config.ini");
-
-                do
-                {
-                    _dialogService.ShowDialog("companyInformationsDialog");
-                } while (!File.Exists("config.ini"));
-
-                return;
-            }
-
-            DrawningHelper.CompanyName = parsedData["Company name"].ToString();
-            DrawningHelper.CompanyAddress = parsedData["Company address"].ToString();
         }
 
         public DelegateCommand NavigateToUserManagementCommand
@@ -172,6 +124,66 @@ namespace RestaurantApp.ViewModels
                 _checkIfAnyUserExistsCommand = new DelegateCommand(CheckIfAnyUserExists);
                 return _checkIfAnyUserExistsCommand;
             }
+        }
+
+        private void InitializeMouseInactivityTimer()
+        {
+            mouseInactivityTimer = new Timer(InactivityTimer);
+            mouseInactivityTimer.Elapsed += MouseInactivityTimerElapsed;
+            mouseInactivityTimer.Start();
+        }
+
+        private void InitializeMouseEvents()
+        {
+            Mouse.AddMouseMoveHandler(Application.Current.MainWindow, MouseMoveHandler);
+        }
+
+        private void MouseMoveHandler(object sender, MouseEventArgs e)
+        {
+            mouseInactivityTimer.Stop();
+            mouseInactivityTimer.Start();
+        }
+
+        private void MouseInactivityTimerElapsed(object sender, ElapsedEventArgs e)
+        {
+            LoggedUserHelper.LoggedUser = null;
+            Debug.WriteLine("User is logged off!");
+        }
+
+        private void CheckIfConfigFileExists()
+        {
+            if (!File.Exists("config.ini"))
+            {
+                do
+                {
+                    _dialogService.ShowDialog("companyInformationsDialog");
+                } while (!File.Exists("config.ini"));
+            }
+
+            string data = string.Empty;
+
+            using (StreamReader streamReader = new StreamReader("config.ini"))
+            {
+                data = streamReader.ReadToEnd();
+            }
+
+            JObject parsedData = JObject.Parse(data);
+
+            if (parsedData.Count == 0)
+            {
+                MessageBox.Show("Config file is not in right format!", "Company informations", MessageBoxButton.OK, MessageBoxImage.Error);
+                File.Delete("config.ini");
+
+                do
+                {
+                    _dialogService.ShowDialog("companyInformationsDialog");
+                } while (!File.Exists("config.ini"));
+
+                return;
+            }
+
+            DrawningHelper.CompanyName = parsedData["Company name"].ToString();
+            DrawningHelper.CompanyAddress = parsedData["Company address"].ToString();
         }
 
         private void Navigate(string regionName, string viewName)

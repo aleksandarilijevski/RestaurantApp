@@ -8,27 +8,33 @@ using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
 using RestaurantApp.Utilities.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows;
 
 namespace RestaurantApp.ViewModels
 {
     public class EditUserViewModel : BindableBase, IDialogAware
     {
-        private IDatabaseService _databaseService;
-        private DelegateCommand<User> _editUserCommand;
         private User _user;
+
+        private IDatabaseService _databaseService;
+
         private IRegionManager _regionManger;
 
-        public event Action<IDialogResult> RequestClose;
+        private DelegateCommand<User> _editUserCommand;
 
         public EditUserViewModel(IDatabaseService databaseService, IRegionManager regionManager)
         {
             _databaseService = databaseService;
             _regionManger = regionManager;
         }
+
+        public event Action<IDialogResult> RequestClose;
+
+        //Ask about this
+        //Why i can't simply directly get logged user from static class
+        public User LoggedUser = LoggedUserHelper.LoggedUser;
+
+        public string Title { get; set; } = "Edit user";
 
         public User User
         {
@@ -45,12 +51,6 @@ namespace RestaurantApp.ViewModels
         }
 
         public UserRole UserRole { get; set; }
-
-        //Ask about this
-        //Why i can't simply directly get logged user from static class
-        public User LoggedUser = LoggedUserHelper.LoggedUser;
-
-        public string Title { get; set; } = "Edit user";
 
         public DelegateCommand<User> EditUserCommand
         {
@@ -71,21 +71,6 @@ namespace RestaurantApp.ViewModels
                 result = ButtonResult.Cancel;
 
             RaiseRequestClose(new DialogResult(result));
-        }
-
-        public virtual void RaiseRequestClose(IDialogResult dialogResult)
-        {
-            RequestClose?.Invoke(dialogResult);
-        }
-
-        public virtual bool CanCloseDialog()
-        {
-            return true;
-        }
-
-        public virtual void OnDialogClosed()
-        {
-
         }
 
         public virtual void OnDialogOpened(IDialogParameters parameters)
@@ -113,13 +98,11 @@ namespace RestaurantApp.ViewModels
                 return;
             }
 
+            //Check
             if (userJMBGCheck is not null)
             {
                 efContext.Entry(userJMBGCheck).State = EntityState.Detached;
             }
-
-            //List<Table> tables = await _databaseService.GetAllTables(efContext);
-            //ObservableCollection<OnlineOrder> onlineOrders = await _databaseService.GetAllOnlineOrders(efContext);
 
             if (user.IsActive)
             {
@@ -127,24 +110,6 @@ namespace RestaurantApp.ViewModels
                 CloseDialog("true");
                 return;
             }
-
-            //OnlineOrder onlineOrder = onlineOrders.FirstOrDefault(x => x.UserID == user.ID);
-
-            //if (onlineOrder.UserID == user.ID)
-            //{
-            //    MessageBox.Show("You cannot change user which is currently active!", "Edit user", MessageBoxButton.OK, MessageBoxImage.Error);
-            //    CloseDialog("true");
-            //    return;
-            //}
-
-            //Table table = tables.FirstOrDefault(x => x.UserID == user.ID);
-
-            //if (table is not null)
-            //{
-            //    MessageBox.Show("You cannot change user which is currently active!", "Edit user", MessageBoxButton.OK, MessageBoxImage.Error);
-            //    CloseDialog("true");
-            //    return;
-            //}
 
             await _databaseService.EditUser(user, efContext);
 
@@ -156,6 +121,21 @@ namespace RestaurantApp.ViewModels
             }
 
             CloseDialog("true");
+        }
+
+        public virtual void RaiseRequestClose(IDialogResult dialogResult)
+        {
+            RequestClose?.Invoke(dialogResult);
+        }
+
+        public virtual bool CanCloseDialog()
+        {
+            return true;
+        }
+
+        public virtual void OnDialogClosed()
+        {
+
         }
     }
 }

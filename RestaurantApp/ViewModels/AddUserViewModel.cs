@@ -13,6 +13,7 @@ namespace RestaurantApp.ViewModels
     public class AddUserViewModel : BindableBase, IDialogAware
     {
         private IDatabaseService _databaseService;
+
         private DelegateCommand<User> _addUserCommand;
 
         public AddUserViewModel(IDatabaseService databaseService)
@@ -51,30 +52,8 @@ namespace RestaurantApp.ViewModels
             RaiseRequestClose(new DialogResult(result));
         }
 
-        public virtual void RaiseRequestClose(IDialogResult dialogResult)
-        {
-            RequestClose?.Invoke(dialogResult);
-        }
-
-        public virtual bool CanCloseDialog()
-        {
-            return true;
-        }
-
-        public virtual void OnDialogClosed()
-        {
-
-        }
-
-        public virtual void OnDialogOpened(IDialogParameters parameters)
-        {
-            User.DateOfBirth = DateTime.Now;
-            LoggedUser = parameters.GetValue<User>("loggedUser");
-        }
-
         private async void AddUser(User user)
         {
-
             if (LoggedUser is not null && LoggedUser.UserRole != UserRole.Admin)
             {
                 MessageBox.Show("Manager can't create users!", "Access forbidden", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -140,6 +119,27 @@ namespace RestaurantApp.ViewModels
 
             await _databaseService.AddUser(user, efContext);
             CloseDialog("true");
+        }
+
+        public virtual void OnDialogOpened(IDialogParameters parameters)
+        {
+            User.DateOfBirth = DateTime.Now;
+            LoggedUser = parameters.GetValue<User>("loggedUser");
+        }
+
+        public virtual void RaiseRequestClose(IDialogResult dialogResult)
+        {
+            RequestClose?.Invoke(dialogResult);
+        }
+
+        public virtual bool CanCloseDialog()
+        {
+            return true;
+        }
+
+        public virtual void OnDialogClosed()
+        {
+
         }
     }
 }

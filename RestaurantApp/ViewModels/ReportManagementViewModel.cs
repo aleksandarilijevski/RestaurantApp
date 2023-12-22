@@ -19,23 +19,39 @@ namespace RestaurantApp.ViewModels
 {
     public class ReportManagementViewModel : BindableBase
     {
-        private IDatabaseService _databaseService;
-        private IDialogService _dialogService;
-        private IRegionManager _regionManager;
-        private DelegateCommand _loadAllBillsCommand;
-        private List<Bill> _originalBills = new List<Bill>();
-        private ObservableCollection<Bill> _bills = new ObservableCollection<Bill>();
-        private DelegateCommand _showReportDetailsCommand;
-        private DelegateCommand _filterCommand;
-        private DelegateCommand _clearFiltersCommand;
-        private DelegateCommand _exportToExcelCommand;
         private decimal _total;
+
         private string _filterBillCounter;
+
         private string _filterTableID;
+
         private string _totalProfit;
+
         private string _filterOnlineOrderID;
+
         private DateTime _filterDateFrom;
+
         private DateTime _filterDateTo;
+
+        private IDatabaseService _databaseService;
+
+        private IDialogService _dialogService;
+
+        private IRegionManager _regionManager;
+
+        private DelegateCommand _loadAllBillsCommand;
+
+        private DelegateCommand _showReportDetailsCommand;
+
+        private DelegateCommand _filterCommand;
+
+        private DelegateCommand _clearFiltersCommand;
+
+        private DelegateCommand _exportToExcelCommand;
+
+        private List<Bill> _originalBills = new List<Bill>();
+
+        private ObservableCollection<Bill> _bills = new ObservableCollection<Bill>();
 
         public ReportManagementViewModel(IDatabaseService databaseService, IDialogService dialogService, IRegionManager regionManager)
         {
@@ -45,6 +61,10 @@ namespace RestaurantApp.ViewModels
         }
 
         public User User { get; set; }
+
+        public List<SoldArticleDetails> SoldArticleDetails { get; set; }
+
+        public Bill SelectedBill { get; set; }
 
         public decimal Total
         {
@@ -171,10 +191,6 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public List<SoldArticleDetails> SoldArticleDetails { get; set; }
-
-        public Bill SelectedBill { get; set; }
-
         public DelegateCommand ShowReportDetailsCommand
         {
             get
@@ -257,7 +273,6 @@ namespace RestaurantApp.ViewModels
             {
                 OriginalBills.Clear();
             }
-
 
             if (LoggedUserHelper.LoggedUser is null)
             {

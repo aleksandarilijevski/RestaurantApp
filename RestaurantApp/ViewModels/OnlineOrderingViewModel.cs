@@ -10,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -19,19 +18,31 @@ namespace RestaurantApp.ViewModels
 {
     public class OnlineOrderingViewModel : BindableBase, INavigationAware
     {
-        private IDatabaseService _databaseService;
-        private IRegionManager _regionManager;
-        private IDialogService _dialogService;
         private string _barcode;
-        private TableArticleQuantity _selectedTableArticleQuantity;
-        private ObservableCollection<TableArticleQuantity> _tableArticleQuantities = new ObservableCollection<TableArticleQuantity>();
+
+        private IDatabaseService _databaseService;
+
+        private IRegionManager _regionManager;
+
+        private IDialogService _dialogService;
+
         private DelegateCommand<string> _addArticleToOnlineOrderCommand;
+
         private DelegateCommand<TableArticleQuantity> _deleteTableArticleQuantityCommand;
+
         private DelegateCommand _goToPaymentCommand;
+
         private DelegateCommand _loadOnlineOrderCommand;
+
         private DelegateCommand _editOnlineOrder;
+
         private DelegateCommand _logoutCommand;
+
         private OnlineOrder _onlineOrder;
+
+        private TableArticleQuantity _selectedTableArticleQuantity;
+
+        private ObservableCollection<TableArticleQuantity> _tableArticleQuantities = new ObservableCollection<TableArticleQuantity>();
 
         public OnlineOrderingViewModel(IDatabaseService databaseService, IRegionManager regionManager, IDialogService dialogService, EFContext efContext)
         {
@@ -39,6 +50,8 @@ namespace RestaurantApp.ViewModels
             _regionManager = regionManager;
             _dialogService = dialogService;
         }
+
+        public User User { get; set; }
 
         public string Barcode
         {
@@ -72,8 +85,6 @@ namespace RestaurantApp.ViewModels
                 }
             }
         }
-
-        public User User { get; set; }
 
         public OnlineOrder OnlineOrder
         {
@@ -197,8 +208,8 @@ namespace RestaurantApp.ViewModels
 
             NavigationParameters navigationParameters = new NavigationParameters()
             {
-                {"tableArticleQuantities",TableArticleQuantities.ToList() },
-                {"onlineOrder",OnlineOrder }
+                { "tableArticleQuantities", TableArticleQuantities.ToList() },
+                { "onlineOrder", OnlineOrder }
             };
 
             _regionManager.RequestNavigate("MainRegion", "Payment", navigationParameters);
@@ -369,8 +380,6 @@ namespace RestaurantApp.ViewModels
 
             using EFContext efContext = new EFContext();
 
-            Debug.WriteLine("Trigger method");
-
             TableArticleQuantity tableArticleQuantity = await _databaseService.GetTableArticleQuantityByID(selectedTableArticleQuantity.ID, efContext);
             List<ArticleDetails> articleDetails = await _databaseService.GetArticleDetailsByArticleID(selectedTableArticleQuantity.ArticleID, efContext);
 
@@ -424,6 +433,7 @@ namespace RestaurantApp.ViewModels
             RaisePropertyChanged(nameof(TableArticleQuantities));
         }
 
+        //Check
         private async void DeleteTableArticleQuantity(TableArticleQuantity tableArticleQuantity)
         {
             using EFContext efContext = new EFContext();
@@ -436,7 +446,6 @@ namespace RestaurantApp.ViewModels
             {
                 TableArticleQuantity = tableArticleQuantity,
                 ArticleDetails = articleDetails,
-
                 DatabaseService = _databaseService,
                 EFContext = efContext
             };
@@ -453,7 +462,7 @@ namespace RestaurantApp.ViewModels
         {
             using EFContext efContext = new EFContext();
             OnlineOrder.UserID = null;
-            await _databaseService.EditOnlineOrder(OnlineOrder,efContext);
+            await _databaseService.EditOnlineOrder(OnlineOrder, efContext);
 
             _regionManager.RequestNavigate("MainRegion", "OnlineOrders");
         }

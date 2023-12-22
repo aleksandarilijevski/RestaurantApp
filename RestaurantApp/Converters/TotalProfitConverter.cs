@@ -23,7 +23,6 @@ namespace RestaurantApp.Converters
 
             List<SoldArticleDetails> filteredSoldArticleDetails = soldArticleDetails.Where(x => x.BillID == billId).ToList();
 
-            //Temporary solution
             if (filteredSoldArticleDetails != null)
             {
                 decimal totalProfit = 0;

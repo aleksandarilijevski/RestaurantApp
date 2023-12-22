@@ -8,15 +8,21 @@ namespace RestaurantApp.ViewModels
 {
     public class PaymentDialogViewModel : BindableBase, IDialogAware
     {
-        private DelegateCommand<string> _calculateChangeCommand;
-        private DelegateCommand _confirmCommand;
         private decimal _totalPrice;
+
         private decimal _change;
+
         private bool _buttonVisible;
+
+        private DelegateCommand<string> _calculateChangeCommand;
+
+        private DelegateCommand _confirmCommand;
 
         public event Action<IDialogResult> RequestClose;
 
         public string Title { get; set; } = "Payment dialog";
+
+        public string CashBox { get; set; }
 
         public decimal TotalPrice
         {
@@ -32,8 +38,6 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public string CashBox { get; set; }
-
         public decimal Change
         {
             get
@@ -44,6 +48,20 @@ namespace RestaurantApp.ViewModels
             set
             {
                 _change = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool IsButtonEnabled
+        {
+            get
+            {
+                return _buttonVisible;
+            }
+
+            set
+            {
+                _buttonVisible = value;
                 RaisePropertyChanged();
             }
         }
@@ -66,6 +84,11 @@ namespace RestaurantApp.ViewModels
             }
         }
 
+        public virtual void OnDialogOpened(IDialogParameters parameters)
+        {
+            _totalPrice = parameters.GetValue<decimal>("totalPrice");
+        }
+
         public virtual void RaiseRequestClose(IDialogResult dialogResult)
         {
             RequestClose?.Invoke(dialogResult);
@@ -79,25 +102,6 @@ namespace RestaurantApp.ViewModels
         public virtual void OnDialogClosed()
         {
 
-        }
-
-        public virtual void OnDialogOpened(IDialogParameters parameters)
-        {
-            _totalPrice = parameters.GetValue<decimal>("totalPrice");
-        }
-
-        public bool IsButtonEnabled
-        {
-            get
-            {
-                return _buttonVisible;
-            }
-
-            set
-            {
-                _buttonVisible = value;
-                RaisePropertyChanged();
-            }
         }
 
         private void CalculateChange(string cashBox)

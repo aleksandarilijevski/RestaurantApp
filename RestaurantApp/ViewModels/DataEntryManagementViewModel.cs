@@ -12,24 +12,37 @@ namespace RestaurantApp.ViewModels
 {
     public class DataEntryManagementViewModel : BindableBase
     {
-        private IDatabaseService _databaseService;
-        private IDialogService _dialogService;
-        private ObservableCollection<DataEntry> _dataEntries;
-        private DelegateCommand _loadDataEntriesCommand;
-        private DelegateCommand _showDataEntryDetailsCommand;
-        private DelegateCommand _clearFiltersCommand;
-        private DelegateCommand _filterDataEntriesCommand;
         private int _dataEntryNumber;
-        private DateTime _dateFrom;
-        private DateTime _dateTo;
+
         private decimal _priceFrom;
+
         private decimal _priceTo;
+
+        private DateTime _dateFrom;
+
+        private DateTime _dateTo;
+
+        private IDatabaseService _databaseService;
+
+        private IDialogService _dialogService;
+
+        private DelegateCommand _loadDataEntriesCommand;
+
+        private DelegateCommand _showDataEntryDetailsCommand;
+
+        private DelegateCommand _clearFiltersCommand;
+
+        private DelegateCommand _filterDataEntriesCommand;
+
+        private ObservableCollection<DataEntry> _dataEntries;
 
         public DataEntryManagementViewModel(IDatabaseService databaseService, IDialogService dialogService)
         {
             _databaseService = databaseService;
             _dialogService = dialogService;
         }
+
+        public DataEntry SelectedDataEntry { get; set; }
 
         public int DataEntryNumber
         {
@@ -115,8 +128,6 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public DataEntry SelectedDataEntry { get; set; }
-
         public DelegateCommand LoadDataEntriesCommand
         {
             get
@@ -153,10 +164,10 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-
         private async void ClearFilters()
         {
-            DataEntries = await _databaseService.GetAllDataEntries();
+            using EFContext efContext = new EFContext();
+            DataEntries = await _databaseService.GetAllDataEntries(efContext);
 
             DateFrom = DateTime.Now;
             DateTo = DateTime.Now;
@@ -167,7 +178,9 @@ namespace RestaurantApp.ViewModels
 
         private async void FilterDataEntries()
         {
-            ObservableCollection<DataEntry> originalDataEntries = await _databaseService.GetAllDataEntries();
+            using EFContext efContext = new EFContext();
+
+            ObservableCollection<DataEntry> originalDataEntries = await _databaseService.GetAllDataEntries(efContext);
             ObservableCollection<DataEntry> filteredDataEntries = new ObservableCollection<DataEntry>();
 
             if (DataEntryNumber != 0)
@@ -207,10 +220,12 @@ namespace RestaurantApp.ViewModels
 
         private async void LoadDataEntries()
         {
+            using EFContext efContext = new EFContext();
+
             DateFrom = DateTime.Now;
             DateTo = DateTime.Now;
 
-            DataEntries = await _databaseService.GetAllDataEntries();
+            DataEntries = await _databaseService.GetAllDataEntries(efContext);
         }
 
         private void ShowDataEntryDetails()

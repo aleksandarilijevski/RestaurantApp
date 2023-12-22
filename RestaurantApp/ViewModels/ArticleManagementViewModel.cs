@@ -6,40 +6,51 @@ using Prism.Regions;
 using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
 using RestaurantApp.Utilities.Helpers;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Timers;
 using System.Windows;
-using System.Windows.Input;
 
 namespace RestaurantApp.ViewModels
 {
     public class ArticleManagementViewModel : BindableBase
     {
-        private IDatabaseService _databaseService;
-        private IDialogService _dialogService;
-        private IRegionManager _regionManager;
-        private DelegateCommand<Article> _showEditArticleDialogCommand;
-        private DelegateCommand _showAddArticleDialogCommand;
-        private DelegateCommand _getAllArticlesCommand;
-        private DelegateCommand _showAddArticleByDataEntryCommand;
-        private DelegateCommand<Article> _showArticleDetailsCommand;
-        private DelegateCommand<Article> _deleteArticleCommand;
-        private DelegateCommand _clearFiltersCommand;
-        private DelegateCommand _filterArticlesCommand;
-        private ObservableCollection<Article> _articles;
         private string _articleName;
 
-        
+        private IDatabaseService _databaseService;
+
+        private IDialogService _dialogService;
+
+        private IRegionManager _regionManager;
+
+        private DelegateCommand<Article> _showEditArticleDialogCommand;
+
+        private DelegateCommand _showAddArticleDialogCommand;
+
+        private DelegateCommand _getAllArticlesCommand;
+
+        private DelegateCommand _showAddArticleByDataEntryCommand;
+
+        private DelegateCommand<Article> _showArticleDetailsCommand;
+
+        private DelegateCommand<Article> _deleteArticleCommand;
+
+        private DelegateCommand _clearFiltersCommand;
+
+        private DelegateCommand _filterArticlesCommand;
+
+        private ObservableCollection<Article> _articles;
+
         public ArticleManagementViewModel(IDatabaseService databaseService, IDialogService dialogService, IRegionManager regionManager)
         {
             _dialogService = dialogService;
             _databaseService = databaseService;
             _regionManager = regionManager;
         }
+
+        public User User { get; set; }
+
+        public List<ArticleDetails> ArticleDetailsList { get; set; }
 
         public string ArticleName
         {
@@ -55,8 +66,6 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public User User { get;set; }
-
         public ObservableCollection<Article> Articles
         {
             get
@@ -70,8 +79,6 @@ namespace RestaurantApp.ViewModels
                 RaisePropertyChanged();
             }
         }
-
-        public List<ArticleDetails> ArticleDetailsList { get; set; }
 
         public DelegateCommand ShowAddArticleDialogCommand
         {
@@ -182,9 +189,6 @@ namespace RestaurantApp.ViewModels
 
         private async void GetAllArticles()
         {
-            //Temporarily
-            User = null;
-
             if (Articles is not null)
             {
                 Articles.Clear();
@@ -232,6 +236,7 @@ namespace RestaurantApp.ViewModels
             Articles = filteredArticles;
         }
 
+        //Check
         private async void ClearFilters()
         {
             ArticleName = string.Empty;

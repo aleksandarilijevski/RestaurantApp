@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:local="clr-namespace:RestaurantApp.Views"
+             xmlns:converters="clr-namespace:RestaurantApp.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 
@@ -14,6 +15,10 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
+    <UserControl.Resources>
+        <converters:PayedOrdersConverter x:Key="PayedOrdersConverter"/>
+    </UserControl.Resources>
+    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="50"/>
@@ -27,8 +32,14 @@
             <RowDefinition Height="50"/>
             <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
-        
+
         <DataGrid x:Name="dataGrid" IsReadOnly="True" FontSize="25" Grid.ColumnSpan="3" Grid.RowSpan="4" ItemsSource="{Binding OnlineOrders,IsAsync=True}" AutoGenerateColumns="False" SelectedItem="{Binding SelectedOnlineOrder}">
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Background" Value="{Binding ., Converter={StaticResource PayedOrdersConverter}}" />
+                </Style>
+            </DataGrid.RowStyle>
+
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding ID}"/>
                 <DataGridTextColumn Header="Firstname" Binding="{Binding Firstname}"/>

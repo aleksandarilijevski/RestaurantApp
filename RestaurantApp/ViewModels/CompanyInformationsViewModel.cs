@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Drawing.Charts;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -18,9 +17,11 @@ namespace RestaurantApp.ViewModels
 
         private string _companyAddress;
 
-        public string Title { get; set; } = "Company informations";
+        private DelegateCommand _saveConfigCommand;
 
         public event Action<IDialogResult> RequestClose;
+
+        public string Title { get; set; } = "Company informations";
 
         public string CompanyName
         {
@@ -48,8 +49,6 @@ namespace RestaurantApp.ViewModels
                 RaisePropertyChanged();
             }
         }
-
-        private DelegateCommand _saveConfigCommand;
 
         public DelegateCommand SaveConfigCommand
         {
@@ -113,11 +112,6 @@ namespace RestaurantApp.ViewModels
             CloseDialog("true");
         }
 
-        public bool CanCloseDialog()
-        {
-            return true;
-        }
-
         protected virtual void CloseDialog(string parameter)
         {
             ButtonResult result = ButtonResult.None;
@@ -130,6 +124,16 @@ namespace RestaurantApp.ViewModels
             RaiseRequestClose(new DialogResult(result));
         }
 
+        public void OnDialogOpened(IDialogParameters parameters)
+        {
+            LoadConfig();
+        }
+
+        public bool CanCloseDialog()
+        {
+            return true;
+        }
+
         public virtual void RaiseRequestClose(IDialogResult dialogResult)
         {
             RequestClose?.Invoke(dialogResult);
@@ -137,12 +141,7 @@ namespace RestaurantApp.ViewModels
 
         public void OnDialogClosed()
         {
-            
-        }
 
-        public void OnDialogOpened(IDialogParameters parameters)
-        {
-            LoadConfig();
         }
     }
 }

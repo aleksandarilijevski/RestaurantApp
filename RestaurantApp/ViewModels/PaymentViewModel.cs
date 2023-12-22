@@ -16,12 +16,18 @@ namespace RestaurantApp.ViewModels
 {
     public class PaymentViewModel : BindableBase, INavigationAware
     {
-        private IDatabaseService _databaseService;
-        private IRegionManager _regionManager;
-        private IDialogService _dialogService;
         private decimal _totalPrice;
+
+        private IDatabaseService _databaseService;
+
+        private IRegionManager _regionManager;
+
+        private IDialogService _dialogService;
+
         private DelegateCommand _issueFakeBillCommand;
+
         private DelegateCommand _issueBillCommand;
+
         private DelegateCommand _getTotalPriceCommand;
 
         public PaymentViewModel(IDatabaseService databaseService, IRegionManager regionManager, IDialogService dialogService)
@@ -34,6 +40,10 @@ namespace RestaurantApp.ViewModels
         public List<TableArticleQuantity> TableArticleQuantities { get; set; }
 
         public Table Table { get; set; }
+
+        public PaymentType PaymentType { get; set; }
+
+        public OnlineOrder OnlineOrder { get; set; }
 
         public decimal TotalPrice
         {
@@ -48,10 +58,6 @@ namespace RestaurantApp.ViewModels
                 RaisePropertyChanged();
             }
         }
-
-        public PaymentType PaymentType { get; set; }
-
-        public OnlineOrder OnlineOrder { get; set; }
 
         public DelegateCommand GetTotalPriceCommand
         {
@@ -78,23 +84,6 @@ namespace RestaurantApp.ViewModels
                 _issueBillCommand = new DelegateCommand(IssueBill);
                 return _issueBillCommand;
             }
-        }
-
-        public void OnNavigatedTo(NavigationContext navigationContext)
-        {
-            Table = (Table)navigationContext.Parameters["table"];
-            OnlineOrder = (OnlineOrder)navigationContext.Parameters["onlineOrder"];
-            TableArticleQuantities = (List<TableArticleQuantity>)navigationContext.Parameters["tableArticleQuantities"];
-        }
-
-        public bool IsNavigationTarget(NavigationContext navigationContext)
-        {
-            return false;
-        }
-
-        public void OnNavigatedFrom(NavigationContext navigationContext)
-        {
-
         }
 
         private async Task<Bill> AddBillOnlineOrder(decimal cash, decimal change)
@@ -130,7 +119,6 @@ namespace RestaurantApp.ViewModels
                     EFContext = efContext,
                     DatabaseService = _databaseService,
                     ArticleDetails = articleDetails,
-                    //BillID = bill.ID
                 };
 
                 await QuantityLogicHelper.DecreaseReservedQuantity(articleHelperDetails);
@@ -166,13 +154,11 @@ namespace RestaurantApp.ViewModels
             }
 
             OnlineOrder.IsPayed = true;
-            //OnlineOrder.User.IsActive = false;
-            //OnlineOrder.UserID = null;
             await _databaseService.EditOnlineOrder(OnlineOrder, efContext);
 
             User user = await _databaseService.GetUserByID(OnlineOrder.UserID ?? (int)default, efContext);
             user.IsActive = false;
-            await _databaseService.EditUser(user,efContext);
+            await _databaseService.EditUser(user, efContext);
             return bill;
         }
 
@@ -197,7 +183,6 @@ namespace RestaurantApp.ViewModels
                 RegistrationNumber = registrationNumber
             };
 
-            //await _databaseService.CreateBill(bill, efContext);
             List<SoldArticleDetails> soldArticleDetails = null;
             List<SoldArticleDetails> totalSoldArticleDetails = new List<SoldArticleDetails>();
 
@@ -211,7 +196,6 @@ namespace RestaurantApp.ViewModels
                     EFContext = efContext,
                     DatabaseService = _databaseService,
                     ArticleDetails = articleDetails,
-                    //BillID = bill.ID
                 };
 
                 await QuantityLogicHelper.DecreaseReservedQuantity(articleHelperDetails);
@@ -228,9 +212,7 @@ namespace RestaurantApp.ViewModels
                 await _databaseService.AddSoldArticleDetails(soldArticleDetail, efContext);
             }
 
-
             Table.InUse = false;
-            //Table.User.IsActive = false;
             await _databaseService.EditTable(Table, efContext);
 
             User user = await _databaseService.GetUserByID(Table.UserID ?? (int)default, efContext);
@@ -286,26 +268,18 @@ namespace RestaurantApp.ViewModels
         private async Task<int> IncreaseBillCounter()
         {
             using EFContext efContext = new EFContext();
+
             Configuration configuration = await _databaseService.GetConfiguration();
             configuration.BillCounter += 1;
+
             await _databaseService.EditConfiguration(configuration, efContext);
             return configuration.BillCounter;
         }
 
-        //private async Task RemoveUserFromTable()
-        //{
-        //    Table.UserID = null;
-        //    await _databaseService.EditTable(Table, new EFContext());
-        //}
-
-        //private async Task RemoveUserFromOnlineOrder()
-        //{
-        //    OnlineOrder.UserID = null;
-        //    await _databaseService.EditOnlineOrder(OnlineOrder, new EFContext());
-        //}
-
         private async void IssueBill()
         {
+            using EFContext efContext = new EFContext();
+
             decimal change = 0;
             decimal cash = 0;
             decimal totalPrice = CalculateTotalPrice();
@@ -329,16 +303,14 @@ namespace RestaurantApp.ViewModels
 
                         if (Table is null)
                         {
-                            user = await _databaseService.GetUserByID((int)OnlineOrder.UserID, new EFContext());
+                            user = await _databaseService.GetUserByID((int)OnlineOrder.UserID, efContext);
                             bill = await AddBillOnlineOrder(cash, change);
-                            //await RemoveUserFromOnlineOrder();
                             _regionManager.RequestNavigate("MainRegion", "OnlineOrders");
                         }
                         else
                         {
-                            user = await _databaseService.GetUserByID((int)Table.UserID, new EFContext());
+                            user = await _databaseService.GetUserByID((int)Table.UserID, efContext);
                             bill = await AddBill(cash, change);
-                            //await RemoveUserFromTable();
                             _regionManager.RequestNavigate("MainRegion", "TableOrder");
                         }
 
@@ -354,16 +326,14 @@ namespace RestaurantApp.ViewModels
 
                 if (Table is null)
                 {
-                    user = await _databaseService.GetUserByID((int)OnlineOrder.UserID, new EFContext());
+                    user = await _databaseService.GetUserByID((int)OnlineOrder.UserID, efContext);
                     bill = await AddBillOnlineOrder(0, 0);
-                    //await RemoveUserFromOnlineOrder();
                     _regionManager.RequestNavigate("MainRegion", "OnlineOrders");
                 }
                 else
                 {
-                    user = await _databaseService.GetUserByID((int)Table.UserID, new EFContext());
+                    user = await _databaseService.GetUserByID((int)Table.UserID, efContext);
                     bill = await AddBill(0, 0);
-                    //await RemoveUserFromTable();
                     _regionManager.RequestNavigate("MainRegion", "TableOrder");
                 }
 
@@ -387,6 +357,23 @@ namespace RestaurantApp.ViewModels
             }
 
             return totalPrice;
+        }
+
+        public void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            Table = (Table)navigationContext.Parameters["table"];
+            OnlineOrder = (OnlineOrder)navigationContext.Parameters["onlineOrder"];
+            TableArticleQuantities = (List<TableArticleQuantity>)navigationContext.Parameters["tableArticleQuantities"];
+        }
+
+        public bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return false;
+        }
+
+        public void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+
         }
     }
 }

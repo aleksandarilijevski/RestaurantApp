@@ -4,7 +4,6 @@ using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 
@@ -13,6 +12,7 @@ namespace RestaurantApp.ViewModels
     public class AddArticleViewModel : BindableBase, IDialogAware
     {
         private IDatabaseService _databaseService;
+
         private DelegateCommand<Article> _addArticleCommand;
 
         public AddArticleViewModel(IDatabaseService databaseService)
@@ -48,26 +48,6 @@ namespace RestaurantApp.ViewModels
                 result = ButtonResult.Cancel;
 
             RaiseRequestClose(new DialogResult(result));
-        }
-
-        public virtual void RaiseRequestClose(IDialogResult dialogResult)
-        {
-            RequestClose?.Invoke(dialogResult);
-        }
-
-        public virtual bool CanCloseDialog()
-        {
-            return true;
-        }
-
-        public virtual void OnDialogClosed()
-        {
-
-        }
-
-        public virtual void OnDialogOpened(IDialogParameters parameters)
-        {
-
         }
 
         private async void AddArticle(Article article)
@@ -109,6 +89,26 @@ namespace RestaurantApp.ViewModels
             await _databaseService.AddArticleDetails(ArticleDetails, efContext);
 
             CloseDialog("true");
+        }
+
+        public virtual void RaiseRequestClose(IDialogResult dialogResult)
+        {
+            RequestClose?.Invoke(dialogResult);
+        }
+
+        public virtual bool CanCloseDialog()
+        {
+            return true;
+        }
+
+        public virtual void OnDialogClosed()
+        {
+
+        }
+
+        public virtual void OnDialogOpened(IDialogParameters parameters)
+        {
+
         }
     }
 }

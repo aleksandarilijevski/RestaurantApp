@@ -1,7 +1,6 @@
 ﻿using EntityFramework.Models;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
-using RestaurantApp.Services.Interface;
 using System;
 using System.Collections.ObjectModel;
 
@@ -9,17 +8,11 @@ namespace RestaurantApp.ViewModels
 {
     public class DataEntryDetailsViewModel : BindableBase, IDialogAware
     {
-        private IDatabaseService _databaseService;
         private ObservableCollection<ArticleDetails> _articleDetails;
 
-        public DataEntryDetailsViewModel(IDatabaseService databaseService)
-        {
-            _databaseService = databaseService;
-        }
+        public event Action<IDialogResult> RequestClose;
 
         public string Title { get; set; } = "Data entry details";
-
-        public event Action<IDialogResult> RequestClose;
 
         public DataEntry DataEntry { get; set; }
 
@@ -53,6 +46,12 @@ namespace RestaurantApp.ViewModels
             RaiseRequestClose(new DialogResult(result));
         }
 
+        public virtual void OnDialogOpened(IDialogParameters parameters)
+        {
+            DataEntry = parameters.GetValue<DataEntry>("dataEntry");
+            ArticleDetails = new ObservableCollection<ArticleDetails>(DataEntry.ArticleDetails);
+        }
+
         public virtual void RaiseRequestClose(IDialogResult dialogResult)
         {
             RequestClose?.Invoke(dialogResult);
@@ -66,12 +65,6 @@ namespace RestaurantApp.ViewModels
         public virtual void OnDialogClosed()
         {
 
-        }
-
-        public virtual void OnDialogOpened(IDialogParameters parameters)
-        {
-            DataEntry = parameters.GetValue<DataEntry>("dataEntry");
-            ArticleDetails = new ObservableCollection<ArticleDetails>(DataEntry.ArticleDetails);
         }
     }
 }

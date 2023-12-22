@@ -16,19 +16,31 @@ namespace RestaurantApp.ViewModels
 {
     public class UserManagementViewModel : BindableBase
     {
-        private IDatabaseService _databaseService;
-        private IRegionManager _regionManager;
-        private IDialogService _dialogService;
-        private DelegateCommand<User> _deleteUserCommand;
-        private DelegateCommand _getAllUsersCommand;
-        private ObservableCollection<User> _users;
-        private DelegateCommand<User> _showEditUserDialogCommand;
-        private DelegateCommand _showAddUserDialogCommand;
-        private DelegateCommand _clearFiltersCommand;
-        private DelegateCommand _filterUsersCommand;
-        private DelegateCommand _getUserByJMBGCommand;
         private string _firstOrLastname;
+
         private long _jmbg;
+
+        private IDatabaseService _databaseService;
+
+        private IRegionManager _regionManager;
+
+        private IDialogService _dialogService;
+
+        private DelegateCommand<User> _deleteUserCommand;
+
+        private DelegateCommand _getAllUsersCommand;
+
+        private DelegateCommand<User> _showEditUserDialogCommand;
+
+        private DelegateCommand _showAddUserDialogCommand;
+
+        private DelegateCommand _clearFiltersCommand;
+
+        private DelegateCommand _filterUsersCommand;
+
+        private DelegateCommand _getUserByJMBGCommand;
+
+        private ObservableCollection<User> _users;
 
         public UserManagementViewModel(IDatabaseService databaseService, IDialogService dialogService, IRegionManager regionManager)
         {
@@ -36,6 +48,8 @@ namespace RestaurantApp.ViewModels
             _databaseService = databaseService;
             _regionManager = regionManager;
         }
+
+        public User User { get; set; }
 
         public string FirstOrLastname
         {
@@ -64,8 +78,6 @@ namespace RestaurantApp.ViewModels
                 RaisePropertyChanged();
             }
         }
-
-        public User User { get; set; }
 
         public ObservableCollection<User> Users
         {
@@ -224,7 +236,11 @@ namespace RestaurantApp.ViewModels
             await _databaseService.EditUser(user, efContext);
             Users.Remove(user);
 
-            if (Users.Count == 0)
+            ObservableCollection<User> users = await _databaseService.GetAllUsers(efContext);
+
+            User admin = users.FirstOrDefault(x => x.UserRole == UserRole.Admin);
+
+            if (admin is null)
             {
                 Environment.Exit(0);
             }

@@ -13,25 +13,39 @@ namespace RestaurantApp.ViewModels
 {
     public class AddArticleByDataEntryViewModel : BindableBase
     {
-        private IDatabaseService _databaseService;
-        private IRegionManager _regionManager;
-        private DelegateCommand _loadAllArticlesCommand;
-        private DelegateCommand<string> _addArticleByBarcodeCommand;
-        private DelegateCommand<string> _addArticleByNameCommand;
-        private DelegateCommand _saveCommand;
-        private DelegateCommand _navigateToDataEntryManagementCommand;
-        private DelegateCommand<ArticleDetails> _deleteArticleDetailsFromDataEntryCommand;
-        private ObservableCollection<Article> _articles;
-        private List<ArticleDetails> _dataEntryArticles = new List<ArticleDetails>();
         private string _articleName;
+
         private string _dataEntryNumber;
+
         private string _barcode;
+
+        private IDatabaseService _databaseService;
+
+        private IRegionManager _regionManager;
+
+        private DelegateCommand _loadAllArticlesCommand;
+
+        private DelegateCommand<string> _addArticleByBarcodeCommand;
+
+        private DelegateCommand<string> _addArticleByNameCommand;
+
+        private DelegateCommand _saveCommand;
+
+        private DelegateCommand _navigateToDataEntryManagementCommand;
+
+        private DelegateCommand<ArticleDetails> _deleteArticleDetailsFromDataEntryCommand;
+
+        private ObservableCollection<Article> _articles;
+
+        private List<ArticleDetails> _dataEntryArticles = new List<ArticleDetails>();
 
         public AddArticleByDataEntryViewModel(IDatabaseService databaseService, IRegionManager regionManager)
         {
             _databaseService = databaseService;
             _regionManager = regionManager;
         }
+
+        public List<string> ArticleNames { get; set; } = new List<string>();
 
         public List<ArticleDetails> DataEntryArticles
         {
@@ -60,8 +74,6 @@ namespace RestaurantApp.ViewModels
                 RaisePropertyChanged();
             }
         }
-
-        public List<string> ArticleNames { get; set; } = new List<string>();
 
         public string DataEntryNumber
         {
@@ -235,7 +247,7 @@ namespace RestaurantApp.ViewModels
                 return;
             }
 
-            DataEntry dataEntryCheck = await _databaseService.GetDataEntryByNumber(int.Parse(DataEntryNumber));
+            DataEntry dataEntryCheck = await _databaseService.GetDataEntryByNumber(int.Parse(DataEntryNumber), efContext);
 
             if (dataEntryCheck is not null)
             {
@@ -286,7 +298,6 @@ namespace RestaurantApp.ViewModels
             {
                 tableArticleQuantity.ArticleDetails.Add(articleDetail);
             }
-
         }
 
         private async Task<List<Article>> CreateArticleListFromArticleDetails(List<ArticleDetails> articleDetails, EFContext efContext)

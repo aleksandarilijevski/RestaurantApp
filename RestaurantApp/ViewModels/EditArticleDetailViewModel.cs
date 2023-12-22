@@ -10,7 +10,9 @@ namespace RestaurantApp.ViewModels
     public class EditArticleDetailViewModel : BindableBase, IDialogAware
     {
         private IDatabaseService _databaseService;
+
         private DelegateCommand<ArticleDetails> _editArticleDetailsCommand;
+
         private ArticleDetails _articleDetails;
 
         public EditArticleDetailViewModel(IDatabaseService databaseService)
@@ -45,6 +47,14 @@ namespace RestaurantApp.ViewModels
             }
         }
 
+        private async void EditArticleDetails(ArticleDetails articleDetails)
+        {
+            using EFContext efContext = new EFContext();
+            articleDetails.DataEntryQuantity = articleDetails.OriginalQuantity;
+            await _databaseService.EditArticleDetails(articleDetails, efContext);
+            CloseDialog("true");
+        }
+
         protected virtual void CloseDialog(string parameter)
         {
             ButtonResult result = ButtonResult.None;
@@ -55,6 +65,11 @@ namespace RestaurantApp.ViewModels
                 result = ButtonResult.Cancel;
 
             RaiseRequestClose(new DialogResult(result));
+        }
+
+        public virtual void OnDialogOpened(IDialogParameters parameters)
+        {
+            ArticleDetails = parameters.GetValue<ArticleDetails>("articleDetail");
         }
 
         public virtual void RaiseRequestClose(IDialogResult dialogResult)
@@ -70,19 +85,6 @@ namespace RestaurantApp.ViewModels
         public virtual void OnDialogClosed()
         {
 
-        }
-
-        public virtual void OnDialogOpened(IDialogParameters parameters)
-        {
-            ArticleDetails = parameters.GetValue<ArticleDetails>("articleDetail");
-        }
-
-        private async void EditArticleDetails(ArticleDetails articleDetails)
-        {
-            using EFContext efContext = new EFContext();
-            articleDetails.DataEntryQuantity = articleDetails.OriginalQuantity;
-            await _databaseService.EditArticleDetails(articleDetails, efContext);
-            CloseDialog("true");
         }
     }
 }

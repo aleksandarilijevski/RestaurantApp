@@ -4,22 +4,26 @@ using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
 using System;
-using System.ComponentModel;
 using System.Windows;
 
 namespace RestaurantApp.ViewModels
 {
     public class UserLoginDialogViewModel : BindableBase, IDialogAware
     {
-        private User _user;
         private string _barcode;
+
         private IDatabaseService _databaseService;
+
         private DelegateCommand<string> _loginCommand;
+
+        private User _user;
 
         public UserLoginDialogViewModel(IDatabaseService databaseService)
         {
             _databaseService = databaseService;
         }
+
+        public event Action<IDialogResult> RequestClose;
 
         public string Title { get; set; } = "User login";
 
@@ -37,8 +41,6 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public event Action<IDialogResult> RequestClose;
-
         public DelegateCommand<string> LoginCommand
         {
             get
@@ -46,46 +48,6 @@ namespace RestaurantApp.ViewModels
                 _loginCommand = new DelegateCommand<string>(Login);
                 return _loginCommand;
             }
-        }
-
-        public virtual void RaiseRequestClose(IDialogResult dialogResult)
-        {
-            RequestClose?.Invoke(dialogResult);
-        }
-
-        public virtual bool CanCloseDialog()
-        {
-            return true;
-        }
-
-        public virtual void OnDialogClosed()
-        {
-
-        }
-
-        public virtual void OnDialogOpened(IDialogParameters parameters)
-        {
-
-        }
-
-        protected virtual void CloseDialog(string parameter)
-        {
-            ButtonResult result = ButtonResult.None;
-
-            if (parameter?.ToLower() == "true")
-                result = ButtonResult.OK;
-
-            else if (parameter?.ToLower() == "false")
-                result = ButtonResult.Cancel;
-
-            DialogParameters dialogParametars = new DialogParameters()
-            {
-                {"user", _user}
-            };
-
-            DialogResult dialogResult = new DialogResult(result, dialogParametars);
-
-            RaiseRequestClose(dialogResult);
         }
 
         private async void Login(string barcode)
@@ -117,6 +79,46 @@ namespace RestaurantApp.ViewModels
             _user = user;
 
             CloseDialog("true");
+        }
+
+        protected virtual void CloseDialog(string parameter)
+        {
+            ButtonResult result = ButtonResult.None;
+
+            if (parameter?.ToLower() == "true")
+                result = ButtonResult.OK;
+
+            else if (parameter?.ToLower() == "false")
+                result = ButtonResult.Cancel;
+
+            DialogParameters dialogParametars = new DialogParameters()
+            {
+                {"user", _user}
+            };
+
+            DialogResult dialogResult = new DialogResult(result, dialogParametars);
+
+            RaiseRequestClose(dialogResult);
+        }
+
+        public virtual void RaiseRequestClose(IDialogResult dialogResult)
+        {
+            RequestClose?.Invoke(dialogResult);
+        }
+
+        public virtual bool CanCloseDialog()
+        {
+            return true;
+        }
+
+        public virtual void OnDialogClosed()
+        {
+
+        }
+
+        public virtual void OnDialogOpened(IDialogParameters parameters)
+        {
+
         }
     }
 }

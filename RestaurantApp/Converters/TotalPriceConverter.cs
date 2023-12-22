@@ -4,7 +4,6 @@ using System.Windows.Data;
 
 namespace RestaurantApp.Converters
 {
-    //MultivalueConverter prima vise parametara.
     public class TotalPriceConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
