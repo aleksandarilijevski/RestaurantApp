@@ -225,6 +225,10 @@ namespace RestaurantApp.ViewModels
                 LoggedUserHelper.LoggedUser = User;
                 LoggedUser = User;
             }
+            else
+            {
+                LoggedUser = LoggedUserHelper.LoggedUser;
+            }
 
             EFContext efContext = new EFContext();
             Users = await _databaseService.GetAllUsers(efContext);

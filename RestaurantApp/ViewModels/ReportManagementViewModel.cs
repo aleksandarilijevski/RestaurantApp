@@ -269,10 +269,12 @@ namespace RestaurantApp.ViewModels
 
         private async void LoadAllBills()
         {
-            if (OriginalBills is not null)
+            if (Bills is not null)
             {
-                OriginalBills.Clear();
+                Bills.Clear();
             }
+
+            TotalProfit += "Total profit : N/A";
 
             if (LoggedUserHelper.LoggedUser is null)
             {
@@ -302,14 +304,14 @@ namespace RestaurantApp.ViewModels
             OriginalBills = bills;
             Bills = new ObservableCollection<Bill>(OriginalBills);
 
-            decimal totalProfit = CalculateTotalProfit();
+            decimal totalProfit = CalculateTotalProfit(SoldArticleDetails);
             TotalProfit = "Total profit : " + totalProfit.ToString("0.00");
 
-            FilterDateFrom = DateTime.Now;
-            FilterDateTo = DateTime.Now;
+            FilterDateFrom = DateTime.MinValue;
+            FilterDateTo = DateTime.MinValue;
         }
 
-        private void Filter()
+        private async void Filter()
         {
             List<Bill> originalBills = OriginalBills;
             List<Bill> filteredBills = new List<Bill>();
@@ -334,8 +336,22 @@ namespace RestaurantApp.ViewModels
                 filteredBills.AddRange(FilterByDateTime(originalBills));
             }
 
+            List<SoldArticleDetails> soldArticleDetails = await _databaseService.GetAllSoldArticleDetails();
+            List<SoldArticleDetails> filteredSoldArticleDetails = new List<SoldArticleDetails>();
+
+            foreach (SoldArticleDetails soldArticleDetail in soldArticleDetails)
+            {
+                foreach (Bill bill in filteredBills)
+                {
+                    if (soldArticleDetail.BillID == bill.ID)
+                    {
+                        filteredSoldArticleDetails.Add(soldArticleDetail);
+                    }
+                }
+            }
+
             Bills = new ObservableCollection<Bill>(filteredBills);
-            decimal totalProfit = CalculateTotalProfit();
+            decimal totalProfit = CalculateTotalProfit(filteredSoldArticleDetails);
             TotalProfit = "Total profit : " + totalProfit.ToString("0.00");
         }
 
@@ -367,7 +383,7 @@ namespace RestaurantApp.ViewModels
             List<Bill> bills = await _databaseService.GetAllBills();
             Bills = new ObservableCollection<Bill>(bills);
 
-            decimal totalProfit = CalculateTotalProfit();
+            decimal totalProfit = CalculateTotalProfit(SoldArticleDetails);
             TotalProfit = "Total profit : " + totalProfit.ToString("0.00");
         }
 
@@ -475,7 +491,7 @@ namespace RestaurantApp.ViewModels
                 worksheet.Cell(cellIndex, 1).Value = string.Empty;
             }
 
-            decimal totalProfit = CalculateTotalProfit();
+            decimal totalProfit = CalculateTotalProfit(SoldArticleDetails);
             worksheet.Row(cellIndex).Style.Font.Bold = true;
             worksheet.Cell(cellIndex, 1).Value = "Total profit";
             worksheet.Cell(cellIndex, 2).Value = totalProfit;
@@ -483,11 +499,11 @@ namespace RestaurantApp.ViewModels
             workbook.SaveAs(fileLocation);
         }
 
-        private decimal CalculateTotalProfit()
+        private decimal CalculateTotalProfit(List<SoldArticleDetails> soldArticleDetails)
         {
             decimal totalProfit = 0;
 
-            foreach (SoldArticleDetails soldArticleDetail in SoldArticleDetails)
+            foreach (SoldArticleDetails soldArticleDetail in soldArticleDetails)
             {
                 decimal profit = soldArticleDetail.ArticlePrice - soldArticleDetail.EntryPrice;
                 totalProfit += soldArticleDetail.SoldQuantity * profit;
