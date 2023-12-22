@@ -32,7 +32,9 @@ namespace RestaurantApp.ViewModels
 
         //Ask about this
         //Why i can't simply directly get logged user from static class
-        public User LoggedUser = LoggedUserHelper.LoggedUser;
+        public User LoggedUser { get; set; }
+
+        public UserRole UserRole { get; set; }
 
         public string Title { get; set; } = "Edit user";
 
@@ -49,8 +51,6 @@ namespace RestaurantApp.ViewModels
                 RaisePropertyChanged();
             }
         }
-
-        public UserRole UserRole { get; set; }
 
         public DelegateCommand<User> EditUserCommand
         {
@@ -76,6 +76,7 @@ namespace RestaurantApp.ViewModels
         public virtual void OnDialogOpened(IDialogParameters parameters)
         {
             User = parameters.GetValue<User>("user");
+            LoggedUser = parameters.GetValue<User>("loggedUser");
         }
 
         private async void EditUser(User user)
@@ -108,6 +109,12 @@ namespace RestaurantApp.ViewModels
             {
                 MessageBox.Show("You cannot change user which is currently active!", "Edit user", MessageBoxButton.OK, MessageBoxImage.Error);
                 CloseDialog("true");
+                return;
+            }
+
+            if (user.UserRole == UserRole.Manager && LoggedUser.UserRole == UserRole.Manager)
+            {
+                MessageBox.Show("Managers cannot edit other managers!", "Edit user", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 

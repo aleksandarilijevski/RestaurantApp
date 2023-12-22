@@ -51,6 +51,8 @@ namespace RestaurantApp.ViewModels
 
         public User User { get; set; }
 
+        public User LoggedUser { get; set; }
+
         public string FirstOrLastname
         {
             get
@@ -163,6 +165,17 @@ namespace RestaurantApp.ViewModels
 
             EFContext efContext = new EFContext();
             Users = await _databaseService.GetAllUsers(efContext);
+
+            if (LoggedUser.UserRole == UserRole.Manager)
+            {
+                List<User> admins = new List<User>();
+                admins = Users.Where(x => x.UserRole == UserRole.Admin).ToList();
+
+                foreach (User admin in admins)
+                {
+                    Users.Remove(admin);
+                }
+            }
         }
 
         private bool UserLogin()
@@ -210,12 +223,13 @@ namespace RestaurantApp.ViewModels
                 }
 
                 LoggedUserHelper.LoggedUser = User;
+                LoggedUser = User;
             }
 
             EFContext efContext = new EFContext();
             Users = await _databaseService.GetAllUsers(efContext);
 
-            if (LoggedUserHelper.LoggedUser.UserRole == UserRole.Manager)
+            if (LoggedUser.UserRole == UserRole.Manager)
             {
                 List<User> admins = new List<User>();
                 admins = Users.Where(x => x.UserRole == UserRole.Admin).ToList();
@@ -230,6 +244,12 @@ namespace RestaurantApp.ViewModels
         private async void DeleteUser(User user)
         {
             using EFContext efContext = new EFContext();
+
+            if (LoggedUser.UserRole == UserRole.Manager && user.UserRole == UserRole.Manager)
+            {
+                MessageBox.Show("Manager cannot delete other managers!", "User management", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
             user.IsDeleted = true;
 
@@ -250,7 +270,8 @@ namespace RestaurantApp.ViewModels
         {
             DialogParameters dialogParameters = new DialogParameters()
             {
-                {"user", user}
+                {"user", user},
+                {"loggedUser", LoggedUser}
             };
 
             _dialogService.ShowDialog("editUserDialog", dialogParameters, r => { });
@@ -262,12 +283,19 @@ namespace RestaurantApp.ViewModels
             ObservableCollection<User> originalUsers = await _databaseService.GetAllUsers(efContext);
             ObservableCollection<User> filteredUsers = new ObservableCollection<User>();
 
-            if (FirstOrLastname != null || FirstOrLastname != string.Empty)
+            if (FirstOrLastname != null && FirstOrLastname != string.Empty)
             {
-                filteredUsers.AddRange(originalUsers.Where(x => x.FirstAndLastName.ToLower().Contains(FirstOrLastname.ToLower())));
-            }
+                if (LoggedUser.UserRole == UserRole.Admin)
+                {
+                    filteredUsers.AddRange(originalUsers.Where(x => x.FirstAndLastName.ToLower().Contains(FirstOrLastname.ToLower())));
+                }
+                else
+                {
+                    filteredUsers.AddRange(originalUsers.Where(x => x.FirstAndLastName.ToLower().Contains(FirstOrLastname.ToLower()) && x.UserRole != UserRole.Admin));
+                }
 
-            Users = filteredUsers;
+                Users = filteredUsers;
+            }
         }
 
         private async void GetUserByJMBG()
@@ -281,7 +309,15 @@ namespace RestaurantApp.ViewModels
 
                 if (user is not null)
                 {
-                    Users.Add(user);
+                    if (LoggedUser.UserRole == UserRole.Manager && user.UserRole != UserRole.Admin)
+                    {
+                        Users.Add(user);
+                    }
+
+                    if (LoggedUser.UserRole == UserRole.Admin)
+                    {
+                        Users.Add(user);
+                    }
                 }
             }
             else
