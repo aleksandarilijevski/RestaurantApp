@@ -75,7 +75,8 @@ namespace RestaurantApp.ViewModels
 
         public virtual void OnDialogOpened(IDialogParameters parameters)
         {
-            User = parameters.GetValue<User>("user");
+            User user  = parameters.GetValue<User>("user");
+            User = (User)user.Clone();
             LoggedUser = parameters.GetValue<User>("loggedUser");
         }
 

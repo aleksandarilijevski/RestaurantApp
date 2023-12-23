@@ -169,8 +169,8 @@ namespace RestaurantApp.ViewModels
             using EFContext efContext = new EFContext();
             DataEntries = await _databaseService.GetAllDataEntries(efContext);
 
-            DateFrom = DateTime.Now;
-            DateTo = DateTime.Now;
+            DateFrom = DateTime.MinValue;
+            DateTo = DateTime.MinValue;
             DataEntryNumber = 0;
             PriceFrom = 0;
             PriceTo = 0;
@@ -182,6 +182,8 @@ namespace RestaurantApp.ViewModels
 
             ObservableCollection<DataEntry> originalDataEntries = await _databaseService.GetAllDataEntries(efContext);
             ObservableCollection<DataEntry> filteredDataEntries = new ObservableCollection<DataEntry>();
+
+            DataEntries.Clear();
 
             if (DataEntryNumber != 0)
             {
@@ -198,6 +200,7 @@ namespace RestaurantApp.ViewModels
                 filteredDataEntries.AddRange(originalDataEntries.Where(x => x.TotalAmount >= PriceFrom && x.TotalAmount <= PriceTo));
             }
 
+            filteredDataEntries = new ObservableCollection<DataEntry>(filteredDataEntries.Distinct().ToList());
             DataEntries = filteredDataEntries;
         }
 
@@ -211,6 +214,7 @@ namespace RestaurantApp.ViewModels
 
                 if (dataEntryCreatedDateTime.Date >= DateFrom.Date && dataEntryCreatedDateTime.Date <= DateTo.Date)
                 {
+
                     filteredDataEntries.Add(dataEntry);
                 }
             }
@@ -222,8 +226,8 @@ namespace RestaurantApp.ViewModels
         {
             using EFContext efContext = new EFContext();
 
-            DateFrom = DateTime.Now;
-            DateTo = DateTime.Now;
+            DateFrom = DateTime.MinValue;
+            DateTo = DateTime.MinValue;
 
             DataEntries = await _databaseService.GetAllDataEntries(efContext);
         }

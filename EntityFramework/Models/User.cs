@@ -2,7 +2,7 @@
 
 namespace EntityFramework.Models
 {
-    public class User : BaseEntity
+    public class User : BaseEntity, ICloneable
     {
         public long Barcode { get; set; }
 
@@ -16,6 +16,21 @@ namespace EntityFramework.Models
 
         public bool IsDeleted { get; set; }
 
-        public bool IsActive { get; set; }  
+        public bool IsActive { get; set; }
+
+        public object Clone()
+        {
+            return new User
+            {
+                ID = this.ID,
+                Barcode = this.Barcode,
+                FirstAndLastName = this.FirstAndLastName,
+                DateOfBirth = this.DateOfBirth,
+                JMBG = this.JMBG,
+                UserRole = this.UserRole,
+                IsDeleted = this.IsDeleted,
+                IsActive = this.IsActive
+            };
+        }
     }
 }

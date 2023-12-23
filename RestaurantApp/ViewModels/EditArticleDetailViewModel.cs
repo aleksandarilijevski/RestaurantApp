@@ -69,7 +69,8 @@ namespace RestaurantApp.ViewModels
 
         public virtual void OnDialogOpened(IDialogParameters parameters)
         {
-            ArticleDetails = parameters.GetValue<ArticleDetails>("articleDetail");
+            ArticleDetails articleDetails = parameters.GetValue<ArticleDetails>("articleDetail");
+            ArticleDetails = (ArticleDetails)articleDetails.Clone();
         }
 
         public virtual void RaiseRequestClose(IDialogResult dialogResult)

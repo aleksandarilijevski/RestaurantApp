@@ -350,7 +350,7 @@ namespace RestaurantApp.ViewModels
                 }
             }
 
-            Bills = new ObservableCollection<Bill>(filteredBills);
+            Bills = new ObservableCollection<Bill>(filteredBills.Distinct().ToList());
             decimal totalProfit = CalculateTotalProfit(filteredSoldArticleDetails);
             TotalProfit = "Total profit : " + totalProfit.ToString("0.00");
         }
