@@ -30,8 +30,6 @@ namespace RestaurantApp.ViewModels
 
         public event Action<IDialogResult> RequestClose;
 
-        //Ask about this
-        //Why i can't simply directly get logged user from static class
         public User LoggedUser { get; set; }
 
         public UserRole UserRole { get; set; }
@@ -100,7 +98,6 @@ namespace RestaurantApp.ViewModels
                 return;
             }
 
-            //Check
             if (userJMBGCheck is not null)
             {
                 efContext.Entry(userJMBGCheck).State = EntityState.Detached;

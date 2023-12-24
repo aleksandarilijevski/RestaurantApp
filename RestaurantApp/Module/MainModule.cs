@@ -6,7 +6,7 @@ using RestaurantApp.Views;
 
 namespace RestaurantApp.Module
 {
-    class MainModule : IModule
+    public class MainModule : IModule
     {
         public void OnInitialized(IContainerProvider containerProvider)
         {

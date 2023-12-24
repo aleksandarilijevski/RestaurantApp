@@ -84,26 +84,6 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public virtual void OnDialogOpened(IDialogParameters parameters)
-        {
-            _totalPrice = parameters.GetValue<decimal>("totalPrice");
-        }
-
-        public virtual void RaiseRequestClose(IDialogResult dialogResult)
-        {
-            RequestClose?.Invoke(dialogResult);
-        }
-
-        public virtual bool CanCloseDialog()
-        {
-            return true;
-        }
-
-        public virtual void OnDialogClosed()
-        {
-
-        }
-
         private void CalculateChange(string cashBox)
         {
             CashBox = cashBox.ToString();
@@ -152,6 +132,26 @@ namespace RestaurantApp.ViewModels
             DialogResult dialogResult = new DialogResult(result, dialogParametars);
 
             RaiseRequestClose(dialogResult);
+        }
+
+        public virtual void OnDialogOpened(IDialogParameters parameters)
+        {
+            _totalPrice = parameters.GetValue<decimal>("totalPrice");
+        }
+
+        public virtual void RaiseRequestClose(IDialogResult dialogResult)
+        {
+            RequestClose?.Invoke(dialogResult);
+        }
+
+        public virtual bool CanCloseDialog()
+        {
+            return true;
+        }
+
+        public virtual void OnDialogClosed()
+        {
+
         }
     }
 }

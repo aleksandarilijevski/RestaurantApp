@@ -242,8 +242,6 @@ namespace RestaurantApp.ViewModels
 
         private async void LoadOnlineOrder()
         {
-            //Create one more onlineOrder
-            //We are doing this because we don't want to display any data while user is not logged!
             OnlineOrder onlineOrder = OnlineOrder;
             OnlineOrder = null;
 
@@ -433,7 +431,6 @@ namespace RestaurantApp.ViewModels
             RaisePropertyChanged(nameof(TableArticleQuantities));
         }
 
-        //Check
         private async void DeleteTableArticleQuantity(TableArticleQuantity tableArticleQuantity)
         {
             using EFContext efContext = new EFContext();
@@ -455,7 +452,7 @@ namespace RestaurantApp.ViewModels
             TableArticleQuantity tableArticleQuantityLoad = await _databaseService.GetTableArticleQuantityByID(tableArticleQuantity.ID, efContext);
 
             TableArticleQuantities.Remove(tableArticleQuantity);
-            await _databaseService.DeleteTableArticleQuantity(tableArticleQuantityLoad, new EFContext());
+            await _databaseService.DeleteTableArticleQuantity(tableArticleQuantityLoad, efContext);
         }
 
         private async void Logout()

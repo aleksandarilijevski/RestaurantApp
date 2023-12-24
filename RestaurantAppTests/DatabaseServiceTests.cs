@@ -1,4 +1,3 @@
-using DocumentFormat.OpenXml.Wordprocessing;
 using EntityFramework.Enums;
 using EntityFramework.Models;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +14,9 @@ namespace RestaurantAppTests
     public class Tests
     {
         private IAbstractFactory<IDatabaseService> _databaseServiceFactory;
+
         private IAbstractFactory<EFContext> _efContextFactory;
+
         private DbContextOptions options = new DbContextOptionsBuilder<EFContext>().UseInMemoryDatabase("TestingDatabase").Options;
 
         public Tests()
@@ -150,7 +151,7 @@ namespace RestaurantAppTests
             ObservableCollection<OnlineOrder> onlineOrders = await databaseService.GetAllOnlineOrders(efContext);
 
             //Assert
-            Assert.That(onlineOrders,Is.Not.Null);
+            Assert.That(onlineOrders, Is.Not.Null);
         }
 
         [Test]

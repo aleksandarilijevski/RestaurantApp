@@ -15,7 +15,5 @@ namespace RestaurantApp.Models
         public EFContext EFContext { get; set; }
 
         public IDatabaseService DatabaseService { get; set; }
-
-        public int BillID { get;set; }
     }
 }

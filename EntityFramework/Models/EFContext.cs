@@ -7,7 +7,7 @@ namespace EntityFramework.Models
     {
         public EFContext()
         {
-            
+
         }
 
         public EFContext(DbContextOptions options) : base(options)

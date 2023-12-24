@@ -218,10 +218,6 @@ namespace RestaurantApp.ViewModels
             Articles = await _databaseService.GetAllArticles(efContext);
         }
 
-        //Every time we press filter or clear filter the sql query will be created.
-        //We do this because meanwhile other user could add new article.
-        //Maybe it's not best approach because of app performance.
-
         private async void FilterArticles()
         {
             EFContext efContext = new EFContext();
@@ -236,7 +232,6 @@ namespace RestaurantApp.ViewModels
             Articles = filteredArticles;
         }
 
-        //Check
         private async void ClearFilters()
         {
             ArticleName = string.Empty;

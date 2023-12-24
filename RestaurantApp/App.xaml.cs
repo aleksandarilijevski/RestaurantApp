@@ -4,13 +4,11 @@ using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Mvvm;
 using RestaurantApp.Factories;
-using RestaurantApp.Factories.Interfaces;
 using RestaurantApp.Module;
 using RestaurantApp.Services;
 using RestaurantApp.Services.Interface;
 using RestaurantApp.ViewModels;
 using RestaurantApp.Views;
-using System;
 using System.Windows;
 
 namespace RestaurantApp
@@ -30,7 +28,6 @@ namespace RestaurantApp
         {
             IContainerProvider containerProvider = Container.Resolve<IContainerProvider>();
             containerRegistry.AddAbstractFactory<IDatabaseService, DatabaseService>(containerProvider);
-
             ViewModelLocationProvider.Register<MainWindow, MainWindowViewModel>();
             ViewModelLocationProvider.Register<TableOrder, TableOrderViewModel>();
             ViewModelLocationProvider.Register<Options, OptionsViewModel>();

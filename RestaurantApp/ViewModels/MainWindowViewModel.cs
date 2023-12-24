@@ -40,8 +40,7 @@ namespace RestaurantApp.ViewModels
 
         private DelegateCommand _checkIfConfigFileExistsCommand;
 
-        //10 minutes = 60000 * 10
-        private int InactivityTimer = 15000;
+        private int InactivityTimer = 900000;
 
         private Timer mouseInactivityTimer;
 

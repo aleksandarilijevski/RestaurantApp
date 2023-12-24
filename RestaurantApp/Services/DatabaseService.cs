@@ -34,7 +34,7 @@ namespace RestaurantApp.Services
 
             if (efContext.OnlineOrders.Any())
             {
-                id = efContext.OnlineOrders.Max(x => x.ID);
+                id = await efContext.OnlineOrders.MaxAsync(x => x.ID);
             }
 
             return id;
@@ -147,7 +147,6 @@ namespace RestaurantApp.Services
             await efContext.SaveChangesAsync();
             return articleDetails.ID;
         }
-
 
         public async Task EditArticleDetails(ArticleDetails articleDetails, EFContext efContext)
         {

@@ -387,7 +387,7 @@ namespace RestaurantApp.ViewModels
             TotalProfit = "Total profit : " + totalProfit.ToString("0.00");
         }
 
-        private async void ExportToExcel()
+        private void ExportToExcel()
         {
             if (Bills.Count == 0)
             {

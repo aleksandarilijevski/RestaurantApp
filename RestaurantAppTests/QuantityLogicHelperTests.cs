@@ -11,6 +11,7 @@ namespace RestaurantAppTests
     public class QuantityLogicHelperTests
     {
         private IAbstractFactory<EFContext> _efContextFactory;
+
         private IAbstractFactory<IDatabaseService> _databaseServiceFactory;
 
         private DbContextOptions options = new DbContextOptionsBuilder<EFContext>().UseInMemoryDatabase("TestingDatabase").Options;

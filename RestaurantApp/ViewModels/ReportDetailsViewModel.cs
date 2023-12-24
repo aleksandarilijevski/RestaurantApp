@@ -69,7 +69,6 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        //Check
         private void GetSoldArticles()
         {
             if (Bill.Table is not null)

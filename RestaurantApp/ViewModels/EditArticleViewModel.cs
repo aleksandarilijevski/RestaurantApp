@@ -67,7 +67,6 @@ namespace RestaurantApp.ViewModels
             Article = (Article)article.Clone();
         }
 
-        //Check
         private async void EditArticle()
         {
             using EFContext efContext = new EFContext();

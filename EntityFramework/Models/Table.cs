@@ -13,7 +13,7 @@ namespace EntityFramework.Models
 
         public List<TableArticleQuantity> TableArticleQuantities { get; set; }
 
-        public int? UserID { get;set; }
+        public int? UserID { get; set; }
 
         public User? User { get; set; }
     }
