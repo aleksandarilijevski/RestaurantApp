@@ -6,9 +6,18 @@
              xmlns:local="clr-namespace:RestaurantApp.Views"
              xmlns:localEnums="clr-namespace:EntityFramework.Enums;assembly=EntityFramework"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:prism="http://prismlibrary.com/"
              mc:Ignorable="d" 
              Height="300" Width="580">
-    
+
+    <prism:Dialog.WindowStyle>
+        <Style TargetType="Window">
+            <Setter Property="prism:Dialog.WindowStartupLocation" Value="CenterScreen" />
+            <Setter Property="ResizeMode" Value="NoResize"/>
+            <Setter Property="SizeToContent" Value="WidthAndHeight"/>
+        </Style>
+    </prism:Dialog.WindowStyle>
+
     <UserControl.Resources>
         <ObjectDataProvider x:Key="userRole" MethodName="GetValues" ObjectType="{x:Type localEnums:UserRole}">
             <ObjectDataProvider.MethodParameters>
@@ -16,7 +25,7 @@
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
     </UserControl.Resources>
-    
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto" />
@@ -32,7 +41,6 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-
 
         <TextBlock Text="Barcode : " FontSize="30" Grid.Row="0" Margin="5"/>
         <TextBlock Text="First and lastname : " FontSize="30" Grid.Row="1" Margin="5"/>
@@ -57,6 +65,4 @@
             CommandParameter="{Binding User}"/>
 
     </Grid>
-
-
 </UserControl>

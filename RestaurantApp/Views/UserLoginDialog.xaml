@@ -4,10 +4,19 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:RestaurantApp.Views"
+             xmlns:prism="http://prismlibrary.com/"
              mc:Ignorable="d" 
              FocusManager.FocusedElement="{x:Reference barcodeBox}"
              Height="45" Width="450">
-    
+
+    <prism:Dialog.WindowStyle>
+        <Style TargetType="Window">
+            <Setter Property="prism:Dialog.WindowStartupLocation" Value="CenterScreen" />
+            <Setter Property="ResizeMode" Value="NoResize"/>
+            <Setter Property="SizeToContent" Value="WidthAndHeight"/>
+        </Style>
+    </prism:Dialog.WindowStyle>
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -32,10 +41,8 @@
                             <Setter Property="FocusManager.FocusedElement" Value="{Binding RelativeSource={RelativeSource Self}}"/>
                         </DataTrigger>
                     </Style.Triggers>
-
                 </Style>
             </TextBox.Style>
         </TextBox>
-
     </Grid>
 </UserControl>

@@ -9,8 +9,16 @@
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              d:DesignHeight="290" d:DesignWidth="700">
-    <Grid>
 
+    <prism:Dialog.WindowStyle>
+        <Style TargetType="Window">
+            <Setter Property="prism:Dialog.WindowStartupLocation" Value="CenterScreen" />
+            <Setter Property="ResizeMode" Value="NoResize"/>
+            <Setter Property="SizeToContent" Value="WidthAndHeight"/>
+        </Style>
+    </prism:Dialog.WindowStyle>
+
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
@@ -23,9 +31,8 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
+            <RowDefinition Height="65"/>
             <RowDefinition Height="40"/>
-            <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
 
@@ -39,7 +46,6 @@
         <TextBox Grid.Column="3" Grid.Row="2" FontSize="25" TextAlignment="Center" Text="{Binding Article.Name}" Margin="10"/>
         <TextBox Grid.Column="7" Grid.Row="6" FontSize="25" TextAlignment="Center" Text="{Binding Article.Price}" Margin="10"/>
 
-        <Button Content="Apply"  Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="2" Command="{Binding EditArticleCommand}"/>
-
+        <Button Content="Apply" Grid.Column="0" Height="42" Grid.Row="7" Grid.ColumnSpan="2" Command="{Binding EditArticleCommand}"/>
     </Grid>
 </UserControl>

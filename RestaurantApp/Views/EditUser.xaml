@@ -11,6 +11,14 @@
              mc:Ignorable="d" 
              d:DesignHeight="350" d:DesignWidth="700">
     
+    <prism:Dialog.WindowStyle>
+        <Style TargetType="Window">
+            <Setter Property="prism:Dialog.WindowStartupLocation" Value="CenterScreen" />
+            <Setter Property="ResizeMode" Value="NoResize"/>
+            <Setter Property="SizeToContent" Value="WidthAndHeight"/>
+        </Style>
+    </prism:Dialog.WindowStyle>
+
     <UserControl.Resources>
         <ObjectDataProvider x:Key="userRole" MethodName="GetValues" ObjectType="{x:Type localEnums:UserRole}">
             <ObjectDataProvider.MethodParameters>

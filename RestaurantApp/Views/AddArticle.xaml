@@ -4,8 +4,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:RestaurantApp.Views"
+             xmlns:prism="http://prismlibrary.com/"
              mc:Ignorable="d" 
              Height="315" Width="500">
+
+    <prism:Dialog.WindowStyle>
+        <Style TargetType="Window">
+            <Setter Property="prism:Dialog.WindowStartupLocation" Value="CenterScreen" />
+            <Setter Property="ResizeMode" Value="NoResize"/>
+            <Setter Property="SizeToContent" Value="WidthAndHeight"/>
+        </Style>
+    </prism:Dialog.WindowStyle>
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -20,9 +29,8 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="63" />
         </Grid.RowDefinitions>
-
 
         <TextBlock Text="Barcode : " FontSize="30" Grid.Row="0" Margin="5"/>
         <TextBlock Text="Name : " FontSize="30" Grid.Row="1" Margin="5"/>
@@ -30,11 +38,11 @@
         <TextBlock Text="Entry price : " FontSize="30" Grid.Row="4" Margin="5"/>
         <TextBlock Text="Price : " FontSize="30" Grid.Row="5" Margin="5"/>
 
-        <TextBox Grid.Column="1" Grid.Row="0" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding Article.Barcode}"/>
+        <TextBox Grid.Column="1" Grid.Row="0" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding Article.Barcode, StringFormat=.}"/>
         <TextBox Grid.Column="1" Grid.Row="1" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding Article.Name}"/>
-        <TextBox Grid.Column="1" Grid.Row="3" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding ArticleDetails.OriginalQuantity}"/>
-        <TextBox Grid.Column="1" Grid.Row="4" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding ArticleDetails.EntryPrice}"/>
-        <TextBox Grid.Column="1" Grid.Row="5" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding Article.Price}"/>
+        <TextBox Grid.Column="1" Grid.Row="3" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding ArticleDetails.OriginalQuantity, StringFormat=.}"/>
+        <TextBox Grid.Column="1" Grid.Row="4" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding ArticleDetails.EntryPrice, StringFormat=.}"/>
+        <TextBox Grid.Column="1" Grid.Row="5" Margin="5" FontSize="25" TextAlignment="Center" Text="{Binding Article.Price, StringFormat=.}"/>
 
         <Button
             Height="45"
@@ -47,6 +55,4 @@
             CommandParameter="{Binding Article}"/>
 
     </Grid>
-    
-    
 </UserControl>
