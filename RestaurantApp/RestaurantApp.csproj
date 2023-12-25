@@ -6,10 +6,15 @@
     <Nullable>disable</Nullable>
     <UseWPF>true</UseWPF>
     <StartupObject></StartupObject>
+    <ApplicationIcon>restaurant.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Resources\cafePlan.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="restaurant.ico" />
   </ItemGroup>
 
   <ItemGroup>
