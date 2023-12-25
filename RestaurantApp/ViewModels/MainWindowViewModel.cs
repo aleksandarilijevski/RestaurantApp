@@ -183,6 +183,7 @@ namespace RestaurantApp.ViewModels
 
             DrawningHelper.CompanyName = parsedData["Company name"].ToString();
             DrawningHelper.CompanyAddress = parsedData["Company address"].ToString();
+            DrawningHelper.BillOutputPath = parsedData["Bill output path"].ToString();
         }
 
         private void Navigate(string regionName, string viewName)

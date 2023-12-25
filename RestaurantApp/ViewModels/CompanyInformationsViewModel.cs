@@ -17,7 +17,11 @@ namespace RestaurantApp.ViewModels
 
         private string _companyAddress;
 
+        private string _billOutputPath;
+
         private DelegateCommand _saveConfigCommand;
+
+        private DelegateCommand _selectBillOutputPathCommand;
 
         public event Action<IDialogResult> RequestClose;
 
@@ -33,6 +37,20 @@ namespace RestaurantApp.ViewModels
             set
             {
                 _companyName = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public string BillOutputPath
+        {
+            get
+            {
+                return _billOutputPath;
+            }
+
+            set
+            {
+                _billOutputPath = value;
                 RaisePropertyChanged();
             }
         }
@@ -59,6 +77,15 @@ namespace RestaurantApp.ViewModels
             }
         }
 
+        public DelegateCommand SelectBillOutputPathCommand
+        {
+            get
+            {
+                _selectBillOutputPathCommand = new DelegateCommand(SelectBillOutputPath);
+                return _selectBillOutputPathCommand;
+            }
+        }
+
         private void LoadConfig()
         {
             if (!File.Exists("config.ini"))
@@ -77,6 +104,7 @@ namespace RestaurantApp.ViewModels
 
             CompanyName = parsedData["Company name"].ToString();
             CompanyAddress = parsedData["Company address"].ToString();
+            BillOutputPath = parsedData["Bill output path"].ToString();
         }
 
         private void SaveConfig()
@@ -93,10 +121,17 @@ namespace RestaurantApp.ViewModels
                 return;
             }
 
+            if (BillOutputPath is null || BillOutputPath == string.Empty)
+            {
+                MessageBox.Show("Bill output path field can not be empty!", "Company informations", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             Dictionary<string, string> keyValues = new Dictionary<string, string>
             {
                 { "Company name", CompanyName },
-                { "Company address", CompanyAddress }
+                { "Company address", CompanyAddress },
+                { "Bill output path", BillOutputPath }
             };
 
             using (StreamWriter streamWriter = new StreamWriter("config.ini"))
@@ -107,9 +142,14 @@ namespace RestaurantApp.ViewModels
 
             DrawningHelper.CompanyName = CompanyName;
             DrawningHelper.CompanyAddress = CompanyAddress;
+            DrawningHelper.BillOutputPath = BillOutputPath;
 
             MessageBox.Show("Config file is successfully created!", "Company informations", MessageBoxButton.OK, MessageBoxImage.Information);
             CloseDialog("true");
+        }
+
+        private void SelectBillOutputPath()
+        {
         }
 
         protected virtual void CloseDialog(string parameter)

@@ -5,8 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:RestaurantApp.Views"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-             mc:Ignorable="d" 
-             Height="250" Width="450">
+             mc:Ignorable="d"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:materialDesignConverters="clr-namespace:MaterialDesignThemes.Wpf.Converters;assembly=MaterialDesignThemes.Wpf"
+             Height="310" Width="450">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -24,7 +26,11 @@
             <RowDefinition Height="35"/>
             <RowDefinition Height="30"/>
 
-            <RowDefinition Height="50"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="15"/>
+
+            <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
 
         <TextBlock FontSize="18" Text="Company name : " Grid.Row="0" Grid.Column="1" TextAlignment="Center"/>
@@ -33,7 +39,14 @@
         <TextBlock FontSize="18" Text="Company address : " Grid.Row="3" Grid.Column="1" TextAlignment="Center"/>
         <TextBox FontSize="18" TextAlignment="Center" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Margin="20,0,20,0" Text="{Binding CompanyAddress}"/>
 
-        <Button Content="Save" Grid.Row="6" Grid.Column="1" FontSize="15" Command="{Binding SaveConfigCommand}"/>
+        <TextBlock FontSize="18" Text="Bill output path : " Grid.Row="6" Grid.Column="1" TextAlignment="Center"/>
+        <TextBox IsReadOnly="True" FontSize="18" TextAlignment="Center" Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3" Margin="20,0,20,0" Text="{Binding BillOutputPath}"/>
+
+        <Button Grid.Row="7" Grid.Column="2" HorizontalAlignment="Right" Margin="10,0,20,5" Command="{Binding SelectBillOutputPathCommand}">
+            <materialDesign:PackIcon Kind="FolderEdit"/>
+        </Button>
+
+        <Button Content="Save" Grid.Row="9" Grid.Column="1" FontSize="15" Command="{Binding SaveConfigCommand}"/>
 
     </Grid>
 </UserControl>

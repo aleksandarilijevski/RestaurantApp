@@ -43,8 +43,8 @@
                 <TextBlock Text="Date from - date to " FontSize="17" Margin="0,5,0,0" TextAlignment="Center"/>
                 
                 <StackPanel Orientation="Horizontal">
-                    <DatePicker FontSize="15" Margin="60,0,0,0" SelectedDate="{Binding DateFrom}"/>
-                    <DatePicker FontSize="15" Margin="30,0,0,0" SelectedDate="{Binding DateTo}"/>
+                    <DatePicker FontSize="15" Margin="55,0,0,0" Width="95" SelectedDate="{Binding DateFrom}"/>
+                    <DatePicker FontSize="15" Margin="35,0,0,0" Width="95" SelectedDate="{Binding DateTo}"/>
                 </StackPanel>
             </StackPanel>
         </Border>

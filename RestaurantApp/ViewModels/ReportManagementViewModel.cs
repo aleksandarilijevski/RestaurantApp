@@ -29,9 +29,9 @@ namespace RestaurantApp.ViewModels
 
         private string _filterOnlineOrderID;
 
-        private DateTime _filterDateFrom;
+        private DateTime? _filterDateFrom;
 
-        private DateTime _filterDateTo;
+        private DateTime? _filterDateTo;
 
         private IDatabaseService _databaseService;
 
@@ -136,7 +136,7 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public DateTime FilterDateFrom
+        public DateTime? FilterDateFrom
         {
             get
             {
@@ -150,7 +150,7 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public DateTime FilterDateTo
+        public DateTime? FilterDateTo
         {
             get
             {
@@ -307,8 +307,8 @@ namespace RestaurantApp.ViewModels
             decimal totalProfit = CalculateTotalProfit(SoldArticleDetails);
             TotalProfit = "Total profit : " + totalProfit.ToString("0.00");
 
-            FilterDateFrom = DateTime.MinValue;
-            FilterDateTo = DateTime.MinValue;
+            FilterDateFrom = null;
+            FilterDateTo = null;
         }
 
         private async void Filter()
@@ -363,7 +363,7 @@ namespace RestaurantApp.ViewModels
             {
                 DateTime billCreatedDateTime = (DateTime)bill.CreatedDateTime;
 
-                if (billCreatedDateTime.Date >= FilterDateFrom.Date && billCreatedDateTime.Date <= FilterDateTo.Date)
+                if (billCreatedDateTime.Date >= FilterDateFrom?.Date && billCreatedDateTime.Date <= FilterDateTo?.Date)
                 {
                     filteredBills.Add(bill);
                 }
@@ -377,8 +377,8 @@ namespace RestaurantApp.ViewModels
             FilterBillCounter = string.Empty;
             FilterTableID = string.Empty;
             FilterOnlineOrderID = string.Empty;
-            FilterDateFrom = DateTime.Now;
-            FilterDateTo = DateTime.Now;
+            FilterDateFrom = null;
+            FilterDateTo = null;
 
             List<Bill> bills = await _databaseService.GetAllBills();
             Bills = new ObservableCollection<Bill>(bills);

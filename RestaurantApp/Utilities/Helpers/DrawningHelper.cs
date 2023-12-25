@@ -18,6 +18,8 @@ namespace RestaurantApp.Utilities.Helpers
 
         public static string CompanyAddress { get; set; }
 
+        public static string BillOutputPath { get; set; }   
+
         private static async Task<XImage> GetCustomQRCode(string text)
         {
             string url = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + text;
@@ -90,9 +92,9 @@ namespace RestaurantApp.Utilities.Helpers
 
             pdfPage.Height -= offset;
 
-            string path = "fakeInvoice.pdf";
+            string filename = "fakeInvoice.pdf";
 
-            pdfDocument.Save(path);
+            pdfDocument.Save(BillOutputPath + filename);
             pdfDocument.Close();
         }
 
@@ -228,9 +230,9 @@ namespace RestaurantApp.Utilities.Helpers
 
             page.Height -= offset;
 
-            string path = "invoiceReprinted.pdf";
+            string filename = "invoiceReprinted.pdf";
 
-            document.Save(path);
+            document.Save(BillOutputPath + filename);
             document.Close();
         }
 
@@ -364,9 +366,9 @@ namespace RestaurantApp.Utilities.Helpers
 
             page.Height -= offset;
 
-            string path = "invoice.pdf";
+            string filename = "invoice.pdf";
 
-            document.Save(path);
+            document.Save(BillOutputPath + filename);
             document.Close();
         }
     }
