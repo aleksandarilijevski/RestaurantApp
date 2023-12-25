@@ -8,6 +8,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows;
+using System.Windows.Forms;
+using DialogResult = Prism.Services.Dialogs.DialogResult;
+using DialogResultForm = System.Windows.Forms.DialogResult;
+using MessageBox = System.Windows.MessageBox;
 
 namespace RestaurantApp.ViewModels
 {
@@ -131,7 +135,7 @@ namespace RestaurantApp.ViewModels
             {
                 { "Company name", CompanyName },
                 { "Company address", CompanyAddress },
-                { "Bill output path", BillOutputPath }
+                { "Bill output path", BillOutputPath + "\\" }
             };
 
             using (StreamWriter streamWriter = new StreamWriter("config.ini"))
@@ -150,6 +154,15 @@ namespace RestaurantApp.ViewModels
 
         private void SelectBillOutputPath()
         {
+            using (FolderBrowserDialog browserDialog = new FolderBrowserDialog())
+            {
+              DialogResultForm dialogResult = browserDialog.ShowDialog();
+
+                if (dialogResult == DialogResultForm.OK)
+                {
+                    BillOutputPath = browserDialog.SelectedPath;
+                }
+            }
         }
 
         protected virtual void CloseDialog(string parameter)
