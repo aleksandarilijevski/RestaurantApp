@@ -314,26 +314,25 @@ namespace RestaurantApp.ViewModels
         private async void Filter()
         {
             List<Bill> originalBills = OriginalBills;
-            List<Bill> filteredBills = new List<Bill>();
 
             if (int.TryParse(FilterTableID, out int tableId) == true)
             {
-                filteredBills.AddRange(originalBills.Where(x => x.TableID == tableId).ToList());
+                originalBills = new List<Bill>(originalBills.Where(x => x.TableID == tableId).ToList());
             }
 
             if (int.TryParse(FilterOnlineOrderID, out int onlineOrderId) == true)
             {
-                filteredBills.AddRange(originalBills.Where(x => x.OnlineOrderID == onlineOrderId).ToList());
+                originalBills = new List<Bill>(originalBills.Where(x => x.OnlineOrderID == onlineOrderId).ToList());
             }
 
             if (int.TryParse(FilterBillCounter, out int billCounter) == true)
             {
-                filteredBills.AddRange(originalBills.Where(x => x.RegistrationNumber.Contains(billCounter.ToString() + "/")).ToList());
+                originalBills = new List<Bill>((originalBills.Where(x => x.RegistrationNumber.Contains(billCounter.ToString() + "/")).ToList()));
             }
 
-            if (FilterDateFrom != DateTime.MinValue && FilterDateTo != DateTime.MinValue)
+            if (FilterDateFrom != null && FilterDateTo != null)
             {
-                filteredBills.AddRange(FilterByDateTime(originalBills));
+                originalBills = new List<Bill>(FilterByDateTime(originalBills));
             }
 
             List<SoldArticleDetails> soldArticleDetails = await _databaseService.GetAllSoldArticleDetails();
@@ -341,7 +340,7 @@ namespace RestaurantApp.ViewModels
 
             foreach (SoldArticleDetails soldArticleDetail in soldArticleDetails)
             {
-                foreach (Bill bill in filteredBills)
+                foreach (Bill bill in originalBills)
                 {
                     if (soldArticleDetail.BillID == bill.ID)
                     {
@@ -350,7 +349,7 @@ namespace RestaurantApp.ViewModels
                 }
             }
 
-            Bills = new ObservableCollection<Bill>(filteredBills.Distinct().ToList());
+            Bills = new ObservableCollection<Bill>(originalBills);
             decimal totalProfit = CalculateTotalProfit(filteredSoldArticleDetails);
             TotalProfit = "Total profit : " + totalProfit.ToString("0.00");
         }

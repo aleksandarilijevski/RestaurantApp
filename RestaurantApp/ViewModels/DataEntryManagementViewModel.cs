@@ -181,26 +181,25 @@ namespace RestaurantApp.ViewModels
             using EFContext efContext = new EFContext();
 
             ObservableCollection<DataEntry> originalDataEntries = await _databaseService.GetAllDataEntries(efContext);
-            ObservableCollection<DataEntry> filteredDataEntries = new ObservableCollection<DataEntry>();
 
             DataEntries.Clear();
 
             if (DataEntryNumber != 0)
             {
-                filteredDataEntries = new ObservableCollection<DataEntry>(originalDataEntries.Where(x => x.DataEntryNumber == DataEntryNumber));
+                originalDataEntries = new ObservableCollection<DataEntry>(originalDataEntries.Where(x => x.DataEntryNumber == DataEntryNumber));
             }
 
             if (DateFrom != DateTime.MinValue && DateTo != DateTime.MinValue)
             {
-                filteredDataEntries = new ObservableCollection<DataEntry>(FilterByDateTime(originalDataEntries));
+                originalDataEntries = new ObservableCollection<DataEntry>(FilterByDateTime(originalDataEntries));
             }
 
             if (PriceFrom > 0 && PriceTo > 0)
             {
-                filteredDataEntries = new ObservableCollection<DataEntry>(originalDataEntries.Where(x => x.TotalAmount >= PriceFrom && x.TotalAmount <= PriceTo));
+                originalDataEntries = new ObservableCollection<DataEntry>(originalDataEntries.Where(x => x.TotalAmount >= PriceFrom && x.TotalAmount <= PriceTo));
             }
 
-            DataEntries = filteredDataEntries;
+            DataEntries = originalDataEntries;
         }
 
         private List<DataEntry> FilterByDateTime(ObservableCollection<DataEntry> dataEntries)

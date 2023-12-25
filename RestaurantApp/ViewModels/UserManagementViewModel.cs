@@ -291,11 +291,11 @@ namespace RestaurantApp.ViewModels
             {
                 if (LoggedUser.UserRole == UserRole.Admin)
                 {
-                    filteredUsers.AddRange(originalUsers.Where(x => x.FirstAndLastName.ToLower().Contains(FirstOrLastname.ToLower())));
+                    filteredUsers = new ObservableCollection<User>(originalUsers.Where(x => x.FirstAndLastName.ToLower().Contains(FirstOrLastname.ToLower())));
                 }
                 else
                 {
-                    filteredUsers.AddRange(originalUsers.Where(x => x.FirstAndLastName.ToLower().Contains(FirstOrLastname.ToLower()) && x.UserRole != UserRole.Admin));
+                    filteredUsers = new ObservableCollection<User>(originalUsers.Where(x => x.FirstAndLastName.ToLower().Contains(FirstOrLastname.ToLower()) && x.UserRole != UserRole.Admin));
                 }
 
                 Users = filteredUsers;
