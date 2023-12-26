@@ -131,11 +131,16 @@ namespace RestaurantApp.ViewModels
                 return;
             }
 
+            if (!BillOutputPath.EndsWith("\\"))
+            {
+                BillOutputPath += "\\";
+            }
+
             Dictionary<string, string> keyValues = new Dictionary<string, string>
             {
                 { "Company name", CompanyName },
                 { "Company address", CompanyAddress },
-                { "Bill output path", BillOutputPath + "\\" }
+                { "Bill output path", BillOutputPath}
             };
 
             using (StreamWriter streamWriter = new StreamWriter("config.ini"))

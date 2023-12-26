@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <None Remove="Resources\cafePlan.png" />
+    <None Remove="Resources\loadingScreen.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -65,5 +66,6 @@
 
   <ItemGroup>
     <Resource Include="Resources\cafePlan.png" />
+    <Resource Include="Resources\loadingScreen.png" />
   </ItemGroup>
 </Project>

@@ -9,6 +9,7 @@
         mc:Ignorable="d"
         xmlns:prism="http://prismlibrary.com/"
         prism:ViewModelLocator.AutoWireViewModel="True"
+        WindowState="Maximized"
         Title="Restaurant Application" Height="600" Width="1150">
 
     <i:Interaction.Triggers>
@@ -86,5 +87,4 @@
             FontSize="20"
             Command="{Binding NavigateToOnlineOrderingCommand}" Margin="3,5,2,0" />
     </Grid>
-
 </Window>

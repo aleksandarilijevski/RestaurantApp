@@ -11,7 +11,7 @@ namespace RestaurantApp.Module
         public void OnInitialized(IContainerProvider containerProvider)
         {
             IRegionManager region = containerProvider.Resolve<IRegionManager>();
-            region.RegisterViewWithRegion("MainRegion", typeof(Options));
+            region.RegisterViewWithRegion("MainRegion", "Options");
             region.RegisterViewWithRegion("OrderingRegion", "Ordering");
         }
 
