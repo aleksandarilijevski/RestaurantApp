@@ -3,6 +3,7 @@ using Prism.Modularity;
 using Prism.Regions;
 using RestaurantApp.ViewModels;
 using RestaurantApp.Views;
+using System.Windows;
 
 namespace RestaurantApp.Module
 {
