@@ -46,9 +46,6 @@ namespace RestaurantApp.ViewModels
 
         public MainWindowViewModel(IRegionManager regionManager, IDatabaseService databaseService, IDialogService dialogService)
         {
-            SplashScreen splashScreen = new SplashScreen("/Resources/loadingScreen.png");
-            splashScreen.Show(true,true);
-
             _databaseService = databaseService;
             _regionManager = regionManager;
             _dialogService = dialogService;

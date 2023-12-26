@@ -11,6 +11,7 @@ namespace RestaurantApp.Module
     {
         public void OnInitialized(IContainerProvider containerProvider)
         {
+            SplashScreen();
             IRegionManager region = containerProvider.Resolve<IRegionManager>();
             region.RegisterViewWithRegion("MainRegion", "Options");
             region.RegisterViewWithRegion("OrderingRegion", "Ordering");
@@ -42,6 +43,12 @@ namespace RestaurantApp.Module
             containerRegistry.RegisterDialog<UserLoginDialog, UserLoginDialogViewModel>("userLoginDialog");
             containerRegistry.RegisterDialog<TableInvoiceHistory, TableInvoiceHistoryViewModel>("tableInvoiceHistoryDialog");
             containerRegistry.RegisterDialog<CompanyInformations, CompanyInformationsViewModel>("companyInformationsDialog");
+        }
+
+        private void SplashScreen()
+        {
+            SplashScreen splashScreen = new SplashScreen("/Resources/loadingScreen.png");
+            splashScreen.Show(true, true);
         }
     }
 }
