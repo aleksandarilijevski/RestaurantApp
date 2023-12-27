@@ -66,9 +66,6 @@
 
   <ItemGroup>
     <Resource Include="Resources\cafePlan.png" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Resource Include="Resources\loadingScreen.png" />
   </ItemGroup>
 </Project>

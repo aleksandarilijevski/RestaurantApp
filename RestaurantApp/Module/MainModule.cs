@@ -53,7 +53,7 @@ namespace RestaurantApp.Module
         {
             SplashScreen splashScreen = new SplashScreen("/Resources/loadingScreen.png");
             splashScreen.Show(false);
-            splashScreen.Close(TimeSpan.FromSeconds(2));
+            splashScreen.Close(TimeSpan.FromSeconds(1));
         }
 
         private void CreateDB()
