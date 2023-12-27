@@ -4,8 +4,8 @@
 		<TargetFramework>netcoreapp3.1</TargetFramework>
 		<OutputType>WinExe</OutputType>
 		<UseWindowsForms>true</UseWindowsForms>
-		<RootNamespace>MyAppNamespace</RootNamespace>
-		<AssemblyName>MyAppName</AssemblyName>
+		<RootNamespace>RestauranApp</RootNamespace>
+		<AssemblyName>RestaurantApp</AssemblyName>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	</PropertyGroup>
 	<ItemGroup>
@@ -69,6 +69,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <SplashScreen Include="Resources\loadingScreen.png" />
+    <Resource Include="Resources\loadingScreen.png" />
   </ItemGroup>
 </Project>

@@ -46,7 +46,6 @@
 
         <Button
             Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
-            ToolTip="MaterialDesignFloatingActionMiniDarkButton"     
             Command="{Binding ShowCompanyInformationsDialogCommand}"
             Grid.Row="0" Grid.Column="10" HorizontalAlignment="Right" Margin="0,5,10,0">
             <materialDesign:PackIcon Kind="Cog" />
@@ -56,7 +55,6 @@
             Width="130"
             Height="130"
             Style="{StaticResource MaterialDesignFlatSecondaryDarkBgButton}"
-            ToolTip="MaterialDesignFlatSecondaryDarkBgButton"
             Content="   Table&#xa;overview" 
             Grid.Row="2" 
             Grid.Column="1" 

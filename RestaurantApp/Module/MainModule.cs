@@ -1,8 +1,11 @@
-﻿using Prism.Ioc;
+﻿using EntityFramework.Models;
+using Microsoft.EntityFrameworkCore;
+using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Regions;
 using RestaurantApp.ViewModels;
 using RestaurantApp.Views;
+using System;
 using System.Windows;
 
 namespace RestaurantApp.Module
@@ -11,6 +14,7 @@ namespace RestaurantApp.Module
     {
         public void OnInitialized(IContainerProvider containerProvider)
         {
+            CreateDB();
             SplashScreen();
             IRegionManager region = containerProvider.Resolve<IRegionManager>();
             region.RegisterViewWithRegion("MainRegion", "Options");
@@ -48,7 +52,16 @@ namespace RestaurantApp.Module
         private void SplashScreen()
         {
             SplashScreen splashScreen = new SplashScreen("/Resources/loadingScreen.png");
-            splashScreen.Show(true, true);
+            splashScreen.Show(false);
+            splashScreen.Close(TimeSpan.FromSeconds(2));
+        }
+
+        private void CreateDB()
+        {
+            using (EFContext efContext = new EFContext())
+            {
+                efContext.Database.Migrate();
+            }
         }
     }
 }
