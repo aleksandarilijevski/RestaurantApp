@@ -215,7 +215,10 @@ namespace EntityFramework.Migrations
             modelBuilder.Entity("EntityFramework.Models.OnlineOrder", b =>
                 {
                     b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");

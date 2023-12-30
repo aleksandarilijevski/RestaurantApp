@@ -102,11 +102,7 @@ namespace RestaurantApp.ViewModels
         {
             using EFContext efContext = new EFContext();
 
-            int onlineOrderId = await _databaseService.GetMaxOnlineOrderID(efContext) + 1;
-
             OnlineOrder onlineOrder = new OnlineOrder();
-            onlineOrder.ID = onlineOrderId;
-
             await _databaseService.AddOnlineOrder(onlineOrder, efContext);
 
             OnlineOrders.Add(onlineOrder);

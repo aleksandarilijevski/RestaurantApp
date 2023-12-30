@@ -7,6 +7,7 @@
 		<RootNamespace>RestauranApp</RootNamespace>
 		<AssemblyName>RestaurantApp</AssemblyName>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<Platforms>AnyCPU;x64</Platforms>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Windows.Compatibility" Version="3.0.0" />
@@ -18,11 +19,14 @@
     <Nullable>disable</Nullable>
     <UseWPF>true</UseWPF>
     <StartupObject></StartupObject>
-    <ApplicationIcon>restaurant.ico</ApplicationIcon>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="icon.ico" />
     <None Remove="Resources\cafePlan.png" />
+    <None Remove="Resources\icon.ico" />
     <None Remove="Resources\loadingScreen.png" />
   </ItemGroup>
 
@@ -33,10 +37,6 @@
       <VersionMajor>2</VersionMajor>
       <Guid>215d64d2-031c-33c7-96e3-61794cd1ee61</Guid>
     </COMReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="restaurant.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -65,7 +65,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="icon.ico" />
     <Resource Include="Resources\cafePlan.png" />
+    <Resource Include="Resources\icon.ico" />
     <Resource Include="Resources\loadingScreen.png" />
   </ItemGroup>
 </Project>

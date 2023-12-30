@@ -5,10 +5,6 @@ namespace EntityFramework.Models
 {
     public class OnlineOrder : BaseEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int ID { get; set; }
-
         public string? Firstname { get; set; }
 
         public string? Lastname { get; set; }

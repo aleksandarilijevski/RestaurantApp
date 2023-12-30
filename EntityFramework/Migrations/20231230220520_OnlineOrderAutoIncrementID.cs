@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace EntityFramework.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class OnlineOrderAutoIncrementID : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -76,6 +76,7 @@ namespace EntityFramework.Migrations
                     JMBG = table.Column<long>(type: "bigint", nullable: false),
                     UserRole = table.Column<int>(type: "int", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
                     CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ModifiedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -119,7 +120,8 @@ namespace EntityFramework.Migrations
                 name: "OnlineOrders",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false),
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Firstname = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Lastname = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
