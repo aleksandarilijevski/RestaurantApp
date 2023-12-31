@@ -55,8 +55,6 @@ namespace RestaurantApp.Services.Interface
 
         public Task<List<ArticleDetails>> GetArticleDetailsByArticleID(int articleId, EFContext efContext);
 
-        public Task<int> GetMaxOnlineOrderID(EFContext efContext);
-
         public Task<int> AddArticleDetails(ArticleDetails articleDetails, EFContext efContext);
 
         public Task<DataEntry> GetDataEntryByNumber(int dataEntryNumber, EFContext efContext);

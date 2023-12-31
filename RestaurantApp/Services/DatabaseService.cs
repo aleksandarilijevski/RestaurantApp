@@ -28,18 +28,6 @@ namespace RestaurantApp.Services
             return article;
         }
 
-        public async Task<int> GetMaxOnlineOrderID(EFContext efContext)
-        {
-            int id = 0;
-
-            if (efContext.OnlineOrders.Any())
-            {
-                id = await efContext.OnlineOrders.MaxAsync(x => x.ID);
-            }
-
-            return id;
-        }
-
         public async Task<int> AddOnlineOrder(OnlineOrder onlineOrder, EFContext efContext)
         {
             efContext.OnlineOrders.Add(onlineOrder);
@@ -227,15 +215,20 @@ namespace RestaurantApp.Services
                 .Include(x => x.Table)
                 .ThenInclude(x => x.TableArticleQuantities)
                 .ThenInclude(x => x.Article)
+
                 .Include(x => x.Table)
                 .ThenInclude(x => x.TableArticleQuantities)
                 .ThenInclude(x => x.Bill)
+
                 .Include(x => x.Table)
                 .ThenInclude(x => x.TableArticleQuantities)
                 .ThenInclude(x => x.ArticleDetails)
+                .ThenInclude(x => x.Article)
+
                 .Include(x => x.OnlineOrder)
                 .ThenInclude(x => x.TableArticleQuantities)
                 .ThenInclude(x => x.ArticleDetails)
+                .ThenInclude(x => x.Article)
                 .ToListAsync();
             return bills;
         }
