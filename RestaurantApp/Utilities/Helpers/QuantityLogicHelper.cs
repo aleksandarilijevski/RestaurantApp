@@ -1,4 +1,5 @@
-﻿using EntityFramework.Models;
+﻿using DocumentFormat.OpenXml.Drawing;
+using EntityFramework.Models;
 using RestaurantApp.Models;
 using System;
 using System.Collections.Generic;
@@ -133,10 +134,11 @@ namespace RestaurantApp.Utilities.Helpers
             }
         }
 
-        public static async Task<List<SoldArticleDetails>> DecreaseOriginalQuantity(ArticleHelperDetails articleHelperDetails)
+        public static async Task<SoldArticleDetails> DecreaseOriginalQuantity(ArticleHelperDetails articleHelperDetails)
         {
-            List<SoldArticleDetails> soldArticleDetails = new List<SoldArticleDetails>();
             List<TableArticleQuantity> tableArticleQuantities = await articleHelperDetails.DatabaseService.GetTableArticleQuantityByArticleID(articleHelperDetails.TableArticleQuantity.ArticleID, articleHelperDetails.EFContext);
+
+            SoldArticleDetails soldArticleDetail = null;
             int usedQuantity = tableArticleQuantities.Sum(x => x.Quantity);
 
             int quantityToBeRemoved = articleHelperDetails.TableArticleQuantity.Quantity;
@@ -150,14 +152,12 @@ namespace RestaurantApp.Utilities.Helpers
                         int reservedToBeDeleted = Math.Min(articleDetail.OriginalQuantity, quantityToBeRemoved);
                         articleDetail.OriginalQuantity -= reservedToBeDeleted;
 
-                        SoldArticleDetails soldArticleDetail = new SoldArticleDetails
+                        soldArticleDetail = new SoldArticleDetails
                         {
                             ArticlePrice = articleHelperDetails.TableArticleQuantity.Article.Price,
                             SoldQuantity = reservedToBeDeleted,
                             EntryPrice = articleDetail.EntryPrice,
                         };
-
-                        soldArticleDetails.Add(soldArticleDetail);
 
                         quantityToBeRemoved -= reservedToBeDeleted;
 
@@ -173,14 +173,12 @@ namespace RestaurantApp.Utilities.Helpers
                         int reservedToBeDeleted = Math.Min(articleDetail.ReservedQuantity, quantityToBeRemoved);
                         articleDetail.OriginalQuantity -= reservedToBeDeleted;
 
-                        SoldArticleDetails soldArticleDetail = new SoldArticleDetails
+                        soldArticleDetail = new SoldArticleDetails
                         {
                             ArticlePrice = articleHelperDetails.TableArticleQuantity.Article.Price,
                             SoldQuantity = reservedToBeDeleted,
                             EntryPrice = articleDetail.EntryPrice,
                         };
-
-                        soldArticleDetails.Add(soldArticleDetail);
 
                         quantityToBeRemoved -= reservedToBeDeleted;
 
@@ -195,14 +193,13 @@ namespace RestaurantApp.Utilities.Helpers
                     {
                         articleDetail.OriginalQuantity--;
 
-                        SoldArticleDetails soldArticleDetail = new SoldArticleDetails
+                        soldArticleDetail = new SoldArticleDetails
                         {
                             ArticlePrice = articleHelperDetails.TableArticleQuantity.Article.Price,
                             SoldQuantity = articleDetail.OriginalQuantity,
                             EntryPrice = articleDetail.EntryPrice,
                         };
 
-                        soldArticleDetails.Add(soldArticleDetail);
                         await articleHelperDetails.DatabaseService.EditArticleDetails(articleDetail, articleHelperDetails.EFContext);
                     }
                     else
@@ -213,7 +210,7 @@ namespace RestaurantApp.Utilities.Helpers
                     break;
                 }
             }
-            return soldArticleDetails;
+            return soldArticleDetail;
         }
 
         public static int GetAvailableQuantity(List<ArticleDetails> articleDetails)

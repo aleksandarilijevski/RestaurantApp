@@ -107,7 +107,7 @@ namespace RestaurantApp.ViewModels
                 RegistrationNumber = registrationNumber
             };
 
-            List<SoldArticleDetails> soldArticleDetails = null;
+            List<SoldArticleDetails> soldArticleDetails = new List<SoldArticleDetails>();
 
             foreach (TableArticleQuantity tableArticleQuantity in TableArticleQuantities)
             {
@@ -122,7 +122,9 @@ namespace RestaurantApp.ViewModels
                 };
 
                 await QuantityLogicHelper.DecreaseReservedQuantity(articleHelperDetails);
-                soldArticleDetails = await QuantityLogicHelper.DecreaseOriginalQuantity(articleHelperDetails);
+
+                SoldArticleDetails soldArticleDetailToAdd = await QuantityLogicHelper.DecreaseOriginalQuantity(articleHelperDetails);
+                soldArticleDetails.Add(soldArticleDetailToAdd);
             }
 
             await _databaseService.CreateBill(bill, efContext);
@@ -183,8 +185,7 @@ namespace RestaurantApp.ViewModels
                 RegistrationNumber = registrationNumber
             };
 
-            List<SoldArticleDetails> soldArticleDetails = null;
-            List<SoldArticleDetails> totalSoldArticleDetails = new List<SoldArticleDetails>();
+            List<SoldArticleDetails> soldArticleDetails = new List<SoldArticleDetails>();
 
             foreach (TableArticleQuantity tableArticleQuantity in TableArticleQuantities)
             {
@@ -199,14 +200,14 @@ namespace RestaurantApp.ViewModels
                 };
 
                 await QuantityLogicHelper.DecreaseReservedQuantity(articleHelperDetails);
-                soldArticleDetails = await QuantityLogicHelper.DecreaseOriginalQuantity(articleHelperDetails);
 
-                totalSoldArticleDetails.AddRange(soldArticleDetails);
+                SoldArticleDetails soldArticleDetailToAdd = await QuantityLogicHelper.DecreaseOriginalQuantity(articleHelperDetails);
+                soldArticleDetails.Add(soldArticleDetailToAdd);
             }
 
             await _databaseService.CreateBill(bill, efContext);
 
-            foreach (SoldArticleDetails soldArticleDetail in totalSoldArticleDetails)
+            foreach (SoldArticleDetails soldArticleDetail in soldArticleDetails)
             {
                 soldArticleDetail.BillID = bill.ID;
                 await _databaseService.AddSoldArticleDetails(soldArticleDetail, efContext);
