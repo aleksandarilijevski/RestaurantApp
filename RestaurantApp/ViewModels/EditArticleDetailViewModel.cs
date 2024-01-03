@@ -4,6 +4,7 @@ using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
 using System;
+using System.Windows;
 
 namespace RestaurantApp.ViewModels
 {
@@ -50,6 +51,20 @@ namespace RestaurantApp.ViewModels
         private async void EditArticleDetails(ArticleDetails articleDetails)
         {
             using EFContext efContext = new EFContext();
+
+            if (articleDetails.OriginalQuantity == 0 || articleDetails.OriginalQuantity < 0)
+            {
+                MessageBox.Show("Article details quantity cannot be zero or less!", "Edit article details", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (articleDetails.EntryPrice == 0 || articleDetails.EntryPrice < 0)
+            {
+                MessageBox.Show("Article details entry price cannot be zero or less!", "Edit article details", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+         
             articleDetails.DataEntryQuantity = articleDetails.OriginalQuantity;
             await _databaseService.EditArticleDetails(articleDetails, efContext);
             CloseDialog("true");

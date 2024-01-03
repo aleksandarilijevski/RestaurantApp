@@ -152,7 +152,7 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        private void ShowEditArticleDialog(Article article)
+        private async void ShowEditArticleDialog(Article article)
         {
             DialogParameters dialogParameters = new DialogParameters
             {
@@ -164,7 +164,7 @@ namespace RestaurantApp.ViewModels
                 Article resultData = r.Parameters.GetValue<Article>("article");
             });
 
-            RaisePropertyChanged(nameof(Articles));
+            Articles = await _databaseService.GetAllArticles(new EFContext());
         }
 
         private bool UserLogin()

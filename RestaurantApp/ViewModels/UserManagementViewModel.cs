@@ -117,7 +117,7 @@ namespace RestaurantApp.ViewModels
         {
             get
             {
-                _showEditUserDialogCommand = new DelegateCommand<User>(ShowEditUserDialog);
+                _showEditUserDialogCommand = new DelegateCommand<User>(ShowEditUserDialogAsync);
                 return _showEditUserDialogCommand;
             }
         }
@@ -235,13 +235,18 @@ namespace RestaurantApp.ViewModels
 
             if (LoggedUser.UserRole == UserRole.Manager)
             {
-                List<User> admins = new List<User>();
-                admins = Users.Where(x => x.UserRole == UserRole.Admin).ToList();
+                HideAdmins();
+            }
+        }
 
-                foreach (User admin in admins)
-                {
-                    Users.Remove(admin);
-                }
+        private void HideAdmins()
+        {
+            List<User> admins = new List<User>();
+            admins = Users.Where(x => x.UserRole == UserRole.Admin).ToList();
+
+            foreach (User admin in admins)
+            {
+                Users.Remove(admin);
             }
         }
 
@@ -270,7 +275,7 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        private void ShowEditUserDialog(User user)
+        private async void ShowEditUserDialogAsync(User user)
         {
             DialogParameters dialogParameters = new DialogParameters()
             {
@@ -279,6 +284,8 @@ namespace RestaurantApp.ViewModels
             };
 
             _dialogService.ShowDialog("editUserDialog", dialogParameters, r => { });
+
+            GetAllUsers();
         }
 
         private async void FilterUsers()
@@ -338,6 +345,7 @@ namespace RestaurantApp.ViewModels
             };
 
             _dialogService.ShowDialog("addUserDialog", dialogParameters, r => { });
+
             GetAllUsers();
         }
     }

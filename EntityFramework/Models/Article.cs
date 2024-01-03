@@ -23,6 +23,8 @@ namespace EntityFramework.Models
             return new Article
             {
                 ID = this.ID,
+                CreatedDateTime = this.CreatedDateTime,
+                ModifiedDateTime = this.ModifiedDateTime,
                 Barcode = this.Barcode,
                 Name = this.Name,
                 ArticleDetails = this.ArticleDetails,

@@ -24,7 +24,7 @@ namespace RestaurantApp.Services
 
         public async Task<Article> GetArticleByID(int id, EFContext efContext)
         {
-            Article article = await efContext.Articles.FirstOrDefaultAsync(x => x.ID == id);
+            Article article = await efContext.Articles.Include(x => x.ArticleDetails).FirstOrDefaultAsync(x => x.ID == id);
             return article;
         }
 

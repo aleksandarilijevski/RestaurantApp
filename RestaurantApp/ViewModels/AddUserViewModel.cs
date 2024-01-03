@@ -64,7 +64,7 @@ namespace RestaurantApp.ViewModels
 
             if (user.Barcode == 0)
             {
-                MessageBox.Show("Barcode field can not be 0!", "Add user", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Barcode field can not be 0 or empty!", "Add user", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 

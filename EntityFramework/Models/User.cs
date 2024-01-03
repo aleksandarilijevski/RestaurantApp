@@ -23,6 +23,8 @@ namespace EntityFramework.Models
             return new User
             {
                 ID = this.ID,
+                CreatedDateTime = this.CreatedDateTime,
+                ModifiedDateTime = this.ModifiedDateTime,
                 Barcode = this.Barcode,
                 FirstAndLastName = this.FirstAndLastName,
                 DateOfBirth = this.DateOfBirth,

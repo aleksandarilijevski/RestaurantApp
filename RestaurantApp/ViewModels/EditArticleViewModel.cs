@@ -81,6 +81,18 @@ namespace RestaurantApp.ViewModels
                 return;
             }
 
+            if (Article.Name == string.Empty)
+            {
+                MessageBox.Show("Article name cannot be empty!", "Edit article", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (Article.Price == 0 || Article.Price < 0)
+            {
+                MessageBox.Show("Article price cannot be zero or less!", "Edit article", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             await _databaseService.EditArticle(Article, efContext);
             CloseDialog("true");
         }

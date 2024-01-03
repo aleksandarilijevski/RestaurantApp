@@ -8,6 +8,8 @@ using Prism.Services.Dialogs;
 using RestaurantApp.Services.Interface;
 using RestaurantApp.Utilities.Helpers;
 using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 
 namespace RestaurantApp.ViewModels
@@ -33,6 +35,8 @@ namespace RestaurantApp.ViewModels
         public User LoggedUser { get; set; }
 
         public UserRole UserRole { get; set; }
+
+        public UserRole UserRoleBeforeChange { get; set; }
 
         public string Title { get; set; } = "Edit user";
 
@@ -73,9 +77,10 @@ namespace RestaurantApp.ViewModels
 
         public virtual void OnDialogOpened(IDialogParameters parameters)
         {
-            User user  = parameters.GetValue<User>("user");
+            User user = parameters.GetValue<User>("user");
             User = (User)user.Clone();
             LoggedUser = parameters.GetValue<User>("loggedUser");
+            UserRoleBeforeChange = User.UserRole;
         }
 
         private async void EditUser(User user)
@@ -90,11 +95,28 @@ namespace RestaurantApp.ViewModels
                 return;
             }
 
+            if (userBarcodeCheck is not null)
+            {
+                efContext.Entry(userBarcodeCheck).State = EntityState.Detached;
+            }
+
+            if (user.Barcode == 0 || user.Barcode < 0)
+            {
+                MessageBox.Show("User barcode cannot be zero or less!", "Edit user", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             User userJMBGCheck = await _databaseService.GetUserByJMBG(user.JMBG, efContext);
 
             if (userJMBGCheck is not null && userJMBGCheck.ID != user.ID)
             {
                 MessageBox.Show("User with entered jmbg already exists!", "Edit user", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (User.JMBG.ToString().Length != 13)
+            {
+                MessageBox.Show("JMBG should be 13 digits long!", "Edit user", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -110,10 +132,31 @@ namespace RestaurantApp.ViewModels
                 return;
             }
 
-            if (user.UserRole == UserRole.Manager && LoggedUser.UserRole == UserRole.Manager)
+            if (user.UserRole == UserRoleBeforeChange && LoggedUser.UserRole == UserRole.Manager)
             {
                 MessageBox.Show("Managers cannot edit other managers!", "Edit user", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
+            }
+
+            if (user.UserRole != UserRoleBeforeChange && LoggedUser.UserRole == UserRole.Manager)
+            {
+                MessageBox.Show("Managers cannot edit roles of other users!", "Edit user", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            ObservableCollection<User> users = await _databaseService.GetAllUsers(new EFContext());
+
+            User.UserRole = UserRole;
+
+            if (UserRoleBeforeChange != User.UserRole)
+            {
+                User findAdmin = users.FirstOrDefault(x => x.UserRole == UserRole.Admin && x.ID != User.ID);
+
+                if (findAdmin is null)
+                {
+                    MessageBox.Show("Please create another admin if you want to change role of the selected one.", "Edit user", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
             }
 
             await _databaseService.EditUser(user, efContext);

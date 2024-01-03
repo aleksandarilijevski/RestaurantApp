@@ -19,6 +19,7 @@
             <ColumnDefinition Width="290" />
             <ColumnDefinition Width="350" />
             <ColumnDefinition Width="350" />
+            <ColumnDefinition Width="350" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
@@ -73,7 +74,7 @@
 
         <Button
             Content="Clear filters"
-            Grid.Column="4"
+            Grid.Column="3"
             Grid.Row="0"
             FontSize="15"
             Height="30" 
@@ -82,14 +83,14 @@
 
         <Button
             Content="Filter"
-            Grid.Column="4"
+            Grid.Column="3"
             Grid.Row="0"
             FontSize="15"
             Height="30"
             Margin="5,33,5,0"
             Command="{Binding FilterDataEntriesCommand}"/>
 
-        <DataGrid AutoGenerateColumns="False" FontSize="20" IsReadOnly="True" ItemsSource="{Binding DataEntries}" SelectedItem="{Binding SelectedDataEntry}" Grid.Row="2" Grid.ColumnSpan="4">
+        <DataGrid AutoGenerateColumns="False" FontSize="20" IsReadOnly="True" ItemsSource="{Binding DataEntries}" SelectedItem="{Binding SelectedDataEntry}" Grid.Row="2" Grid.ColumnSpan="5">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding ID}"/>
                 <DataGridTextColumn Header="Data entry number" Binding="{Binding DataEntryNumber}"/>

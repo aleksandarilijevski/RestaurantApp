@@ -25,6 +25,8 @@ namespace EntityFramework.Models
             return new ArticleDetails
             {
                 ID = this.ID,
+                CreatedDateTime = this.CreatedDateTime,
+                ModifiedDateTime = this.ModifiedDateTime,
                 ArticleID = this.ArticleID,
                 Article = this.Article,
                 OriginalQuantity = this.OriginalQuantity,

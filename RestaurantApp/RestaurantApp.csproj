@@ -7,7 +7,7 @@
 		<RootNamespace>RestauranApp</RootNamespace>
 		<AssemblyName>RestaurantApp</AssemblyName>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-		<Platforms>AnyCPU;x64</Platforms>
+		<Platforms>x64;x86</Platforms>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Windows.Compatibility" Version="3.0.0" />
@@ -21,6 +21,7 @@
     <StartupObject></StartupObject>
     <ApplicationIcon>icon.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>
