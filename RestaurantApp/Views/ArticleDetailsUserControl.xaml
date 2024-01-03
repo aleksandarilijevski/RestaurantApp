@@ -25,23 +25,6 @@
                 <DataGridTextColumn Header="Quantity" Binding="{Binding OriginalQuantity}"/>
                 <DataGridTextColumn Header="Entry price" Binding="{Binding EntryPrice}"/>
                 <DataGridTextColumn Header="Created date time" Binding="{Binding CreatedDateTime}"/>
-
-                <DataGridTemplateColumn Header="Edit">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button Content="Edit" Command="{Binding DataContext.ShowEditArticleDetailCommand,RelativeSource={RelativeSource AncestorType={x:Type local:ArticleDetailsUserControl}}}" CommandParameter="{Binding}"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-
-                <DataGridTemplateColumn Header="Delete">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button Content="Delete" Command="{Binding DataContext.DeleteArticleDetailsCommand,RelativeSource={RelativeSource AncestorType={x:Type local:ArticleDetailsUserControl}}}" CommandParameter="{Binding}"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
