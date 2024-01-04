@@ -379,7 +379,7 @@ namespace RestaurantAppTests
 
             DataEntry dataEntry = new DataEntry
             {
-                DataEntryNumber = 1,
+                DataEntryNumber = "1",
                 TotalAmount = 100
             };
 
@@ -603,7 +603,7 @@ namespace RestaurantAppTests
 
             DataEntry dataEntry = new DataEntry
             {
-                DataEntryNumber = 1,
+                DataEntryNumber = "1",
                 TotalAmount = 100
             };
 

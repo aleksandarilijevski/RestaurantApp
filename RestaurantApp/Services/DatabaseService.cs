@@ -149,7 +149,7 @@ namespace RestaurantApp.Services
             return dataEntry.ID;
         }
 
-        public async Task<DataEntry> GetDataEntryByNumber(int dataEntryNumber, EFContext efContext)
+        public async Task<DataEntry> GetDataEntryByNumber(string dataEntryNumber, EFContext efContext)
         {
             DataEntry dataEntry = await efContext.DataEntries.FirstOrDefaultAsync(x => x.DataEntryNumber == dataEntryNumber);
             return dataEntry;

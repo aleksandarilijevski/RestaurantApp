@@ -57,7 +57,7 @@ namespace RestaurantApp.Services.Interface
 
         public Task<int> AddArticleDetails(ArticleDetails articleDetails, EFContext efContext);
 
-        public Task<DataEntry> GetDataEntryByNumber(int dataEntryNumber, EFContext efContext);
+        public Task<DataEntry> GetDataEntryByNumber(string dataEntryNumber, EFContext efContext);
 
         public Task DeleteArticleDetails(ArticleDetails articleDetails, EFContext efContext);
 

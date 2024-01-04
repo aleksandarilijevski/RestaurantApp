@@ -235,19 +235,13 @@ namespace RestaurantApp.ViewModels
         {
             using EFContext efContext = new EFContext();
 
-            if (!int.TryParse(DataEntryNumber, out int dataEntryNumber))
-            {
-                MessageBox.Show("Data entry number is not valid!", "Data entry", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
             if (DataEntryArticles.Count == 0)
             {
                 MessageBox.Show("Please add articles!", "Data entry", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            DataEntry dataEntryCheck = await _databaseService.GetDataEntryByNumber(int.Parse(DataEntryNumber), efContext);
+            DataEntry dataEntryCheck = await _databaseService.GetDataEntryByNumber(DataEntryNumber, efContext);
 
             if (dataEntryCheck is not null)
             {
@@ -260,7 +254,7 @@ namespace RestaurantApp.ViewModels
 
             foreach (ArticleDetails articleDetails in DataEntryArticles)
             {
-                if (articleDetails.EntryPrice <= 0 || articleDetails.OriginalQuantity <= 0)
+                if (articleDetails.EntryPrice == 0 || articleDetails.OriginalQuantity == 0)
                 {
                     MessageBox.Show("One or more article details properties are not valid!", "Data entry", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
@@ -277,7 +271,7 @@ namespace RestaurantApp.ViewModels
 
             dataEntry = new DataEntry
             {
-                DataEntryNumber = int.Parse(DataEntryNumber),
+                DataEntryNumber = DataEntryNumber,
                 TotalAmount = totalAmount,
                 ArticleDetails = DataEntryArticles
             };

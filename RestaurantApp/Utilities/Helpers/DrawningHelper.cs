@@ -18,7 +18,9 @@ namespace RestaurantApp.Utilities.Helpers
 
         public static string CompanyAddress { get; set; }
 
-        public static string BillOutputPath { get; set; }   
+        public static string BillOutputPath { get; set; }
+
+        public static int PDV { get; set; }
 
         private static async Task<XImage> GetCustomQRCode(string text)
         {
@@ -183,7 +185,9 @@ namespace RestaurantApp.Utilities.Helpers
             offset += 15;
             gfx.DrawString("Oznaka              Ime         Stopa                            Porez", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
 
-            double pdv = (double)bill.TotalPrice * 0.20;
+            float pdvStopa = PDV / 100F;
+            float pdv = (float)bill.TotalPrice * pdvStopa;
+
             offset += 15;
             gfx.DrawString($"DJ                  0-PDV        20.00%                           {pdv.ToString("0.00")}", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
 
@@ -319,7 +323,9 @@ namespace RestaurantApp.Utilities.Helpers
             offset += 15;
             gfx.DrawString("Oznaka              Ime         Stopa                            Porez", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
 
-            double pdv = (double)bill.TotalPrice * 0.20;
+            float pdvStopa = PDV / 100F;
+            float pdv = (float)bill.TotalPrice * pdvStopa;
+
             offset += 15;
             gfx.DrawString($"DJ                  0-PDV        20.00%                           {pdv.ToString("0.00")}", font, XBrushes.Black, new XRect(15, offset, page.Width, 0));
 

@@ -23,6 +23,8 @@ namespace RestaurantApp.ViewModels
 
         private string _billOutputPath;
 
+        private int _pdv;
+
         private DelegateCommand _saveConfigCommand;
 
         private DelegateCommand _selectBillOutputPathCommand;
@@ -72,6 +74,20 @@ namespace RestaurantApp.ViewModels
             }
         }
 
+        public int PDV
+        {
+            get
+            {
+                return _pdv;
+            }
+
+            set
+            {
+                _pdv = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public DelegateCommand SaveConfigCommand
         {
             get
@@ -92,6 +108,8 @@ namespace RestaurantApp.ViewModels
 
         private void LoadConfig()
         {
+            PDV = 20;
+
             if (!File.Exists("config.ini"))
             {
                 return;
@@ -109,6 +127,7 @@ namespace RestaurantApp.ViewModels
             CompanyName = parsedData["Company name"].ToString();
             CompanyAddress = parsedData["Company address"].ToString();
             BillOutputPath = parsedData["Bill output path"].ToString();
+            PDV = int.Parse(parsedData["PDV"].ToString());
         }
 
         private void SaveConfig()
@@ -140,7 +159,8 @@ namespace RestaurantApp.ViewModels
             {
                 { "Company name", CompanyName },
                 { "Company address", CompanyAddress },
-                { "Bill output path", BillOutputPath}
+                { "Bill output path", BillOutputPath },
+                { "PDV", PDV.ToString() }
             };
 
             using (StreamWriter streamWriter = new StreamWriter("config.ini"))
@@ -152,6 +172,7 @@ namespace RestaurantApp.ViewModels
             DrawningHelper.CompanyName = CompanyName;
             DrawningHelper.CompanyAddress = CompanyAddress;
             DrawningHelper.BillOutputPath = BillOutputPath;
+            DrawningHelper.PDV = PDV;
 
             MessageBox.Show("Config file is successfully created!", "Company informations", MessageBoxButton.OK, MessageBoxImage.Information);
             CloseDialog("true");

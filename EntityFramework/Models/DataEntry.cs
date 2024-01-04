@@ -5,7 +5,7 @@ namespace EntityFramework.Models
 {
     public class DataEntry : BaseEntity
     {
-        public int DataEntryNumber { get; set; }
+        public string DataEntryNumber { get; set; }
 
         public List<ArticleDetails> ArticleDetails { get; set; }
 

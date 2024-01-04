@@ -12,7 +12,7 @@ namespace RestaurantApp.ViewModels
 {
     public class DataEntryManagementViewModel : BindableBase
     {
-        private int _dataEntryNumber;
+        private string _dataEntryNumber;
 
         private decimal _priceFrom;
 
@@ -44,7 +44,7 @@ namespace RestaurantApp.ViewModels
 
         public DataEntry SelectedDataEntry { get; set; }
 
-        public int DataEntryNumber
+        public string DataEntryNumber
         {
             get
             {
@@ -171,7 +171,7 @@ namespace RestaurantApp.ViewModels
 
             DateFrom = null;
             DateTo = null;
-            DataEntryNumber = 0;
+            DataEntryNumber = string.Empty;
             PriceFrom = 0;
             PriceTo = 0;
         }
@@ -184,7 +184,7 @@ namespace RestaurantApp.ViewModels
 
             DataEntries.Clear();
 
-            if (DataEntryNumber != 0)
+            if (DataEntryNumber != "0")
             {
                 originalDataEntries = new ObservableCollection<DataEntry>(originalDataEntries.Where(x => x.DataEntryNumber == DataEntryNumber));
             }

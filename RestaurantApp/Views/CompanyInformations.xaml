@@ -9,7 +9,7 @@
              xmlns:prism="http://prismlibrary.com/"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:materialDesignConverters="clr-namespace:MaterialDesignThemes.Wpf.Converters;assembly=MaterialDesignThemes.Wpf"
-             Height="310" Width="450">
+             Height="410" Width="450">
 
     <prism:Dialog.WindowStyle>
         <Style TargetType="Window">
@@ -36,6 +36,10 @@
             <RowDefinition Height="30"/>
 
             <RowDefinition Height="25"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+
+            <RowDefinition Height="25"/>
             <RowDefinition Height="40"/>
             <RowDefinition Height="15"/>
 
@@ -48,14 +52,17 @@
         <TextBlock FontSize="18" Text="Company address : " Grid.Row="3" Grid.Column="1" TextAlignment="Center"/>
         <TextBox FontSize="18" TextAlignment="Center" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Margin="20,0,20,0" Text="{Binding CompanyAddress}"/>
 
-        <TextBlock FontSize="18" Text="Bill output path : " Grid.Row="6" Grid.Column="1" TextAlignment="Center"/>
-        <TextBox IsReadOnly="True" FontSize="18" TextAlignment="Center" Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3" Margin="20,0,20,0" Text="{Binding BillOutputPath}"/>
+        <TextBlock FontSize="18" Text="PDV : " Grid.Row="6" Grid.Column="1" TextAlignment="Center"/>
+        <TextBox FontSize="18" TextAlignment="Center" Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3" Margin="20,0,20,0" Text="{Binding PDV}"/>
 
-        <Button Grid.Row="7" Grid.Column="2" HorizontalAlignment="Right" Margin="10,0,20,5" Command="{Binding SelectBillOutputPathCommand}">
+        <TextBlock FontSize="18" Text="Bill output path : " Grid.Row="9" Grid.Column="1" TextAlignment="Center"/>
+        <TextBox IsReadOnly="True" FontSize="18" TextAlignment="Center" Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="3" Margin="20,0,20,0" Text="{Binding BillOutputPath}"/>
+
+        <Button Grid.Row="10" Grid.Column="2" HorizontalAlignment="Right" Margin="10,0,20,5" Command="{Binding SelectBillOutputPathCommand}">
             <materialDesign:PackIcon Kind="FolderEdit"/>
         </Button>
 
-        <Button Content="Save" Grid.Row="9" Grid.Column="1" FontSize="15" Command="{Binding SaveConfigCommand}"/>
+        <Button Content="Save" Grid.Row="12" Grid.Column="1" FontSize="15" Command="{Binding SaveConfigCommand}"/>
 
     </Grid>
 </UserControl>
