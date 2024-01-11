@@ -150,6 +150,12 @@ namespace RestaurantApp.ViewModels
                 return;
             }
 
+            if (PDV == 0 || PDV < 0)
+            {
+                MessageBox.Show("PDV cannot be zero or less!", "Company informations", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             if (!BillOutputPath.EndsWith("\\"))
             {
                 BillOutputPath += "\\";
@@ -182,7 +188,7 @@ namespace RestaurantApp.ViewModels
         {
             using (FolderBrowserDialog browserDialog = new FolderBrowserDialog())
             {
-              DialogResultForm dialogResult = browserDialog.ShowDialog();
+                DialogResultForm dialogResult = browserDialog.ShowDialog();
 
                 if (dialogResult == DialogResultForm.OK)
                 {

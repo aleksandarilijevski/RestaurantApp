@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace EntityFramework.Models
+﻿namespace EntityFramework.Models
 {
     public class OnlineOrder : BaseEntity
     {

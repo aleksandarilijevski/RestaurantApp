@@ -3,6 +3,7 @@ using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
 using RestaurantApp.Services.Interface;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -257,6 +258,21 @@ namespace RestaurantApp.ViewModels
                 if (articleDetails.EntryPrice == 0 || articleDetails.OriginalQuantity == 0)
                 {
                     MessageBox.Show("One or more article details properties are not valid!", "Data entry", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                int originalQuantity = 0;
+                int isAvailable = 0;
+
+                if (articleDetails.OriginalQuantity < 0)
+                {
+                    originalQuantity = articleDetails.Article.ArticleDetails.Sum(x => x.OriginalQuantity);
+                    isAvailable = articleDetails.OriginalQuantity + originalQuantity;
+                }
+
+                if (isAvailable < 0)
+                {
+                    MessageBox.Show("Quantity doesn't exist!", "Data entry", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
