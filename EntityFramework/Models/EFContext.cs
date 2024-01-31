@@ -39,7 +39,7 @@ namespace EntityFramework.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Data Source=(LocalDb)\\MSSQLLocalDB;Initial Catalog=Restaurant;Integrated Security=true");
+                optionsBuilder.UseSqlServer("Server=resturantappwpf.database.windows.net;Database=resturantappwpf;Uid=ailijevski;Pwd=Baza123!");
                 optionsBuilder.EnableSensitiveDataLogging();
             }
         }
