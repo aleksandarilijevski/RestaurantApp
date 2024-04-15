@@ -13,12 +13,12 @@ namespace RestaurantApp.Converters
 
             if (bill.Table is not null)
             {
-                return bill.TableID.ToString();
+                return bill.TableID;
             }
 
             if (bill.OnlineOrder is not null)
             {
-                return bill.OnlineOrderID.ToString();
+                return bill.OnlineOrderID;
             }
 
             return "0";

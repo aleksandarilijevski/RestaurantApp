@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
+using RestauranApp.Utilities.Constants;
 using RestaurantApp.Utilities.Helpers;
 using System;
 using System.Collections.Generic;
@@ -31,7 +32,7 @@ namespace RestaurantApp.ViewModels
 
         public event Action<IDialogResult> RequestClose;
 
-        public string Title { get; set; } = "Company informations";
+        public string Title { get; set; } = ViewConstants.CompanyInformationsTitle;
 
         public string CompanyName
         {
@@ -134,25 +135,25 @@ namespace RestaurantApp.ViewModels
         {
             if (CompanyName is null || CompanyName == string.Empty)
             {
-                MessageBox.Show("Company name field can not be empty!", "Company informations", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.CompanyNameFieldCanNotBeEmpty, MessageBoxConstants.CompanyInformationsTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (CompanyAddress is null || CompanyAddress == string.Empty)
             {
-                MessageBox.Show("Company address field can not be empty!", "Company informations", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.CompanyAddressFieldCanNotBeEmpty, MessageBoxConstants.CompanyInformationsTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (BillOutputPath is null || BillOutputPath == string.Empty)
             {
-                MessageBox.Show("Bill output path field can not be empty!", "Company informations", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.BillOutputPathFieldCanNotBeEmpty, MessageBoxConstants.CompanyInformationsTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (PDV == 0 || PDV < 0)
             {
-                MessageBox.Show("PDV cannot be zero or less!", "Company informations", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.PDVCannotBeZeroOrLess, MessageBoxConstants.CompanyInformationsTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -180,7 +181,7 @@ namespace RestaurantApp.ViewModels
             DrawningHelper.BillOutputPath = BillOutputPath;
             DrawningHelper.PDV = PDV;
 
-            MessageBox.Show("Config file is successfully created!", "Company informations", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(MessageBoxConstants.ConfigFileIsSuccessfullyCreated, MessageBoxConstants.CompanyInformationsTitle, MessageBoxButton.OK, MessageBoxImage.Information);
             CloseDialog("true");
         }
 

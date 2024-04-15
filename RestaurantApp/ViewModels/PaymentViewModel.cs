@@ -3,6 +3,7 @@ using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
+using RestauranApp.Utilities.Constants;
 using RestaurantApp.Enums;
 using RestaurantApp.Models;
 using RestaurantApp.Services.Interface;
@@ -292,7 +293,7 @@ namespace RestaurantApp.ViewModels
                     { "totalPrice", totalPrice },
                 };
 
-                _dialogService.ShowDialog("paymentDialog", dialogParameters, async result =>
+                _dialogService.ShowDialog(ViewConstants.PaymentDialogViewName, dialogParameters, async result =>
                 {
                     if (result.Result == ButtonResult.OK)
                     {
@@ -306,13 +307,13 @@ namespace RestaurantApp.ViewModels
                         {
                             user = await _databaseService.GetUserByID((int)OnlineOrder.UserID, efContext);
                             bill = await AddBillOnlineOrder(cash, change);
-                            _regionManager.RequestNavigate("MainRegion", "OnlineOrders");
+                            _regionManager.RequestNavigate(ViewConstants.MainRegionViewName, ViewConstants.OnlineOrdersViewName);
                         }
                         else
                         {
                             user = await _databaseService.GetUserByID((int)Table.UserID, efContext);
                             bill = await AddBill(cash, change);
-                            _regionManager.RequestNavigate("MainRegion", "TableOrder");
+                            _regionManager.RequestNavigate(ViewConstants.MainRegionViewName, ViewConstants.TableOrderViewName);
                         }
 
                         DrawningHelper.DrawBill(bill, TableArticleQuantities, user);
@@ -329,13 +330,13 @@ namespace RestaurantApp.ViewModels
                 {
                     user = await _databaseService.GetUserByID((int)OnlineOrder.UserID, efContext);
                     bill = await AddBillOnlineOrder(0, 0);
-                    _regionManager.RequestNavigate("MainRegion", "OnlineOrders");
+                    _regionManager.RequestNavigate(ViewConstants.MainRegionViewName, ViewConstants.OnlineOrdersViewName);
                 }
                 else
                 {
                     user = await _databaseService.GetUserByID((int)Table.UserID, efContext);
                     bill = await AddBill(0, 0);
-                    _regionManager.RequestNavigate("MainRegion", "TableOrder");
+                    _regionManager.RequestNavigate(ViewConstants.MainRegionViewName, ViewConstants.TableOrderViewName);
                 }
 
                 DrawningHelper.DrawBill(bill, TableArticleQuantities, user);

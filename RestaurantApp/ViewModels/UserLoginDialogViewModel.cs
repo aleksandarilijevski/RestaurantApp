@@ -2,6 +2,7 @@
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
+using RestauranApp.Utilities.Constants;
 using RestaurantApp.Services.Interface;
 using System;
 using System.Windows;
@@ -25,7 +26,7 @@ namespace RestaurantApp.ViewModels
 
         public event Action<IDialogResult> RequestClose;
 
-        public string Title { get; set; } = "User login";
+        public string Title { get; set; } = ViewConstants.UserLoginTitle;
 
         public string Barcode
         {
@@ -54,7 +55,7 @@ namespace RestaurantApp.ViewModels
         {
             if (long.TryParse(barcode, out long barcodeLong) == false)
             {
-                MessageBox.Show("Barcode is not in right format!", "User login", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.BarcodeIsNotInRightFormat, MessageBoxConstants.UserLoginTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 Barcode = string.Empty;
                 return;
             }
@@ -64,14 +65,14 @@ namespace RestaurantApp.ViewModels
 
             if (user is null)
             {
-                MessageBox.Show("User with entered barcode does not exist in system!", "User login", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.UserWithEnteredBarcodeDoesNotExistInSystem, MessageBoxConstants.UserLoginTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 Barcode = string.Empty;
                 return;
             }
 
             if (user.IsDeleted)
             {
-                MessageBox.Show("User with entered barcode is deleted!", "User login", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.UserWithEnteredBarcodeIsDeleted, MessageBoxConstants.UserLoginTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 Barcode = string.Empty;
                 return;
             }

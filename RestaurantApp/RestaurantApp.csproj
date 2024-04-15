@@ -24,6 +24,22 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+	  <NoWarn>1701;1702;CA1416</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+	  <NoWarn>1701;1702;CA1416</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+	  <NoWarn>1701;1702;CA1416</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+	  <NoWarn>1701;1702;CA1416</NoWarn>
+	</PropertyGroup>
+
   <ItemGroup>
     <None Remove="icon.ico" />
     <None Remove="Resources\cafePlan.png" />

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
+using RestauranApp.Utilities.Constants;
 using RestaurantApp.Services.Interface;
 using System;
 using System.Windows;
@@ -22,7 +23,7 @@ namespace RestaurantApp.ViewModels
             _databaseService = databaseService;
         }
 
-        public string Title { get; set; } = "Edit article";
+        public string Title { get; set; } = ViewConstants.EditArticleTitle;
 
         public event Action<IDialogResult> RequestClose;
 
@@ -77,19 +78,19 @@ namespace RestaurantApp.ViewModels
 
             if (articleFind is not null && articleFind.ID != Article.ID)
             {
-                MessageBox.Show("Article with that barcode already exists!", "Edit article", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.ArticleWithThatBarcodeAlreadyExists, MessageBoxConstants.EditArticleTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (Article.Name == string.Empty)
             {
-                MessageBox.Show("Article name cannot be empty!", "Edit article", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.ArticleNameCannotBeEmpty, MessageBoxConstants.EditArticleTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (Article.Price == 0 || Article.Price < 0)
             {
-                MessageBox.Show("Article price cannot be zero or less!", "Edit article", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.ArticlePriceCannotBeZeroOrLess, MessageBoxConstants.EditArticleTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 

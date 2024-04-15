@@ -4,6 +4,7 @@ using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
+using RestauranApp.Utilities.Constants;
 using RestaurantApp.Services.Interface;
 using RestaurantApp.Utilities.Helpers;
 using System;
@@ -182,7 +183,7 @@ namespace RestaurantApp.ViewModels
         {
             bool isResultGood = false;
 
-            _dialogService.ShowDialog("userLoginDialog", r =>
+            _dialogService.ShowDialog(ViewConstants.UserLoginDialogViewName, r =>
             {
                 if (r.Result == ButtonResult.OK)
                 {
@@ -211,14 +212,14 @@ namespace RestaurantApp.ViewModels
 
                 if (!result)
                 {
-                    _regionManager.RequestNavigate("MainRegion", "Options");
+                    _regionManager.RequestNavigate(ViewConstants.MainRegionViewName, ViewConstants.OptionsViewName);
                     return;
                 }
 
                 if (User.UserRole is UserRole.Waiter)
                 {
-                    MessageBox.Show("Waiter can't access to user management!", "Access forbidden", MessageBoxButton.OK, MessageBoxImage.Error);
-                    _regionManager.RequestNavigate("MainRegion", "Options");
+                    MessageBox.Show(MessageBoxConstants.WaiterCantAccessToUserManagement, MessageBoxConstants.AccessForbiddenTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                    _regionManager.RequestNavigate(ViewConstants.MainRegionViewName, ViewConstants.OptionsViewName);
                     return;
                 }
 
@@ -256,7 +257,7 @@ namespace RestaurantApp.ViewModels
 
             if (LoggedUser.UserRole == UserRole.Manager && user.UserRole == UserRole.Manager)
             {
-                MessageBox.Show("Manager cannot delete other managers!", "User management", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.ManagerCannotDeleteOtherManagers, MessageBoxConstants.UserManagementTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -283,7 +284,7 @@ namespace RestaurantApp.ViewModels
                 {"loggedUser", LoggedUser}
             };
 
-            _dialogService.ShowDialog("editUserDialog", dialogParameters, r => { });
+            _dialogService.ShowDialog(ViewConstants.EditUserDialogViewName, dialogParameters, r => { });
 
             GetAllUsers();
         }
@@ -333,7 +334,7 @@ namespace RestaurantApp.ViewModels
             }
             else
             {
-                MessageBox.Show("JMBG should be 13 digits long!", "User Management", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.JMBGFieldShouldHaveThirteenDigits, MessageBoxConstants.UserManagementTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -344,7 +345,7 @@ namespace RestaurantApp.ViewModels
                 {"loggedUser", User}
             };
 
-            _dialogService.ShowDialog("addUserDialog", dialogParameters, r => { });
+            _dialogService.ShowDialog(ViewConstants.AddUserDialogViewName, dialogParameters, r => { });
 
             GetAllUsers();
         }

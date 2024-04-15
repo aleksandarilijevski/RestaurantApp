@@ -1,6 +1,7 @@
 ﻿using EntityFramework.Models;
 using Prism.Commands;
 using Prism.Services.Dialogs;
+using RestauranApp.Utilities.Constants;
 using System;
 using System.Collections.Generic;
 
@@ -18,7 +19,7 @@ namespace RestaurantApp.ViewModels
 
         public string DateNow { get; set; } = DateTime.Now.ToString("dd/MM/yyyy");
 
-        public string Title => "Table invoice history";
+        public string Title { get; set; } = ViewConstants.TableInvoiceHistoryTitle;
 
         public Bill SelectedBill { get; set; }
 
@@ -45,7 +46,7 @@ namespace RestaurantApp.ViewModels
                 { "bill", SelectedBill}
             };
 
-            _dialogService.ShowDialog("reportDetailsDialog", dialogParameters, r => { });
+            _dialogService.ShowDialog(ViewConstants.ReportDetailsDialogViewName, dialogParameters, r => { });
         }
 
         public void OnDialogOpened(IDialogParameters parameters)

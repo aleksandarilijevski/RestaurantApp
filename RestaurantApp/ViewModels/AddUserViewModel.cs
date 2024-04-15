@@ -3,6 +3,7 @@ using EntityFramework.Models;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
+using RestauranApp.Utilities.Constants;
 using RestaurantApp.Services.Interface;
 using System;
 using System.Collections.ObjectModel;
@@ -56,7 +57,7 @@ namespace RestaurantApp.ViewModels
         {
             if (LoggedUser is not null && LoggedUser.UserRole != UserRole.Admin)
             {
-                MessageBox.Show("Manager can't create users!", "Access forbidden", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.ManagerCantCreateUsers, MessageBoxConstants.AccessForbiddenTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 CloseDialog("true");
             }
 
@@ -64,25 +65,25 @@ namespace RestaurantApp.ViewModels
 
             if (user.Barcode == 0)
             {
-                MessageBox.Show("Barcode field can not be 0 or empty!", "Add user", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.BarcodeFieldCanNotBeZeroOrEmpty, MessageBoxConstants.AddUserTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (user.FirstAndLastName == null || user.FirstAndLastName == string.Empty)
             {
-                MessageBox.Show("First and last name can not be empty!", "Add user", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.FirstAndLastnameCanNotBeEmpty, MessageBoxConstants.AddUserTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (user.DateOfBirth == DateTime.MinValue)
             {
-                MessageBox.Show("Please enter the date of birth!", "Add user", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.PleaseEnterTheDateOfBirth, MessageBoxConstants.AddUserTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (user.JMBG.ToString().Length != 13)
             {
-                MessageBox.Show("JMBG field should have 13 numbers!", "Add user", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.JMBGFieldShouldHaveThirteenDigits, MessageBoxConstants.AddUserTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -91,7 +92,7 @@ namespace RestaurantApp.ViewModels
 
             if (users.Count == 0 && user.UserRole != UserRole.Admin)
             {
-                MessageBox.Show("First created user should have admin role!", "Add user", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.FirstCreatedUserShouldHaveAdminRole, MessageBoxConstants.AddUserTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -101,7 +102,7 @@ namespace RestaurantApp.ViewModels
             {
                 if (userBarcodeCheck.Barcode == user.Barcode)
                 {
-                    MessageBox.Show("User with entered barcode already exists!", "Add user", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(MessageBoxConstants.UserWithEnteredBarcodeAlreadyExists, MessageBoxConstants.AddUserTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
             }
@@ -112,7 +113,7 @@ namespace RestaurantApp.ViewModels
             {
                 if (userJMBGCheck.JMBG == user.JMBG)
                 {
-                    MessageBox.Show("User with entered JMBG already exists!", "Add user", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(MessageBoxConstants.UserWithEnteredJMBGAlreadyExists, MessageBoxConstants.AddUserTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
             }

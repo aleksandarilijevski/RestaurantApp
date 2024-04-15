@@ -2,6 +2,7 @@
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
+using RestauranApp.Utilities.Constants;
 using RestaurantApp.Services.Interface;
 using System;
 using System.Collections.Generic;
@@ -237,7 +238,7 @@ namespace RestaurantApp.ViewModels
                 { "dataEntry",SelectedDataEntry }
             };
 
-            _dialogService.ShowDialog("dataEntryDetailsDialog", dialogParameters, r => { });
+            _dialogService.ShowDialog(ViewConstants.DataEntryDetailsDialogViewName, dialogParameters, r => { });
         }
     }
 }

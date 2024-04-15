@@ -1,8 +1,8 @@
 using EntityFramework.Enums;
 using EntityFramework.Models;
 using Microsoft.EntityFrameworkCore;
+using RestauranApp.Factories.Extensions;
 using RestaurantApp.Enums;
-using RestaurantApp.Factories;
 using RestaurantApp.Factories.Interfaces;
 using RestaurantApp.Services;
 using RestaurantApp.Services.Interface;
@@ -21,8 +21,8 @@ namespace RestaurantAppTests
 
         public Tests()
         {
-            _databaseServiceFactory = new AbstractFactory<IDatabaseService>(() => new DatabaseService());
-            _efContextFactory = new AbstractFactory<EFContext>(() => new EFContext(options));
+            _databaseServiceFactory = new AbstractFactoryExtensions<IDatabaseService>(() => new DatabaseService());
+            _efContextFactory = new AbstractFactoryExtensions<EFContext>(() => new EFContext(options));
         }
 
         [Test]

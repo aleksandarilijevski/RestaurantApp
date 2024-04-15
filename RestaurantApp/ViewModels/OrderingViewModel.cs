@@ -3,6 +3,7 @@ using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
+using RestauranApp.Utilities.Constants;
 using RestaurantApp.Models;
 using RestaurantApp.Services.Interface;
 using RestaurantApp.Utilities.Helpers;
@@ -187,7 +188,7 @@ namespace RestaurantApp.ViewModels
                 { "tableID", Table.ID},
             };
 
-            _dialogService.ShowDialog("tableInvoiceHistoryDialog", dialogParameters, r => { });
+            _dialogService.ShowDialog(ViewConstants.TableInvoiceHistoryDialogViewName, dialogParameters, r => { });
         }
 
         public void OnNavigatedTo(NavigationContext navigationContext)
@@ -207,7 +208,7 @@ namespace RestaurantApp.ViewModels
         {
             bool isResultGood = false;
 
-            _dialogService.ShowDialog("userLoginDialog", r =>
+            _dialogService.ShowDialog(ViewConstants.UserLoginDialogViewName, r =>
             {
                 if (r.Result == ButtonResult.OK)
                 {
@@ -253,8 +254,8 @@ namespace RestaurantApp.ViewModels
 
                 if (User.Barcode != Table.User.Barcode)
                 {
-                    MessageBox.Show("Table is already in use by another waiter!", "Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
-                    _regionManager.RequestNavigate("MainRegion", "TableOrder");
+                    MessageBox.Show(MessageBoxConstants.TableIsAlreadyInUseByAnotherWaiter, MessageBoxConstants.OrderingTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                    _regionManager.RequestNavigate(ViewConstants.MainRegionViewName, ViewConstants.TableOrderViewName);
                     return;
                 }
 
@@ -262,7 +263,7 @@ namespace RestaurantApp.ViewModels
             }
             else
             {
-                _regionManager.RequestNavigate("MainRegion", "TableOrder");
+                _regionManager.RequestNavigate(ViewConstants.MainRegionViewName, ViewConstants.TableOrderViewName);
                 return;
             }
 
@@ -286,7 +287,7 @@ namespace RestaurantApp.ViewModels
 
             if (article is null)
             {
-                MessageBox.Show("Article with entered barcode doesn't exist in the system!", "Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.ArticleWithEnteredBarcodeDoesntExistInTheSystem, MessageBoxConstants.OrderingTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 Barcode = string.Empty;
                 return;
             }
@@ -343,7 +344,7 @@ namespace RestaurantApp.ViewModels
             if (selectedTableArticleQuantity.Quantity < 1)
             {
                 SelectedTableArticleQuantity.Quantity = tableArticleQuantity.Quantity;
-                MessageBox.Show("Quantity can't be lower than 1!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.QuantityCantBeLowerThanOne, MessageBoxConstants.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 RaisePropertyChanged(nameof(TableArticleQuantities));
                 return;
             }
@@ -389,7 +390,7 @@ namespace RestaurantApp.ViewModels
             else
             {
                 selectedTableArticleQuantity.Quantity = tableArticleQuantity.Quantity;
-                MessageBox.Show("Article is not in stock!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.ArticleIsNotInStock, MessageBoxConstants.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
             RaisePropertyChanged(nameof(TableArticleQuantities));
@@ -409,7 +410,7 @@ namespace RestaurantApp.ViewModels
             }
             else
             {
-                MessageBox.Show("Article is not in stock!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.ArticleIsNotInStock, MessageBoxConstants.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
         }
@@ -442,7 +443,7 @@ namespace RestaurantApp.ViewModels
                 Table.InUse = false;
                 Table.UserID = null;
                 await _databaseService.EditTable(Table, efContext);
-                _regionManager.RequestNavigate("MainRegion", "TableOrder");
+                _regionManager.RequestNavigate(ViewConstants.MainRegionViewName, ViewConstants.TableOrderViewName);
             }
 
             RaisePropertyChanged(nameof(Table));
@@ -452,7 +453,7 @@ namespace RestaurantApp.ViewModels
         {
             if (TableArticleQuantities.Count == 0)
             {
-                MessageBox.Show("There are no articles to be paid!", "Ordering", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.ThereAreNoArticlesToBePaid, MessageBoxConstants.OrderingTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -462,12 +463,12 @@ namespace RestaurantApp.ViewModels
                 { "tableArticleQuantities",  TableArticleQuantities.ToList()}
             };
 
-            _regionManager.RequestNavigate("MainRegion", "Payment", navigationParameters);
+            _regionManager.RequestNavigate(ViewConstants.MainRegionViewName, ViewConstants.PaymentViewName, navigationParameters);
         }
 
         private void NavigateToTables()
         {
-            _regionManager.RequestNavigate("MainRegion", "TableOrder");
+            _regionManager.RequestNavigate(ViewConstants.MainRegionViewName, ViewConstants.TableOrderViewName);
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)

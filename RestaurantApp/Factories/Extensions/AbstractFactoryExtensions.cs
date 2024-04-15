@@ -2,9 +2,9 @@
 using RestaurantApp.Factories.Interfaces;
 using System;
 
-namespace RestaurantApp.Factories
+namespace RestauranApp.Factories.Extensions
 {
-    public static class AbstractFactoryExtenstion
+    public static class AbstractFactoryExtensions
     {
         public static void AddAbstractFactory<TInterface, TImplementation>(this IContainerRegistry registryContainer, IContainerProvider containerProvider)
         where TInterface : class
@@ -12,15 +12,15 @@ namespace RestaurantApp.Factories
         {
             registryContainer.Register<TInterface, TImplementation>();
             registryContainer.RegisterSingleton<Func<TInterface>>(() => () => containerProvider.Resolve<TInterface>());
-            registryContainer.RegisterSingleton<IAbstractFactory<TInterface>, AbstractFactory<TInterface>>();
+            registryContainer.RegisterSingleton<IAbstractFactory<TInterface>, AbstractFactoryExtensions<TInterface>>();
         }
     }
 
-    public class AbstractFactory<T> : IAbstractFactory<T>
+    public class AbstractFactoryExtensions<T> : IAbstractFactory<T>
     {
         private readonly Func<T> _factory;
 
-        public AbstractFactory(Func<T> factory)
+        public AbstractFactoryExtensions(Func<T> factory)
         {
             _factory = factory;
         }

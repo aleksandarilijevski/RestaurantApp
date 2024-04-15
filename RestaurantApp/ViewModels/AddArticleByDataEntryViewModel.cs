@@ -2,6 +2,7 @@
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
+using RestauranApp.Utilities.Constants;
 using RestaurantApp.Services.Interface;
 using System;
 using System.Collections.Generic;
@@ -39,6 +40,7 @@ namespace RestaurantApp.ViewModels
         private ObservableCollection<Article> _articles;
 
         private List<ArticleDetails> _dataEntryArticles = new List<ArticleDetails>();
+        private Uri ConstantHelper;
 
         public AddArticleByDataEntryViewModel(IDatabaseService databaseService, IRegionManager regionManager)
         {
@@ -199,7 +201,7 @@ namespace RestaurantApp.ViewModels
             }
             else
             {
-                MessageBox.Show("Barcode is invalid!", "Data entry", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.BarcodeIsInvalid, MessageBoxConstants.DataEntryTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
             Barcode = string.Empty;
@@ -208,7 +210,7 @@ namespace RestaurantApp.ViewModels
 
         private void NavigateToDataEntryManagement()
         {
-            _regionManager.RequestNavigate("MainRegion", "DataEntryManagement");
+            _regionManager.RequestNavigate(RestauranApp.Utilities.Constants.ViewConstants.MainRegionViewName, RestauranApp.Utilities.Constants.ViewConstants.DataEntryManagement);
         }
 
         private void GetArticleByName(string articleName)
@@ -238,7 +240,7 @@ namespace RestaurantApp.ViewModels
 
             if (DataEntryArticles.Count == 0)
             {
-                MessageBox.Show("Please add articles!", "Data entry", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.PleaseAddArticles, MessageBoxConstants.DataEntryTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -246,7 +248,7 @@ namespace RestaurantApp.ViewModels
 
             if (dataEntryCheck is not null)
             {
-                MessageBox.Show("Data entry with that number already exists!", "Data entry", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.DataEntryWithThatNumberAlreadyExists, MessageBoxConstants.DataEntryTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -257,7 +259,7 @@ namespace RestaurantApp.ViewModels
             {
                 if (articleDetails.EntryPrice == 0 || articleDetails.OriginalQuantity == 0)
                 {
-                    MessageBox.Show("One or more article details properties are not valid!", "Data entry", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(MessageBoxConstants.OneOrMoreArticleDetailsPropertiesAreNotValid, MessageBoxConstants.DataEntryTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
@@ -272,7 +274,7 @@ namespace RestaurantApp.ViewModels
 
                 if (isAvailable < 0)
                 {
-                    MessageBox.Show("Quantity doesn't exist!", "Data entry", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(MessageBoxConstants.QuantityDoesntExist, MessageBoxConstants.DataEntryTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
@@ -294,7 +296,7 @@ namespace RestaurantApp.ViewModels
 
             await _databaseService.AddDataEntry(dataEntry, efContext);
 
-            MessageBox.Show("Data entry is saved!", "Data entry", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(MessageBoxConstants.DataEntryIsSaved, MessageBoxConstants.DataEntryTitle, MessageBoxButton.OK, MessageBoxImage.Information);
             DataEntryNumber = string.Empty;
             DataEntryArticles.Clear();
             RaisePropertyChanged(nameof(DataEntryArticles));

@@ -6,6 +6,7 @@ using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
+using RestauranApp.Utilities.Constants;
 using RestaurantApp.Services.Interface;
 using RestaurantApp.Utilities.Helpers;
 using System;
@@ -244,14 +245,14 @@ namespace RestaurantApp.ViewModels
                 { "bill", SelectedBill }
             };
 
-            _dialogService.ShowDialog("reportDetailsDialog", dialogParameters, r => { });
+            _dialogService.ShowDialog(ViewConstants.ReportDetailsDialogViewName, dialogParameters, r => { });
         }
 
         private bool UserLogin()
         {
             bool isResultGood = false;
 
-            _dialogService.ShowDialog("userLoginDialog", r =>
+            _dialogService.ShowDialog(ViewConstants.UserLoginDialogViewName, r =>
             {
                 if (r.Result == ButtonResult.OK)
                 {
@@ -282,14 +283,14 @@ namespace RestaurantApp.ViewModels
 
                 if (!result)
                 {
-                    _regionManager.RequestNavigate("MainRegion", "Options");
+                    _regionManager.RequestNavigate(ViewConstants.MainRegionViewName, ViewConstants.OptionsViewName);
                     return;
                 }
 
                 if (User.UserRole is UserRole.Waiter)
                 {
-                    MessageBox.Show("Waiter can't access to report management!", "Access forbidden", MessageBoxButton.OK, MessageBoxImage.Error);
-                    _regionManager.RequestNavigate("MainRegion", "Options");
+                    MessageBox.Show(MessageBoxConstants.WaiterCantAccessToReportManagement, MessageBoxConstants.AccessForbiddenTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                    _regionManager.RequestNavigate(ViewConstants.MainRegionViewName, ViewConstants.OptionsViewName);
                     return;
                 }
 
@@ -390,7 +391,7 @@ namespace RestaurantApp.ViewModels
         {
             if (Bills.Count == 0)
             {
-                MessageBox.Show("There is nothing to be exported!", "Export to excel", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.ThereIsNothingToBeExported, MessageBoxConstants.ExportToExcelTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -412,7 +413,7 @@ namespace RestaurantApp.ViewModels
 
             if (Path.GetExtension(fileLocation) != ".xlsx")
             {
-                MessageBox.Show("Invalid format!", "Export to excel", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.InvalidFormat, MessageBoxConstants.ExportToExcelTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 

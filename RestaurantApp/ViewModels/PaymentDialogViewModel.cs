@@ -1,6 +1,7 @@
 ﻿using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
+using RestauranApp.Utilities.Constants;
 using System;
 using System.Windows;
 
@@ -20,7 +21,7 @@ namespace RestaurantApp.ViewModels
 
         public event Action<IDialogResult> RequestClose;
 
-        public string Title { get; set; } = "Payment dialog";
+        public string Title { get; set; } = ViewConstants.PaymentTitle;
 
         public string CashBox { get; set; }
 
@@ -91,7 +92,7 @@ namespace RestaurantApp.ViewModels
 
             if (decimal.TryParse(cashBox, out cashBoxDecimal) == false)
             {
-                MessageBox.Show("Cash field is empty or it's not in valid format!", "Payment confirmation", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.CashFieldIsEmptyOrItsNotInValidFormat, MessageBoxConstants.PaymentConfirmationTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -102,7 +103,7 @@ namespace RestaurantApp.ViewModels
             }
             else
             {
-                MessageBox.Show("Cash price can't be lower than total price!", "Payment dialog", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.CashPriceCantBeLowerThanTotalPrice, MessageBoxConstants.PaymentTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
             IsButtonEnabled = true;

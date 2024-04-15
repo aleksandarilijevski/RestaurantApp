@@ -2,6 +2,7 @@
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
+using RestauranApp.Utilities.Constants;
 using RestaurantApp.Services.Interface;
 using System;
 using System.Collections.ObjectModel;
@@ -22,7 +23,7 @@ namespace RestaurantApp.ViewModels
 
         public event Action<IDialogResult> RequestClose;
 
-        public string Title { get; set; } = "Add new article";
+        public string Title { get; set; } = ViewConstants.AddArticleTitle;
 
         public Article Article { get; set; } = new Article();
 
@@ -56,19 +57,19 @@ namespace RestaurantApp.ViewModels
 
             if (article.Name is null)
             {
-                MessageBox.Show("Article name can not be empty!", "Add article", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.ArticleNameCanNotBeEmpty, MessageBoxConstants.AddArticleTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (article.Price <= 0)
             {
-                MessageBox.Show("Article price can not be zero or less!", "Add article", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.ArticlePriceCanNotBeZeroOrLess, MessageBoxConstants.AddArticleTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (ArticleDetails.EntryPrice <= 0)
             {
-                MessageBox.Show("Article detail entry price can not be zero or less!", "Add article", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.ArticleDetailsEntryPriceCanNotBeZeroOrLess, MessageBoxConstants.AddArticleTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -78,7 +79,7 @@ namespace RestaurantApp.ViewModels
             {
                 if (articleMatch.Barcode == article.Barcode)
                 {
-                    MessageBox.Show("Article with that barcode already exists!", "Add article", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(MessageBoxConstants.ArticleWithThatBarcodeAlreadyExists, MessageBoxConstants.AddArticleTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
             }

@@ -2,6 +2,7 @@
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
+using RestauranApp.Utilities.Constants;
 using RestaurantApp.Services.Interface;
 using System;
 using System.Collections.ObjectModel;
@@ -52,7 +53,7 @@ namespace RestaurantApp.ViewModels
         {
             get
             {
-                _loadOnlineOrdersCommand = new DelegateCommand(LoadOnlineOrders);
+                _loadOnlineOrdersCommand = new DelegateCommand(LoadOnlineOrders);   
                 return _loadOnlineOrdersCommand;
             }
         }
@@ -115,19 +116,19 @@ namespace RestaurantApp.ViewModels
 
             if (SelectedOnlineOrder is null)
             {
-                MessageBox.Show("Online order is not selected!", "Online ordering", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.OnlineOrderIsNotSelected, MessageBoxConstants.OnlineOrderingTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (SelectedOnlineOrder.IsPayed)
             {
-                MessageBox.Show("You can't delete proceseed order!", "Online ordering", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.YouCantDeleteProcessedOrder, MessageBoxConstants.OnlineOrderingTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (SelectedOnlineOrder.TableArticleQuantities.Count != 0)
             {
-                MessageBoxResult messageBoxResult = MessageBox.Show("There is articles on selected online order, are you sure you want to delete it?", "Online ordering", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                MessageBoxResult messageBoxResult = MessageBox.Show(MessageBoxConstants.ThereIsArticleOnSelectedOnlineOrderAreYouSureYouWantToDeleteIt, MessageBoxConstants.OnlineOrderingTitle, MessageBoxButton.YesNo, MessageBoxImage.Question);
 
                 if (messageBoxResult == MessageBoxResult.No)
                 {
@@ -146,7 +147,7 @@ namespace RestaurantApp.ViewModels
                 { "onlineOrder", onlineOrder }
             };
 
-            _regionManager.RequestNavigate("MainRegion", "OnlineOrdering", navigationParameters);
+            _regionManager.RequestNavigate(ViewConstants.MainRegionViewName, ViewConstants.OnlineOrderingViewName, navigationParameters);
         }
     }
 }

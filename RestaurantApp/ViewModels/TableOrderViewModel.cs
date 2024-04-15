@@ -2,6 +2,7 @@
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
+using RestauranApp.Utilities.Constants;
 using RestaurantApp.Services.Interface;
 using System.Collections.ObjectModel;
 
@@ -74,7 +75,7 @@ namespace RestaurantApp.ViewModels
                 { "id", ID }
             };
 
-            _regionManager.RequestNavigate("MainRegion", "Ordering", navigationParameters);
+            _regionManager.RequestNavigate(ViewConstants.MainRegionViewName, ViewConstants.OrderingViewName, navigationParameters);
         }
     }
 }

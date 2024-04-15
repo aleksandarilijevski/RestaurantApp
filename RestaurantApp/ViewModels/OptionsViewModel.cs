@@ -3,6 +3,7 @@ using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
+using RestauranApp.Utilities.Constants;
 using RestaurantApp.Utilities.Helpers;
 using System.Windows;
 
@@ -58,7 +59,7 @@ namespace RestaurantApp.ViewModels
         {
             get
             {
-                _showUserManagementCommand = new DelegateCommand(() => Navigate("MainRegion", "UserManagement"));
+                _showUserManagementCommand = new DelegateCommand(() => Navigate(ViewConstants.MainRegionViewName, ViewConstants.UserManagementViewName));
                 return _showUserManagementCommand;
             }
         }
@@ -67,7 +68,7 @@ namespace RestaurantApp.ViewModels
         {
             get
             {
-                _showTableOverviewCommand = new DelegateCommand(() => Navigate("MainRegion", "TableOrder"));
+                _showTableOverviewCommand = new DelegateCommand(() => Navigate(ViewConstants.MainRegionViewName, ViewConstants.TableOrderViewName));
                 return _showTableOverviewCommand;
             }
         }
@@ -76,7 +77,7 @@ namespace RestaurantApp.ViewModels
         {
             get
             {
-                _showArticleManagementCommand = new DelegateCommand(() => Navigate("MainRegion", "ArticleManagement"));
+                _showArticleManagementCommand = new DelegateCommand(() => Navigate(ViewConstants.MainRegionViewName, ViewConstants.ArticleManagementViewName));
                 return _showArticleManagementCommand;
             }
         }
@@ -85,7 +86,7 @@ namespace RestaurantApp.ViewModels
         {
             get
             {
-                _showReportManagementCommand = new DelegateCommand(() => Navigate("MainRegion", "ReportManagement"));
+                _showReportManagementCommand = new DelegateCommand(() => Navigate(ViewConstants.MainRegionViewName, ViewConstants.ReportManagementViewName));
                 return _showReportManagementCommand;
             }
         }
@@ -94,7 +95,7 @@ namespace RestaurantApp.ViewModels
         {
             get
             {
-                _showOnlineOrderingCommand = new DelegateCommand(() => Navigate("MainRegion", "OnlineOrders"));
+                _showOnlineOrderingCommand = new DelegateCommand(() => Navigate(ViewConstants.MainRegionViewName, ViewConstants.OnlineOrderingViewName));
                 return _showOnlineOrderingCommand;
             }
         }
@@ -130,15 +131,15 @@ namespace RestaurantApp.ViewModels
         {
             if (LoggedUserHelper.LoggedUser is null)
             {
-                MessageBox.Show("You're not logged!", "Main menu", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.YouAreLoggedOut, MessageBoxConstants.MainMenuTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (LoggedUserHelper.LoggedUser is not null)
             {
-                MessageBox.Show("You're logged out!", "Main menu", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(MessageBoxConstants.YouAreLoggedOut, MessageBoxConstants.MainMenuTitle, MessageBoxButton.OK, MessageBoxImage.Information);
                 LoggedUserHelper.LoggedUser = null;
-                Message = "No one is logged!";
+                Message = MessageBoxConstants.NoOneIsLogged;
             }
         }
 
@@ -148,7 +149,7 @@ namespace RestaurantApp.ViewModels
 
             if (LoggedUser is null)
             {
-                Message = "No one is logged!";
+                Message = MessageBoxConstants.NoOneIsLogged;
             }
 
             if (LoggedUser is not null)
@@ -164,7 +165,7 @@ namespace RestaurantApp.ViewModels
 
         private void ShowCompanyInformationsDialog()
         {
-            _dialogService.ShowDialog("companyInformationsDialog");
+            _dialogService.ShowDialog(ViewConstants.CompanyInformationsDialogViewName);
         }
     }
 }

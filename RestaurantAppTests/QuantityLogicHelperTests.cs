@@ -1,5 +1,6 @@
 ﻿using EntityFramework.Models;
 using Microsoft.EntityFrameworkCore;
+using RestauranApp.Factories.Extensions;
 using RestaurantApp.Factories;
 using RestaurantApp.Factories.Interfaces;
 using RestaurantApp.Services;
@@ -18,8 +19,8 @@ namespace RestaurantAppTests
 
         public QuantityLogicHelperTests()
         {
-            _efContextFactory = new AbstractFactory<EFContext>(() => new EFContext(options));
-            _databaseServiceFactory = new AbstractFactory<IDatabaseService>(() => new DatabaseService());
+            _efContextFactory = new AbstractFactoryExtensions<EFContext>(() => new EFContext(options));
+            _databaseServiceFactory = new AbstractFactoryExtensions<IDatabaseService>(() => new DatabaseService());
         }
 
         [Test]

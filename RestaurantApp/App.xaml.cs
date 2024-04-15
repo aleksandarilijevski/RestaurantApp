@@ -3,7 +3,7 @@ using Prism.DryIoc;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Mvvm;
-using RestaurantApp.Factories;
+using RestauranApp.Factories.Extensions;
 using RestaurantApp.Module;
 using RestaurantApp.Services;
 using RestaurantApp.Services.Interface;

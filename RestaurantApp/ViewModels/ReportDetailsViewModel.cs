@@ -2,6 +2,7 @@
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
+using RestauranApp.Utilities.Constants;
 using RestaurantApp.Services.Interface;
 using RestaurantApp.Utilities.Helpers;
 using System;
@@ -21,7 +22,7 @@ namespace RestaurantApp.ViewModels
 
         private ObservableCollection<TableArticleQuantity> _soldTableArticleQuantities;
 
-        public string Title { get; set; } = "Report details";
+        public string Title { get; set; } = ViewConstants.ReportDetailsTitle;
 
         public Bill Bill { get; set; }
 

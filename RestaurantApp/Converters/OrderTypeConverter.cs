@@ -7,18 +7,22 @@ namespace RestaurantApp.Converters
 {
     public class OrderTypeConverter : IValueConverter
     {
+        public const string TableOrderDefaultValue = "Table order";
+
+        public const string OnlineOrderDefaultValue = "Online order";
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             Bill bill = (Bill)value;
 
             if (bill.Table is not null)
             {
-                return "Table order";
+                return TableOrderDefaultValue;
             }
 
             if (bill.OnlineOrder is not null)
             {
-                return "Online order";
+                return OnlineOrderDefaultValue;
             }
 
             return string.Empty;

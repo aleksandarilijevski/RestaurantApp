@@ -5,6 +5,7 @@ using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
+using RestauranApp.Utilities.Constants;
 using RestaurantApp.Services.Interface;
 using RestaurantApp.Utilities.Helpers;
 using System;
@@ -38,7 +39,7 @@ namespace RestaurantApp.ViewModels
 
         public UserRole UserRoleBeforeChange { get; set; }
 
-        public string Title { get; set; } = "Edit user";
+        public string Title { get; set; } = ViewConstants.EditUserTitle;
 
         public User User
         {
@@ -91,7 +92,7 @@ namespace RestaurantApp.ViewModels
 
             if (userBarcodeCheck is not null && userBarcodeCheck.ID != user.ID)
             {
-                MessageBox.Show("User with entered barcode already exists!", "Edit user", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.UserWithEnteredBarcodeAlreadyExists, MessageBoxConstants.EditUserTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -102,7 +103,7 @@ namespace RestaurantApp.ViewModels
 
             if (user.Barcode == 0 || user.Barcode < 0)
             {
-                MessageBox.Show("User barcode cannot be zero or less!", "Edit user", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.UserBarcodeCannotBeZeroOrLess, MessageBoxConstants.EditUserTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -110,13 +111,13 @@ namespace RestaurantApp.ViewModels
 
             if (userJMBGCheck is not null && userJMBGCheck.ID != user.ID)
             {
-                MessageBox.Show("User with entered jmbg already exists!", "Edit user", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.UserWithEnteredJMBGAlreadyExists, MessageBoxConstants.EditUserTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (User.JMBG.ToString().Length != 13)
             {
-                MessageBox.Show("JMBG should be 13 digits long!", "Edit user", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.JMBGFieldShouldHaveThirteenDigits, MessageBoxConstants.EditUserTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -127,20 +128,20 @@ namespace RestaurantApp.ViewModels
 
             if (user.IsActive)
             {
-                MessageBox.Show("You cannot change user which is currently active!", "Edit user", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.YouCannotChangeUserWhichIsCurrentlyActive, MessageBoxConstants.EditUserTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 CloseDialog("true");
                 return;
             }
 
             if (user.UserRole == UserRoleBeforeChange && LoggedUser.UserRole == UserRole.Manager)
             {
-                MessageBox.Show("Managers cannot edit other managers!", "Edit user", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.ManagersCannotEditOtherManagers, MessageBoxConstants.EditUserTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (user.UserRole != UserRoleBeforeChange && LoggedUser.UserRole == UserRole.Manager)
             {
-                MessageBox.Show("Managers cannot edit roles of other users!", "Edit user", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.ManagersCannotEditRolesOfOtherUsers, MessageBoxConstants.EditUserTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -154,7 +155,7 @@ namespace RestaurantApp.ViewModels
 
                 if (findAdmin is null)
                 {
-                    MessageBox.Show("Please create another admin if you want to change role of the selected one.", "Edit user", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(MessageBoxConstants.PleaseCreateAnotherAdminIfYouWantToChangeRoleOfTheSelectedOne, MessageBoxConstants.EditUserTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
             }
@@ -164,8 +165,8 @@ namespace RestaurantApp.ViewModels
             if (user.ID == LoggedUser.ID)
             {
                 LoggedUserHelper.LoggedUser = null;
-                MessageBox.Show("You're logged out!", "User management", MessageBoxButton.OK, MessageBoxImage.Information);
-                _regionManger.RequestNavigate("MainRegion", "Options");
+                MessageBox.Show(MessageBoxConstants.YouAreLoggedOut, MessageBoxConstants.UserManagementTitle, MessageBoxButton.OK, MessageBoxImage.Information);
+                _regionManger.RequestNavigate(ViewConstants.MainRegionViewName, ViewConstants.OptionsViewName);
             }
 
             CloseDialog("true");

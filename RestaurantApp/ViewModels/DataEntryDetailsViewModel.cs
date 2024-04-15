@@ -1,6 +1,7 @@
 ﻿using EntityFramework.Models;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
+using RestauranApp.Utilities.Constants;
 using System;
 using System.Collections.ObjectModel;
 
@@ -12,7 +13,7 @@ namespace RestaurantApp.ViewModels
 
         public event Action<IDialogResult> RequestClose;
 
-        public string Title { get; set; } = "Data entry details";
+        public string Title { get; set; } = ViewConstants.DataEntryDetailsTitle;
 
         public DataEntry DataEntry { get; set; }
 

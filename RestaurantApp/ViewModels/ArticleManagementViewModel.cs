@@ -4,6 +4,7 @@ using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
+using RestauranApp.Utilities.Constants;
 using RestaurantApp.Services.Interface;
 using RestaurantApp.Utilities.Helpers;
 using System.Collections.Generic;
@@ -159,7 +160,7 @@ namespace RestaurantApp.ViewModels
                 { "article", article }
             };
 
-            _dialogService.ShowDialog("editArticleDialog", dialogParameters, r =>
+            _dialogService.ShowDialog(ViewConstants.EditArticleDialogViewName, dialogParameters, r =>
             {
                 Article resultData = r.Parameters.GetValue<Article>("article");
             });
@@ -171,7 +172,7 @@ namespace RestaurantApp.ViewModels
         {
             bool isResultGood = false;
 
-            _dialogService.ShowDialog("userLoginDialog", r =>
+            _dialogService.ShowDialog(ViewConstants.UserLoginDialogViewName, r =>
             {
                 if (r.Result == ButtonResult.OK)
                 {
@@ -200,14 +201,14 @@ namespace RestaurantApp.ViewModels
 
                 if (!result)
                 {
-                    _regionManager.RequestNavigate("MainRegion", "Options");
+                    _regionManager.RequestNavigate(ViewConstants.MainRegionViewName, ViewConstants.OptionsViewName);
                     return;
                 }
 
                 if (User.UserRole is UserRole.Waiter)
                 {
-                    MessageBox.Show("Waiter can't access to article management!", "Access forbidden", MessageBoxButton.OK, MessageBoxImage.Error);
-                    _regionManager.RequestNavigate("MainRegion", "Options");
+                    MessageBox.Show(MessageBoxConstants.WaiterCantAccessToArticleManagement, MessageBoxConstants.AccessForbiddenTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                    _regionManager.RequestNavigate(ViewConstants.MainRegionViewName, ViewConstants.OptionsViewName);
                     return;
                 }
 
@@ -241,13 +242,13 @@ namespace RestaurantApp.ViewModels
 
         private void ShowAddArticleDialog()
         {
-            _dialogService.ShowDialog("addArticleDialog");
+            _dialogService.ShowDialog(ViewConstants.AddArticleDialogViewName);
             GetAllArticles();
         }
 
         private void ShowAddArticleByDataEntry()
         {
-            _regionManager.RequestNavigate("MainRegion", "AddArticleByDataEntry");
+            _regionManager.RequestNavigate(ViewConstants.MainRegionViewName, ViewConstants.AddArticleByDataEntryViewName);
         }
 
         private async void DeleteArticle(Article article)
@@ -266,7 +267,7 @@ namespace RestaurantApp.ViewModels
                 { "article", article }
             };
 
-            _regionManager.RequestNavigate("MainRegion", "ArticleDetailsUserControl", navigationParameters);
+            _regionManager.RequestNavigate(ViewConstants.MainRegionViewName, ViewConstants.ArticleDetailsUserControlViewName, navigationParameters);
         }
     }
 }

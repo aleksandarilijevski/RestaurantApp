@@ -4,6 +4,7 @@ using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
+using RestauranApp.Utilities.Constants;
 using RestaurantApp.Services.Interface;
 using RestaurantApp.Utilities.Helpers;
 using System;
@@ -60,7 +61,7 @@ namespace RestaurantApp.ViewModels
         {
             get
             {
-                _navigateToArticleManagementCommand = new DelegateCommand(() => Navigate("MainRegion", "ArticleManagement"));
+                _navigateToArticleManagementCommand = new DelegateCommand(() => Navigate(ViewConstants.MainRegionViewName, ViewConstants.ArticleManagementViewName));
                 return _navigateToArticleManagementCommand;
             }
         }
@@ -78,7 +79,7 @@ namespace RestaurantApp.ViewModels
         {
             get
             {
-                _navigateToUserManagementCommand = new DelegateCommand(() => Navigate("MainRegion", "UserManagement"));
+                _navigateToUserManagementCommand = new DelegateCommand(() => Navigate(ViewConstants.MainRegionViewName, ViewConstants.UserManagementViewName));
                 return _navigateToUserManagementCommand;
             }
         }
@@ -87,7 +88,7 @@ namespace RestaurantApp.ViewModels
         {
             get
             {
-                _navigateToMenuCommand = new DelegateCommand(() => Navigate("MainRegion", "Options"));
+                _navigateToMenuCommand = new DelegateCommand(() => Navigate(ViewConstants.MainRegionViewName, ViewConstants.OptionsViewName));
                 return _navigateToMenuCommand;
             }
         }
@@ -105,7 +106,7 @@ namespace RestaurantApp.ViewModels
         {
             get
             {
-                _showTableOverviewCommand = new DelegateCommand(() => Navigate("MainRegion", "TableOrder"));
+                _showTableOverviewCommand = new DelegateCommand(() => Navigate(ViewConstants.MainRegionViewName, ViewConstants.TableOrderViewName));
                 return _showTableOverviewCommand;
             }
         }
@@ -114,7 +115,7 @@ namespace RestaurantApp.ViewModels
         {
             get
             {
-                _navigateToOnlineOrderingCommand = new DelegateCommand(() => Navigate("MainRegion", "OnlineOrders"));
+                _navigateToOnlineOrderingCommand = new DelegateCommand(() => Navigate(ViewConstants.MainRegionViewName, ViewConstants.OnlineOrdersViewName));
                 return _navigateToOnlineOrderingCommand;
             }
         }
@@ -149,7 +150,6 @@ namespace RestaurantApp.ViewModels
         private void MouseInactivityTimerElapsed(object sender, ElapsedEventArgs e)
         {
             LoggedUserHelper.LoggedUser = null;
-            Debug.WriteLine("User is logged off!");
         }
 
         private void CheckIfConfigFileExists()
@@ -158,7 +158,7 @@ namespace RestaurantApp.ViewModels
             {
                 do
                 {
-                    _dialogService.ShowDialog("companyInformationsDialog");
+                    _dialogService.ShowDialog(ViewConstants.CompanyInformationsDialogViewName);
                 } while (!File.Exists("config.ini"));
             }
 
@@ -173,12 +173,12 @@ namespace RestaurantApp.ViewModels
 
             if (parsedData.Count == 0)
             {
-                MessageBox.Show("Config file is not in right format!", "Company informations", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(MessageBoxConstants.ConfigFileIsNotInRightFormat, MessageBoxConstants.CompanyInformationsTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 File.Delete("config.ini");
 
                 do
                 {
-                    _dialogService.ShowDialog("companyInformationsDialog");
+                    _dialogService.ShowDialog(ViewConstants.CompanyInformationsDialogViewName);
                 } while (!File.Exists("config.ini"));
 
                 return;
@@ -228,7 +228,7 @@ namespace RestaurantApp.ViewModels
 
                 if (users.Count == 0)
                 {
-                    _dialogService.ShowDialog("addUserDialog");
+                    _dialogService.ShowDialog(ViewConstants.AddUserDialogViewName);
                 }
 
             } while (users.Count == 0);
